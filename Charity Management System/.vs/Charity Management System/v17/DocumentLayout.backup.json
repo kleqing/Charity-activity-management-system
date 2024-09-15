@@ -1,0 +1,168 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\organization.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:organization.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\organizationmembers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:organizationmembers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\usertoorganizationtransactionhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:usertoorganizationtransactionhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\organizationtoprojecttransactionhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:organizationtoprojecttransactionhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\usertoprojecttransactionhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BussinessObject.csproj|solutionrelative:usertoprojecttransactionhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-15T15:35:13.631Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\DBContext.cs",
+              "RelativeDocumentMoniker": "DBContext.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\DBContext.cs*",
+              "RelativeToolTip": "DBContext.cs*",
+              "ViewState": "AgIAABgAAAAAAAAAAAAQwC8AAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T15:30:34.175Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "OrganizationMembers.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\OrganizationMembers.cs",
+              "RelativeDocumentMoniker": "OrganizationMembers.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\OrganizationMembers.cs",
+              "RelativeToolTip": "OrganizationMembers.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T15:28:05.112Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "OrganizationToProjectTransactionHistory.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\OrganizationToProjectTransactionHistory.cs",
+              "RelativeDocumentMoniker": "OrganizationToProjectTransactionHistory.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\OrganizationToProjectTransactionHistory.cs",
+              "RelativeToolTip": "OrganizationToProjectTransactionHistory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T15:24:55.347Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserToProjectTransactionHistory.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\UserToProjectTransactionHistory.cs",
+              "RelativeDocumentMoniker": "UserToProjectTransactionHistory.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\UserToProjectTransactionHistory.cs",
+              "RelativeToolTip": "UserToProjectTransactionHistory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T15:24:24.751Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserToOrganizationTransactionHistory.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\UserToOrganizationTransactionHistory.cs",
+              "RelativeDocumentMoniker": "UserToOrganizationTransactionHistory.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\UserToOrganizationTransactionHistory.cs",
+              "RelativeToolTip": "UserToOrganizationTransactionHistory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T15:23:44.175Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Project.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\Project.cs",
+              "RelativeDocumentMoniker": "Project.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\Project.cs",
+              "RelativeToolTip": "Project.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T15:19:09.283Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Organization.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\Organization.cs",
+              "RelativeDocumentMoniker": "Organization.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\Organization.cs",
+              "RelativeToolTip": "Organization.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T15:18:32.497Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\User.cs",
+              "RelativeDocumentMoniker": "User.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\User.cs",
+              "RelativeToolTip": "User.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAxwBIAAABkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-15T14:37:54.008Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
