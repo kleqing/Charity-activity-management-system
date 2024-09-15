@@ -1,0 +1,94 @@
+ .forget-password {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 10;
+ }
+
+
+ .login-page {
+   background-color: rgba(78, 70, 229, 0.771);
+   height: 100%;
+   padding: 3% 30%;
+   display: flex;
+   justify-content: center;
+ }
+
+ .login-container {
+   height: 100%;
+   background-color: white;
+   border-radius: 15px;
+   display: block;
+ }
+
+ .input-block {
+   padding-left: 10px;
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: 5rem;
+   font-weight: 600;
+ }
+
+ .remmember-me {
+   padding-top: 2%;
+   font-weight: 500;
+   font-size: 0.875rem;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+   display: flex;
+   align-items: center;
+   margin-bottom: 15px;
+
+ }
+
+ .text-or {
+   margin: 2%;
+   padding: 0;
+ }
+
+ .custom-hr {
+   border: 0;
+   height: 1px;
+   background: #a2a0a0;
+   /* Màu nền của đường ngang */
+   margin: 15px 20%;
+   /* Khoảng cách trên và dưới đường ngang */
+ }
+
+ .google-icon {
+   margin-right: 10px;
+ }
+
+ .google-icon svg {
+   width: 25px;
+   height: 25px;
+ }
+
+ .hidden {
+   display: none;
+ }
+
+ .overlay {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: rgba(0, 0, 0, 0.6);
+   backdrop-filter: blur(3px);
+   z-index: 5;
+ }
+
+ input[type='checkbox'] {
+   width: 15px;
+   height: 15px;
+   margin-right: 5px;
+   border: 2px;
+   cursor: pointer;
+ }
+
+ @media screen and (max-width: 786px) {
+
+   .login-page {
+     padding: 5% 20%;
+   }
+ }
