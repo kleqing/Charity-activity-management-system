@@ -785,13 +785,28 @@
 											"top": 1139,
 											"width": 174,
 											"height": 13
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAGR+ZAJG9+6ZmY=",
+											"_parent": {
+												"$ref": "AAAAAAGR6uCWM3VV4jM="
+											},
+											"model": {
+												"$ref": "AAAAAAGR+ZAJEt+3Wv8="
+											},
+											"font": "Arial;13;0",
+											"left": 909,
+											"top": 1154,
+											"width": 174,
+											"height": 13
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 904,
 									"top": 1119,
 									"width": 184,
-									"height": 38
+									"height": 53
 								}
 							],
 							"font": "Arial;13;0",
@@ -824,7 +839,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 1010,
+									"left": 1006,
 									"top": 1041,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -841,7 +856,7 @@
 										"$ref": "AAAAAAGR6uUa+3Wc0kQ="
 									},
 									"font": "Arial;13;0",
-									"left": 1011,
+									"left": 1007,
 									"top": 1019,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -858,7 +873,7 @@
 										"$ref": "AAAAAAGR6uUa+3Wc0kQ="
 									},
 									"font": "Arial;13;0",
-									"left": 1011,
+									"left": 1007,
 									"top": 1064,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -876,7 +891,7 @@
 								"$ref": "AAAAAAGR6rIHo3NnsTk="
 							},
 							"lineStyle": 2,
-							"points": "996:1000;996:1096",
+							"points": "992:1000;992:1096",
 							"nameLabel": {
 								"$ref": "AAAAAAGR6uUa+3WdR1c="
 							},
@@ -3585,6 +3600,35 @@
 						"$ref": "AAAAAAGR6qZ6onKaBWg="
 					},
 					"name": "ProjectMember",
+					"ownedElements": [
+						{
+							"_type": "ERDRelationship",
+							"_id": "AAAAAAGR+ZBEq9+++0w=",
+							"_parent": {
+								"$ref": "AAAAAAGR6uCWM3VR8zg="
+							},
+							"end1": {
+								"_type": "ERDRelationshipEnd",
+								"_id": "AAAAAAGR+ZBEq9+/Eas=",
+								"_parent": {
+									"$ref": "AAAAAAGR+ZBEq9+++0w="
+								},
+								"reference": {
+									"$ref": "AAAAAAGR6uCWM3VR8zg="
+								}
+							},
+							"end2": {
+								"_type": "ERDRelationshipEnd",
+								"_id": "AAAAAAGR+ZBEq9/Aorw=",
+								"_parent": {
+									"$ref": "AAAAAAGR+ZBEq9+++0w="
+								},
+								"reference": {
+									"$ref": "AAAAAAGR6qaIq3KfU5w="
+								}
+							}
+						}
+					],
 					"columns": [
 						{
 							"_type": "ERDColumn",
@@ -3604,6 +3648,15 @@
 							},
 							"name": "ProjectID",
 							"type": "INTEGER",
+							"length": 0
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAGR+ZAJEt+3Wv8=",
+							"_parent": {
+								"$ref": "AAAAAAGR6uCWM3VR8zg="
+							},
+							"name": "UserID1",
 							"length": 0
 						}
 					]

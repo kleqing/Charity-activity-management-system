@@ -15,7 +15,7 @@ namespace Charity_Management_System
         public virtual DbSet<Organization> Organizations { get; set; }
         public virtual DbSet<OrganizationMember> OrganizationMember { get; set; }
         public virtual DbSet<OrganizationResource> OrganizationResources { get; set; }
-        public virtual DbSet<OrganizationToProjectTransactionHistory> OrganizationToProjectTransactionHistories { get; set; }
+        public virtual DbSet<OrganizationToProjectTransactionHistory> OrganizationToProjectTransactionHistory { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserToOrganizationTransactionHistory> UserToOrganizationTransactionHistories { get; set; }
@@ -32,6 +32,8 @@ namespace Charity_Management_System
             IConfigurationRoot configuration = builder.Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DBConnect"));
             // run 'dotnet ef migrations add "Initial" in terminal to create a migration
+            // remove migration: dotnet ef migrations remove
+            // Add to sql server: dotnet ef database update
             //if (!optionsBuilder.IsConfigured)
             //{
             //    #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -111,23 +113,11 @@ namespace Charity_Management_System
                 .WithOne(p => p.projectMember)
                 .HasForeignKey<ProjectMember>(pm => pm.projectID);
 
-            // User - ProjectMember
-            modelBuilder.Entity<ProjectMember>()
-                .HasOne(pm => pm.user)
-                .WithOne(u => u.projectMember)
-                .HasForeignKey<ProjectMember>(pm => pm.userID);
-
             // Project - ProjectResource
             modelBuilder.Entity<ProjectResource>()
                 .HasOne(pr => pr.project)
                 .WithOne(p => p.projectResource)
                 .HasForeignKey<ProjectResource>(pr => pr.projectID);
-
-            // UserToProjectTransactionHistory - User
-            modelBuilder.Entity<UserToProjectTransactionHistory>()
-                .HasOne(utpth => utpth.user)
-                .WithOne(u => u.userToProjectTransactionHistory)
-                .HasForeignKey<UserToProjectTransactionHistory>(utpth => utpth.userID);
 
             // UserToOrganizationTransactionHistory - User
             modelBuilder.Entity<UserToOrganizationTransactionHistory>()
@@ -170,6 +160,30 @@ namespace Charity_Management_System
                 .HasOne(utoth => utoth.organization)
                 .WithOne(o => o.userToOrganizationTransactionHistory)
                 .HasForeignKey<UserToOrganizationTransactionHistory>(utoth => utoth.organizationID);
+
+            // -----------------
+            // OnDelete()
+
+            // OrganizationToProjectTransactionHistory - Project
+            modelBuilder.Entity<OrganizationToProjectTransactionHistory>()
+                .HasOne(otpth => otpth.project)
+                .WithOne(o => o.organizationToProjectTransactionHistory)
+                .HasForeignKey<Project>(otpth => otpth.projectID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // UserToProjectTransactionHistory - User
+            modelBuilder.Entity<UserToProjectTransactionHistory>()
+                .HasOne(utpth => utpth.user)
+                .WithOne(o => o.userToProjectTransactionHistory)
+                .HasForeignKey<User>(utpth => utpth.userID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // User - ProjectMember
+            modelBuilder.Entity<ProjectMember>()
+                .HasOne(pm => pm.user)
+                .WithOne(o => o.projectMember)
+                .HasForeignKey<User>(pm => pm.userID)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

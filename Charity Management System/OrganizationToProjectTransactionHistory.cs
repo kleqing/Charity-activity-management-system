@@ -13,8 +13,6 @@ namespace Charity_Management_System
         public int projectID { get; set; }
         public string message { get; set; }
         public DateTime time { get; set; }
-
-        // Navigation Properties
         public virtual Organization organization { get; set; }
         public virtual Project project { get; set; }
     }
