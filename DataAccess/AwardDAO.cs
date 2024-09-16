@@ -10,12 +10,12 @@ namespace DataAccess
 {
     public class AwardDAO : SingleOnBase<AwardDAO>
     {
-        // Xem tat ca award
+        // Get all awards
         public async Task<IEnumerable<Award>> GetAllAwards()
         {
              return await _context.Awards.ToListAsync();
         }
-        // Tim kiem award theo id
+        // Find award by id
         public async Task<Award> GetAwardById(int id)
         {
             _context = new DBContext();
@@ -26,7 +26,7 @@ namespace DataAccess
             }
             return awardID;
         }
-        // Them award
+        // Add award
         public async Task AddAward(Award award)
         {
             _context.Awards.Add(award);
@@ -52,16 +52,6 @@ namespace DataAccess
                 _context.Awards.Remove(award);
                 await _context.SaveChangesAsync();
             }
-        }
-        // Check award id
-        public async Task<Award> CheckAwardID(int id)
-        {
-            var award = await _context.Awards.FirstOrDefaultAsync(a => a.awardID.Equals(id));
-            if (award == null)
-            {
-                return null;
-            }
-            return award;
         }
     }
 }
