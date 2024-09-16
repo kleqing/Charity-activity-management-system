@@ -12,6 +12,7 @@
         public int roleID { get; set; }
         public int? awardID { get; set; }
         public string avatar { get; set; }
+        public string description { get; set; }
         public virtual Award award { get; set; }
         public virtual ProjectMember projectMember { get; set; }
         public virtual OrganizationMember organizationMember { get; set; }
