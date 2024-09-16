@@ -1147,7 +1147,7 @@
 									"top": 837,
 									"width": 224,
 									"height": 13,
-									"text": "OrganizationMenber"
+									"text": "OrganizationMember"
 								},
 								{
 									"_type": "ERDColumnCompartmentView",
@@ -1675,12 +1675,12 @@
 										},
 										{
 											"_type": "ERDColumnView",
-											"_id": "AAAAAAGR6vzkTng6luA=",
+											"_id": "AAAAAAGR6v17oXhBeYQ=",
 											"_parent": {
 												"$ref": "AAAAAAGR6vvJAnglvBQ="
 											},
 											"model": {
-												"$ref": "AAAAAAGR6vzkRng3f5Q="
+												"$ref": "AAAAAAGR6v17nHg+bM8="
 											},
 											"font": "Arial;13;0",
 											"left": 1637,
@@ -1690,12 +1690,12 @@
 										},
 										{
 											"_type": "ERDColumnView",
-											"_id": "AAAAAAGR6v17oXhBeYQ=",
+											"_id": "AAAAAAGR6vzkTng6luA=",
 											"_parent": {
 												"$ref": "AAAAAAGR6vvJAnglvBQ="
 											},
 											"model": {
-												"$ref": "AAAAAAGR6v17nHg+bM8="
+												"$ref": "AAAAAAGR6vzkRng3f5Q="
 											},
 											"font": "Arial;13;0",
 											"left": 1637,
@@ -3807,7 +3807,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGR6qZ6onKaBWg="
 					},
-					"name": "OrganizationMenber",
+					"name": "OrganizationMember",
 					"columns": [
 						{
 							"_type": "ERDColumn",
@@ -4086,16 +4086,6 @@
 						},
 						{
 							"_type": "ERDColumn",
-							"_id": "AAAAAAGR6vzkRng3f5Q=",
-							"_parent": {
-								"$ref": "AAAAAAGR6vvJAXghVxQ="
-							},
-							"name": "ResourceName",
-							"type": "VARCHAR",
-							"length": "100"
-						},
-						{
-							"_type": "ERDColumn",
 							"_id": "AAAAAAGR6v17nHg+bM8=",
 							"_parent": {
 								"$ref": "AAAAAAGR6vvJAXghVxQ="
@@ -4106,6 +4096,16 @@
 							"referenceTo": {
 								"$ref": "AAAAAAGR6uW1CHZAupQ="
 							}
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAGR6vzkRng3f5Q=",
+							"_parent": {
+								"$ref": "AAAAAAGR6vvJAXghVxQ="
+							},
+							"name": "ResourceName",
+							"type": "VARCHAR",
+							"length": "100"
 						},
 						{
 							"_type": "ERDColumn",

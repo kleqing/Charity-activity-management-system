@@ -18,6 +18,7 @@ namespace Charity_Management_System
         public virtual Project project { get; set; }
         public virtual OrganizationResource organizationResource { get; set; }
         public virtual OrganizationMember organizationMember { get; set; }
+        public virtual OrganizationToProjectTransactionHistory organizationToProjectTransactionHistory { get; set; }
         public virtual UserToOrganizationTransactionHistory userToOrganizationTransactionHistory { get; set; }
     }
 }

@@ -14,6 +14,7 @@
         public string avatar { get; set; }
         public virtual Award award { get; set; }
         public virtual ProjectMember projectMember { get; set; }
+        public virtual OrganizationMember organizationMember { get; set; }
         public virtual Request request { get; set; }
         public virtual UserToOrganizationTransactionHistory userToOrganizationTransactionHistory { get; set; }
         public virtual UserToProjectTransactionHistory userToProjectTransactionHistory { get; set; }
