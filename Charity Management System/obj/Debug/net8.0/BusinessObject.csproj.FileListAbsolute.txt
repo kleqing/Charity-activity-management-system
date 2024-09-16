@@ -1,0 +1,16 @@
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\bin\Debug\net8.0\appsettings.json
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\bin\Debug\net8.0\BusinessObject.deps.json
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\bin\Debug\net8.0\BusinessObject.runtimeconfig.json
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\bin\Debug\net8.0\BusinessObject.dll
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\bin\Debug\net8.0\BusinessObject.pdb
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.csproj.AssemblyReference.cache
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.AssemblyInfoInputs.cache
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.AssemblyInfo.cs
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.csproj.CoreCompileInputs.cache
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.sourcelink.json
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.dll
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\refint\BusinessObject.dll
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.pdb
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\BusinessObject.genruntimeconfig.cache
+C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\Charity Management System\obj\Debug\net8.0\ref\BusinessObject.dll

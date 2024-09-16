@@ -4415,9 +4415,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\BussinessObject.csproj",
-      "projectName": "BussinessObject",
-      "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\BussinessObject.csproj",
+      "projectUniqueName": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\BusinessObject.csproj",
+      "projectName": "BusinessObject",
+      "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\BusinessObject.csproj",
       "packagesPath": "C:\\Users\\hotaru\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\obj\\",
       "projectStyle": "PackageReference",
