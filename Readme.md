@@ -2,7 +2,9 @@
 
 1. [How to add tailwind to ASP NET](https://github.com/angeldev96/tailwind-aspdotnet)
 2. Then go to [daisy UI](https://daisyui.com/docs/install/), install using NPM as normal and follow the tutorial there
-3. Note: If you style using tailwind, you must RESTART the web server to see changes
+3. Note: If you style using tailwind WHILE the server is running, you must RESTART (not hot reload) the web server to see changes
+
+- Important note: The final page: `ForgetPassword_Final.html` also includes some js, make sure to copy them as well instead of just the html
 
 # If you want to watch this from live server
 
