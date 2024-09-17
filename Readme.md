@@ -8,6 +8,8 @@
 
 ## 1. Install tailwind and daisy UI using npm as normal
 
+## 2. Run npm install again
+
 ## 2. Enter this line of code first before go live
 
 `npx tailwindcss -i ./styles/input.css -o ./styles/output.css --watch`

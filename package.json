@@ -2,5 +2,8 @@
   "devDependencies": {
     "daisyui": "^4.12.10",
     "tailwindcss": "^3.4.11"
+  },
+  "dependencies": {
+    "toastify-js": "^1.12.0"
   }
 }
