@@ -3,6 +3,19 @@
   "WorkspaceRootPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{50F5A383-37E1-44A5-BFB2-F627F72F2442}|..\\DataAccess\\DataAccess.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dataaccess\\userdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{50F5A383-37E1-44A5-BFB2-F627F72F2442}|..\\DataAccess\\DataAccess.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dataaccess\\singleonbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BusinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BusinessObject.csproj|solutionrelative:dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{50F5A383-37E1-44A5-BFB2-F627F72F2442}|..\\DataAccess\\DataAccess.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dataaccess\\awarddao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BusinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\charity management system\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BCFFDC06-2F86-4661-B9DF-DCE58BFC34B2}|BusinessObject.csproj|solutionrelative:user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,12 +24,6 @@
     },
     {
       "AbsoluteMoniker": "D:0:0:{76B989D5-DBD5-4C3D-855D-ECA49251E775}|..\\Repository\\Repository.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{50F5A383-37E1-44A5-BFB2-F627F72F2442}|..\\DataAccess\\DataAccess.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dataaccess\\userdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{50F5A383-37E1-44A5-BFB2-F627F72F2442}|..\\DataAccess\\DataAccess.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dataaccess\\awarddao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,11 +33,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
+              "Title": "SingleOnBase.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\SingleOnBase.cs",
+              "RelativeDocumentMoniker": "..\\DataAccess\\SingleOnBase.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\SingleOnBase.cs",
+              "RelativeToolTip": "..\\DataAccess\\SingleOnBase.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAwCEAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-17T07:17:59.249Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\DBContext.cs",
+              "RelativeDocumentMoniker": "DBContext.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\DBContext.cs",
+              "RelativeToolTip": "DBContext.cs",
+              "ViewState": "AgIAAE8AAAAAAAAAAAAQwGAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-17T06:47:13.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\User.cs",
               "RelativeDocumentMoniker": "User.cs",
@@ -43,7 +76,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "UserRepository.cs",
               "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\UserRepository.cs",
               "RelativeDocumentMoniker": "..\\Repository\\UserRepository.cs",
@@ -55,7 +88,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "IUserRepository.cs",
               "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\IUserRepository.cs",
               "RelativeDocumentMoniker": "..\\Repository\\IUserRepository.cs",
@@ -63,32 +96,33 @@
               "RelativeToolTip": "..\\Repository\\IUserRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-16T14:33:13.483Z",
+              "WhenOpened": "2024-09-16T14:33:13.483Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserDAO.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\UserDAO.cs",
+              "RelativeDocumentMoniker": "..\\DataAccess\\UserDAO.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\UserDAO.cs*",
+              "RelativeToolTip": "..\\DataAccess\\UserDAO.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-16T14:31:24.424Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "UserDAO.cs",
-              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\UserDAO.cs",
-              "RelativeDocumentMoniker": "..\\DataAccess\\UserDAO.cs",
-              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\UserDAO.cs",
-              "RelativeToolTip": "..\\DataAccess\\UserDAO.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAADYAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-16T14:31:24.424Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "AwardDAO.cs",
               "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\AwardDAO.cs",
               "RelativeDocumentMoniker": "..\\DataAccess\\AwardDAO.cs",
               "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\AwardDAO.cs",
               "RelativeToolTip": "..\\DataAccess\\AwardDAO.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAYwDYAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-16T13:00:49.376Z"
+              "WhenOpened": "2024-09-16T13:00:49.376Z",
+              "EditorCaption": ""
             }
           ]
         }
