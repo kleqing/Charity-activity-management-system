@@ -34,7 +34,12 @@ namespace Charity_Management_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("userID")
+                        .HasColumnType("int");
+
                     b.HasKey("awardID");
+
+                    b.HasIndex("userID");
 
                     b.ToTable("Awards");
                 });
@@ -83,11 +88,7 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("organizationID", "userID");
 
-                    b.HasIndex("organizationID")
-                        .IsUnique();
-
-                    b.HasIndex("userID")
-                        .IsUnique();
+                    b.HasIndex("userID");
 
                     b.ToTable("OrganizationMember");
                 });
@@ -120,8 +121,7 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("resourceID");
 
-                    b.HasIndex("organizationID")
-                        .IsUnique();
+                    b.HasIndex("organizationID");
 
                     b.ToTable("OrganizationResources");
                 });
@@ -149,11 +149,9 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("transactionID");
 
-                    b.HasIndex("organizationID")
-                        .IsUnique();
+                    b.HasIndex("organizationID");
 
-                    b.HasIndex("projectID")
-                        .IsUnique();
+                    b.HasIndex("projectID");
 
                     b.ToTable("OrganizationToProjectTransactionHistory");
                 });
@@ -195,11 +193,7 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("projectID");
 
-                    b.HasIndex("organizationID")
-                        .IsUnique();
-
-                    b.HasIndex("requestID")
-                        .IsUnique();
+                    b.HasIndex("organizationID");
 
                     b.ToTable("Projects");
                 });
@@ -214,11 +208,7 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("projectID", "userID");
 
-                    b.HasIndex("projectID")
-                        .IsUnique();
-
-                    b.HasIndex("userID")
-                        .IsUnique();
+                    b.HasIndex("userID");
 
                     b.ToTable("ProjectMembers");
                 });
@@ -250,8 +240,7 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("resourceID");
 
-                    b.HasIndex("projectID")
-                        .IsUnique();
+                    b.HasIndex("projectID");
 
                     b.ToTable("ProjectResources");
                 });
@@ -259,10 +248,7 @@ namespace Charity_Management_System.Migrations
             modelBuilder.Entity("Charity_Management_System.Request", b =>
                 {
                     b.Property<int>("requestID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("requestID"));
 
                     b.Property<string>("attachment")
                         .IsRequired()
@@ -290,8 +276,7 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("requestID");
 
-                    b.HasIndex("userID")
-                        .IsUnique();
+                    b.HasIndex("userID");
 
                     b.ToTable("Requests");
                 });
@@ -318,6 +303,10 @@ namespace Charity_Management_System.Migrations
                     b.Property<DateTime>("dateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -338,10 +327,6 @@ namespace Charity_Management_System.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("userID");
-
-                    b.HasIndex("awardID")
-                        .IsUnique()
-                        .HasFilter("[awardID] IS NOT NULL");
 
                     b.ToTable("Users");
                 });
@@ -369,11 +354,9 @@ namespace Charity_Management_System.Migrations
 
                     b.HasKey("transactionID");
 
-                    b.HasIndex("organizationID")
-                        .IsUnique();
+                    b.HasIndex("organizationID");
 
-                    b.HasIndex("userID")
-                        .IsUnique();
+                    b.HasIndex("userID");
 
                     b.ToTable("UserToOrganizationTransactionHistories");
                 });
@@ -403,23 +386,33 @@ namespace Charity_Management_System.Migrations
 
                     b.HasIndex("projectID");
 
-                    b.HasIndex("userID")
-                        .IsUnique();
+                    b.HasIndex("userID");
 
                     b.ToTable("UserToProjectTransactionHistories");
+                });
+
+            modelBuilder.Entity("Charity_Management_System.Award", b =>
+                {
+                    b.HasOne("Charity_Management_System.User", "user")
+                        .WithMany("award")
+                        .HasForeignKey("userID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Charity_Management_System.OrganizationMember", b =>
                 {
                     b.HasOne("Charity_Management_System.Organization", "organization")
-                        .WithOne("organizationMember")
-                        .HasForeignKey("Charity_Management_System.OrganizationMember", "organizationID")
+                        .WithMany("organizationMember")
+                        .HasForeignKey("organizationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Charity_Management_System.User", "user")
-                        .WithOne("organizationMember")
-                        .HasForeignKey("Charity_Management_System.OrganizationMember", "userID")
+                        .WithMany("organizationMember")
+                        .HasForeignKey("userID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -431,8 +424,8 @@ namespace Charity_Management_System.Migrations
             modelBuilder.Entity("Charity_Management_System.OrganizationResource", b =>
                 {
                     b.HasOne("Charity_Management_System.Organization", "organization")
-                        .WithOne("organizationResource")
-                        .HasForeignKey("Charity_Management_System.OrganizationResource", "organizationID")
+                        .WithMany("organizationResource")
+                        .HasForeignKey("organizationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -442,14 +435,14 @@ namespace Charity_Management_System.Migrations
             modelBuilder.Entity("Charity_Management_System.OrganizationToProjectTransactionHistory", b =>
                 {
                     b.HasOne("Charity_Management_System.Organization", "organization")
-                        .WithOne("organizationToProjectTransactionHistory")
-                        .HasForeignKey("Charity_Management_System.OrganizationToProjectTransactionHistory", "organizationID")
+                        .WithMany("organizationToProjectTransactionHistory")
+                        .HasForeignKey("organizationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Charity_Management_System.Project", "project")
-                        .WithOne("organizationToProjectTransactionHistory")
-                        .HasForeignKey("Charity_Management_System.OrganizationToProjectTransactionHistory", "projectID")
+                        .WithMany("organizationToProjectTransactionHistory")
+                        .HasForeignKey("projectID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -461,34 +454,26 @@ namespace Charity_Management_System.Migrations
             modelBuilder.Entity("Charity_Management_System.Project", b =>
                 {
                     b.HasOne("Charity_Management_System.Organization", "organization")
-                        .WithOne("project")
-                        .HasForeignKey("Charity_Management_System.Project", "organizationID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Charity_Management_System.Request", "request")
-                        .WithOne("project")
-                        .HasForeignKey("Charity_Management_System.Project", "requestID")
+                        .WithMany("project")
+                        .HasForeignKey("organizationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("organization");
-
-                    b.Navigation("request");
                 });
 
             modelBuilder.Entity("Charity_Management_System.ProjectMember", b =>
                 {
                     b.HasOne("Charity_Management_System.Project", "project")
-                        .WithOne("projectMember")
-                        .HasForeignKey("Charity_Management_System.ProjectMember", "projectID")
+                        .WithMany("projectMember")
+                        .HasForeignKey("projectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Charity_Management_System.User", "user")
-                        .WithOne("projectMember")
-                        .HasForeignKey("Charity_Management_System.ProjectMember", "userID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany("projectMember")
+                        .HasForeignKey("userID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("project");
@@ -499,8 +484,8 @@ namespace Charity_Management_System.Migrations
             modelBuilder.Entity("Charity_Management_System.ProjectResource", b =>
                 {
                     b.HasOne("Charity_Management_System.Project", "project")
-                        .WithOne("projectResource")
-                        .HasForeignKey("Charity_Management_System.ProjectResource", "projectID")
+                        .WithMany("projectResource")
+                        .HasForeignKey("projectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -509,35 +494,34 @@ namespace Charity_Management_System.Migrations
 
             modelBuilder.Entity("Charity_Management_System.Request", b =>
                 {
-                    b.HasOne("Charity_Management_System.User", "user")
-                        .WithOne("request")
-                        .HasForeignKey("Charity_Management_System.Request", "userID")
+                    b.HasOne("Charity_Management_System.Project", "project")
+                        .WithMany("request")
+                        .HasForeignKey("requestID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Charity_Management_System.User", "user")
+                        .WithMany("request")
+                        .HasForeignKey("userID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("project");
+
                     b.Navigation("user");
-                });
-
-            modelBuilder.Entity("Charity_Management_System.User", b =>
-                {
-                    b.HasOne("Charity_Management_System.Award", "award")
-                        .WithOne("user")
-                        .HasForeignKey("Charity_Management_System.User", "awardID");
-
-                    b.Navigation("award");
                 });
 
             modelBuilder.Entity("Charity_Management_System.UserToOrganizationTransactionHistory", b =>
                 {
                     b.HasOne("Charity_Management_System.Organization", "organization")
-                        .WithOne("userToOrganizationTransactionHistory")
-                        .HasForeignKey("Charity_Management_System.UserToOrganizationTransactionHistory", "organizationID")
+                        .WithMany("userToOrganizationTransactionHistory")
+                        .HasForeignKey("organizationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Charity_Management_System.User", "user")
-                        .WithOne("userToOrganizationTransactionHistory")
-                        .HasForeignKey("Charity_Management_System.UserToOrganizationTransactionHistory", "userID")
+                        .WithMany("userToOrganizationTransactionHistory")
+                        .HasForeignKey("userID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -549,15 +533,15 @@ namespace Charity_Management_System.Migrations
             modelBuilder.Entity("Charity_Management_System.UserToProjectTransactionHistory", b =>
                 {
                     b.HasOne("Charity_Management_System.Project", "project")
-                        .WithMany()
+                        .WithMany("userToProjectTransactionHistory")
                         .HasForeignKey("projectID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Charity_Management_System.User", "user")
-                        .WithOne("userToProjectTransactionHistory")
-                        .HasForeignKey("Charity_Management_System.UserToProjectTransactionHistory", "userID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany("userToProjectTransactionHistory")
+                        .HasForeignKey("userID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("project");
@@ -565,63 +549,45 @@ namespace Charity_Management_System.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("Charity_Management_System.Award", b =>
-                {
-                    b.Navigation("user")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Charity_Management_System.Organization", b =>
                 {
-                    b.Navigation("organizationMember")
-                        .IsRequired();
+                    b.Navigation("organizationMember");
 
-                    b.Navigation("organizationResource")
-                        .IsRequired();
+                    b.Navigation("organizationResource");
 
-                    b.Navigation("organizationToProjectTransactionHistory")
-                        .IsRequired();
+                    b.Navigation("organizationToProjectTransactionHistory");
 
-                    b.Navigation("project")
-                        .IsRequired();
+                    b.Navigation("project");
 
-                    b.Navigation("userToOrganizationTransactionHistory")
-                        .IsRequired();
+                    b.Navigation("userToOrganizationTransactionHistory");
                 });
 
             modelBuilder.Entity("Charity_Management_System.Project", b =>
                 {
                     b.Navigation("organizationToProjectTransactionHistory");
 
-                    b.Navigation("projectMember")
-                        .IsRequired();
+                    b.Navigation("projectMember");
 
-                    b.Navigation("projectResource")
-                        .IsRequired();
-                });
+                    b.Navigation("projectResource");
 
-            modelBuilder.Entity("Charity_Management_System.Request", b =>
-                {
-                    b.Navigation("project")
-                        .IsRequired();
+                    b.Navigation("request");
+
+                    b.Navigation("userToProjectTransactionHistory");
                 });
 
             modelBuilder.Entity("Charity_Management_System.User", b =>
                 {
-                    b.Navigation("organizationMember")
-                        .IsRequired();
+                    b.Navigation("award");
 
-                    b.Navigation("projectMember")
-                        .IsRequired();
+                    b.Navigation("organizationMember");
 
-                    b.Navigation("request")
-                        .IsRequired();
+                    b.Navigation("projectMember");
 
-                    b.Navigation("userToOrganizationTransactionHistory")
-                        .IsRequired();
+                    b.Navigation("request");
 
-                    b.Navigation("userToProjectTransactionHistory")
-                        .IsRequired();
+                    b.Navigation("userToOrganizationTransactionHistory");
+
+                    b.Navigation("userToProjectTransactionHistory");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,10 +15,10 @@ namespace Charity_Management_System
         public DateTime startTime { get; set; }
         public DateTime? shutdownDay { get; set; }  // Nullable
         public int ceoID { get; set; }
-        public virtual Project project { get; set; }
-        public virtual OrganizationResource organizationResource { get; set; }
-        public virtual OrganizationMember organizationMember { get; set; }
-        public virtual OrganizationToProjectTransactionHistory organizationToProjectTransactionHistory { get; set; }
-        public virtual UserToOrganizationTransactionHistory userToOrganizationTransactionHistory { get; set; }
+        public virtual ICollection<Project> project { get; set; }
+        public virtual ICollection<OrganizationResource> organizationResource { get; set; }
+        public virtual ICollection<OrganizationMember> organizationMember { get; set; }
+        public virtual ICollection<OrganizationToProjectTransactionHistory> organizationToProjectTransactionHistory { get; set; }
+        public virtual ICollection<UserToOrganizationTransactionHistory> userToOrganizationTransactionHistory { get; set; }
     }
 }

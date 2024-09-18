@@ -17,10 +17,11 @@ namespace Charity_Management_System
         public int leaderID { get; set; }
         public int organizationID { get; set; }
         public int requestID { get; set; }
-        public virtual ProjectMember projectMember { get; set; }
-        public virtual ProjectResource projectResource { get; set; }
-        public virtual Request request { get; set; }
+        public virtual ICollection<ProjectMember> projectMember { get; set; }
+        public virtual ICollection<ProjectResource> projectResource { get; set; }
+        public virtual ICollection<Request> request { get; set; }
         public virtual Organization organization { get; set; }
-        public virtual OrganizationToProjectTransactionHistory? organizationToProjectTransactionHistory { get; set; }
-    }
+        public virtual ICollection<OrganizationToProjectTransactionHistory>? organizationToProjectTransactionHistory { get; set; }
+        public virtual ICollection<UserToProjectTransactionHistory>? userToProjectTransactionHistory { get; set; }
+	}
 }
