@@ -8,7 +8,7 @@
     <script src="/scripts/jquery.js"></script>
     <!-- jQuery -->
   </head>
-  <body>
+  <body class="h-screen flex flex-col">
     <!-- Navbar -->
     <div class="navbar bg-slate-300-400 shadow-md">
       <div class="flex-1">
@@ -68,7 +68,7 @@
     <!-- End navbar -->
 
     <!-- Edit profile -->
-    <div class="flex md:p-6 pb-0 h-full">
+    <div class="flex md:p-6 pb-0 flex-1">
       <!-- Sidebar -->
       <div class="p-2 pt-12 w-1/5">
         <ul class="flex flex-col gap-2">
@@ -78,7 +78,6 @@
         </ul>
       </div>
       <!-- End sidebar -->
-
       <!-- Main content -->
       <div class="divider divider-horizontal"></div>
       <form id="user-information" class="flex flex-col gap-4 justify-center items-center flex-1">
@@ -97,7 +96,6 @@
                 name="name"
               />
             </label>
-
             <label class="form-control w-full">
               <div class="label">
                 <span class="label-text">Email</span>
@@ -110,7 +108,6 @@
                 name="email"
               />
             </label>
-
             <label class="form-control w-full">
               <div class="label">
                 <span class="label-text">Phone number</span>
@@ -123,7 +120,6 @@
                 name="phone"
               />
             </label>
-
             <label class="form-control w-full">
               <div class="label">
                 <span class="label-text">Home address</span>
@@ -149,7 +145,6 @@
               />
             </label>
           </div>
-
           <div class="flex flex-col gap-2 font-bold">
             <h3>Profile picture</h3>
             <label
@@ -172,7 +167,6 @@
             </label>
           </div>
         </div>
-
         <div id="buttons" class="flex gap-2">
           <!-- This button should send to the update controller, then redirect to this route again -->
           <button class="btn btn-primary rounded-btn min-w-40">Save changes</button>
@@ -182,6 +176,7 @@
       </form>
       <!-- End content -->
     </div>
+    <!-- End edit profile -->
 
     <!-- jquery -->
     <script>
