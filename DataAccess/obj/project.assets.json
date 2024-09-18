@@ -3122,8 +3122,8 @@
     },
     "BusinessObject/1.0.0": {
       "type": "project",
-      "path": "../Charity Management System/BusinessObject.csproj",
-      "msbuildProject": "../Charity Management System/BusinessObject.csproj"
+      "path": "../BusinessObject/BusinessObject.csproj",
+      "msbuildProject": "../BusinessObject/BusinessObject.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -3159,8 +3159,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\BusinessObject.csproj": {
-              "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Charity Management System\\BusinessObject.csproj"
+            "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
+              "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
             }
           }
         }

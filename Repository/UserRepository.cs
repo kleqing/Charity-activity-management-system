@@ -1,4 +1,4 @@
-﻿using Charity_Management_System;
+﻿using BussinessObject;
 using DataAccess;
 using System;
 using System.Collections.Generic;

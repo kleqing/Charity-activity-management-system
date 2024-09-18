@@ -1,4 +1,3 @@
-C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\appsettings.json
 C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\DataAccess.deps.json
 C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\DataAccess.dll
 C:\Users\hotaru\OneDrive - The Creator\Documents\Github\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\DataAccess.pdb
