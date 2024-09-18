@@ -2755,6 +2755,33 @@
         "runtime": {
           "bin/placeholder/BusinessObject.dll": {}
         }
+      },
+      "DataAccess/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "BusinessObject": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DataAccess.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DataAccess.dll": {}
+        }
+      },
+      "Repository/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "BusinessObject": "1.0.0",
+          "DataAccess": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Repository.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Repository.dll": {}
+        }
       }
     }
   },
@@ -7677,6 +7704,16 @@
       "type": "project",
       "path": "../BusinessObject/BusinessObject.csproj",
       "msbuildProject": "../BusinessObject/BusinessObject.csproj"
+    },
+    "DataAccess/1.0.0": {
+      "type": "project",
+      "path": "../DataAccess/DataAccess.csproj",
+      "msbuildProject": "../DataAccess/DataAccess.csproj"
+    },
+    "Repository/1.0.0": {
+      "type": "project",
+      "path": "../Repository/Repository.csproj",
+      "msbuildProject": "../Repository/Repository.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -7686,7 +7723,8 @@
       "Microsoft.EntityFrameworkCore.Design >= 8.0.8",
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.8",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.8",
-      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 8.0.5"
+      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 8.0.5",
+      "Repository >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -7719,6 +7757,9 @@
           "projectReferences": {
             "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
               "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
+            },
+            "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj": {
+              "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj"
             }
           }
         }

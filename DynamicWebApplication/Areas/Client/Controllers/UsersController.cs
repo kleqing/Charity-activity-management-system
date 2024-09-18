@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BussinessObject;
-using Services;
 using Repository;
+
 namespace CharityActivityWebApplication.Areas.Client.Controllers
 {
     [Area("Client")]

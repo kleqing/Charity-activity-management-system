@@ -3,12 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\businessobject\\request.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\request.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\CharityActivityWebApplication\\Areas\\Client\\Controllers\\UsersController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CharityActivityWebApplication\\Areas\\Client\\Controllers\\UsersController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,27 +19,15 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Request.cs",
-              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\Request.cs",
-              "RelativeDocumentMoniker": "BusinessObject\\Request.cs",
-              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\Request.cs",
-              "RelativeToolTip": "BusinessObject\\Request.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-18T14:42:32.495Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "UsersController.cs",
-              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\CharityActivityWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
-              "RelativeDocumentMoniker": "CharityActivityWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
-              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\CharityActivityWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
-              "RelativeToolTip": "CharityActivityWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
-              "ViewState": "AgIAAE4AAAAAAAAAAAAmwGQAAAApAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-18T09:32:21.689Z"
+              "WhenOpened": "2024-09-18T16:57:11.17Z",
+              "EditorCaption": ""
             }
           ]
         }

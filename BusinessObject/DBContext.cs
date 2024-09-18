@@ -24,7 +24,7 @@ namespace BussinessObject
 		public virtual DbSet<ProjectResource> ProjectResources { get; set; }
 		public virtual DbSet<Request> Requests { get; set; }
 
-		// run 'dotnet ef migrations add "Initial" in terminal to create a migration
+		// run 'dotnet ef migrations add "Initial"' in terminal to create a migration
 		// remove migration: dotnet ef migrations remove
 		// Add to sql server: dotnet ef database update
 
