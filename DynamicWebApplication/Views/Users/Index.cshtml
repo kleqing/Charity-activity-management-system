@@ -1,0 +1,85 @@
+﻿@model IEnumerable<BussinessObject.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.userName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userDOB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userPhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userPassword)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userRoleID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userAvatarURL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.userDescription)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.userName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.userDOB)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.userEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.userPhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.userAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.userPassword)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.userRoleID)
+            </td>
+            <td>
+                <img src="~/upload/images/@item.userAvatarURL"/>
+            </td>                
+            <td>
+                @Html.DisplayFor(modelItem => item.userDescription)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.userID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.userID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.userID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<script src="~/controllers/ImageUpload.js"></script>

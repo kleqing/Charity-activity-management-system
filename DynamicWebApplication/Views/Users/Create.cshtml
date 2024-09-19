@@ -1,0 +1,79 @@
+﻿@model BussinessObject.User
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="userName" class="control-label"></label>
+                <input asp-for="userName" class="form-control" />
+                <span asp-validation-for="userName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userDOB" class="control-label"></label>
+                <input asp-for="userDOB" class="form-control" />
+                <span asp-validation-for="userDOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userEmail" class="control-label"></label>
+                <input asp-for="userEmail" class="form-control" />
+                <span asp-validation-for="userEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userPhoneNumber" class="control-label"></label>
+                <input asp-for="userPhoneNumber" class="form-control" />
+                <span asp-validation-for="userPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userAddress" class="control-label"></label>
+                <input asp-for="userAddress" class="form-control" />
+                <span asp-validation-for="userAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userPassword" class="control-label"></label>
+                <input asp-for="userPassword" class="form-control" />
+                <span asp-validation-for="userPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userRoleID" class="control-label"></label>
+                <input asp-for="userRoleID" class="form-control" />
+                <span asp-validation-for="userRoleID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="userAvatarURL" class="control-label"></label>
+                <div class="col-lg-10">
+                    <input asp-for="userAvatar" class="form-control" type="file" />
+                    <span asp-validation-for="userAvatar" class="text-danger"></span>
+                    <img id="preview" src="@Url.Content(ViewBag.Avatar==null?"":"~/upload/images/"+ViewBag.Avatar)" height="40" width="40" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="userDescription" class="control-label"></label>
+                <input asp-for="userDescription" class="form-control" />
+                <span asp-validation-for="userDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+<script src="
+https://cdn.jsdelivr.net/npm/ckeditor5-classic-free-full-feature@35.4.1/build/ckeditor.min.js
+                "></script>
+    <script src="~/admin/controllers/ckeditorUsers.js"></script>
+}
