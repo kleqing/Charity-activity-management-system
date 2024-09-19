@@ -1,0 +1,135 @@
+﻿@model IEnumerable<Dynamics.Models.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<link rel="stylesheet" href="~/css/original.css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet" href="~/client/css/output.css" />
+<!-- Navbar -->
+<div class="navbar bg-slate-300-400 shadow-md">
+    <div class="flex-1">
+        <a class="btn btn-ghost text-xl"><i>Dynamics</i></a>
+    </div>
+    <div class="flex gap-4">
+        <div tabindex="0"
+             role="button"
+             class="btn btn-ghost text-rose-600 hover:bg-rose-600 hover:text-white">
+            <div class="indicator">Request Help</div>
+        </div>
+        <div tabindex="0"
+             role="button"
+             class="btn btn-ghost text-emerald-600 hover:bg-emerald-600 hover:text-white">
+            <div class="indicator">Volunteer</div>
+        </div>
+
+        <div tabindex="0"
+             role="button"
+             class="btn btn-ghost text-orange-600 hover:bg-orange-600 hover:text-white">
+            <div class="indicator">Organization</div>
+        </div>
+
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <!-- TODO: Insert username avatar here -->
+                <div class="w-20 rounded-full">
+                    <img alt="{user.name}" src="https://i.ytimg.com/vi/pX3l21wyX88/maxresdefault.jpg" />
+                </div>
+            </div>
+            <ul tabindex="0"
+                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                <li>
+                    <a class="justify-between">Profile</a>
+                </li>
+                <li>
+                    <a>Settings</a>
+                </li>
+                <li class="text-rose-500">
+                    <a class="flex justify-between" asp-action="Logout" asp-controller="Auth">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- End navbar -->
+<h1>Index</h1>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.dob)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.phoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.address)
+            </th>
+            <th>
+                Password
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.roleID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.avatar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.dob)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.phoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.address)
+                </td>
+                <td>
+                    Forbidden
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.roleID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.avatar)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.description)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.userID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.userID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.userID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+ @* indexx of usercontroller of client area *@
