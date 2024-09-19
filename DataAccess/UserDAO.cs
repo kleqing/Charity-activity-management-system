@@ -36,11 +36,14 @@ namespace DataAccess
         public async Task UpdateUser(User user)
         {
             var existingItem = await GetUserById(user.userID);
-            if (existingItem == null)
+            if (existingItem != null)
             {
-                return;
+                _context.Entry(existingItem).CurrentValues.SetValues(user); 
             }
-            _context.Users.Update(user);
+            else
+            {
+                _context.Users.Add(user);
+            }
             await _context.SaveChangesAsync();
         }
         // Delete user
