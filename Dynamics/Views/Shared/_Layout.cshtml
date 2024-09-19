@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - Dynamics</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/original.css" asp-append-version="true"/>
+</head>
+<body>
+<!--
+<header>
+    <partial name="CustomComponent/_Navbar" />
+</header>
+-->
+@RenderBody()
+
+@* <footer class="bg-zinc-50 text-center dark:bg-neutral-700 lg:text-left flex justify-center"> *@
+@*     <div class="bg-black/5 p-4 text-center text-surface dark:text-white"> *@
+@*         © 2024 Copyright: *@
+@*         <a asp-action="Index" asp-controller="Home">Dynamics</a> *@
+@*     </div> *@
+@* </footer> *@
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
