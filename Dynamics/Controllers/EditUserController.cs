@@ -1,4 +1,5 @@
 ﻿using Dynamics.DataAccess.Repository;
+using Dynamics.Helps;
 using Dynamics.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -68,10 +69,14 @@ namespace Dynamics.Controllers
         // POST: Client/Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(User user)
+        public async Task<IActionResult> Edit(User user, IFormFile Image)
         {
             if (user != null)
             {
+                if(Image != null)
+                {
+                    user.avatar = Util.UploadImage(Image, "User");
+                }
                 await _userRepository.Update(user);
                 return RedirectToAction(nameof(Index));
             }

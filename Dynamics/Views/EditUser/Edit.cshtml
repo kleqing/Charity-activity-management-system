@@ -18,7 +18,7 @@
     <!-- Navbar -->
     <div class="navbar bg-slate-300-400 shadow-md">
         <div class="flex-1">
-            <a class="btn btn-ghost text-xl"><i>Dynamics</i></a>
+            <a asp-action="Index" asp-controller="EditUser" class="btn btn-ghost text-xl"><i>Dynamics</i></a>
         </div>
         <div class="flex gap-4">
             <div tabindex="0"
@@ -37,21 +37,29 @@
                  class="btn btn-ghost text-orange-600 hover:bg-orange-600 hover:text-white">
                 <div class="indicator">Organization</div>
             </div>
+            <div>
+                <span>@Html.DisplayFor(model => model.name)</span>
+            </div>
 
             <div class="dropdown dropdown-end">
+
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                     <!-- TODO: Insert username avatar here -->
+
                     <div class="w-20 rounded-full">
-                        <img alt="{user.name}" src="https://i.ytimg.com/vi/pX3l21wyX88/maxresdefault.jpg" />
+
+                        <img alt="{user.name}" src="~/images/User/@Model.avatar" />
                     </div>
                 </div>
+
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li>
-                        <a class="justify-between">Profile</a>
+                        <a asp-action="Edit" asp-controller="EditUser" asp-route-id="@Model.userID" class="justify-between">Update Profile</a>
                     </li>
                     <li>
-                        <a>Settings</a>
+
+                        <a>Settings Password</a>
                     </li>
                     <li class="text-rose-500">
                         <a class="flex justify-between" asp-action="Logout" asp-controller="Auth">
@@ -68,7 +76,7 @@
         <!-- Sidebar -->
         <div class="p-2 pt-12 w-1/5">
             <ul class="flex flex-col gap-2">
-                <a href="settings/profile" class="btn btn-ghost text-start"> User profile </a>
+                <a asp-action="Details" asp-route-id="@Model.userID" class="btn btn-ghost text-start"> User profile </a>
                 <a href="settings/history" class="btn btn-ghost text-start"> History </a>
                 <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
             </ul>
@@ -76,122 +84,102 @@
         <!-- End sidebar -->
         <!-- Main content -->
         <div class="divider divider-horizontal"></div>
-        <form asp-action="Edit" asp-controller="EditUser" method="post" id="user-information" class="flex flex-col gap-4 justify-center items-center flex-1">
+        <form asp-action="Edit" asp-controller="EditUser" enctype="multipart/form-data" method="post" id="user-information" class="flex flex-col gap-4 justify-center items-center flex-1">
             <div class="flex justify-around p-12 w-full h-full">
                 <div class="flex flex-col gap-2 w-1/3">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="userID" />
-                    <label asp-for="name" class="form-control w-full">
+                    <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">User name</span>
                         </div>
                         <!-- TODO: Subtitute the input here and all the input below with correct user values -->
-                    <input asp-for="name" type="text"
-                               placeholder="Enter new name"
-                               value="@Model.name"
-                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        <input type="text" placeholder="Enter new name" asp-for=" name"
+                               class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="name" />
-                    <span asp-validation-for="name" class="text-danger"></span>
                     </label>
-
-                    <label asp-for="phoneNumber" class="form-control w-full">
+                    <label class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Email</span>
+                        </div>
+                        <input type="email" placeholder="Enter new email" asp-for="email"
+                               class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="email" />
+                    </label>
+                    <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Phone number</span>
                         </div>
-                        <input asp-for="phoneNumber" type="tel"
-                               placeholder="Enter new phone"
-                               value="@Model.phoneNumber"
-                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        <input type="tel" placeholder="Enter new phone" asp-for="phoneNumber"
+                               class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="phoneNumber" />
-                        <span asp-validation-for="phoneNumber" class="text-danger"></span>
                     </label>
-                   
-                    <label asp-for="address" class="form-control w-full">
+                    <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Home address</span>
                         </div>
-                        <input asp-for="address" type="text"
-                               placeholder="Enter new address"
-                               value="@Model.address"
-                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        <input type="text" placeholder="Enter new address" asp-for="address"
+                               class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="address" />
-                        <span asp-validation-for="address" class="text-danger"></span>
                     </label>
-
                     <!-- Becareful as this one must strictly follow format YYYY-MM-DD -->
-                    <label asp-for="dob" class="form-control w-full">
+                    <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Date of birth (Month/Day/Year)</span>
                         </div>
-                        <input asp-for="dob" type="date"
-                               value="@Model.dob"
-                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        <input type="date" asp-for="dob"
+                               class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="dob" />
-                        <span asp-validation-for="dob" class="text-danger"></span>
                     </label>
-                   
                 </div>
                 <div class="flex flex-col gap-2 font-bold">
                     <h3>Profile picture</h3>
-                    <label asp-for="avatar" for="changeProfile"
-                           class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
-                        <input asp-for="avatar" type="file" name="avatar" id="avatar" style="display: none" />
+                    <label for="changeProfile" class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
+                        <input type="file" name="Image" id="changeProfile" style="display: none" asp-for="avatar" />
                         <!-- TODO: Subtitues the user avatar here -->
-                        <img src="https://i.ytimg.com/vi/pX3l21wyX88/maxresdefault.jpg"
-                             alt="User's Name"
+                        <img src="~/images/User/@Model.avatar" alt="User's Name"
                              class="avatar w-40 h-40 object-cover rounded-full shadow-md" />
                         <div id="uploadBtn"
                              class="bg-slate-900 text-white flex gap-2 items-center justify-center rounded w-16 p-1 text-sm h-8 absolute bottom-0 left-0 hover:bg-slate-600">
                             &#x270E; Edit
                         </div>
-                        <span asp-validation-for="avatar" class="text-danger"></span>
                     </label>
                 </div>
-                
             </div>
-@*             <div id="buttons" class="flex gap-2">
+            <div id="buttons" class="flex gap-2">
                 <!-- This button should send to the update controller, then redirect to this route again -->
-              
-               @*  <input type="submit" value="Save changes" class="btn btn-primary rounded-btn min-w-40" /> *@
-              @*  </div>  *@
-         @*  @*   <button type="submit" class="btn btn-primary rounded-btn min-w-40">Save changes</button> *@ 
-            <input type="submit" value="Save" class="btn btn-primary" />
-        </form>
-       
-
-
-            @*  <button class="btn btn-primary rounded-btn min-w-40">Save changes</button>
+                <input type="submit" value="Save" class="btn btn-primary rounded-btn min-w-40"></input>
                 <!-- This button redirect user to this page AGAIN to reset their value -->
-             <button class="btn btn-accent rounded-btn min-w-40">Revert default</ button>
-            <button asp-action="Index" class="btn btn-accent rounded-btn min-w-40">Back to list</button> *@ 
-       
+                <button class="btn btn-accent rounded-btn min-w-40">Revert default</button>
+            </div>
+        </form>
         <!-- End content -->
     </div>
     <!-- End edit profile -->
     <!-- jquery -->
-  @*   <script>
+    <script>
         $(document).ready(function () {
-          // For debug the form only
-          $("#user-information").submit(function (event) {
-            event.preventDefault();
-            // Get the values from the form
-            const formData = new FormData(event.target);
-            // Convert FormData to an array of key-value pairs
-            const dataArray = [...formData.entries()];
-            // Log each key-value pair
-            $.each(dataArray, function (index, [key, value]) {
-              console.log(`${key}: ${value}`);
+            // For debug the form only
+            $("#user-information").submit(function (event) {
+                event.preventDefault();
+                // Get the values from the form
+                const formData = new FormData(event.target);
+                // Convert FormData to an array of key-value pairs
+                const dataArray = [...formData.entries()];
+                // Log each key-value pair
+                $.each(dataArray, function (index, [key, value]) {
+                    console.log(`${key}: ${value}`);
+                });
             });
-          });
 
-          // Change the profile picture temporary
-          $("#changeProfile").on("change", function (event) {
-            const file = event.target.files[0];
-            const tempUrl = URL.createObjectURL(file);
-            $(".avatar").attr("src", tempUrl);
-          });
+            // Change the profile picture temporary
+            $("#changeProfile").on("change", function (event) {
+                const file = event.target.files[0];
+                const tempUrl = URL.createObjectURL(file);
+                $(".avatar").attr("src", tempUrl);
+            });
         });
-    </script> *@
+    </script>
 </body>
 </html>
 

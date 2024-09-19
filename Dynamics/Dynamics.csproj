@@ -38,6 +38,7 @@
 	<ItemGroup>
 	  <Folder Include="Areas\LandingPage\Controllers\" />
 	  <Folder Include="Areas\LandingPage\Views\Home\" />
+	  <Folder Include="wwwroot\images\User\" />
 	</ItemGroup>
 
 </Project>
