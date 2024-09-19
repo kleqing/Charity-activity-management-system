@@ -1,2 +1,10 @@
-# Charity-activity-management-system
-Charity activity management system using ASP .NET Core with React Native
+# Charity activity management system
+
+
+<h6 align="center">Charity activity management system is a Web application using ASP .NET Core MVC</h6>
+
+## Overview
+
+- ⚠ NOTE: RUN THIS COMMAND BEFORE OPEN PROJECT
+    - `dotnet restore`
+    - `dotnet build`
