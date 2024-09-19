@@ -48,8 +48,6 @@ namespace Dynamics
 
             // Enable razor page
             builder.Services.AddRazorPages();
-            // Enable MVC
-            builder.Services.AddMvc();
 
             var app = builder.Build();
 

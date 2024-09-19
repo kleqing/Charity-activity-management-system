@@ -1,6 +1,5 @@
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models;
-using Dynamics.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -19,9 +18,8 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Testing
-            List<User> user = await userRepo.GetAllUsers();
-            return View(user);
+
+            return View();
         }
 
         public IActionResult Privacy()

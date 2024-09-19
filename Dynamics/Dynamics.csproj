@@ -32,9 +32,6 @@
 	  </Content>
 	</ItemGroup>
 	<ItemGroup>
-		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
-	</ItemGroup>
-	<ItemGroup>
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\site.css" />
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\styles.css" />
 	</ItemGroup>
