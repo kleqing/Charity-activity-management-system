@@ -1,0 +1,17 @@
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\DataAccess.deps.json
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\DataAccess.dll
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\DataAccess.pdb
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\BusinessObject.dll
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\BusinessObject.pdb
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.csproj.AssemblyReference.cache
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.AssemblyInfoInputs.cache
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.AssemblyInfo.cs
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.sourcelink.json
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.csproj.Up2Date
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.dll
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\refint\DataAccess.dll
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\DataAccess.pdb
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\obj\Debug\net8.0\ref\DataAccess.dll
+C:\Users\FPTSHOP\RiderProjects\Swp_project\Charity-activity-management-system\DataAccess\bin\Debug\net8.0\appsettings.json

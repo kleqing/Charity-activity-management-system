@@ -7728,19 +7728,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\hotaru\\.nuget\\packages\\": {}
+    "C:\\Users\\FPTSHOP\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\DynamicWebApplication.csproj",
+      "projectUniqueName": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DynamicWebApplication\\DynamicWebApplication.csproj",
       "projectName": "DynamicWebApplication",
-      "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\DynamicWebApplication.csproj",
-      "packagesPath": "C:\\Users\\hotaru\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\obj\\",
+      "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DynamicWebApplication\\DynamicWebApplication.csproj",
+      "packagesPath": "C:\\Users\\FPTSHOP\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DynamicWebApplication\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\hotaru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\FPTSHOP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7755,11 +7760,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
-              "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
+            "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
+              "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
             },
-            "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj": {
-              "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj"
+            "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\Repository\\Repository.csproj": {
+              "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\Repository\\Repository.csproj"
             }
           }
         }

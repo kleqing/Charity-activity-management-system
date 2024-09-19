@@ -21,6 +21,7 @@ namespace CharityActivityWebApplication.Areas.Client.Controllers
         }
 
         // GET: Client/Users
+        
         public async Task<IActionResult> Index()
         {
             var users = await _userRepository.GetAllUsers();

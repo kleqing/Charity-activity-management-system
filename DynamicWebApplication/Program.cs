@@ -17,8 +17,8 @@ namespace CharityActivityWebApplication
             builder.Services.AddScoped<UserDAO>();
 
 			builder.Services.AddControllersWithViews();
-
-			var app = builder.Build();
+            
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -33,8 +33,8 @@ namespace CharityActivityWebApplication
 
             app.UseRouting();
 
-			//app.UseAuthentication();
-			app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
 			app.MapControllerRoute(
 				name: "areas",

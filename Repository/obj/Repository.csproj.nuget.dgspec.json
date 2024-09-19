@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj": {}
+    "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\Repository\\Repository.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
+    "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj",
+        "projectUniqueName": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj",
         "projectName": "BusinessObject",
-        "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj",
-        "packagesPath": "C:\\Users\\hotaru\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\obj\\",
+        "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj",
+        "packagesPath": "C:\\Users\\FPTSHOP\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\hotaru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\FPTSHOP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -91,17 +95,21 @@
         }
       }
     },
-    "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj": {
+    "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj",
+        "projectUniqueName": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj",
         "projectName": "DataAccess",
-        "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj",
-        "packagesPath": "C:\\Users\\hotaru\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\obj\\",
+        "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj",
+        "packagesPath": "C:\\Users\\FPTSHOP\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DataAccess\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\hotaru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\FPTSHOP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -116,8 +124,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
-                "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
+              "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
+                "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
               }
             }
           }
@@ -156,17 +164,21 @@
         }
       }
     },
-    "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj": {
+    "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\Repository\\Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj",
+        "projectUniqueName": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\Repository\\Repository.csproj",
         "projectName": "Repository",
-        "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\Repository.csproj",
-        "packagesPath": "C:\\Users\\hotaru\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\Repository\\obj\\",
+        "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\Repository\\Repository.csproj",
+        "packagesPath": "C:\\Users\\FPTSHOP\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\Repository\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\hotaru\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\FPTSHOP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -181,11 +193,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
-                "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
+              "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj": {
+                "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj"
               },
-              "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj": {
-                "projectPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj"
+              "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj": {
+                "projectPath": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DataAccess\\DataAccess.csproj"
               }
             }
           }

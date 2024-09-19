@@ -1,10 +1,130 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\",
+  "WorkspaceRootPath": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\views\\users\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\views\\users\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\views\\users\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\views\\users\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\dynamicwebapplication.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\dynamicwebapplication.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\views\\users\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\views\\users\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\views\\users\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\views\\users\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\tailwind.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\tailwind.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{76B989D5-DBD5-4C3D-855D-ECA49251E775}|Repository\\Repository.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{76B989D5-DBD5-4C3D-855D-ECA49251E775}|Repository\\Repository.csproj|solutionrelative:repository\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\businessobject\\businessobject.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\businessobject.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\businessobject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\businessobject\\migrations\\dbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\migrations\\dbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\businessobject\\migrations\\20240918171655_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\migrations\\20240918171655_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\businessobject\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{50F5A383-37E1-44A5-BFB2-F627F72F2442}|DataAccess\\DataAccess.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dataaccess\\singleonbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{50F5A383-37E1-44A5-BFB2-F627F72F2442}|DataAccess\\DataAccess.csproj|solutionrelative:dataaccess\\singleonbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\package-lock.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\package-lock.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\wwwroot\\css\\styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\wwwroot\\css\\styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\wwwroot\\client\\css\\output.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\wwwroot\\client\\css\\output.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\areas\\client\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\areas\\client\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\businessobject\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\scaffoldingreadme.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\scaffoldingreadme.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\fptshop\\riderprojects\\swp_project\\charity-activity-management-system\\dynamicwebapplication\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,20 +134,387 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 7,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-19T07:57:19.636Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DynamicWebApplication.csproj",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DynamicWebApplication\\DynamicWebApplication.csproj",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\DynamicWebApplication.csproj",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\DynamicWebApplication\\DynamicWebApplication.csproj",
+              "RelativeToolTip": "DynamicWebApplication\\DynamicWebApplication.csproj",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-09-19T03:32:36.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Edit.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Edit.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Edit.cshtml",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAAAKwAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-19T06:45:18.141Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Details.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Details.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Details.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Details.cshtml",
+              "ViewState": "AgIAADUAAAAAAAAAAADwv0gAAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-18T17:22:38.035Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Create.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Create.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Create.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADMAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-18T17:22:09.231Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-18T17:26:07.47Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Delete.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Delete.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-18T17:22:35.741Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "UsersController.cs",
-              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
               "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
-              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
               "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Controllers\\UsersController.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAswFsAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-18T16:57:11.17Z",
+              "WhenOpened": "2024-09-19T04:30:37.927Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Index.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Index.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Views\\Users\\Index.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Views\\Users\\Index.cshtml",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAADAAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-19T06:30:12.592Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA0AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-19T04:02:43.715Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Program.cs",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Program.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Program.cs",
+              "RelativeToolTip": "DynamicWebApplication\\Program.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAmwCsAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-18T17:23:03.678Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "tailwind.config.js",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\tailwind.config.js",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\tailwind.config.js",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\tailwind.config.js",
+              "RelativeToolTip": "DynamicWebApplication\\tailwind.config.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-09-19T02:35:20.798Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-18T17:26:04.65Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Views\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Views\\_ViewStart.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Views\\_ViewStart.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Views\\_ViewStart.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-19T03:34:27.874Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "BusinessObject.csproj",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj",
+              "RelativeDocumentMoniker": "BusinessObject\\BusinessObject.csproj",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\SWP_Project\\Charity-activity-management-system\\BusinessObject\\BusinessObject.csproj",
+              "RelativeToolTip": "BusinessObject\\BusinessObject.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-09-18T17:18:37.984Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\Repository\\UserRepository.cs",
+              "RelativeDocumentMoniker": "Repository\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\Repository\\UserRepository.cs",
+              "RelativeToolTip": "Repository\\UserRepository.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-19T01:51:29.872Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\appsettings.json",
+              "RelativeDocumentMoniker": "BusinessObject\\appsettings.json",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\appsettings.json",
+              "RelativeToolTip": "BusinessObject\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-18T17:19:08.365Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "DBContextModelSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\Migrations\\DBContextModelSnapshot.cs",
+              "RelativeDocumentMoniker": "BusinessObject\\Migrations\\DBContextModelSnapshot.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\Migrations\\DBContextModelSnapshot.cs",
+              "RelativeToolTip": "BusinessObject\\Migrations\\DBContextModelSnapshot.cs",
+              "ViewState": "AgIAAM0AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-19T05:06:56.89Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "20240918171655_Initial.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\Migrations\\20240918171655_Initial.cs",
+              "RelativeDocumentMoniker": "BusinessObject\\Migrations\\20240918171655_Initial.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\Migrations\\20240918171655_Initial.cs",
+              "RelativeToolTip": "BusinessObject\\Migrations\\20240918171655_Initial.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-19T05:06:54.341Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\DBContext.cs",
+              "RelativeDocumentMoniker": "BusinessObject\\DBContext.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\DBContext.cs",
+              "RelativeToolTip": "BusinessObject\\DBContext.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAiwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-19T05:06:39.844Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "SingleOnBase.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DataAccess\\SingleOnBase.cs",
+              "RelativeDocumentMoniker": "DataAccess\\SingleOnBase.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DataAccess\\SingleOnBase.cs",
+              "RelativeToolTip": "DataAccess\\SingleOnBase.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAEwBAAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-19T04:31:49.055Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "package-lock.json",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\package-lock.json",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\package-lock.json",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\package-lock.json",
+              "RelativeToolTip": "DynamicWebApplication\\package-lock.json",
+              "ViewState": "AgIAABYAAAAAAAAAAAAAAGYFAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-19T02:28:39.092Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "DynamicWebApplication\\wwwroot\\css\\site.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-09-19T04:16:32.692Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "styles.css",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\css\\styles.css",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\wwwroot\\css\\styles.css",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\css\\styles.css",
+              "RelativeToolTip": "DynamicWebApplication\\wwwroot\\css\\styles.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-09-19T04:16:36.016Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "output.css",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\Client\\css\\output.css",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\wwwroot\\Client\\css\\output.css",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\Client\\css\\output.css",
+              "RelativeToolTip": "DynamicWebApplication\\wwwroot\\Client\\css\\output.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2024-09-19T04:11:56.779Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "package.json",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\package.json",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\package.json",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\package.json",
+              "RelativeToolTip": "DynamicWebApplication\\package.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-19T02:28:35.733Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "DynamicWebApplication\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-19T03:32:22.845Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Areas\\Client\\_ViewStart.cshtml",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\Areas\\Client\\_ViewStart.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Areas\\Client\\_ViewStart.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-18T17:22:57.983Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\User.cs",
+              "RelativeDocumentMoniker": "BusinessObject\\User.cs",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\BusinessObject\\User.cs",
+              "RelativeToolTip": "BusinessObject\\User.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAwBAAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-19T02:54:08.002Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "ScaffoldingReadMe.txt",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\ScaffoldingReadMe.txt",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\ScaffoldingReadMe.txt",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\ScaffoldingReadMe.txt",
+              "RelativeToolTip": "DynamicWebApplication\\ScaffoldingReadMe.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2024-09-19T02:35:23.612Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\appsettings.json",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\appsettings.json",
+              "ToolTip": "C:\\Users\\FPTSHOP\\RiderProjects\\Swp_project\\Charity-activity-management-system\\DynamicWebApplication\\appsettings.json",
+              "RelativeToolTip": "DynamicWebApplication\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-09-18T17:18:12.657Z"
             }
           ]
         }
