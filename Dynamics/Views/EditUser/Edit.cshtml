@@ -1,0 +1,214 @@
+﻿@model Dynamics.Models.Models.User
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit page</title>
+    <link rel="stylesheet" href="/Client/css/output.css" />
+    <script src="/scripts/jquery.js"></script>
+    <!-- jQuery -->
+</head>
+<body class="h-screen flex flex-col">
+    <!-- Edit profile -->
+    <div class="flex md:p-6 pb-0 flex-1">
+        <!-- Sidebar -->
+        <div class="p-2 pt-12 w-1/5">
+            <ul class="flex flex-col gap-2">
+                <a href="settings/profile" class="btn btn-ghost text-start"> User profile </a>
+                <a href="settings/history" class="btn btn-ghost text-start"> History </a>
+                <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
+            </ul>
+        </div>
+        <!-- End sidebar -->
+        <!-- Main content -->
+        <div class="divider divider-horizontal"></div>
+        <form asp-action="Edit" asp-controller="EditUser" method="post" id="user-information" class="flex flex-col gap-4 justify-center items-center flex-1">
+            <div class="flex justify-around p-12 w-full h-full">
+                <div class="flex flex-col gap-2 w-1/3">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="userID" />
+                    <label asp-for="name" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">User name</span>
+                        </div>
+                        <!-- TODO: Subtitute the input here and all the input below with correct user values -->
+                    <input asp-for="name" type="text"
+                               placeholder="Enter new name"
+                               value="@Model.name"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="name" />
+                    <span asp-validation-for="name" class="text-danger"></span>
+                    </label>
+
+                    <label asp-for="phoneNumber" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Phone number</span>
+                        </div>
+                        <input asp-for="phoneNumber" type="tel"
+                               placeholder="Enter new phone"
+                               value="@Model.phoneNumber"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="phoneNumber" />
+                        <span asp-validation-for="phoneNumber" class="text-danger"></span>
+                    </label>
+                   
+                    <label asp-for="address" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Home address</span>
+                        </div>
+                        <input asp-for="address" type="text"
+                               placeholder="Enter new address"
+                               value="@Model.address"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="address" />
+                        <span asp-validation-for="address" class="text-danger"></span>
+                    </label>
+
+                    <!-- Becareful as this one must strictly follow format YYYY-MM-DD -->
+                    <label asp-for="dob" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Date of birth (Month/Day/Year)</span>
+                        </div>
+                        <input asp-for="dob" type="date"
+                               value="@Model.dob"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="dob" />
+                        <span asp-validation-for="dob" class="text-danger"></span>
+                    </label>
+                   
+                </div>
+                <div class="flex flex-col gap-2 font-bold">
+                    <h3>Profile picture</h3>
+                    <label asp-for="avatar" for="changeProfile"
+                           class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
+                        <input asp-for="avatar" type="file" name="avatar" id="avatar" style="display: none" />
+                        <!-- TODO: Subtitues the user avatar here -->
+                        <img src="https://i.ytimg.com/vi/pX3l21wyX88/maxresdefault.jpg"
+                             alt="User's Name"
+                             class="avatar w-40 h-40 object-cover rounded-full shadow-md" />
+                        <div id="uploadBtn"
+                             class="bg-slate-900 text-white flex gap-2 items-center justify-center rounded w-16 p-1 text-sm h-8 absolute bottom-0 left-0 hover:bg-slate-600">
+                            &#x270E; Edit
+                        </div>
+                        <span asp-validation-for="avatar" class="text-danger"></span>
+                    </label>
+                </div>
+                
+            </div>
+@*             <div id="buttons" class="flex gap-2">
+                <!-- This button should send to the update controller, then redirect to this route again -->
+              
+               @*  <input type="submit" value="Save changes" class="btn btn-primary rounded-btn min-w-40" /> *@
+              @*  </div>  *@
+         @*  @*   <button type="submit" class="btn btn-primary rounded-btn min-w-40">Save changes</button> *@ 
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </form>
+       
+
+
+            @*  <button class="btn btn-primary rounded-btn min-w-40">Save changes</button>
+                <!-- This button redirect user to this page AGAIN to reset their value -->
+             <button class="btn btn-accent rounded-btn min-w-40">Revert default</ button>
+            <button asp-action="Index" class="btn btn-accent rounded-btn min-w-40">Back to list</button> *@ 
+       
+        <!-- End content -->
+    </div>
+    <!-- End edit profile -->
+    <!-- jquery -->
+  @*   <script>
+        $(document).ready(function () {
+          // For debug the form only
+          $("#user-information").submit(function (event) {
+            event.preventDefault();
+            // Get the values from the form
+            const formData = new FormData(event.target);
+            // Convert FormData to an array of key-value pairs
+            const dataArray = [...formData.entries()];
+            // Log each key-value pair
+            $.each(dataArray, function (index, [key, value]) {
+              console.log(`${key}: ${value}`);
+            });
+          });
+
+          // Change the profile picture temporary
+          $("#changeProfile").on("change", function (event) {
+            const file = event.target.files[0];
+            const tempUrl = URL.createObjectURL(file);
+            $(".avatar").attr("src", tempUrl);
+          });
+        });
+    </script> *@
+</body>
+</html>
+
+
+
+@* @model BusinessObjects.User
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="userID" />
+            <div class="form-group">
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="dob" class="control-label"></label>
+                <input asp-for="dob" class="form-control" />
+                <span asp-validation-for="dob" class="text-danger"></span>
+            </div>
+          
+            <div class="form-group">
+                <label asp-for="phoneNumber" class="control-label"></label>
+                <input asp-for="phoneNumber" class="form-control" />
+                <span asp-validation-for="phoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="address" class="control-label"></label>
+                <input asp-for="address" class="form-control" />
+                <span asp-validation-for="address" class="text-danger"></span>
+            </div>
+          
+            <div class="form-group">
+                <label asp-for="roleID" class="control-label"></label>
+                <input asp-for="roleID" class="form-control" />
+                <span asp-validation-for="roleID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="avatar" class="control-label"></label>
+                <input asp-for="avatar" class="form-control" />
+                <span asp-validation-for="avatar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="description" class="control-label"></label>
+                <input asp-for="description" class="form-control" />
+                <span asp-validation-for="description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+

@@ -1,5 +1,6 @@
 ﻿html {
     font-size: 14px;
+    background: red;
 }
 
 @media (min-width: 768px) {
@@ -135,3 +136,27 @@ html {
     border-color: #ca452e;
     background: #da4932;
 }
+
+
+.box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.home-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background: rgb(31 41 55);
+    color: white;
+}
+.home-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+

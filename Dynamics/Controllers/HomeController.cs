@@ -4,9 +4,8 @@ using Dynamics.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Dynamics.Areas.LandingPage.Controllers
+namespace Dynamics.Controllers
 {
-    [Area("LandingPage")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,10 +17,10 @@ namespace Dynamics.Areas.LandingPage.Controllers
             this.userRepo = userRepo;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Testing
-            List<User> user = userRepo.GetAll();
+            List<User> user = await userRepo.GetAllUsers();
             return View(user);
         }
 

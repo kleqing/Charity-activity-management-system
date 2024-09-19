@@ -5,10 +5,10 @@ namespace Dynamics.DataAccess.Repository
 {
     public interface IUserRepository
     {
-        List<User> GetAll();
-        User Get(Expression<Func<User, bool>> filter);
-        bool Add(User entity);
-        bool Update(User entity);
-        User DeleteById(Guid id);
+        Task<List<User>> GetAllUsers();
+        Task<User> Get(Expression<Func<User, bool>> filter);
+        Task<bool> Add(User entity);
+        Task<bool> Update(User entity);
+        Task<User> DeleteById(Guid id);
     }
 }

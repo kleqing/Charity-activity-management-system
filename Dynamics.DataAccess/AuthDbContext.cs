@@ -13,5 +13,18 @@ namespace Dynamics.DataAccess
         }
 
         public DbSet<AuthUser> AuthUsers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            //builder.Entity<AuthUser>()
+            //    .HasIndex(u => u.Name)
+            //    .IsUnique();
+
+            builder.Entity<AuthUser>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+        }
     }
 }

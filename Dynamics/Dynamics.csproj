@@ -32,18 +32,15 @@
 	  </Content>
 	</ItemGroup>
 	<ItemGroup>
-		<UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
 		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Controllers\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\site.css" />
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\styles.css" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Areas\LandingPage\Controllers\" />
+	  <Folder Include="Areas\LandingPage\Views\Home\" />
+	</ItemGroup>
 
-	<Target Name="Tailwind" BeforeTargets="Build">
-		<Exec Command="npm run css:build" />
-	</Target>
 </Project>

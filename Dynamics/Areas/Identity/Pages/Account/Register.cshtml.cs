@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using Dynamics.DataAccess.Repository;
 using Dynamics.Models.AuthModels;
+using Dynamics.Models.Models;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +28,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUserRepository _userRepo;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -33,7 +36,9 @@ namespace Dynamics.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IUserRepository repository
+            )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -42,6 +47,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _userRepo = repository;
         }
         // Declares that incoming http request will be bind to this input
         // This only appear in Razor page because they have no controller
@@ -51,6 +57,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public class InputModel
         {
+            [Required]
+            public string Name { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -100,8 +108,19 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 // Since all user is default to user role, we add it for them
                 await _userManager.AddToRoleAsync(user, RoleConstants.User);
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Name, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                // Add real user to database
+                await _userRepo.Add(new User
+                {
+                    name = Input.Name,
+                    email = Input.Email,
+                    roleID = 1, // Guest
+                });
+
+
+
                 // Create a user with email and input password
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -133,7 +152,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         // TODO: Get all the input and redirect to the controller instead
                         //return RedirectToAction("test", "", new { email = Input.Email });
-                        return LocalRedirect("/home/privacy");
+                        // TODO: Return to the home page
+                        return RedirectToAction("Index", "EditUser");
                     }
                 }
                 foreach (var error in result.Errors)

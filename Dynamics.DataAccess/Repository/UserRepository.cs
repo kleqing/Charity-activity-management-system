@@ -1,4 +1,5 @@
 ﻿using Dynamics.Models.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Dynamics.DataAccess.Repository
@@ -6,17 +7,16 @@ namespace Dynamics.DataAccess.Repository
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
-
         public UserRepository(ApplicationDbContext db)
         {
             _db = db;
         }
-        public bool Add(User entity)
+        public async Task<bool> Add(User entity)
         {
             try
             {
                 _db.Users.Add(entity);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return true;
             }
             catch (Exception e)
@@ -25,7 +25,7 @@ namespace Dynamics.DataAccess.Repository
             }
         }
 
-        public User DeleteById(Guid id)
+        public async Task<User> DeleteById(Guid id)
         {
             var user = _db.Users.Find(id);
             if (user != null)
@@ -35,28 +35,36 @@ namespace Dynamics.DataAccess.Repository
             return user;
         }
 
-        public User Get(Expression<Func<User, bool>> filter)
+        public async Task<User> Get(Expression<Func<User, bool>> filter)
         {
             var user = _db.Users.Where(filter).FirstOrDefault();
             return user;
         }
 
-        public List<User> GetAll()
+        public async Task<List<User>> GetAllUsers()
         {
-            var users = _db.Users.ToList();
+            var users = await _db.Users.ToListAsync();
             return users;
         }
 
-        public bool Update(User entity)
+
+        public async Task<bool> Update(User user)
         {
-            var user = _db.Users.Find(entity.Id);
-            if (user != null)
+            var existingItem = await Get(u => user.userID == u.userID);
+            if (existingItem == null)
             {
-                _db.Users.Update(entity);
-                _db.SaveChanges();
-                return true;
+                return false;
             }
-            return false;
+            existingItem.name = user.name;
+            existingItem.dob = user.dob;
+            existingItem.phoneNumber = user.phoneNumber;
+            existingItem.address = user.address;
+            existingItem.roleID = user.roleID;
+            existingItem.avatar = user.avatar;
+            existingItem.description = user.description;
+            _db.Users.Update(existingItem);
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }

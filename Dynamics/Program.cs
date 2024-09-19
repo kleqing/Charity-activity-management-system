@@ -48,6 +48,8 @@ namespace Dynamics
 
             // Enable razor page
             builder.Services.AddRazorPages();
+            // Enable MVC
+            builder.Services.AddMvc();
 
             var app = builder.Build();
 
@@ -71,8 +73,11 @@ namespace Dynamics
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=LandingPage}/{controller=Home}/{action=Index}/{id?}"
-                );
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                 name: "areas",
+                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

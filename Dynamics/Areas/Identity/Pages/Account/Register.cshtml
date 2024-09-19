@@ -18,6 +18,13 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <!-- Email input -->
                     <div data-mdb-input-init class="form-outline mb-4">
+                        <input asp-for="Input.Name" type="name" id="name" class="form-control form-control-lg" />
+                        <label asp-for="Input.Name" class="form-label" for="email">Name</label>
+                        <span asp-validation-for="Input.Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email input -->
+                    <div data-mdb-input-init class="form-outline mb-4">
                         <input asp-for="Input.Email" type="email" id="email" class="form-control form-control-lg"/>
                         <label asp-for="Input.Email" class="form-label" for="email">Email address</label>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>

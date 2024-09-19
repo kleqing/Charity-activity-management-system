@@ -50,6 +50,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("/Index");
             }
+
             returnUrl = returnUrl ?? Url.Content("~/");
 
             var user = await _userManager.FindByEmailAsync(email);
