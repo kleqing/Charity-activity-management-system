@@ -1,5 +1,6 @@
 using BussinessObject;
 using DataAccess;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Repository;
 
 namespace CharityActivityWebApplication
@@ -10,10 +11,24 @@ namespace CharityActivityWebApplication
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Cookie
+            //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            //{
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+            //    options.SlidingExpiration = true;
+            //    options.AccessDeniedPath = "/Forbidden/";
+            //    options.LoginPath = "/Admin/Login/Index";
+            //    options.ReturnUrlParameter = "returnUrl";
+            //}).AddCookie("Client", options =>
+            //{
+            //    options.LoginPath = new PathString("/Client/Home");
+            //});
+
             // Add services to the container.
-            builder.Services.AddScoped<DBContext>();
 			builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-			builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            builder.Services.AddScoped<DBContext>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<UserDAO>();
 
 			builder.Services.AddControllersWithViews();
@@ -33,8 +48,9 @@ namespace CharityActivityWebApplication
 
             app.UseRouting();
 
-			//app.UseAuthentication();
+			app.UseAuthentication();
 			app.UseAuthorization();
+
 
 			app.MapControllerRoute(
 				name: "areas",
