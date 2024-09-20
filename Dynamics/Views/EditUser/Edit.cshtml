@@ -59,7 +59,7 @@
                     </li>
                     <li>
 
-                        <a>Settings Password</a>
+                        <a asp-action="ChangePassword" asp-controller="Auth" >Settings Password</a>
                     </li>
                     <li class="text-rose-500">
                         <a class="flex justify-between" asp-action="Logout" asp-controller="Auth">
@@ -123,7 +123,7 @@
                                name="address" />
                     </label>
                     <!-- Becareful as this one must strictly follow format YYYY-MM-DD -->
-                    <label class="form-control w-full">
+                    <label asp-for="dob" class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Date of birth (Month/Day/Year)</span>
                         </div>

@@ -1,6 +1,7 @@
 ﻿using Dynamics.DataAccess.Repository;
 using Dynamics.Helps;
 using Dynamics.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -9,9 +10,12 @@ namespace Dynamics.Controllers
     public class EditUserController : Controller
     {
         IUserRepository _userRepository = null;
-        public EditUserController(IUserRepository userRepo)
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public EditUserController(IUserRepository userRepo, UserManager<IdentityUser> userManager)
         {
             _userRepository = userRepo;
+            _userManager = userManager;
         }
 
         // GET: Client/Users
@@ -19,6 +23,14 @@ namespace Dynamics.Controllers
         {
             // TODO: Make a real user page
             var users = await _userRepository.GetAllUsers();
+            //get current user
+           /* var currentUser = await _userManager.GetUserAsync(User);            
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+            var user = await _userRepository.Get(u => u.email.Equals(currentUser.Email));
+            ViewBag.CurrentUserId = user.userID;*/
             return View(users);
             //return View();
         }
