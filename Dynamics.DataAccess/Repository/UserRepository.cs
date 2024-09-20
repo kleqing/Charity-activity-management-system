@@ -47,6 +47,10 @@ namespace Dynamics.DataAccess.Repository
             return users;
         }
 
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _db.Users.FirstOrDefaultAsync(u => u.email == email);
+        }
 
         public async Task<bool> Update(User user)
         {
@@ -66,5 +70,8 @@ namespace Dynamics.DataAccess.Repository
             await _db.SaveChangesAsync();
             return true;
         }
+
+        
+        
     }
 }

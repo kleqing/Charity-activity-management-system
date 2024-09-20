@@ -10,5 +10,6 @@ namespace Dynamics.DataAccess.Repository
         Task<bool> Add(User entity);
         Task<bool> Update(User entity);
         Task<User> DeleteById(Guid id);
+        Task<User> GetUserByEmail(string email);
     }
 }
