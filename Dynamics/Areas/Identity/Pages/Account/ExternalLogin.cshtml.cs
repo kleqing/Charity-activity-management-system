@@ -166,7 +166,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         //    protocol: Request.Scheme);
 
                         await _emailSender.SendEmailAsync(Input.Email, "Register Confirmation",
-                            $"You have register successfully to Charity Management System");
+                            $"You have register successfully to Dysnamics");
 
                         //if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         //{
