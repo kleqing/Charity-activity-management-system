@@ -161,28 +161,7 @@
 
     <!-- jquery -->
     <script>
-        $(document).ready(function () {
-            // For debug the form only
-            $("#user-information").submit(function (event) {
-                event.preventDefault();
-                // Get the values from the form
-                const formData = new FormData(event.target);
-                // Convert FormData to an array of key-value pairs
-                const dataArray = [...formData.entries()];
-                // Log each key-value pair
-                $.each(dataArray, function (index, [key, value]) {
-                    console.log(`${key}: ${value}`);
-                });
-            });
-            
-            // Change the profile picture temporary
-            $("#changeProfile").on("change", function (event) {
-                const file = event.target.files[0];
-                const tempUrl = URL.createObjectURL(file);
-                $(".avatar").attr("src", tempUrl);
-            });
 
-        });
     </script>
 </body>
 </html>

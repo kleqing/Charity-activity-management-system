@@ -1,20 +1,23 @@
-﻿namespace Dynamics.Helps
+﻿using System.Security.Cryptography;
+
+namespace Dynamics.Helps
 {
     public class Util
     {
-        public static string UploadImage(IFormFile image, string folder)
+        public static string UploadImage(IFormFile image, string folder, int userId)
         {
             try
             {
-                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", folder, image.FileName);
-                using (var myfile = new FileStream(fullPath, FileMode.CreateNew))
+                string fileName = Path.GetFileNameWithoutExtension(image.FileName) + userId;
+                string fileNameExtension = Path.GetExtension(image.FileName);
+                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", folder, fileName + fileNameExtension);
+                using (var myfile = new FileStream(fullPath, FileMode.Create))
                 {
                     image.CopyTo(myfile);
                 }
-
-                return image.FileName;
-            }
-            catch (Exception e)
+                
+                return fileName+ fileNameExtension;
+            }catch (Exception e)
             {
                 return string.Empty;
             }

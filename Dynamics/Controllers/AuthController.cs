@@ -51,6 +51,7 @@ namespace Dynamics.Controllers
             var userDto = new ChangePasswordDto() { UserId = currentUser.Id };
             return View(userDto);
         }
+
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePassword)
         {

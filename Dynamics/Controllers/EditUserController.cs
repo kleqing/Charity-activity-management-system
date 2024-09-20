@@ -87,7 +87,7 @@ namespace Dynamics.Controllers
             {
                 if(Image != null)
                 {
-                    user.avatar = Util.UploadImage(Image, "User");
+                    user.avatar = Util.UploadImage(Image, "User", user.userID);
                 }
                 await _userRepository.Update(user);
                 return RedirectToAction(nameof(Index));

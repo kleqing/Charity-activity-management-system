@@ -15,9 +15,9 @@
                 <img src="~/images/loginImage.jpeg"
                      class="img-fluid" alt="Phone image">
             </div>
-            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 ">
+            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 border-1 rounded-2 border-primary p-4 border-solid shadow-lg" style="background: white">
                 <h2 class="mb-4 italic text-center font-bold"><b>Dynamics</b></h2>
-                <form id="account" method="post" class="border-1 rounded-2 border-primary p-4 border-solid shadow-lg" style="background: white">
+                <form id="account" method="post" class="" >
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <!-- Email input -->
                     <div data-mdb-input-init class="form-outline mb-4">
@@ -51,12 +51,14 @@
                     </button>
                     Don't have an account ? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register here</a>
                 </form>
-                <div class="divider d-flex align-items-center justify-content-center my-4">
+
+                <div class="divider d-flex align-items-center justify-content-center my-2">
                     <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
                 </div>
+
                 <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                    <div>
-                        <p>
+                    <div class="w-full">
+                        <p style="width: 100%; display:flex; justify-content: center;">
                             @foreach (var provider in Model.ExternalLogins!)
                             {
                                 <button type="submit" class="login-with-google-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">Login with @provider.DisplayName</button>
