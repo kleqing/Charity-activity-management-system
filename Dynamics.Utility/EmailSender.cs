@@ -22,7 +22,8 @@ namespace Dynamics.Utility
                 };
 
                 MailMessage mail = new MailMessage();
-                mail.Subject = "Confirmation Email from Dynamics.com";
+                mail.Subject = subject;
+                //mail.Subject = "Confirmation Email from Dynamics.com";
                 mail.Body = htmlMessage.ToString();
                 //Setting From , To and CC
                 mail.From = new MailAddress(fromMail);
