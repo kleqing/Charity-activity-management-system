@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Log in";
 }
+<link rel="stylesheet" href="~/css/original.css" />
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 <section class="vh-100">
     <div class="container py-4 h-100">
@@ -44,15 +45,24 @@
                     <!-- Submit button -->
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init
                             class="btn btn-primary btn-lg"
-                            style="width: 100%"
+                            style="width: 100%; margin-bottom: 12px;"
                             id="login">
                         Sign in
                     </button>
-
-                    <div class="divider d-flex align-items-center justify-content-center my-4">
-                        <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-                    </div>
                     Don't have an account ? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register here</a>
+                </form>
+                <div class="divider d-flex align-items-center justify-content-center my-4">
+                    <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+                </div>
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <div>
+                        <p>
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="login-with-google-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">Login with @provider.DisplayName</button>
+                            }
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>
