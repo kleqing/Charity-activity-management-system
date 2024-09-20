@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Dynamics.DataAccess.Repository;
+using Dynamics.Models.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dynamics.Areas.Identity.Pages.Account.Manage
 {
@@ -98,7 +101,7 @@ namespace Dynamics.Areas.Identity.Pages.Account.Manage
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                return RedirectToAction("Index", "Home");
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -114,14 +117,14 @@ namespace Dynamics.Areas.Identity.Pages.Account.Manage
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                return Page();
+                return RedirectToAction("Index", "Home"); 
             }
-
+            //ViewBag.CurrentUserId = user.userID;
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
 
-            return RedirectToPage();
+            return RedirectToPage("./Identity/Account/Login");
         }
     }
 }

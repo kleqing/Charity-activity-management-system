@@ -68,9 +68,11 @@
         <!-- Sidebar -->
         <div class="p-2 pt-12 w-1/5">
             <ul class="flex flex-col gap-2">
-                <a href="settings/profile" class="btn btn-ghost text-start"> User profile </a>
-                <a href="settings/history" class="btn btn-ghost text-start"> History </a>
-                <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
+                <a asp-action="Edit" asp-route-id="" class="btn btn-ghost text-start"> User profile </a>
+                <a asp-action="ChangePassword" asp-controller="Auth" class="btn btn-ghost text-start"> Change password </a>
+                @* <a href="settings/history" class="btn btn-ghost text-start"> History </a> *@
+                @* <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a> *@
+                @* <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="btn btn-ghost text-start"> Change password </a> *@
             </ul>
         </div>
         <!-- End sidebar -->
@@ -119,17 +121,16 @@
                     </label>
 
                     <!-- Becareful as this one must strictly follow format YYYY-MM-DD -->
+
                     <label asp-for="dob" class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Date of birth (Month/Day/Year)</span>
                         </div>
-                        <input asp-for="dob" type="date"
-                               value="@Model.dob"
-                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        <input type="date" asp-for="dob"
+                               class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="dob" />
                         <span asp-validation-for="dob" class="text-danger"></span>
                     </label>
-                   
                 </div>
                 <div class="flex flex-col gap-2 font-bold">
                     <h3>Profile picture</h3>
