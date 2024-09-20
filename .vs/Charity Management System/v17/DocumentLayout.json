@@ -1,12 +1,139 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\wwwroot\\controllers\\imageupload.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\wwwroot\\controllers\\imageupload.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\views\\users\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\views\\users\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\views\\users\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\dynamicwebapplication\\views\\users\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8FCEC9D2-7F22-4735-B5FA-075CB537B350}|DynamicWebApplication\\DynamicWebApplication.csproj|solutionrelative:dynamicwebapplication\\views\\users\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|c:\\users\\hotaru\\onedrive - the creator\\documents\\github\\charity-activity-management-system\\businessobject\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A07BF7B7-13C4-459B-8AC7-2DAD1E1594CE}|BusinessObject\\BusinessObject.csproj|solutionrelative:businessobject\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Users\\Details.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Views\\Users\\Details.cshtml",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Users\\Details.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Views\\Users\\Details.cshtml",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-20T09:39:28.201Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Users\\Index.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Views\\Users\\Index.cshtml",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Users\\Index.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Views\\Users\\Index.cshtml",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAAEkAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-20T09:37:55.699Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\User.cs",
+              "RelativeDocumentMoniker": "BusinessObject\\User.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\BusinessObject\\User.cs",
+              "RelativeToolTip": "BusinessObject\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T09:34:54.816Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ImageUpload.js",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\controllers\\ImageUpload.js",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\wwwroot\\controllers\\ImageUpload.js",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\wwwroot\\controllers\\ImageUpload.js",
+              "RelativeToolTip": "DynamicWebApplication\\wwwroot\\controllers\\ImageUpload.js",
+              "ViewState": "AgIAABwAAAAAAAAAAAAgwCcAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2024-09-20T09:30:10.035Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "DynamicWebApplication\\Controllers\\UsersController.cs",
+              "ViewState": "AgIAAIgAAAAAAAAAAAAYwI4AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-20T09:05:20.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-19T17:18:42.663Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Users\\Edit.cshtml",
+              "RelativeDocumentMoniker": "DynamicWebApplication\\Views\\Users\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\hotaru\\OneDrive - The Creator\\Documents\\Github\\Charity-activity-management-system\\DynamicWebApplication\\Views\\Users\\Edit.cshtml",
+              "RelativeToolTip": "DynamicWebApplication\\Views\\Users\\Edit.cshtml",
+              "ViewState": "AgIAADIAAAAAAAAAAAAAADIAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-19T17:05:18.451Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -4,71 +4,87 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>User</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<body class="h-screen flex flex-col">
+    <!-- Edit profile -->
+    <div class="flex md:p-6 pb-0 flex-1">
+        <!-- Sidebar -->
+        <div class="p-2 pt-12 w-1/5">
+            <ul class="flex flex-col gap-2">
+                <a href="settings/profile" class="btn btn-ghost text-start"> User profile </a>
+                <a href="settings/history" class="btn btn-ghost text-start"> History </a>
+                <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
+            </ul>
+        </div>
+        <!-- End sidebar -->
+        <!-- Main content -->
+        <div class="divider divider-horizontal"></div>
         <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="userID" />
-            <div class="form-group">
-                <label asp-for="userName" class="control-label"></label>
-                <input asp-for="userName" class="form-control" />
-                <span asp-validation-for="userName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userDOB" class="control-label"></label>
-                <input asp-for="userDOB" class="form-control" />
-                <span asp-validation-for="userDOB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userEmail" class="control-label"></label>
-                <input asp-for="userEmail" class="form-control" />
-                <span asp-validation-for="userEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userPhoneNumber" class="control-label"></label>
-                <input asp-for="userPhoneNumber" class="form-control" />
-                <span asp-validation-for="userPhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userAddress" class="control-label"></label>
-                <input asp-for="userAddress" class="form-control" />
-                <span asp-validation-for="userAddress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userPassword" class="control-label"></label>
-                <input asp-for="userPassword" class="form-control" />
-                <span asp-validation-for="userPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userRoleID" class="control-label"></label>
-                <input asp-for="userRoleID" class="form-control" />
-                <span asp-validation-for="userRoleID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="userAvatarURL" class="control-label"></label>
-                <div class="col-lg-10">
-                    <input asp-for="userAvatar" class="form-control" type="file" />
-                    <span asp-validation-for="userAvatar" class="text-danger"></span>
-                    <img id="preview" src="@Url.Content(ViewBag.Avatar==null?"":"~/upload/images/"+Model.userAvatarURL)"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label asp-for="userDescription" class="control-label"></label>
-                <input asp-for="userDescription" class="form-control" />
-                <span asp-validation-for="userDescription" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+            <div class="flex justify-around p-12 w-full h-full">
+                <label class="flex flex-col gap-2 w-1/3">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="userID" />
+                    <label asp-for="userName" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">User name</span>
+                        </div>
+                        <input asp-for="userName" type="text"
+                               placeholder="Enter new name"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="name" />
+                        <span asp-validation-for="userName" class="text-danger"></span>
+                    </label>
+                    <label asp-for="userPhoneNumber" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Phone number</span>
+                        </div>
+                        <input asp-for="userPhoneNumber" type="tel"
+                               placeholder="Enter new phone"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="phoneNumber" />
+                        <span asp-validation-for="userPhoneNumber" class="text-danger"></span>
+                    </label>
+                    <label asp-for="userAddress" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Home address</span>
+                        </div>
+                        <input asp-for="userAddress" type="text"
+                               placeholder="Enter new address"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="address" />
+                        <span asp-validation-for="userAddress" class="text-danger"></span>
+                    </label>
+                    <label asp-for="userDOB" class="form-control w-full">
+                        <div class="label">
+                            <span class="label-text">Date of birth (Month/Day/Year)</span>
+                        </div>
+                        <input asp-for="userDOB" type="date"
+                               class="border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                               name="dob" />
+                        <span asp-validation-for="userDOB" class="text-danger"></span>
+                    </label>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+                    <div class="flex flex-col gap-2 font-bold">
+                        <h3>Profile picture</h3>
+                        <label asp-for="userAvatarURL" for="changeProfile"
+                               class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
+                            <input asp-for="userAvatar" type="file" name="avatar" id="avatar" style="display: none" />
+                            <!-- TODO: Subtitues the user avatar here -->
+                            <img src="https://i.ytimg.com/vi/pX3l21wyX88/maxresdefault.jpg"
+                                 alt="User's Name"
+                                 class="avatar w-40 h-40 object-cover rounded-full shadow-md" />
+                            <div id="uploadBtn"
+                                 class="bg-slate-900 text-white flex gap-2 items-center justify-center rounded w-16 p-1 text-sm h-8 absolute bottom-0 left-0 hover:bg-slate-600">
+                                &#x270E; Edit
+                            </div>
+                            <span asp-validation-for="userAvatar" class="text-danger"></span>
+                            <img id="preview" src="@Url.Content(ViewBag.Avatar==null?"":"~/upload/images/"+Model.userAvatarURL)" />
+                        </label>
+                    </div>
+            </div>
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </form>
+        <!-- End content -->
+    </div>
+    <!-- End edit profile -->
+</body>
 
