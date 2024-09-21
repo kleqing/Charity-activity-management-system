@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,10 @@ namespace Dynamics.Models.Models
 		public string organizationName { get; set; }
 		public string organizationDescription { get; set; }
 		public string attachment { get; set; }
-		public DateOnly? startTime { get; set; }
-		public DateOnly? shutdownDay { get; set; }
+        [DataType(DataType.Date)]
+        public DateOnly? startTime { get; set; }
+        [DataType(DataType.Date)]
+        public DateOnly? shutdownDay { get; set; }
 		public int? ceoID { get; set; }
 		public virtual ICollection<Project> Project { get; set; }
 		public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }

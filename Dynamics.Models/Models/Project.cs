@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +15,10 @@ namespace Dynamics.Models.Models
 		public string projectName { get; set; }
 		public string attachment { get; set; }
 		public string projectDescription { get; set; }
-		public DateOnly? startTime { get; set; }
-		public DateOnly? endTime { get; set; }
+        [DataType(DataType.Date)]
+        public DateOnly? startTime { get; set; }
+        [DataType(DataType.Date)]
+        public DateOnly? endTime { get; set; }
 		public int? leaderID { get; set; }
 		public virtual Organization Organization { get; set; }
 		public virtual Request Request { get; set; }

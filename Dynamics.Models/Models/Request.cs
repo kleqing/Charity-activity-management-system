@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,8 @@ namespace Dynamics.Models.Models
 		public int requestID { get; set; }
 		public int userID { get; set; }
 		public string content { get; set; }
-		public DateOnly? creationDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateOnly? creationDate { get; set; }
 		public string location { get; set; }
 		public string attachment { get; set; }
 		public int isEmergency { get; set; }

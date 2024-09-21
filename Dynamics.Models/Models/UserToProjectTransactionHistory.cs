@@ -13,7 +13,7 @@ namespace Dynamics.Models.Models
 		public int projectID { get; set; }
 		public string message { get; set; }
 		public string time { get; set; }
-        public string money { get; set; }
+        public string moneyTransactionAmout { get; set; }
         public virtual User User { get; set; }
 		public virtual Project Project { get; set; }
 	}

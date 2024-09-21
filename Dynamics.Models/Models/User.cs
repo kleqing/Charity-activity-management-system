@@ -1,5 +1,4 @@
-﻿using BussinessObject;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Dynamics.Models.Models
 {
