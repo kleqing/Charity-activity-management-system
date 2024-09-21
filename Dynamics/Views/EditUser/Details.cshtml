@@ -51,7 +51,7 @@
             <div class="indicator">Organization</div>
         </div>
         <div>
-            <span>@Html.DisplayFor(model => model.name)</span>
+            <span>@Html.DisplayFor(model => model.userName)</span>
         </div>
 
         <div class="dropdown dropdown-end">
@@ -61,7 +61,7 @@
                 
                 <div class="w-20 rounded-full">
                     
-                    <img alt="{user.name}" src="~/images/User/@Model.avatar" />
+                    <img alt="{user.name}" src="~/images/User/@Model.userAvatar" />
                 </div>
             </div>
             
@@ -99,11 +99,11 @@
                 <div class="bg-white p-3 border-t-4 border-green-400">
                     <div class="image overflow-hidden">
                         <img class="h-auto w-full mx-auto"
-                         alt="{user.name}" src="~/images/User/@Model.avatar">
+                         alt="{user.name}" src="~/images/User/@Model.userAvatar">
                     </div>
-                    <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">@Html.DisplayFor(model => model.name)</h1>
+                    <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">@Html.DisplayFor(model => model.userName)</h1>
                     <h3 class="text-gray-600 font-lg text-semibold leading-6">Owner at Her Company Inc.</h3>
-                    <p class="text-sm text-gray-500 hover:text-gray-600 leading-6">@Html.DisplayFor(model => model.description)</p>
+                    <p class="text-sm text-gray-500 hover:text-gray-600 leading-6">@Html.DisplayFor(model => model.userDescription)</p>
                     <ul class="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
                         <li class="flex items-center py-3">
                             <span>Status</span>
@@ -171,25 +171,25 @@
                         <div class="grid md:grid-cols-2 text-sm">
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Full Name</div>
-                                <div class="px-4 py-2">@Html.DisplayFor(model => model.name)</div>
+                                <div class="px-4 py-2">@Html.DisplayFor(model => model.userName)</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Contact No.</div>
-                                <div class="px-4 py-2">@Html.DisplayFor(model => model.phoneNumber)</div>
+                                <div class="px-4 py-2">@Html.DisplayFor(model => model.userPhoneNumber)</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Address</div>
-                                <div class="px-4 py-2">@Html.DisplayFor(model => model.address)</div>
+                                <div class="px-4 py-2">@Html.DisplayFor(model => model.userAddress)</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Email.</div>
                                 <div class="px-4 py-2">
-                                    <a class="text-blue-800" href="mailto: @Html.DisplayFor(model => model.email)"> @Html.DisplayFor(model => model.email)</a>
+                                <a class="text-blue-800" href="mailto: @Html.DisplayFor(model => model.userEmail)"> @Html.DisplayFor(model => model.userEmail)</a>
                                 </div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Birthday</div>
-                                <div class="px-4 py-2"> @Html.DisplayFor(model => model.dob)</div>
+                                <div class="px-4 py-2"> @Html.DisplayFor(model => model.userDOB)</div>
                             </div>
                         </div>
                     </div>

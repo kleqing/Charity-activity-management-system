@@ -38,7 +38,7 @@
                 <div class="indicator">Organization</div>
             </div>
             <div>
-                <span>@Html.DisplayFor(model => model.name)</span>
+                <span>@Html.DisplayFor(model => model.userName)</span>
             </div>
 
             <div class="dropdown dropdown-end">
@@ -48,7 +48,7 @@
 
                     <div class="w-20 rounded-full">
 
-                        <img alt="{user.name}" src="~/images/User/@Model.avatar" />
+                        <img alt="{user.name}" src="~/images/User/@Model.userAvatar" />
                     </div>
                 </div>
 
@@ -94,7 +94,7 @@
                             <span class="label-text">User name</span>
                         </div>
                         <!-- TODO: Subtitute the input here and all the input below with correct user values -->
-                        <input type="text" placeholder="Enter new name" asp-for=" name"
+                        <input type="text" placeholder="Enter new name" asp-for="userName"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="name" />
                     </label>
@@ -102,7 +102,7 @@
                         <div class="label">
                             <span class="label-text">Email</span>
                         </div>
-                        <input type="email" placeholder="Enter new email" asp-for="email"
+                        <input type="email" placeholder="Enter new email" asp-for="userEmail"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="email" />
                     </label>
@@ -110,7 +110,7 @@
                         <div class="label">
                             <span class="label-text">Phone number</span>
                         </div>
-                        <input type="tel" placeholder="Enter new phone" asp-for="phoneNumber"
+                        <input type="tel" placeholder="Enter new phone" asp-for="userPhoneNumber"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="phoneNumber" />
                     </label>
@@ -118,16 +118,16 @@
                         <div class="label">
                             <span class="label-text">Home address</span>
                         </div>
-                        <input type="text" placeholder="Enter new address" asp-for="address"
+                        <input type="text" placeholder="Enter new address" asp-for="userAddress"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="address" />
                     </label>
                     <!-- Becareful as this one must strictly follow format YYYY-MM-DD -->
-                    <label asp-for="dob" class="form-control w-full">
+                    <label asp-for="userDOB" class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Date of birth (Month/Day/Year)</span>
                         </div>
-                        <input type="date" asp-for="dob"
+                        <input type="date" asp-for="userDOB"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                                name="dob" />
                     </label>
@@ -135,9 +135,9 @@
                 <div class="flex flex-col gap-2 font-bold">
                     <h3>Profile picture</h3>
                     <label for="changeProfile" class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
-                        <input type="file" name="Image" id="changeProfile" style="display: none" asp-for="avatar" />
+                        <input type="file" name="Image" id="changeProfile" style="display: none" asp-for="userAvatar" />
                         <!-- TODO: Subtitues the user avatar here -->
-                        <img src="~/images/User/@Model.avatar" alt="User's Name"
+                        <img src="~/images/User/@Model.userAvatar" alt="User's Name"
                              class="avatar w-40 h-40 object-cover rounded-full shadow-md" />
                         <div id="uploadBtn"
                              class="bg-slate-900 text-white flex gap-2 items-center justify-center rounded w-16 p-1 text-sm h-8 absolute bottom-0 left-0 hover:bg-slate-600">
