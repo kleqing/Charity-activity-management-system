@@ -49,7 +49,7 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _db.Users.FirstOrDefaultAsync(u => u.email == email);
+            return await _db.Users.FirstOrDefaultAsync(u => u.userEmail == email);
         }
 
         public async Task<bool> Update(User user)
@@ -59,13 +59,13 @@ namespace Dynamics.DataAccess.Repository
             {
                 return false;
             }
-            existingItem.name = user.name;
-            existingItem.dob = user.dob;
-            existingItem.phoneNumber = user.phoneNumber;
-            existingItem.address = user.address;
-            existingItem.roleID = user.roleID;
-            existingItem.avatar = user.avatar;
-            existingItem.description = user.description;
+            existingItem.userName = user.userName;
+            existingItem.userDOB = user.userDOB;
+            existingItem.userPhoneNumber = user.userPhoneNumber;
+            existingItem.userAddress = user.userAddress;
+            existingItem.userRoleID = user.userRoleID;
+            existingItem.userAvatar = user.userAvatar;
+            existingItem.userDescription = user.userDescription;
             _db.Users.Update(existingItem);
             await _db.SaveChangesAsync();
             return true;
