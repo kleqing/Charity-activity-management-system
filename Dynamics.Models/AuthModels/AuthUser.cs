@@ -11,6 +11,6 @@ namespace Dynamics.Models.AuthModels
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        public int roleId { get; set; }
+        public int roleID { get; set; }
     }
 }
