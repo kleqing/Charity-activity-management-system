@@ -114,9 +114,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 // Add real user to database
                 await _userRepo.Add(new User
                 {
-                    userName = Input.Name,
-                    userEmail = Input.Email,
-                    userRoleID = 1, // Guest
+                    UserFullName = Input.Name,
+                    UserEmail = Input.Email,
                 });
 
 

@@ -143,10 +143,9 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         // Add user to the database after creating the user with external login
                         await _userRepo.Add(new User
                         {
-                            userName = info.Principal.FindFirstValue(ClaimTypes.Name),  // Get user's name from Google
-                            userEmail = info.Principal.FindFirstValue(ClaimTypes.Email),  // Get user's email from Google
-                            userRoleID = 1,  // 'Guest'
-                            userAvatar = info.Principal.FindFirstValue("urn:google:picture")
+                            UserFullName = info.Principal.FindFirstValue(ClaimTypes.Name),  // Get user's name from Google
+                            UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email),  // Get user's email from Google
+                            UserAvatar = info.Principal.FindFirstValue("urn:google:picture")
                         });
 
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);

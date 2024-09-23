@@ -36,9 +36,9 @@ namespace Dynamics.Controllers
         }
 
         // GET: Client/Users/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(string id)
         {
-            var user = await _userRepository.Get(u => u.userID == id);
+            var user = await _userRepository.Get(u => u.UserID == id);
             if (user == null)
             {
                 return NotFound();
@@ -67,9 +67,9 @@ namespace Dynamics.Controllers
         }
 
         // GET: Client/Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
-            var user = await _userRepository.Get(u => u.userID == Convert.ToInt32(id));
+            var user = await _userRepository.Get(u => u.UserID == id);
 
             if (user == null)
             {
@@ -87,25 +87,25 @@ namespace Dynamics.Controllers
             {
                 if(Image != null)
                 {
-                    user.userAvatar = Util.UploadImage(Image, "User", user.userID);
+                    user.UserAvatar = Util.UploadImage(Image, "User", user.UserID);
                 }
                 await _userRepository.Update(user);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["userID"] = new SelectList(await _userRepository.GetAllUsers(), "transactionID", "message", user.userID);
+            ViewData["userID"] = new SelectList(await _userRepository.GetAllUsers(), "transactionID", "message", user.UserID);
             return View(user);
         }
 
         // GET: Client/Users/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userRepository.Get(u => u.userID == Convert.ToInt32(id));
+            var user = await _userRepository.Get(u => u.UserID == id);
 
             if (user == null)
             {
                 return NotFound();
             }
-            await _userRepository.Get(u => u.userID == id);
+            await _userRepository.Get(u => u.UserID == id);
             return RedirectToAction(nameof(Index));
         }
     }

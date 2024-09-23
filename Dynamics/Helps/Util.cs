@@ -4,7 +4,7 @@ namespace Dynamics.Helps
 {
     public class Util
     {
-        public static string UploadImage(IFormFile image, string folder, int userId)
+        public static string UploadImage(IFormFile image, string folder, string userId)
         {
             try
             {

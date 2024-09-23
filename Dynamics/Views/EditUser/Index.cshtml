@@ -62,31 +62,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.userName)
+                @Html.DisplayNameFor(model => model.UserFullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userDOB)
+                @Html.DisplayNameFor(model => model.UserDOB)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userEmail)
+                @Html.DisplayNameFor(model => model.UserEmail)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userPhoneNumber)
+                @Html.DisplayNameFor(model => model.UserPhoneNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userAddress)
+                @Html.DisplayNameFor(model => model.UserAddress)
             </th>
             <th>
                 Password
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userRoleID)
+                @Html.DisplayNameFor(model => model.UserAvatar)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.userAvatar)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.userDescription)
+                @Html.DisplayNameFor(model => model.UserDescription)
             </th>
             <th></th>
         </tr>
@@ -96,36 +93,33 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userName)
+                    @Html.DisplayFor(modelItem => item.UserFullName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userDOB)
+                    @Html.DisplayFor(modelItem => item.UserDOB)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userEmail)
+                    @Html.DisplayFor(modelItem => item.UserEmail)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userPhoneNumber)
+                    @Html.DisplayFor(modelItem => item.UserPhoneNumber)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userAddress)
+                    @Html.DisplayFor(modelItem => item.UserAddress)
                 </td>
                 <td>
                     Forbidden
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userRoleID)
+                    @Html.DisplayFor(modelItem => item.UserAvatar)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userAvatar)
+                    @Html.DisplayFor(modelItem => item.UserDescription)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.userDescription)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.userID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.userID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.userID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.UserID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.UserID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UserID">Delete</a>
                 </td>
             </tr>
         }
