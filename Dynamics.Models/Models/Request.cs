@@ -9,15 +9,15 @@ namespace Dynamics.Models.Models
 {
     public class Request
     {
-		public int requestID { get; set; }
-		public int userID { get; set; }
-		public string content { get; set; }
+		public int RequestID { get; set; }
+		public string UserID { get; set; }
+		public string Content { get; set; }
         [DataType(DataType.Date)]
-        public DateOnly? creationDate { get; set; }
-		public string location { get; set; }
-		public string attachment { get; set; }
+        public DateOnly? CreationDate { get; set; }
+		public string Location { get; set; }
+		public string Attachment { get; set; }
 		public int isEmergency { get; set; }
-		public int status { get; set; }
+		public int Status { get; set; }
 		public virtual User User { get; set; }
 		public virtual Project Project { get; set; }
 	}

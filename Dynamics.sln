@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynamics", "Dynamics\Dynami
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynamics.DataAccess", "Dynamics.DataAccess\Dynamics.DataAccess.csproj", "{5DDE4F9A-583D-4C45-8FE6-22D2760B1223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamics.Models", "Dynamics.Models\Dynamics.Models.csproj", "{C3C3663F-6303-41B0-BECA-4DABFEB8769C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynamics.Models", "Dynamics.Models\Dynamics.Models.csproj", "{C3C3663F-6303-41B0-BECA-4DABFEB8769C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamics.Utility", "Dynamics.Utility\Dynamics.Utility.csproj", "{A1727530-2ED7-42AE-8692-BABA5ADC9C63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynamics.Utility", "Dynamics.Utility\Dynamics.Utility.csproj", "{A1727530-2ED7-42AE-8692-BABA5ADC9C63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

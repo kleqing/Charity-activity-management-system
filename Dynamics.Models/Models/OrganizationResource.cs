@@ -8,13 +8,13 @@ namespace Dynamics.Models.Models
 {
     public class OrganizationResource
     {
-		public int resourceID { get; set; }
-		public int organizationID { get; set; }
-		public string resourceName { get; set; }
-		public int? quantity { get; set; }
-		public string unit { get; set; }
-		public string donator { get; set; }
-		public string contentTransaction { get; set; }
-		public virtual Organization Organization { get; set; }
+		public int ResourceID { get; set; }
+		public int OrganizationID { get; set; }
+		public string ResourceName { get; set; }
+		public int? Quantity { get; set; }
+		public int Unit { get; set; }
+		public string ContentTransaction { get; set; }
+		public int? ExpectedQuantity { get; set; }
+        public virtual Organization Organization { get; set; }
 	}
 }

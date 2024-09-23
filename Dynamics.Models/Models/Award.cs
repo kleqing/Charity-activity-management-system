@@ -8,9 +8,9 @@ namespace Dynamics.Models.Models
 {
     public class Award
     {
-        public string awardID { get; set; }
-        public string awardName { get; set; }
-        public int userID { get; set; }
+        public string AwardID { get; set; }
+        public string AwardName { get; set; }
+        public string UserID { get; set; }
         public virtual User User { get; set; }
     }
 }

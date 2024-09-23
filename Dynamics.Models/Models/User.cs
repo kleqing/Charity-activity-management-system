@@ -5,20 +5,17 @@ namespace Dynamics.Models.Models
     public class User
     {
         
-        public int userID { get; set; }
-        public string userName { get; set; }
+        public string UserID { get; set; }
+        public string UserFullName { get; set; }
         [DataType(DataType.Date)]
-        public DateOnly? userDOB { get; set; }
+        public DateOnly? UserDOB { get; set; }
         [DataType(DataType.EmailAddress)]
-        public string userEmail { get; set; }
+        public string UserEmail { get; set; }
         [DataType(DataType.PhoneNumber)]        
-        public string? userPhoneNumber { get; set; }
-        public string? userAddress { get; set; }
-        [Required]
-        public string userPassword { get; set; }
-        public int? userRoleID { get; set; }
-        public string? userAvatar { get; set; }
-        public string? userDescription { get; set; }
+        public string? UserPhoneNumber { get; set; }
+        public string? UserAddress { get; set; }
+        public string? UserAvatar { get; set; }
+        public string? UserDescription { get; set; }
         public virtual ICollection<Award> Award { get; set; }
         public virtual ICollection<Request> Request { get; set; }
         public virtual ICollection<ProjectMember> ProjectMember { get; set; }

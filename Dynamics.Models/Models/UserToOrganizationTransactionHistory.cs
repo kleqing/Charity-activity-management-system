@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,13 @@ namespace Dynamics.Models.Models
 {
     public class UserToOrganizationTransactionHistory
     {
-		public int transactionID { get; set; }
-		public int userID { get; set; }
-		public int organizationID { get; set; }
-		public string message { get; set; }
-		public string time { get; set; }
-        public string moneyTransactionAmout { get; set; }
+		public int TransactionID { get; set; }
+		public string UserID { get; set; }
+		public int OrganizationID { get; set; }
+		public string Message { get; set; }
+		[DataType(DataType.Date)]
+		public DateOnly Time { get; set; }
+        public string MoneyTransactionAmout { get; set; }
         public virtual User User { get; set; }
 		public virtual Organization Organization { get; set; }
 	}

@@ -8,12 +8,15 @@ namespace Dynamics.Models.Models
 {
     public class UserToProjectTransactionHistory
     {
-		public int transactionID { get; set; }
-		public int userID { get; set; }
-		public int projectID { get; set; }
-		public string message { get; set; }
-		public string time { get; set; }
-        public string moneyTransactionAmout { get; set; }
+		public int TransactionID { get; set; }
+		public string UserID { get; set; }
+		public int ProjectID { get; set; }
+		public int Status { get; set; }
+		public int Unit { get; set; }
+		public int Amount { get; set; }
+        public string Message { get; set; }
+		public string Time { get; set; }
+        public string MoneyTransactionAmout { get; set; }
         public virtual User User { get; set; }
 		public virtual Project Project { get; set; }
 	}

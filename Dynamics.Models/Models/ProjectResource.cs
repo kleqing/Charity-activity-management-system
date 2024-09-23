@@ -8,12 +8,12 @@ namespace Dynamics.Models.Models
 {
     public class ProjectResource
     {
-		public int resourceID { get; set; }
-		public int projectID { get; set; }
-		public string resourceName { get; set; }
-		public int? quantity { get; set; }
-		public int? expectedQuantity { get; set; }
-		public string unit { get; set; }
+		public int ResourceID { get; set; }
+		public int ProjectID { get; set; }
+		public string ResourceName { get; set; }
+		public int? Quantity { get; set; }
+		public int? ExpectedQuantity { get; set; }
+		public string Unit { get; set; }
 		public virtual Project Project { get; set; }
 	}
 }
