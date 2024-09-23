@@ -107,25 +107,23 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
                 // Since all user is default to user role, we add it for them
                 await _userManager.AddToRoleAsync(user, RoleConstants.User);
-
                 await _userStore.SetUserNameAsync(user, Input.Name, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
-                // Add real user to database
-                await _userRepo.Add(new User
-                {
-                    name = Input.Name,
-                    email = Input.Email,
-                    roleID = 1, // Guest
-                });
-
-
 
                 // Create a user with email and input password
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
+                    // Add real user to database
+                    await _userRepo.Add(new User
+                    {
+                        UserId = user.Id, // The link between 2 user table should be this id
+                        UserName = Input.Name,
+                        Email = Input.Email,
+                        Avatar = MyConstants.DefaultAvatarUrl,
+                    });
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -142,7 +140,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     // Check to see if we need the user to confirm the email first before sign in
-                    // This operation can be disabled in the program.cs where we setup the identity
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -150,8 +147,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        // TODO: Get all the input and redirect to the controller instead
-                        //return RedirectToAction("test", "", new { email = Input.Email });
                         // TODO: Return to the home page
                         return RedirectToAction("Index", "EditUser");
                     }

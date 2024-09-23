@@ -14,10 +14,10 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
-
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            // Add service and scope for google auth
+            // Add service and scope for Google auth
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
             {
                 googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
@@ -39,7 +39,8 @@ namespace Dynamics
             builder.Services
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
-                    options.SignIn.RequireConfirmedAccount = false;
+                    options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedAccount = true;
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -58,6 +59,7 @@ namespace Dynamics
             // Enable razor page
             builder.Services.AddRazorPages();
 
+            builder.Services.AddSession();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -68,6 +70,8 @@ namespace Dynamics
                 app.UseHsts();
             }
 
+            app.UseSession();
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

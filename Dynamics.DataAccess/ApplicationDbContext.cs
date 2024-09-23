@@ -19,7 +19,7 @@ namespace Dynamics.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(u => u.userID);
+            modelBuilder.Entity<User>().HasKey(u => u.UserId);
         }
     }
 }

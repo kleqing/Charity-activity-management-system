@@ -17,11 +17,7 @@ namespace Dynamics.DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            //builder.Entity<AuthUser>()
-            //    .HasIndex(u => u.Name)
-            //    .IsUnique();
-
+            // Make email unique
             builder.Entity<AuthUser>()
                 .HasIndex(u => u.Email)
                 .IsUnique();

@@ -1,16 +1,19 @@
 ﻿using Dynamics.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dynamics.DataAccess.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
-        public UserRepository(ApplicationDbContext db)
+        public UserRepository(ApplicationDbContext db, AuthDbContext authDbContext)
         {
             _db = db;
         }
+        
+        // TODO: Decide whether we use one database or 2 database for managing the user
         public async Task<bool> Add(User entity)
         {
             try
@@ -30,14 +33,17 @@ namespace Dynamics.DataAccess.Repository
             var user = _db.Users.Find(id);
             if (user != null)
             {
-                _db.Users.Remove(user);
+                // TODO NO NO DON'T Delete, BAN HIM INSTEAD
+                // _db.Users.Remove(user);
+                throw new Exception("TODO: BAN THIS USER INSTEAD");
+                await _db.SaveChangesAsync();  
             }
             return user;
         }
 
-        public async Task<User> Get(Expression<Func<User, bool>> filter)
+        public async Task<User?> Get(Expression<Func<User, bool>> filter)
         {
-            var user = _db.Users.Where(filter).FirstOrDefault();
+            var user =  await _db.Users.Where(filter).FirstOrDefaultAsync();
             return user;
         }
 
@@ -46,32 +52,17 @@ namespace Dynamics.DataAccess.Repository
             var users = await _db.Users.ToListAsync();
             return users;
         }
-
-        public async Task<User> GetUserByEmail(string email)
-        {
-            return await _db.Users.FirstOrDefaultAsync(u => u.email == email);
-        }
-
         public async Task<bool> Update(User user)
         {
-            var existingItem = await Get(u => user.userID == u.userID);
+            var existingItem = await Get(u => user.UserId == u.UserId);
             if (existingItem == null)
             {
                 return false;
             }
-            existingItem.name = user.name;
-            existingItem.dob = user.dob;
-            existingItem.phoneNumber = user.phoneNumber;
-            existingItem.address = user.address;
-            existingItem.roleID = user.roleID;
-            existingItem.avatar = user.avatar;
-            existingItem.description = user.description;
-            _db.Users.Update(existingItem);
+            // Only update the property that has the same name between 2 models
+            _db.Entry(existingItem).CurrentValues.SetValues(user);
             await _db.SaveChangesAsync();
             return true;
         }
-
-        
-        
     }
 }

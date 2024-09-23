@@ -1,6 +1,7 @@
 ﻿using Dynamics.DataAccess.Repository;
-using Dynamics.Helps;
 using Dynamics.Models.Models;
+using Dynamics.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,7 +10,7 @@ namespace Dynamics.Controllers
 {
     public class EditUserController : Controller
     {
-        IUserRepository _userRepository = null;
+        IUserRepository _userRepository;
         private readonly UserManager<IdentityUser> _userManager;
 
         public EditUserController(IUserRepository userRepo, UserManager<IdentityUser> userManager)
@@ -24,21 +25,22 @@ namespace Dynamics.Controllers
             // TODO: Make a real user page
             var users = await _userRepository.GetAllUsers();
             //get current user
-           /* var currentUser = await _userManager.GetUserAsync(User);            
-            if (currentUser == null)
-            {
-                return NotFound();
-            }
-            var user = await _userRepository.Get(u => u.email.Equals(currentUser.Email));
-            ViewBag.CurrentUserId = user.userID;*/
+            /* var currentUser = await _userManager.GetUserAsync(User);
+             if (currentUser == null)
+             {
+                 return NotFound();
+             }
+             var user = await _userRepository.Get(u => u.email.Equals(currentUser.Email));
+             ViewBag.CurrentUserId = user.userID;*/
             return View(users);
             //return View();
         }
 
+        
         // GET: Client/Users/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(string id)
         {
-            var user = await _userRepository.Get(u => u.userID == id);
+            var user = await _userRepository.Get(u => u.UserId.Equals(id));
             if (user == null)
             {
                 return NotFound();
@@ -67,46 +69,34 @@ namespace Dynamics.Controllers
         }
 
         // GET: Client/Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
-            var user = await _userRepository.Get(u => u.userID == Convert.ToInt32(id));
+            var user = await _userRepository.Get(u => u.UserId.Equals(id));
 
             if (user == null)
             {
                 return NotFound();
             }
+
             return View(user);
         }
 
         // POST: Client/Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(User user, IFormFile Image)
+        public async Task<IActionResult> Edit(User user, IFormFile image)
         {
             if (user != null)
             {
-                if(Image != null)
+                if (image != null)
                 {
-                    user.avatar = Util.UploadImage(Image, "User", user.userID);
+                    user.Avatar = Util.UploadImage(image, "/images/User", user.UserId);
+                    await _userRepository.Update(user);
+                    return RedirectToAction(nameof(Index));
                 }
-                await _userRepository.Update(user);
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["userID"] = new SelectList(await _userRepository.GetAllUsers(), "transactionID", "message", user.userID);
             return View(user);
         }
-
-        // GET: Client/Users/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var user = await _userRepository.Get(u => u.userID == Convert.ToInt32(id));
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            await _userRepository.Get(u => u.userID == id);
-            return RedirectToAction(nameof(Index));
-        }
+        
     }
 }

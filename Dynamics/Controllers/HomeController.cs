@@ -16,9 +16,12 @@ namespace Dynamics.Controllers
             this.userRepo = userRepo;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-
+            if (User.Identity.IsAuthenticated != null && User.Identity.IsAuthenticated)
+            {
+                RedirectToAction("Index", "EditUser");
+            }
             return View();
         }
 

@@ -3,11 +3,8 @@
 @{
     ViewData["Title"] = "Index";
 }
-<link rel="stylesheet" href="~/css/original.css" />
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-<link rel="stylesheet" href="~/client/css/output.css" />
 <!-- Navbar -->
-<div class="navbar bg-slate-300-400 shadow-md">
+<div class="navbar shadow-md">
     <div class="flex-1">
         <a asp-action="Index" asp-controller="EditUser" class="btn btn-ghost text-xl"><i>Dynamics</i></a>
     </div>
@@ -62,31 +59,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.dob)
+                @Html.DisplayNameFor(model => model.Dob)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.email)
+                @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.phoneNumber)
+                @Html.DisplayNameFor(model => model.PhoneNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.address)
+                @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
                 Password
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.roleID)
+                Handle get the user roles
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.avatar)
+                @Html.DisplayNameFor(model => model.Avatar)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.description)
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th></th>
         </tr>
@@ -96,36 +93,36 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.name)
+                    @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.dob)
+                    @Html.DisplayFor(modelItem => item.Dob)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.email)
+                    @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.phoneNumber)
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.address)
+                    @Html.DisplayFor(modelItem => item.Address)
                 </td>
                 <td>
                     Forbidden
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.roleID)
+                    Handle user role id here
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.avatar)
+                    @Html.DisplayFor(modelItem => item.Avatar)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.description)
+                    @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.userID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.userID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.userID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
                 </td>
             </tr>
         }

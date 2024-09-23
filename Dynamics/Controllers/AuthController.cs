@@ -26,12 +26,12 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> ChangePassword()
         {
-
             //get current user
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
@@ -44,7 +44,7 @@ namespace Dynamics.Controllers
             if (!hasPassword)
             {
                 //nananaa
-                return RedirectToPage("Index", "Home");
+                return RedirectToAction("Index", "Home");
             }
             //assign current user to userDto
             ViewData["Title"] = "Change password";
@@ -55,6 +55,7 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePassword)
         {
+            // TODO: CHeck if user has password or not
             await _signInManager.SignOutAsync();
 
             if (!ModelState.IsValid)
@@ -75,7 +76,8 @@ namespace Dynamics.Controllers
             //update success, go to login again
             await _signInManager.RefreshSignInAsync(currentUser);
 
-            return RedirectToAction("Logout", "Auth");
+            // return RedirectToAction("Logout", "Auth");
+            return RedirectToPage("/Account/login", new {area = "Identity"});
         }
 
     }

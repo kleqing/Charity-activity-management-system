@@ -40,9 +40,16 @@
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\styles.css" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Areas\LandingPage\Controllers\" />
-	  <Folder Include="Areas\LandingPage\Views\Home\" />
+	  <Folder Include="Helps\" />
 	  <Folder Include="wwwroot\images\User\" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+	</ItemGroup>
+
+	<Target Name="Tailwind" BeforeTargets="Build">
+		<Exec Command="npm run css:build"/>
+	</Target>
 
 </Project>

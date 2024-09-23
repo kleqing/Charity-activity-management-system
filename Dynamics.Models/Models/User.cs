@@ -4,21 +4,23 @@ namespace Dynamics.Models.Models
 {
     public class User
     {
-        
-        public int userID { get; set; }
-        public string name { get; set; }
+        [Required]
+        public string UserId { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string UserName { get; set; }
         [DataType(DataType.Date)]
-        public DateTime? dob { get; set; }
+        public DateTime? Dob { get; set; }
         [DataType(DataType.EmailAddress)]
-        public string email { get; set; }
+        public string Email { get; set; }
         [DataType(DataType.PhoneNumber)]
-        public string? phoneNumber { get; set; }
-        public string? address { get; set; }
-        //[Required]
-        //[DataType(DataType.Password)]
-        //public string password { get; set; }
-        public int? roleID { get; set; }
-        public string? avatar { get; set; }
-        public string? description { get; set; }
+        public string? PhoneNumber { get; set; }
+        [MaxLength(300)]
+        public string? Address { get; set; }
+        public string? Avatar { get; set; }
+        [MaxLength(300)]
+        public string? Description { get; set; }
+        public bool IsBanned { get; set; }
+        // Role ID and password will be passed to identity table instead
     }
 }

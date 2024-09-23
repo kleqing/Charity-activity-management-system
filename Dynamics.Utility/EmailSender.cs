@@ -7,8 +7,8 @@ namespace Dynamics.Utility
     {
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            // Because we're using app password, any mail send should always direct to the email with password
-            // Therefore i will always send it to my self
+            // Because we're using app password, mail should be sent from me (Who register it in google)
+            // Also, if email does not exist, the mail will be redirected into my mail box
             try
             {
                 string fromMail = "kietpmde180889@fpt.edu.vn";
@@ -18,7 +18,7 @@ namespace Dynamics.Utility
                     Host = "smtp.gmail.com", // SMTP server
                     Port = 587, // TLS port
                     EnableSsl = true, // Enable TLS (SSL)
-                    Credentials = new System.Net.NetworkCredential(fromMail, fromPassword) // Username and password
+                    Credentials = new System.Net.NetworkCredential(fromMail, fromPassword) // MY Username and password
                 };
 
                 MailMessage mail = new MailMessage();

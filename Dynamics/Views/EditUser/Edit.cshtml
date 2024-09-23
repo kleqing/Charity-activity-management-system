@@ -1,7 +1,14 @@
-﻿@model Dynamics.Models.Models.User
+﻿@using Azure.Core
+@using Dynamics.Models.AuthModels
+@model Dynamics.Models.Models.User
 
 @{
     ViewData["Title"] = "Edit";
+}
+
+@{
+    var user = Context.Request.Cookies["user"];
+    
 }
 
 <!DOCTYPE html>
@@ -11,7 +18,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit page</title>
     <link rel="stylesheet" href="/Client/css/output.css" />
-    
     <!-- jQuery -->
 </head>
 <body class="h-screen flex flex-col">
@@ -38,7 +44,7 @@
                 <div class="indicator">Organization</div>
             </div>
             <div>
-                <span>@Html.DisplayFor(model => model.name)</span>
+                <span>@Html.DisplayFor(model => model.UserName)</span>
             </div>
 
             <div class="dropdown dropdown-end">
@@ -48,14 +54,14 @@
 
                     <div class="w-20 rounded-full">
 
-                        <img alt="{user.name}" src="~/images/User/@Model.avatar" />
+                        <img alt="{user.name}" src="~/images/User/@Model.Avatar" />
                     </div>
                 </div>
 
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li>
-                        <a asp-action="Edit" asp-controller="EditUser" asp-route-id="@Model.userID" class="justify-between">Update Profile</a>
+                        <a asp-action="Edit" asp-controller="EditUser" asp-route-id="@Model.UserId" class="justify-between">Update Profile</a>
                     </li>
                     <li>
 
@@ -76,7 +82,7 @@
         <!-- Sidebar -->
         <div class="p-2 pt-12 w-1/5">
             <ul class="flex flex-col gap-2">
-                <a asp-action="Details" asp-route-id="@Model.userID" class="btn btn-ghost text-start"> User profile </a>
+                <a asp-action="Details" asp-route-id="@Model.UserId" class="btn btn-ghost text-start"> User profile </a>
                 <a href="settings/history" class="btn btn-ghost text-start"> History </a>
                 <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
             </ul>
@@ -88,56 +94,56 @@
             <div class="flex justify-around p-12 w-full h-full">
                 <div class="flex flex-col gap-2 w-1/3">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="userID" />
+                    <input type="hidden" asp-for="UserId" />
                     <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">User name</span>
                         </div>
                         <!-- TODO: Subtitute the input here and all the input below with correct user values -->
-                        <input type="text" placeholder="Enter new name" asp-for=" name"
+                        <input type="text" placeholder="Enter new name" asp-for="UserName"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="name" />
+                               name="UserName" />
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Email</span>
                         </div>
-                        <input type="email" placeholder="Enter new email" asp-for="email"
+                        <input type="email" placeholder="Enter new email" asp-for="Email"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="email" />
+                               name="Email" />
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Phone number</span>
                         </div>
-                        <input type="tel" placeholder="Enter new phone" asp-for="phoneNumber"
+                        <input type="tel" placeholder="Enter new phone" asp-for="PhoneNumber"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="phoneNumber" />
+                               name="PhoneNumber" />
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Home address</span>
                         </div>
-                        <input type="text" placeholder="Enter new address" asp-for="address"
+                        <input type="text" placeholder="Enter new address" asp-for="Address"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="address" />
+                               name="Address" />
                     </label>
                     <!-- Becareful as this one must strictly follow format YYYY-MM-DD -->
-                    <label asp-for="dob" class="form-control w-full">
+                    <label asp-for="Dob" class="form-control w-full">
                         <div class="label">
                             <span class="label-text">Date of birth (Month/Day/Year)</span>
                         </div>
-                        <input type="date" asp-for="dob"
+                        <input type="date" asp-for="Dob"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="dob" />
+                               name="Dob" />
                     </label>
                 </div>
                 <div class="flex flex-col gap-2 font-bold">
                     <h3>Profile picture</h3>
                     <label for="changeProfile" class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
-                        <input type="file" name="Image" id="changeProfile" style="display: none" asp-for="avatar" />
-                        <!-- TODO: Subtitues the user avatar here -->
-                        <img src="~/images/User/@Model.avatar" alt="User's Name"
+                        <input type="file" name="image" id="changeProfile" style="display: none" asp-for="Avatar" />
+                        <!-- TODO: Subtitles the user avatar here -->
+                        <img src="@Model.Avatar" alt="User's Name"
                              class="avatar w-40 h-40 object-cover rounded-full shadow-md" />
                         <div id="uploadBtn"
                              class="bg-slate-900 text-white flex gap-2 items-center justify-center rounded w-16 p-1 text-sm h-8 absolute bottom-0 left-0 hover:bg-slate-600">

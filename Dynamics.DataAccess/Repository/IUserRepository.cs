@@ -6,10 +6,9 @@ namespace Dynamics.DataAccess.Repository
     public interface IUserRepository
     {
         Task<List<User>> GetAllUsers();
-        Task<User> Get(Expression<Func<User, bool>> filter);
+        Task<User?> Get(Expression<Func<User, bool>> filter);
         Task<bool> Add(User entity);
         Task<bool> Update(User entity);
         Task<User> DeleteById(Guid id);
-        Task<User> GetUserByEmail(string email);
     }
 }

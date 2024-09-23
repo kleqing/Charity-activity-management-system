@@ -3,53 +3,53 @@
 @{
     ViewData["Title"] = "Register";
 }
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 <link rel="stylesheet" href="~/css/original.css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet" href="css/output.css" />
+
 <section class="vh-100">
     <div class="container py-4 h-100">
-        <div class="row d-flex align-items-center justify-content-center h-100">
-            <div class="col-md-8 col-lg-7 col-xl-6 flex justify-content-center align-content-center gap-4">
+        <div class="flex md:flex-row justify-center items-center content-center gap-4 h-full" style="display: flex; flex-direction: row">
+            <div class="flex-row justify-center items-center gap-2 hidden md:flex">
                 <h3 class="text-center">“We make a living by what we get. We make a life by what we give."</h3>
                 <h4 class="text-center"><i>Winston Churchill</i></h4>
                 <img src="~/images/loginImage.jpeg"
                      class="img-fluid" alt="Phone image">
             </div>
-            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 ">
-                <h2 class="mb-4 italic text-center font-bold"><b>Register</b></h2>
-                <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="border-1 rounded-2 border-primary p-4 border-solid shadow-lg" style="background: white">
-                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 border-1 rounded-2 border-primary p-4 border-solid shadow-lg">
+                <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <h2 class="mb-2 text-center"><b>Register</b></h2>
                     <!-- Email input -->
-                    <div data-mdb-input-init class="form-outline mb-4">
-                        <input asp-for="Input.Name" type="name" id="name" class="form-control form-control-lg" />
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <input asp-for="Input.Name" type="text" id="name" class="form-control form-control-lg" />
                         <label asp-for="Input.Name" class="form-label" for="email">Name</label>
                         <span asp-validation-for="Input.Name" class="text-danger"></span>
                     </div>
 
                     <!-- Email input -->
-                    <div data-mdb-input-init class="form-outline mb-4">
+                    <div data-mdb-input-init class="form-outline mb-2">
                         <input asp-for="Input.Email" type="email" id="email" class="form-control form-control-lg"/>
                         <label asp-for="Input.Email" class="form-label" for="email">Email address</label>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
                     <!-- Password input -->
-                    <div data-mdb-input-init class="form-outline mb-4">
+                    <div data-mdb-input-init class="form-outline mb-2">
                         <input asp-for="Input.Password" type="password" id="passwrd" class="form-control form-control-lg"/>
                         <label asp-for="Input.Password" class="form-label" for="passwrd">Password</label>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
                     <!-- Confirm Password input -->
-                    <div data-mdb-input-init class="form-outline mb-4">
+                    <div data-mdb-input-init class="form-outline mb-2">
                         <input asp-for="Input.ConfirmPassword" type="password" id="ConfirmPassword" class="form-control form-control-lg"/>
                         <label asp-for="Input.ConfirmPassword" class="form-label" for="ConfirmPassword">Confirm Password</label>
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
-                    
-
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <!-- Submit button -->
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init
-                            class="btn btn-primary btn-lg"
+                            class="btn btn-primary w-full"
                             style="width: 100%"
                             id="login">
                         Register
@@ -57,6 +57,7 @@
 
                     Already have an account ? <a asp-area="Identity" asp-page="/Account/Login">Login</a>
                 </form>
+                
                     <div class="divider d-flex align-items-center justify-content-center my-4">
                         <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
                     </div>

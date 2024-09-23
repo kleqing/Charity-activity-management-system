@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "css:build": "npx tailwindcss -i ./wwwroot/css/input.css -o ./wwwroot/css/output.css --minify"
   },
   "keywords": [],
   "author": "",
