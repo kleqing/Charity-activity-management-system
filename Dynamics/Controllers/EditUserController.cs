@@ -1,10 +1,12 @@
-﻿using Dynamics.DataAccess.Repository;
+﻿using System.Net;
+using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
@@ -90,11 +92,13 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    user.Avatar = Util.UploadImage(image, "/images/User", user.UserId);
+                    user.Avatar = Util.UploadImage(image, @"images\User", user.UserId);
                     await _userRepository.Update(user);
                     return RedirectToAction(nameof(Index));
                 }
             }
+            // Update the session as well
+            HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
             return View(user);
         }
         

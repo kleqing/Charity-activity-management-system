@@ -21,8 +21,8 @@ namespace Dynamics.Utility
                 {
                     image.CopyTo(myfile);
                 }
-                
-                return fileName + fileNameExtension;
+                string imagePath = Path.Combine(folder, fileName + fileNameExtension);
+                return "/" + imagePath.Replace('\\', '/');
             }catch (Exception e)
             {
                 return string.Empty;

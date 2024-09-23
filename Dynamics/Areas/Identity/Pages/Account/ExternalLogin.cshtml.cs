@@ -1,11 +1,10 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+﻿#nullable disable
 
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -14,6 +13,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Dynamics.Models.Models;
 using Dynamics.DataAccess.Repository;
+using Newtonsoft.Json;
+using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -93,6 +94,10 @@ namespace Dynamics.Areas.Identity.Pages.Account
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
+                // Set the session
+                var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var businessUser = await _userRepo.Get(u => u.Email == userEmail);
+                HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return RedirectToAction("Index", "EditUser");
             }
@@ -143,6 +148,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         // Add user to the database after creating the user with external login
                         await _userRepo.Add(new User
                         {
+                            UserId = user.Id,
                             UserName = info.Principal.FindFirstValue(ClaimTypes.Name),  // Get user's name from Google
                             Email = info.Principal.FindFirstValue(ClaimTypes.Email),  // Get user's email from Google
                             Avatar = info.Principal.FindFirstValue("urn:google:picture")
@@ -171,7 +177,10 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         //{
                         //    return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         //}
-
+                        
+                        // Set the session for the app:
+                        var businessUser = await _userRepo.Get(u => u.Email == user.Email);
+                        HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         // TODO: Redirect to homepage instead
                         return RedirectToAction("Index", "EditUser");
