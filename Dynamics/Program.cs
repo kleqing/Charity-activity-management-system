@@ -1,6 +1,7 @@
 
 using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
+using Dynamics.Services;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -34,6 +35,8 @@ namespace Dynamics
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("AuthDbContextConnection"));
             });
+
+            builder.Services.AddSingleton<IVNPayServices, VNPayServices>();
 
             // Roles will be created on the fly in the register razor page
             builder.Services
