@@ -4,23 +4,23 @@ namespace Dynamics.Models.Models
 {
     public class User
     {
-        [Required]
-        public string UserId { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string UserName { get; set; }
+        
+        public string UserID { get; set; }
+        public string UserFullName { get; set; }
         [DataType(DataType.Date)]
-        public DateTime? Dob { get; set; }
+        public DateOnly? UserDOB { get; set; }
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
-        [DataType(DataType.PhoneNumber)]
-        public string? PhoneNumber { get; set; }
-        [MaxLength(300)]
-        public string? Address { get; set; }
-        public string? Avatar { get; set; }
-        [MaxLength(300)]
-        public string? Description { get; set; }
-        public bool IsBanned { get; set; }
-        // Role ID and password will be passed to identity table instead
+        public string UserEmail { get; set; }
+        [DataType(DataType.PhoneNumber)]        
+        public string? UserPhoneNumber { get; set; }
+        public string? UserAddress { get; set; }
+        public string? UserAvatar { get; set; }
+        public string? UserDescription { get; set; }
+        public virtual ICollection<Award> Award { get; set; }
+        public virtual ICollection<Request> Request { get; set; }
+        public virtual ICollection<ProjectMember> ProjectMember { get; set; }
+        public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
+        public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactions { get; set; }
+        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactions { get; set; }
     }
 }
