@@ -46,21 +46,17 @@ namespace Dynamics.Areas.Identity.Pages.Account
             _userRepo = userRepo;
         }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [BindProperty] public InputModel Input { get; set; }
 
         public string ProviderDisplayName { get; set; }
 
         public string ReturnUrl { get; set; }
 
-        [TempData]
-        public string ErrorMessage { get; set; }
+        [TempData] public string ErrorMessage { get; set; }
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            [Required] [EmailAddress] public string Email { get; set; }
         }
 
         // Prevent unauthorized access to the page
@@ -75,6 +71,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             return new ChallengeResult(provider, properties);
         }
 
+        // Login
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -83,24 +80,30 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-
+            // Checking if the user already have an account with the same email
+            var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+            
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
+                isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
                 // Set the session
-                var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
                 var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name,
+                    info.LoginProvider);
+
                 return RedirectToAction("Index", "EditUser");
             }
+
             if (result.IsLockedOut)
             {
                 return RedirectToPage("./Lockout");
@@ -117,10 +120,12 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
+
                 return Page();
             }
         }
 
+        // Register
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -149,9 +154,10 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         await _userRepo.Add(new User
                         {
                             UserID = user.Id,
-                            UserFullName = info.Principal.FindFirstValue(ClaimTypes.Name),  // Get user's name from Google
-                            UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email),  // Get user's email from Google
-                            UserAvatar = info.Principal.FindFirstValue("urn:google:picture")
+                            UserFullName =
+                                info.Principal.FindFirstValue(ClaimTypes.Name), // Get user's name from Google
+                            UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email), // Get user's email from Google
+                            UserAvatar = info.Principal.FindFirstValue("picture")
                         });
 
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
@@ -159,37 +165,31 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         existed.EmailConfirmed = true;
                         await _userManager.UpdateAsync(existed);
 
-                        // We don't need to confirm the email if the user use google auth
+                        // We don't need to confirm the email if the user use Google auth
 
-                        //var userId = await _userManager.GetUserIdAsync(user);
-                        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        //var callbackUrl = Url.Page(
-                        //    "/Account/ConfirmEmail",
-                        //    pageHandler: null,
-                        //    values: new { area = "Identity", userId = userId, code = code },
-                        //    protocol: Request.Scheme);
+                        _emailSender.SendEmailAsync(Input.Email, "Register Confirmation",
+                            $"You have register successfully to Dynamics");
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Register Confirmation",
-                            $"You have register successfully to Dysnamics");
-
-                        //if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        //{
-                        //    return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                        //}
-                        
                         // Set the session for the app:
                         var businessUser = await _userRepo.Get(u => u.UserEmail == user.Email);
                         HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         // TODO: Redirect to homepage instead
                         return RedirectToAction("Index", "EditUser");
                     }
+
+                    // User has email
+                    if (existed != null)
+                    {
+                    }
                     else
                     {
+                        // TODO: Bind the google account with current account
                         ModelState.AddModelError("Email", "Email already exists in the system.");
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -211,8 +211,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
             catch
             {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
+                                                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                                                    $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
             }
         }
 
@@ -222,6 +222,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
+
             return (IUserEmailStore<IdentityUser>)_userStore;
         }
     }

@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Dynamics.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -51,14 +53,9 @@ namespace Dynamics.Areas.Identity.Pages.Account
             var result = await _userManager.ConfirmEmailAsync(user, decodedCode);
             if (result.Succeeded)
             {
-                // This will cause duplication in the actual user table
-                //await _userRepo.Add(new User
-                //{
-                //    name = user.UserName, //This is email not actual username?
-                //    email = user.Email,
-                //    roleID = 1  // 'Guest'
-                //});
-
+                // Session
+                var businessUser = await _userRepo.Get(u => u.UserID == user.Id);
+                HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 //return RedirectToPage("EmailConfirmationSuccess", new { returnUrl });
                 return RedirectToAction("Index", "EditUser");
             }

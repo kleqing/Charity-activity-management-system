@@ -2,6 +2,6 @@
 {
     public static class MyConstants
     {
-        public static string DefaultAvatarUrl = @"defaultAva.jpg";
+        public static string DefaultAvatarUrl = @"/images/User/defaultAva.jpg";
     }
 }

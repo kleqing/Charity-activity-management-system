@@ -2,6 +2,7 @@
 using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Utility;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,9 @@ namespace Dynamics
                 googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
                 googleOptions.Scope.Add(Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoProfile);
                 googleOptions.Scope.Add(Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoEmail);
+                
+                // Get user profile
+                googleOptions.ClaimActions.MapJsonKey("picture", "picture");
             });
             // Add database
             builder.Services.AddDbContext<ApplicationDbContext>(options =>

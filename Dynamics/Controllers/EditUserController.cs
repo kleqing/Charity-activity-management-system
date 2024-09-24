@@ -94,11 +94,11 @@ namespace Dynamics.Controllers
                 {
                     user.UserAvatar = Util.UploadImage(image, @"images\User", user.UserID);
                     await _userRepository.Update(user);
+                    // Update the session as well
+                    HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
                     return RedirectToAction(nameof(Index));
                 }
             }
-            // Update the session as well
-            HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
             return View(user);
         }
         
