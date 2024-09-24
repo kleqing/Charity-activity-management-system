@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dynamics.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,7 +32,7 @@ namespace Dynamics.DataAccess.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserFullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserDOB = table.Column<DateOnly>(type: "date", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -75,7 +75,7 @@ namespace Dynamics.DataAccess.Migrations
                 {
                     AwardID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AwardName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,7 +92,7 @@ namespace Dynamics.DataAccess.Migrations
                 name: "OrganizationMember",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -117,7 +117,7 @@ namespace Dynamics.DataAccess.Migrations
                 columns: table => new
                 {
                     RequestID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreationDate = table.Column<DateOnly>(type: "date", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -141,7 +141,7 @@ namespace Dynamics.DataAccess.Migrations
                 columns: table => new
                 {
                     TransactionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Time = table.Column<DateOnly>(type: "date", nullable: false),
@@ -177,7 +177,7 @@ namespace Dynamics.DataAccess.Migrations
                     ProjectDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateOnly>(type: "date", nullable: true),
                     EndTime = table.Column<DateOnly>(type: "date", nullable: true),
-                    LeaderID = table.Column<int>(type: "int", nullable: true)
+                    LeaderID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -251,7 +251,7 @@ namespace Dynamics.DataAccess.Migrations
                 name: "ProjectMembers",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -298,7 +298,7 @@ namespace Dynamics.DataAccess.Migrations
                 columns: table => new
                 {
                     TransactionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Unit = table.Column<int>(type: "int", nullable: false),

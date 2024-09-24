@@ -10,7 +10,7 @@ namespace Dynamics.Models.Models
     public class UserToOrganizationHistory
     {
 		public Guid TransactionID { get; set; }
-		public string UserID { get; set; }
+		public Guid UserID { get; set; }
 		public Guid OrganizationID { get; set; }
 		public string Message { get; set; }
 		[DataType(DataType.Date)]

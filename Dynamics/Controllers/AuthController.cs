@@ -1,5 +1,6 @@
 ﻿using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
@@ -26,7 +27,8 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
@@ -48,7 +50,7 @@ namespace Dynamics.Controllers
             }
             //assign current user to userDto
             ViewData["Title"] = "Change password";
-            var userDto = new ChangePasswordDto() { UserId = currentUser.Id };
+            var userDto = new ChangePasswordDto() { UserId = new Guid(currentUser.Id) };
             return View(userDto);
         }
 
@@ -62,7 +64,7 @@ namespace Dynamics.Controllers
             {
                 return RedirectToAction("ChangePassword", "Auth");
             }
-            var currentUser = await _userManager.FindByIdAsync(changePassword.UserId);
+            var currentUser = await _userManager.FindByIdAsync(changePassword.UserId.ToString());
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(currentUser, changePassword.OldPassword, changePassword.NewPassword);
             if (!changePasswordResult.Succeeded)

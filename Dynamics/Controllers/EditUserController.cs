@@ -1,15 +1,14 @@
-using System.Net;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
+    [Authorize(Roles = RoleConstants.User)]
     public class EditUserController : Controller
     {
         IUserRepository _userRepository;
@@ -38,9 +37,9 @@ namespace Dynamics.Controllers
             //return View();
         }
 
-        
+
         // GET: Client/Users/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(Guid id)
         {
             var user = await _userRepository.Get(u => u.UserID.Equals(id));
             if (user == null)
@@ -71,7 +70,7 @@ namespace Dynamics.Controllers
         }
 
         // GET: Client/Users/Edit/5
-        public async Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             var user = await _userRepository.Get(u => u.UserID.Equals(id));
 
@@ -92,15 +91,16 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    user.UserAvatar = Util.UploadImage(image, @"images\User", user.UserID);
+                    user.UserAvatar = Util.UploadImage(image, @"images\User", user.UserID.ToString());
                     await _userRepository.Update(user);
                     // Update the session as well
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
                     return RedirectToAction(nameof(Index));
                 }
             }
+
             return View(user);
         }
-        
+
     }
 }

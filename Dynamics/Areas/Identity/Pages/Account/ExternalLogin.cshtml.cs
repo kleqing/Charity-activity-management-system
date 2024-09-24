@@ -1,20 +1,16 @@
 #nullable disable
 
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json.Serialization;
+using Dynamics.DataAccess.Repository;
+using Dynamics.Models.Models;
+using Dynamics.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Dynamics.Models.Models;
-using Dynamics.DataAccess.Repository;
 using Newtonsoft.Json;
-using JsonConverter = Newtonsoft.Json.JsonConverter;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -56,7 +52,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required] [EmailAddress] public string Email { get; set; }
+            [Required][EmailAddress] public string Email { get; set; }
         }
 
         // Prevent unauthorized access to the page
@@ -87,18 +83,30 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-            // Checking if the user already have an account with the same email
+
+            // Checking if the user already have an account with the same email, we will use that account to log in instead
             var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
-            
+            var existingUser = await _userManager.FindByEmailAsync(userEmail ?? "No email");
+            if (existingUser != null)
+            {
+                // Sign in using that user instead of Google
+                var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
+                HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
+                    info.Principal.Identity.Name, info.LoginProvider);
+                await _signInManager.SignInAsync(existingUser, isPersistent: false, authenticationMethod: null);
+                return RedirectToAction("Index", "EditUser");
+            }
+
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
-                isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
                 // Set the session
                 var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name,
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
+                    info.Principal.Identity.Name,
                     info.LoginProvider);
 
                 return RedirectToAction("Index", "EditUser");
@@ -120,9 +128,9 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
-
-                return Page();
             }
+
+            return Page();
         }
 
         // Register
@@ -153,7 +161,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         // Add user to the database after creating the user with external login
                         await _userRepo.Add(new User
                         {
-                            UserID = user.Id,
+                            UserID = new Guid(user.Id),
                             UserFullName =
                                 info.Principal.FindFirstValue(ClaimTypes.Name), // Get user's name from Google
                             UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email), // Get user's email from Google
@@ -167,21 +175,23 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
                         // We don't need to confirm the email if the user use Google auth
 
-                        _emailSender.SendEmailAsync(Input.Email, "Register Confirmation",
-                            $"You have register successfully to Dynamics");
+                        await _emailSender.SendEmailAsync(Input.Email, "Register Confirmation", $"You have register successfully to Dynamics");
 
                         // Set the session for the app:
                         var businessUser = await _userRepo.Get(u => u.UserEmail == user.Email);
                         HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-
-                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                        // TODO: Redirect to homepage instead
-                        return RedirectToAction("Index", "EditUser");
-                    }
-
-                    // User has email
-                    if (existed != null)
-                    {
+                        // Provide user with default role as well
+                        result = _userManager.AddToRoleAsync(user, RoleConstants.User).GetAwaiter().GetResult();
+                        if (result.Succeeded)
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                            // TODO: Redirect to homepage instead
+                            return RedirectToAction("Index", "EditUser");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                     else
                     {

@@ -13,10 +13,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using Newtonsoft.Json;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -122,7 +122,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     // Add real user to database
                     await _userRepo.Add(new User
                     {
-                        UserID = user.Id, // The link between 2 user table should be this id
+                        UserID = new Guid(user.Id), // The link between 2 user table should be this id
                         UserFullName = Input.Name,
                         UserEmail = Input.Email,
                         UserAvatar = MyConstants.DefaultAvatarUrl,
@@ -149,7 +149,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             new { email = Input.Email, returnUrl = returnUrl });
                     }
 
-                    var businessUser = _userRepo.Get(u => u.UserID == user.Id);
+                    var businessUser = _userRepo.Get(u => u.UserID.ToString() == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     // TODO: Return to the home page
