@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System.Text;
 
+
 namespace Dynamics.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailModel : PageModel
@@ -44,7 +45,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 // Session
-                var businessUser = await _userRepo.Get(u => u.UserID == user.Id);
+                var businessUser = await _userRepo.Get(u => u.UserID.ToString() == user.Id);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 //return RedirectToPage("EmailConfirmationSuccess", new { returnUrl });
                 return RedirectToAction("Index", "EditUser");
