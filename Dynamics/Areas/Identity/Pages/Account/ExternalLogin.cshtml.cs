@@ -96,7 +96,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             {
                 // Set the session
                 var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
-                var businessUser = await _userRepo.Get(u => u.Email == userEmail);
+                var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return RedirectToAction("Index", "EditUser");
@@ -148,10 +148,10 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         // Add user to the database after creating the user with external login
                         await _userRepo.Add(new User
                         {
-                            UserId = user.Id,
-                            UserName = info.Principal.FindFirstValue(ClaimTypes.Name),  // Get user's name from Google
-                            Email = info.Principal.FindFirstValue(ClaimTypes.Email),  // Get user's email from Google
-                            Avatar = info.Principal.FindFirstValue("urn:google:picture")
+                            UserID = user.Id,
+                            UserFullName = info.Principal.FindFirstValue(ClaimTypes.Name),  // Get user's name from Google
+                            UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email),  // Get user's email from Google
+                            UserAvatar = info.Principal.FindFirstValue("urn:google:picture")
                         });
 
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
@@ -179,7 +179,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         //}
                         
                         // Set the session for the app:
-                        var businessUser = await _userRepo.Get(u => u.Email == user.Email);
+                        var businessUser = await _userRepo.Get(u => u.UserEmail == user.Email);
                         HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         // TODO: Redirect to homepage instead

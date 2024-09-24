@@ -31,13 +31,13 @@
     </div>
 
     <div class="flex gap-4">
-        <span>@(currentUser!= null ? currentUser.UserName : "Invalid user")</span>
+        <span>@(currentUser!= null ? currentUser.UserFullName : "Invalid user")</span>
         <i class="fa-regular fa-bell cursor-pointer"></i>
         <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar shadow-md">
                 <!-- TODO: Insert username avatar here -->
                 <div class="w-20 rounded-full">
-                    <img alt="@currentUser?.UserName" src="@(currentUser?.Avatar ?? "defaultAva.jpg")" />
+                    <img alt="@currentUser?.UserFullName" src="@(currentUser?.UserAvatar ?? "defaultAva.jpg")" />
                 </div>
             </div>
             <ul

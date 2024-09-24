@@ -88,7 +88,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,
                         lockoutOnFailure: false);
-                    var businessUser = await _userRepository.Get(u => u.Email == user.Email);
+                    var businessUser = await _userRepository.Get(u => u.UserEmail == user.Email);
                     // SerializeObject for session
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     

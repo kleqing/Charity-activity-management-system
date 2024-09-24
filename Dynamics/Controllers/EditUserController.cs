@@ -42,7 +42,7 @@ namespace Dynamics.Controllers
         // GET: Client/Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            var user = await _userRepository.Get(u => u.UserId.Equals(id));
+            var user = await _userRepository.Get(u => u.UserID.Equals(id));
             if (user == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace Dynamics.Controllers
         // GET: Client/Users/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
-            var user = await _userRepository.Get(u => u.UserId.Equals(id));
+            var user = await _userRepository.Get(u => u.UserID.Equals(id));
 
             if (user == null)
             {
@@ -92,7 +92,7 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    user.Avatar = Util.UploadImage(image, @"images\User", user.UserId);
+                    user.UserAvatar = Util.UploadImage(image, @"images\User", user.UserID);
                     await _userRepository.Update(user);
                     return RedirectToAction(nameof(Index));
                 }

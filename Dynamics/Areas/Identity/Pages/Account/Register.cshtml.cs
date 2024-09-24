@@ -118,10 +118,10 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     // Add real user to database
                     await _userRepo.Add(new User
                     {
-                        UserId = user.Id, // The link between 2 user table should be this id
-                        UserName = Input.Name,
-                        Email = Input.Email,
-                        Avatar = MyConstants.DefaultAvatarUrl,
+                        UserID = user.Id, // The link between 2 user table should be this id
+                        UserFullName = Input.Name,
+                        UserEmail = Input.Email,
+                        UserAvatar = MyConstants.DefaultAvatarUrl,
                     });
 
                     _logger.LogInformation("User created a new account with password.");
