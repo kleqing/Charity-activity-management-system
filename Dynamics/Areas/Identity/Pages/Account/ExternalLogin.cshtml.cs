@@ -151,7 +151,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             UserId = user.Id,
                             UserName = info.Principal.FindFirstValue(ClaimTypes.Name),  // Get user's name from Google
                             Email = info.Principal.FindFirstValue(ClaimTypes.Email),  // Get user's email from Google
-                            Avatar = info.Principal.FindFirstValue("urn:google:picture")
+                            Avatar = info.Principal.FindFirstValue("picture")
                         });
 
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
@@ -160,33 +160,21 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         await _userManager.UpdateAsync(existed);
 
                         // We don't need to confirm the email if the user use google auth
-
-                        //var userId = await _userManager.GetUserIdAsync(user);
-                        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        //var callbackUrl = Url.Page(
-                        //    "/Account/ConfirmEmail",
-                        //    pageHandler: null,
-                        //    values: new { area = "Identity", userId = userId, code = code },
-                        //    protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Register Confirmation",
-                            $"You have register successfully to Dysnamics");
-
-                        //if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        //{
-                        //    return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                        //}
+                        
+                        _emailSender.SendEmailAsync(Input.Email, "Register Confirmation",
+                            $"You have register successfully to Dynamics");
                         
                         // Set the session for the app:
                         var businessUser = await _userRepo.Get(u => u.Email == user.Email);
                         HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                        
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         // TODO: Redirect to homepage instead
                         return RedirectToAction("Index", "EditUser");
                     }
                     else
                     {
+                        // TODO: Bind the google account with current account
                         ModelState.AddModelError("Email", "Email already exists in the system.");
                     }
                 }

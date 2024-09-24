@@ -91,7 +91,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     var businessUser = await _userRepository.Get(u => u.Email == user.Email);
                     // SerializeObject for session
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                    
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");

@@ -25,7 +25,7 @@
     </div>
     <!-- Logo, press this should return to home -->
     <div class="flex-1 flex justify-center">
-        <a href="#" class="text-3xl text-center font-bold text-primary">
+        <a class="text-3xl text-center font-bold text-primary" asp-action="Index" asp-controller="EditUser">
             <i>Dynamics</i>
         </a>
     </div>
@@ -37,17 +37,17 @@
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar shadow-md">
                 <!-- TODO: Insert username avatar here -->
                 <div class="w-20 rounded-full">
-                    <img alt="@currentUser?.UserName" src="@(currentUser?.Avatar ?? "defaultAva.jpg")" />
+                    <img alt="@currentUser?.UserName" src="@(currentUser?.Avatar ?? "/images/User/defaultAva.jpg")" />
                 </div>
             </div>
             <ul
                 tabindex="0"
                 class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                 <li>
-                    <a class="justify-between">Profile</a>
+                    <a asp-action="Details" asp-route-id="@currentUser.UserId">Profile</a>
                 </li>
                 <li>
-                    <a>Settings</a>
+                    <a asp-action="Edit" asp-route-id="@currentUser.UserId">Settings</a>
                 </li>
                 <li>
                     <a>My organization</a>

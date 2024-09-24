@@ -8,17 +8,14 @@
 
 <div class="container mx-auto my-5 p-5">
     <div class="md:flex no-wrap md:-mx-2 ">
-
-
         <!-- Left Side -->
-        <div class="w-full md:w-3/12 md:mx-2">
-
-
+        <div class="w-3/12 mx-2">
+            
             <!-- Profile Card -->
             <div class="bg-white p-3 border-t-4 border-green-400">
                 <div class="image overflow-hidden">
                     <img class="h-auto w-full mx-auto"
-                         alt="{user.name}" src="~/images/User/@Model.Avatar">
+                         alt="{user.name}" src="@Model.Avatar">
                 </div>
                 <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">@Html.DisplayFor(model => model.UserName)</h1>
                 <h3 class="text-gray-600 font-lg text-semibold leading-6">Owner at Her Company Inc.</h3>
