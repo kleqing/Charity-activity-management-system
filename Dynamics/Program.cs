@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Dynamics
 {
@@ -60,12 +61,38 @@ namespace Dynamics
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+            // Configure default routes (This should be after configured the Identity)
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
+            
             // Enable razor page
             builder.Services.AddRazorPages();
 
-            builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+            });
+            
             var app = builder.Build();
+            // Redirect user to 404 page if not found
+            app.Use(async (ctx, next) =>
+            {
+                await next();
 
+                if(ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
+                {
+                    //Re-execute the request so the user gets the error page
+                    string originalPath = ctx.Request.Path.Value;
+                    ctx.Items["originalPath"] = originalPath;
+                    ctx.Request.Path = "/error/PageNotFound";
+                    await next();
+                }
+            });
+            
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -74,12 +101,12 @@ namespace Dynamics
                 app.UseHsts();
             }
 
+            app.MapControllers();
+            app.UseRouting();
             app.UseSession();
-            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();

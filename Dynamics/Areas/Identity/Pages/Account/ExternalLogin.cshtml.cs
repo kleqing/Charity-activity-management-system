@@ -87,9 +87,21 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-            // Checking if the user already have an account with the same email
+
+            // Checking if the user already have an account with the same email, we will use that account to log in instead
             var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
-            
+            var existingUser = await _userManager.FindByEmailAsync(userEmail ?? "No email");
+            if (existingUser != null)
+            {
+                // Sign in using that user instead of Google
+                var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
+                HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
+                    info.Principal.Identity.Name, info.LoginProvider);
+                await _signInManager.SignInAsync(existingUser, isPersistent: false, authenticationMethod: null);
+                return RedirectToAction("Index", "EditUser");
+            }
+
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
                 isPersistent: false, bypassTwoFactor: true);
@@ -98,7 +110,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 // Set the session
                 var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name,
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
+                    info.Principal.Identity.Name,
                     info.LoginProvider);
 
                 return RedirectToAction("Index", "EditUser");
@@ -120,9 +133,9 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
-
-                return Page();
             }
+
+            return Page();
         }
 
         // Register
@@ -177,11 +190,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         // TODO: Redirect to homepage instead
                         return RedirectToAction("Index", "EditUser");
-                    }
-
-                    // User has email
-                    if (existed != null)
-                    {
                     }
                     else
                     {

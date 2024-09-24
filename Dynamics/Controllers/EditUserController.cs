@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
+    [Authorize(Roles = RoleConstants.User)]
     public class EditUserController : Controller
     {
         IUserRepository _userRepository;
@@ -38,7 +39,7 @@ namespace Dynamics.Controllers
             //return View();
         }
 
-        
+
         // GET: Client/Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -99,8 +100,8 @@ namespace Dynamics.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
+
             return View(user);
         }
-        
     }
 }

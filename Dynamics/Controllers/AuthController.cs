@@ -1,5 +1,6 @@
 ﻿using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
@@ -26,7 +27,8 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
