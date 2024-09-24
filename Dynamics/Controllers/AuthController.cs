@@ -12,7 +12,7 @@ namespace Dynamics.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserRepository _userRepository;
-
+        
         public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IUserRepository userRepo)
         {
             _signInManager = signInManager;

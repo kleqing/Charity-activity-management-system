@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dynamics.Models.Models
 {
-    public class UserToProjectTransactionHistory
+    public class UserToProjectHistory
     {
 		public int TransactionID { get; set; }
 		public string UserID { get; set; }

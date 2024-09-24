@@ -9,9 +9,9 @@ namespace Dynamics.Models.Models
 {
     public class Project
     {
-		public int ProjectID { get; set; }
-		public int OrganizationID { get; set; }
-		public int? RequestID { get; set; }
+		public Guid ProjectID { get; set; }
+		public Guid OrganizationID { get; set; }
+		public Guid? RequestID { get; set; }
 		public string ProjectName { get; set; }
 		public int ProjectStatus { get; set; }
         public string Attachment { get; set; }
@@ -26,7 +26,7 @@ namespace Dynamics.Models.Models
 		public virtual ICollection<ProjectMember> ProjectMember { get; set; }
 		public virtual ICollection<ProjectResource> ProjectResource { get; set; }
 		public virtual ICollection<History> History { get; set; }
-        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactions { get; set; }
+        public virtual ICollection<UserToProjectHistory> UserToProjectTransactions { get; set; }
 		public virtual ICollection<OrganizationToProjectHistory> OrganizationToProjectTransactions { get; set; }
 	}
 }
