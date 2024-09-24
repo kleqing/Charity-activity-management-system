@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dynamics.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,14 +15,13 @@ namespace Dynamics.DataAccess.Migrations
                 name: "Organizations",
                 columns: table => new
                 {
-                    OrganizationID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrganizationID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrganizationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrganizationDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrganizationPictures = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateOnly>(type: "date", nullable: true),
                     ShutdownDay = table.Column<DateOnly>(type: "date", nullable: true),
-                    CEOID = table.Column<int>(type: "int", nullable: true)
+                    CEOID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,9 +50,8 @@ namespace Dynamics.DataAccess.Migrations
                 name: "OrganizationResources",
                 columns: table => new
                 {
-                    ResourceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
+                    ResourceID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrganizationID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     Unit = table.Column<int>(type: "int", nullable: false),
@@ -95,7 +93,7 @@ namespace Dynamics.DataAccess.Migrations
                 columns: table => new
                 {
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false)
+                    OrganizationID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,8 +116,7 @@ namespace Dynamics.DataAccess.Migrations
                 name: "Requests",
                 columns: table => new
                 {
-                    RequestID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RequestID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreationDate = table.Column<DateOnly>(type: "date", nullable: true),
@@ -143,10 +140,9 @@ namespace Dynamics.DataAccess.Migrations
                 name: "UserToOrganizationTransactionHistories",
                 columns: table => new
                 {
-                    TransactionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TransactionID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
+                    OrganizationID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Time = table.Column<DateOnly>(type: "date", nullable: false),
                     MoneyTransactionAmout = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -172,17 +168,16 @@ namespace Dynamics.DataAccess.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    ProjectID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
-                    RequestID = table.Column<int>(type: "int", nullable: true),
+                    ProjectID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrganizationID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RequestID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectStatus = table.Column<int>(type: "int", nullable: false),
                     Attachment = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateOnly>(type: "date", nullable: true),
                     EndTime = table.Column<DateOnly>(type: "date", nullable: true),
-                    LeaderID = table.Column<int>(type: "int", nullable: true)
+                    LeaderID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -204,9 +199,8 @@ namespace Dynamics.DataAccess.Migrations
                 name: "Histories",
                 columns: table => new
                 {
-                    HistoryID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    HistoryID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProjectID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Phase = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -227,10 +221,9 @@ namespace Dynamics.DataAccess.Migrations
                 name: "OrganizationToProjectTransactionHistory",
                 columns: table => new
                 {
-                    TransactionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    TransactionID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrganizationID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProjectID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -259,7 +252,7 @@ namespace Dynamics.DataAccess.Migrations
                 columns: table => new
                 {
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false)
+                    ProjectID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,9 +275,8 @@ namespace Dynamics.DataAccess.Migrations
                 name: "ProjectResources",
                 columns: table => new
                 {
-                    ResourceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    ResourceID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProjectID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     ExpectedQuantity = table.Column<int>(type: "int", nullable: true),
@@ -305,10 +297,9 @@ namespace Dynamics.DataAccess.Migrations
                 name: "UserToProjectTransactionHistories",
                 columns: table => new
                 {
-                    TransactionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TransactionID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    ProjectID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Unit = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false),

@@ -8,8 +8,8 @@ namespace Dynamics.Models.Models
 {
     public class OrganizationResource
     {
-		public int ResourceID { get; set; }
-		public int OrganizationID { get; set; }
+		public string ResourceID { get; set; }
+		public string OrganizationID { get; set; }
 		public string ResourceName { get; set; }
 		public int? Quantity { get; set; }
 		public int Unit { get; set; }

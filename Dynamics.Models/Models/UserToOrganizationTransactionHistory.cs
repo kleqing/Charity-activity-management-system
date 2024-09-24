@@ -9,9 +9,9 @@ namespace Dynamics.Models.Models
 {
     public class UserToOrganizationTransactionHistory
     {
-		public int TransactionID { get; set; }
+		public string TransactionID { get; set; }
 		public string UserID { get; set; }
-		public int OrganizationID { get; set; }
+		public string OrganizationID { get; set; }
 		public string Message { get; set; }
 		[DataType(DataType.Date)]
 		public DateOnly Time { get; set; }

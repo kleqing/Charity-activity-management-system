@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240924021728_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240924161629_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,11 +47,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.History", b =>
                 {
-                    b.Property<int>("HistoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HistoryID"));
+                    b.Property<string>("HistoryID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Attachment")
                         .IsRequired()
@@ -68,8 +65,9 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProjectID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("HistoryID");
 
@@ -80,14 +78,11 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.Organization", b =>
                 {
-                    b.Property<int>("OrganizationID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("OrganizationID")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrganizationID"));
-
-                    b.Property<int?>("CEOID")
-                        .HasColumnType("int");
+                    b.Property<string>("CEOID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationDescription")
                         .IsRequired()
@@ -114,8 +109,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.OrganizationMember", b =>
                 {
-                    b.Property<int>("OrganizationID")
-                        .HasColumnType("int");
+                    b.Property<string>("OrganizationID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
@@ -129,11 +124,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.OrganizationResource", b =>
                 {
-                    b.Property<int>("ResourceID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResourceID"));
+                    b.Property<string>("ResourceID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ContentTransaction")
                         .IsRequired()
@@ -142,8 +134,9 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<int?>("ExpectedQuantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrganizationID")
-                        .HasColumnType("int");
+                    b.Property<string>("OrganizationID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
@@ -164,11 +157,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.OrganizationToProjectHistory", b =>
                 {
-                    b.Property<int>("TransactionID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionID"));
+                    b.Property<string>("TransactionID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Amount")
                         .IsRequired()
@@ -178,11 +168,13 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrganizationID")
-                        .HasColumnType("int");
+                    b.Property<string>("OrganizationID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ProjectID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProjectID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ResourceName")
                         .IsRequired()
@@ -208,11 +200,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.Project", b =>
                 {
-                    b.Property<int>("ProjectID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectID"));
+                    b.Property<string>("ProjectID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Attachment")
                         .IsRequired()
@@ -221,11 +210,12 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly?>("EndTime")
                         .HasColumnType("date");
 
-                    b.Property<int?>("LeaderID")
-                        .HasColumnType("int");
+                    b.Property<string>("LeaderID")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrganizationID")
-                        .HasColumnType("int");
+                    b.Property<string>("OrganizationID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProjectDescription")
                         .IsRequired()
@@ -238,8 +228,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<int>("ProjectStatus")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RequestID")
-                        .HasColumnType("int");
+                    b.Property<string>("RequestID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly?>("StartTime")
                         .HasColumnType("date");
@@ -257,8 +247,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.ProjectMember", b =>
                 {
-                    b.Property<int>("ProjectID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProjectID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
@@ -272,17 +262,15 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.ProjectResource", b =>
                 {
-                    b.Property<int>("ResourceID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResourceID"));
+                    b.Property<string>("ResourceID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("ExpectedQuantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProjectID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProjectID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
@@ -304,11 +292,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.Request", b =>
                 {
-                    b.Property<int>("RequestID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestID"));
+                    b.Property<string>("RequestID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Attachment")
                         .IsRequired()
@@ -377,11 +362,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.UserToOrganizationTransactionHistory", b =>
                 {
-                    b.Property<int>("TransactionID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionID"));
+                    b.Property<string>("TransactionID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -391,8 +373,9 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrganizationID")
-                        .HasColumnType("int");
+                    b.Property<string>("OrganizationID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
@@ -412,11 +395,8 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.UserToProjectTransactionHistory", b =>
                 {
-                    b.Property<int>("TransactionID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionID"));
+                    b.Property<string>("TransactionID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
@@ -429,8 +409,9 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProjectID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");

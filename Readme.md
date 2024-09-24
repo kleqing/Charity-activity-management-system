@@ -20,4 +20,3 @@
 # SECOND TIME AND AFTER:
 1. Run `dotnet restore` and `dotnet build`
 2. If there is any new migrations, run `update-database -context dbname`
-

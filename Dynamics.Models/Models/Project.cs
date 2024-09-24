@@ -9,9 +9,9 @@ namespace Dynamics.Models.Models
 {
     public class Project
     {
-		public int ProjectID { get; set; }
-		public int OrganizationID { get; set; }
-		public int? RequestID { get; set; }
+		public string ProjectID { get; set; }
+		public string OrganizationID { get; set; }
+		public string? RequestID { get; set; }
 		public string ProjectName { get; set; }
 		public int ProjectStatus { get; set; }
         public string Attachment { get; set; }
@@ -20,7 +20,7 @@ namespace Dynamics.Models.Models
         public DateOnly? StartTime { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? EndTime { get; set; }
-		public int? LeaderID { get; set; }
+		public string? LeaderID { get; set; }
 		public virtual Organization Organization { get; set; }
 		public virtual Request Request { get; set; }
 		public virtual ICollection<ProjectMember> ProjectMember { get; set; }
