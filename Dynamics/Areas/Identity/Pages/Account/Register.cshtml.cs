@@ -149,7 +149,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             new { email = Input.Email, returnUrl = returnUrl });
                     }
 
-                    var businessUser = _userRepo.Get(u => u.UserId == user.Id);
+                    var businessUser = _userRepo.Get(u => u.UserID == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     // TODO: Return to the home page

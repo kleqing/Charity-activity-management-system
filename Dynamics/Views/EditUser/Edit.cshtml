@@ -11,7 +11,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit page</title>
-    <link rel="stylesheet" href="/Client/css/output.css" />
     <!-- jQuery -->
 </head>
 <body class="h-screen flex flex-col">
@@ -40,7 +39,7 @@
                         <!-- TODO: Subtitute the input here and all the input below with correct user values -->
                         <input type="text" placeholder="Enter new name" asp-for="UserFullName"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="UserName" />
+                               name="UserFullName" />
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
@@ -48,7 +47,7 @@
                         </div>
                         <input type="email" placeholder="Enter new email" asp-for="UserEmail"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="Email" />
+                               name="UserEmail" />
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
@@ -56,7 +55,7 @@
                         </div>
                         <input type="tel" placeholder="Enter new phone" asp-for="UserPhoneNumber"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="PhoneNumber" />
+                               name="UserPhoneNumber" />
                     </label>
                     <label class="form-control w-full">
                         <div class="label">
@@ -64,7 +63,7 @@
                         </div>
                         <input type="text" placeholder="Enter new address" asp-for="UserAddress"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="Address" />
+                               name="UserAddress" />
                     </label>
                     <!-- Becareful as this one must strictly follow format YYYY-MM-DD -->
                     <label asp-for="UserDOB" class="form-control w-full">
@@ -73,13 +72,14 @@
                         </div>
                         <input type="date" asp-for="UserDOB"
                                class="bg-white border border-gray-500 text-sm rounded-lg block w-full p-2.5 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                               name="Dob" />
+                               name="UserDOB" />
                     </label>
                 </div>
                 <div class="flex flex-col gap-2 font-bold">
                     <h3>Profile picture</h3>
                     <label for="changeProfile" class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
-                        <input type="file" name="image" id="changeProfile" style="display: none" asp-for="UserAvatar" />
+                        <input type="hidden" name="UserAvatar" asp-for="UserAvatar" value="@Model.UserAvatar"/>
+                        <input type="file" name="image" id="changeProfile" style="display: none" />
                         <!-- TODO: Subtitles the user avatar here -->
                         <img src="@Model.UserAvatar" alt="User's Name"
                              class="avatar w-40 h-40 object-cover rounded-full shadow-md" />
