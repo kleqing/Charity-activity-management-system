@@ -54,7 +54,7 @@ namespace Dynamics.DataAccess.Repository
         }
         public async Task<bool> Update(User user)
         {
-            var existingItem = await Get(u => user.UserId == u.UserId);
+            var existingItem = await Get(u => user.UserID == u.UserID);
             if (existingItem == null)
             {
                 return false;

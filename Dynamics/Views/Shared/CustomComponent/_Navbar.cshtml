@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
 
@@ -31,23 +31,23 @@
     </div>
 
     <div class="flex gap-4">
-        <span>@(currentUser!= null ? currentUser.UserName : "Invalid user")</span>
+        <span>@(currentUser!= null ? currentUser.UserFullName : "Invalid user")</span>
         <i class="fa-regular fa-bell cursor-pointer"></i>
         <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar shadow-md">
                 <!-- TODO: Insert username avatar here -->
                 <div class="w-20 rounded-full">
-                    <img alt="@currentUser?.UserName" src="@(currentUser?.Avatar ?? "/images/User/defaultAva.jpg")" />
+                    <img alt="@currentUser?.UserFullName" src="@(currentUser?.UserAvatar ?? "defaultAva.jpg")" />
                 </div>
             </div>
             <ul
                 tabindex="0"
                 class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                 <li>
-                    <a asp-action="Details" asp-route-id="@currentUser.UserId">Profile</a>
+                    <a asp-action="Details" asp-route-id="@currentUser.UserID">Profile</a>
                 </li>
                 <li>
-                    <a asp-action="Edit" asp-route-id="@currentUser.UserId">Settings</a>
+                    <a asp-action="Edit" asp-route-id="@currentUser.UserID">Settings</a>
                 </li>
                 <li>
                     <a>My organization</a>
