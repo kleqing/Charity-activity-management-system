@@ -54,7 +54,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 // Session
-                var businessUser = await _userRepo.Get(u => u.UserID == new Guid(user.Id));
+                var businessUser = await _userRepo.Get(u => u.UserID == user.Id);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 //return RedirectToPage("EmailConfirmationSuccess", new { returnUrl });
                 return RedirectToAction("Index", "EditUser");

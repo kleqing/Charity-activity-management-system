@@ -5,7 +5,7 @@ namespace Dynamics.Models.Models
     public class User
     {
         
-        public Guid UserID { get; set; }
+        public string UserID { get; set; }
         public string UserFullName { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? UserDOB { get; set; }

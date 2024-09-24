@@ -9,7 +9,7 @@ namespace Dynamics.Utility
          * Save an image to local file <br />
          * Follow this path: wwwroot/folderpath/id.ext
          */
-        public static string UploadImage(IFormFile image, string folder, Guid id)
+        public static string UploadImage(IFormFile image, string folder, string id)
         {
             try
             {
