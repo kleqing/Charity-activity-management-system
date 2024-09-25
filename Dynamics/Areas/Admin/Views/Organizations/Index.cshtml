@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Dynamics.Models.Models.Organization>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrganizationName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrganizationDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrganizationPictures)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShutdownDay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CEOID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.isBanned)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrganizationName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrganizationDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrganizationPictures)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShutdownDay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CEOID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.isBanned)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.OrganizationID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.OrganizationID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.OrganizationID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

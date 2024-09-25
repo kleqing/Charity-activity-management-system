@@ -40,6 +40,8 @@
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\styles.css" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Areas\Admin\Data\" />
+	  <Folder Include="Areas\Admin\Models\" />
 	  <Folder Include="Helps\" />
 	  <Folder Include="wwwroot\images\User\" />
 	</ItemGroup>
@@ -49,7 +51,7 @@
 	</ItemGroup>
 
 	<Target Name="Tailwind" BeforeTargets="Build">
-		<Exec Command="npm run css:build"/>
+		<Exec Command="npm run css:build" />
 	</Target>
 
 </Project>
