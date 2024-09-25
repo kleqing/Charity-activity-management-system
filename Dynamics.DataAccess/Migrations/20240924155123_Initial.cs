@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dynamics.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,10 +19,10 @@ namespace Dynamics.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrganizationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrganizationDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganizationPictures = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationPictures = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartTime = table.Column<DateOnly>(type: "date", nullable: true),
                     ShutdownDay = table.Column<DateOnly>(type: "date", nullable: true),
-                    CEOID = table.Column<int>(type: "int", nullable: true)
+                    CEOID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

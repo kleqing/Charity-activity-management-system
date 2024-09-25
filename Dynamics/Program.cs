@@ -52,6 +52,8 @@ namespace Dynamics
 
             // Repos here
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+
 
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();

@@ -1,0 +1,124 @@
+﻿@model IEnumerable<Dynamics.Models.Models.Organization>
+
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container my-5 p-5 pt-12">
+
+    <div class="my-5 flex justify-center">
+        <h1 class="text-center text-3xl">Want to help others ?</h1>
+    </div>
+
+    <div class="flex justify-center my-5">
+        <a asp-action="Create" asp-controller="Organization" asp- class="my-5">
+            <button id="createOrgBtn" class="btn btn-wide bg-red-500 text-white">
+                Create new organization now!
+            </button>
+        </a>
+    </div>
+
+    <div class="my-5">
+        <h1 class="text-center text-3xl">Discover all activive organization</h1>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 ml-5 flex justify-center">
+        @foreach(var item in Model)
+        {
+            <div class="card bg-base-100 w-96 shadow-xl ">
+                <figure>
+                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                        <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
+                             alt="@item.OrganizationName" />
+                    </a>
+                    
+                </figure>
+                <div class="card-body">
+                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                        <h2 class="card-title">@item.OrganizationName</h2>
+                        </a>
+                    <h4>Start date: @item.StartTime</h4>
+                    <p>@item.OrganizationDescription</p>
+                    <div class="card-actions justify-center my-5">
+                        <button class="btn btn-primary">join into organization Now</button>
+                    </div>
+                </div>
+            </div>
+        }
+        
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

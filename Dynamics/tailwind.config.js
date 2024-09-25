@@ -8,6 +8,7 @@ module.exports = {
     theme: {
         extend: {},
     },
+
     daisyui: {
         themes: [
             {
@@ -37,7 +38,7 @@ module.exports = {
         ],
     },
     plugins: [
-        require('daisyui'),
+        require('daisyui')
     ],
 }
 

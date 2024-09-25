@@ -83,8 +83,8 @@ namespace Dynamics.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrganizationID"));
 
-                    b.Property<int?>("CEOID")
-                        .HasColumnType("int");
+                    b.Property<string>("CEOID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationDescription")
                         .IsRequired()
@@ -95,7 +95,6 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationPictures")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly?>("ShutdownDay")

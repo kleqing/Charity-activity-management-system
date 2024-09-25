@@ -9,8 +9,12 @@
     <link rel="stylesheet" href="~/css/output.css">
 </head>
 <body class="bg-base-100 relative">
-<partial name="CustomComponent/_Navbar"/>
-@RenderBody()
+    <partial name="CustomComponent/_Navbar" />
+   
+     <div class="my-5 pt-5">
+         @RenderBody()
+     </div>
+
 
 @* This is used for icons *@
 <script src="https://kit.fontawesome.com/ba8c3661b4.js" crossorigin="anonymous"></script>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240924021728_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240924155123_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,8 +86,8 @@ namespace Dynamics.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrganizationID"));
 
-                    b.Property<int?>("CEOID")
-                        .HasColumnType("int");
+                    b.Property<string>("CEOID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationDescription")
                         .IsRequired()
@@ -98,7 +98,6 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationPictures")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly?>("ShutdownDay")
