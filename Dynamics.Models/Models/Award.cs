@@ -10,7 +10,7 @@ namespace Dynamics.Models.Models
     {
         public Guid AwardID { get; set; }
         public string AwardName { get; set; }
-        public string UserID { get; set; }
+        public Guid UserID { get; set; }
         public virtual User User { get; set; }
     }
 }

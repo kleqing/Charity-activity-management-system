@@ -9,7 +9,7 @@ namespace Dynamics.Models.Models
     public class UserToProjectHistory
     {
 		public Guid TransactionID { get; set; }
-		public string UserID { get; set; }
+		public Guid UserID { get; set; }
 		public Guid ProjectID { get; set; }
 		public int Status { get; set; }
 		public int Unit { get; set; }
