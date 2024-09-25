@@ -8,8 +8,8 @@ namespace Dynamics.Models.Models
 {
     public class ProjectResource
     {
-		public int ResourceID { get; set; }
-		public int ProjectID { get; set; }
+		public Guid ResourceID { get; set; }
+		public Guid ProjectID { get; set; }
 		public string ResourceName { get; set; }
 		public int? Quantity { get; set; }
 		public int? ExpectedQuantity { get; set; }

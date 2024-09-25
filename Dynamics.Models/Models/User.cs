@@ -4,14 +4,14 @@ namespace Dynamics.Models.Models
 {
     public class User
     {
-        
-        public string UserID { get; set; }
+
+        public Guid UserID { get; set; }
         public string UserFullName { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? UserDOB { get; set; }
         [DataType(DataType.EmailAddress)]
         public string UserEmail { get; set; }
-        [DataType(DataType.PhoneNumber)]        
+        [DataType(DataType.PhoneNumber)]
         public string? UserPhoneNumber { get; set; }
         public string? UserAddress { get; set; }
         public string? UserAvatar { get; set; }
@@ -20,7 +20,7 @@ namespace Dynamics.Models.Models
         public virtual ICollection<Request> Request { get; set; }
         public virtual ICollection<ProjectMember> ProjectMember { get; set; }
         public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
-        public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactions { get; set; }
-        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactions { get; set; }
+        public virtual ICollection<UserToOrganizationHistory> UserToOrganizationTransactions { get; set; }
+        public virtual ICollection<UserToProjectHistory> UserToProjectTransactions { get; set; }
     }
 }

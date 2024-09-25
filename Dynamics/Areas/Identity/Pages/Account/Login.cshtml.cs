@@ -66,7 +66,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            // returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -91,12 +91,11 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     var businessUser = await _userRepository.Get(u => u.UserEmail == user.Email);
                     // SerializeObject for session
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                    
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
                         // TODO: Redirect to home page
-                        return RedirectToAction("Index", "EditUser");
+                        return RedirectToAction("Index", "EditUser", returnUrl);
                     }
 
                     // TODO: Ban user in da future

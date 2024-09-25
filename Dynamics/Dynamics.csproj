@@ -48,6 +48,11 @@
 		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <AdditionalFiles Include="Views\Error\PageNotFound.cshtml" />
+	  <AdditionalFiles Include="Views\Secret\Index.cshtml" />
+	</ItemGroup>
+
 	<Target Name="Tailwind" BeforeTargets="Build">
 		<Exec Command="npm run css:build" />
 	</Target>

@@ -9,8 +9,8 @@ namespace Dynamics.Models.Models
 {
     public class History
     {
-        public int HistoryID { get; set; }
-        public int ProjectID { get; set; }
+        public Guid HistoryID { get; set; }
+        public Guid ProjectID { get; set; }
         public string Phase { get; set; }
         [DataType(DataType.Date)]
         public DateOnly Date { get; set; }

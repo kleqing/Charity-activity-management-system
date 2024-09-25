@@ -14,7 +14,7 @@ namespace Dynamics.Utility
             try
             {
                 // Get the ID of the user to mark it as filename 
-                string fileName = id;
+                string fileName = Convert.ToString(id);
                 string fileNameExtension = Path.GetExtension(image.FileName);
                 var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder, fileName + fileNameExtension);
                 using (var myfile = new FileStream(fullPath, FileMode.Create))

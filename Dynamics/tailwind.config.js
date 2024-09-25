@@ -5,6 +5,11 @@ module.exports = {
         './Views/**/*.cshtml',
         './Areas/**/*.cshtml',
     ],
+    safelist: [
+        {
+            pattern: /bg-+/, // 👈  This includes bg of all colors and shades
+        },
+    ],
     theme: {
         extend: {},
     },
