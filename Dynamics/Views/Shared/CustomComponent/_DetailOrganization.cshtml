@@ -1,0 +1,127 @@
+﻿@using Dynamics.Utility
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject IHttpContextAccessor Accessor
+
+
+@{
+    var organizationString = Accessor.HttpContext.Session.GetString("organization");
+    Organization currentOrganization = null;
+    if (organizationString != null)
+    {
+        currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
+    }
+
+    var userString = Accessor.HttpContext.Session.GetString("user");
+    User currentUser = null;
+    if (userString != null)
+    {
+        currentUser = JsonConvert.DeserializeObject<User>(userString);
+    }
+
+    var OrganizationMember = Accessor.HttpContext.Session.Get<List<OrganizationMember>>(MySettingSession.SESSION_Organization_Member_KEY);
+}
+
+
+
+<div class="py-5">
+    <div class="flex flex-col md:flex-row gap-6 mb-6 justify-center">
+        <div class="flex-1">
+            <h1 class="text-3xl font-bold mb-4">@currentOrganization.OrganizationName</h1>
+            <p class="text-sm font-semibold mb-2 ">Leader: @ViewBag.Ceo.UserFullName </p>
+            <p class="text-sm font-semibold mb-2 ">Leader Email (Hot Contact): @ViewBag.Ceo.UserEmail </p>
+            <p class="text-sm font-semibold mb-2 ">Created: @currentOrganization.StartTime </p>
+            <p class="text-sm font-semibold mb-2 ">Members: @OrganizationMember.Count()</p>
+            <p class="text-sm font-semibold mb-2 ">Projects: ....</p>
+            <p class="text-sm font-semibold mb-2 ">Email: @(currentOrganization.OrganizationName + currentOrganization.OrganizationID +"@Org.vn")</p>
+            <p class="text-sm font-semibold mb-2 ">
+                Description: @currentOrganization.OrganizationDescription
+            </p>
+
+        </div>
+        <div class=" flex-1 ">
+            <div class="flex justify-center">
+                <img src="https://via.placeholder.com/300x200" alt="Organization representation" class="w-1\/2 h-1\/2 object-cover rounded ">
+
+            </div>
+            <p class="text-xl font-bold py-5 text-center">Organization OR</p>
+
+        </div>
+        <div class="flex-1 ">
+            <div>
+                <img src="@(currentOrganization.OrganizationPictures ?? "https://via.placeholder.com/300x200")" alt="Organization representation" class="w-full h-auto object-cover rounded">
+            </div>
+            <p class="text-xl font-semibold py-5 text-center">Organization representation image</p>
+        </div>
+
+
+    </div>
+
+    <div class="flex justify-center my-5 p-0">
+        @{
+            bool isJoined = false;
+            List<OrganizationMember> tempOM = new List<OrganizationMember>();
+            foreach (var om in OrganizationMember)
+            {
+
+                if (om.OrganizationID == @currentOrganization.OrganizationID)
+                {
+                    tempOM.Add(om);
+                }
+            }
+
+            if (tempOM != null)
+            {
+                foreach (var om in tempOM)
+                {
+                    if (om.UserID.Equals(@currentUser.UserID))
+                    {
+                        isJoined = true;
+                    }
+                }
+            }
+
+            //role is CEO
+            if (isJoined && !currentUser.UserID.Equals(@currentOrganization.CEOID))
+            {
+                <form asp-action="OutOrganization" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID">
+                    <input value="@currentUser.UserID" name="userId" type="hidden">
+                    <button class="bg-red-500 hover:bg-red-600 text-white font-bold w-auto text-sm px-5 py-4 rounded " type="submit">
+                        Out Organization
+                    </button>
+                </form>
+            }
+            else if (currentUser.UserID.Equals(@currentOrganization.CEOID))
+            {
+                <a asp-action="Edit" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID">
+                    <button class="bg-red-500 hover:bg-red-600 text-white font-bold w-auto text-sm px-5 py-4 rounded " type="submit">
+                        Update Information
+                    </button>
+                </a>
+                
+            }else{
+                <a asp-action="JoinOrganization" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID">
+                    <button class="bg-red-500 hover:bg-red-600 text-white font-bold w-auto text-sm px-5 py-4 rounded " type="submit">
+                        Join Organization
+                    </button>
+                </a>
+            }
+        }
+
+
+    </div>
+
+</div>
+
+@if (isJoined || currentUser.UserID.Equals(@currentOrganization.CEOID))
+{
+    <div class="border-b border-gray-200 flex justify-center my-5">
+        <nav class="flex -mb-px gap-6">
+            @* <a href="#" class="text-blue-500 border-b-2 border-blue-500 pb-2 px-4 text-xl font-medium">Member</a> *@
+            <a asp-action="ManageOrganizationMember" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID" class="text-blue-500 pb-2 px-5 text-2xl font-medium">Member</a>
+            <a href="#" class="text-gray-500 pb-2 px-5 text-2xl font-medium">Resources</a>
+            <a href="#" class="text-gray-500 pb-2 px-5 text-2xl font-medium">Projects</a>
+            <a href="#" class="text-gray-500 pb-2 px-5 text-2xl font-medium">Transaction history</a>
+        </nav>
+    </div>
+}

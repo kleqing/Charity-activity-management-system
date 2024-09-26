@@ -73,11 +73,60 @@ namespace Dynamics.DataAccess.Repository
 
         }
 
-        public async Task<List<OrganizationMember>> GetAllOrganizationMemberByOrganizationIDAsync(Expression<Func<OrganizationMember, bool>> filter)
+        public async Task<List<OrganizationMember>> GetAllOrganizationMemberByIDAsync(Expression<Func<OrganizationMember, bool>> filter)
         {
             var organizationMembers = await _db.OrganizationMember.Where(filter).ToListAsync();
             return organizationMembers;
 
         }
+
+        public async Task<List<OrganizationMember>> GetAllOrganizationMemberAsync()
+        {
+            var organizationMembers = await _db.OrganizationMember.ToListAsync();
+            return organizationMembers;
+        }
+
+        //Member join organization
+        public async Task<bool> AddOrganizationMemberSync(OrganizationMember organizationMember)
+        {
+            try
+            {
+                _db.OrganizationMember.Add(organizationMember);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public async Task<OrganizationMember> GetOrganizationMemberAsync(Expression<Func<OrganizationMember, bool>> filter)
+        {
+            var organizationMember = await _db.OrganizationMember.Where(filter).FirstOrDefaultAsync();
+            return organizationMember;
+        }
+
+
+        //Member out or remove 
+        public async Task<bool> DeleteOrganizationMemberByOrganizationIDAndUserIDAsync(int organizationId, string userId)
+        {
+            var organizationMember = await GetOrganizationMemberAsync(om => om.OrganizationID == organizationId && om.UserID == userId);
+            try
+            {
+                _db.OrganizationMember.Remove(organizationMember);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+           
+        }
+
+
+        
     }
 }

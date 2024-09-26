@@ -8,65 +8,133 @@
 
 @{
     var userString = Accessor.HttpContext.Session.GetString("user");
-    User currentUser = null;
+    User currentUser = new Dynamics.Models.Models.User();
     if (userString != null)
     {
-        currentUser = JsonConvert.DeserializeObject<User>(userString);
+       currentUser = JsonConvert.DeserializeObject<User>(userString);
     }
 }
 
-<div class="my-5 px-0 pt-12 w-full flex justify-center">
-    <div class="bg-white shadow-md rounded-box my-5 px-5 pt-12 py-5 max-w-sm w-full">
-        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Register Your Organization</h2>
-        <form asp-action="Create" asp-controller="Organization" >
+
+
+<div class="container my-5 p-5 pt-12 flex justify-center items-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+        <h1 class="text-2xl font-bold mb-6 text-center">Create new organization to continue:</h1>
+
+        <p class="text-sm text-gray-600 mb-6 text-center">
+            If you are a member of an organization, tell your leader to accept this request instead!
+        </p>
+
+        <form asp-action="Create" asp-controller="Organization" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+
+
             <div>
-                <input type="hidden" value="@currentUser.UserID" asp-for="@Model.CEOID">
-                <input type="hidden" value="@DateOnly.FromDateTime(DateTime.UtcNow)" asp-for="@Model.StartTime">
+
+                <input type="hidden" value="@currentUser.UserID" asp-for="CEOID">
+                <input type="hidden" value="@DateOnly.FromDateTime(DateTime.UtcNow)" asp-for="StartTime">
             </div>
+                
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="orgName">
-                    Organization Name
-                </label>
-                <input asp-for="@Model.OrganizationName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgName" type="text" placeholder="Enter organization name">
-            </div>
-@* 
-             <div class="mb-4">
-                 <label class="block text-gray-700 text-sm font-bold mb-2" for="orgEmail">
-                     Organization Email Address
-                 </label>
-                 <input  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgEmail" type="email" placeholder="Enter email address">
-             </div>
- *@
-             @* <div class="mb-4">
-                 <label class="block text-gray-700 text-sm font-bold mb-2" for="orgType">
-                     Organization Type
-                 </label>
-                 <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgType">
-                     <option>Select organization type</option>
-                     <option>Non-Profit</option>
-                     <option>Educational</option>
-                     <option>Government</option>
-                     <option>Corporate</option>
-                     <option>Other</option>
-                 </select>
-             </div> *@
-
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="orgDescription">
-                    Organization Description
-                </label>
-                <textarea asp-for="@Model.OrganizationDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgDescription" rows="4" placeholder="Briefly describe your organization"></textarea>
+                <label asp-for="OrganizationName" class="block text-sm font-medium text-gray-700 mb-1">Enter organization name:</label>
+                <input asp-for="OrganizationName" name="OrganizationName" type="text" id="org-name" placeholder="Enter name" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
 
-            <div class="flex items-center justify-between">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
-                    Register Organization
+            <div class="mb-4">
+                <label asp-for="OrganizationDescription" class="block text-sm font-medium text-gray-700 mb-1">Enter organization description</label>
+                <textarea asp-for="OrganizationDescription" name="OrganizationDescription" id="org-description" rows="5" placeholder="Enter your description" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+
+            <div class="mb-6 ">
+                <div class="flex gap-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Upload organization image (Optional)</label>
+                    <div class="flex space-x-2">
+
+                        <label for="file-upload" class="file-upload-label px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <span>Choose images</span>
+                        </label>
+                        <input asp-for="OrganizationPictures" id="file-upload" type="file" name="image" class="hidden">
+                        @* <button type="button" class="px-4 py-2 bg-gray-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        Use from the request
+                        </button> *@
+                    </div>
+                </div>
+
+
+                <p class="mt-1 text-xs text-gray-500">The images that will appear in the front cover of your organization</p>
+            </div>
+
+            <div class="flex justify-center">
+                <button type="submit" class="px-6 py-2 bg-blue-900 text-white font-medium rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Create!
                 </button>
             </div>
         </form>
     </div>
+
 </div>
+
+
+
+
+
+
+
+@*
+     <div class="my-5 px-0 pt-12 w-full flex justify-center">
+     <div class="bg-white shadow-md rounded-box my-5 px-5 pt-12 py-5 max-w-sm w-full">
+         <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Register Your Organization</h2>
+         <form asp-action="Create" asp-controller="Organization" >
+             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+             <div>
+                 <input type="hidden" value="@currentUser.UserID" asp-for="@Model.CEOID">
+                 <input type="hidden" value="@DateOnly.FromDateTime(DateTime.UtcNow)" asp-for="@Model.StartTime">
+             </div>
+             <div class="mb-4">
+                 <label class="block text-gray-700 text-sm font-bold mb-2" for="orgName">
+                     Organization Name
+                 </label>
+                 <input asp-for="@Model.OrganizationName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgName" type="text" placeholder="Enter organization name">
+             </div>
+
+              <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="orgEmail">
+                      Organization Email Address
+                  </label>
+                  <input  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgEmail" type="email" placeholder="Enter email address">
+              </div>
+
+               <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="orgType">
+                      Organization Type
+                  </label>
+                  <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgType">
+                      <option>Select organization type</option>
+                      <option>Non-Profit</option>
+                      <option>Educational</option>
+                      <option>Government</option>
+                      <option>Corporate</option>
+                      <option>Other</option>
+                  </select>
+              </div> 
+
+<div class="mb-6">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="orgDescription">
+        Organization Description
+    </label>
+    <textarea asp-for="@Model.OrganizationDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="orgDescription" rows="4" placeholder="Briefly describe your organization"></textarea>
+</div>
+
+<div class="flex items-center justify-between">
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
+        Register Organization
+    </button>
+</div>
+         </form>
+     </div>
+ </div>
+*@
+
 
 

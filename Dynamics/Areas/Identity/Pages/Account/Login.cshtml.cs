@@ -78,7 +78,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    // Check if verified first before sign in
+                    //Check if verified first before sign in
                     var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
                     if (!isEmailConfirmedAsync)
                     {

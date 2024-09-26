@@ -1,5 +1,98 @@
 ﻿@model IEnumerable<Dynamics.Models.Models.User>
+@using Dynamics.Utility
+@using Newtonsoft.Json
+@inject IHttpContextAccessor Accessor
 
 
+@{
+    ViewData["Title"] = "ManageOrganizationMember";
+    Layout = "_LayoutOrganization";
+}
 
+@{
+    var userString = Accessor.HttpContext.Session.GetString("user");
+    User currentUser = null;
+    if (userString != null)
+    {
+        currentUser = JsonConvert.DeserializeObject<User>(userString);
+    }
 
+    // Check Current user in Organization
+    var OrganizationMember = Accessor.HttpContext.Session.Get<List<OrganizationMember>>(MySettingSession.SESSION_Organization_Member_KEY);
+
+    var organizationString = Accessor.HttpContext.Session.GetString("organization");
+    Organization currentOrganization = null;
+    if (organizationString != null)
+    {
+        currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
+    }
+}
+
+<div class="mt-6 px-5">
+    <h1 class="text-3xl font-semibold mb-4 text-center py-5">Organization members</h1>
+
+    <div class="flex justify-center ">
+        <ul class="space-y-2 mt-10 w-1\/2">
+            <li class="flex items-center justify-between bg-white shadow-xl px-5 py-1 my-5 rounded-box ">
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-500 text-sm font-semibold">1.</span>
+                    <a asp-action="Details" asp-controller="EditUser" asp-route-id="@ViewBag.Ceo.UserID">
+                        <img src="@(ViewBag.Ceo.UserAvatar ?? "https://via.placeholder.com/32") " alt="ViewBag.Ceo.UserFullName" class=" w-16 mr-5 rounded-full">
+                    </a>
+                    <a asp-action="Details" asp-controller="EditUser" asp-route-id="@ViewBag.Ceo.UserID">
+                        <span class="text-sm mx-5 font-semibold">@ViewBag.Ceo.UserFullName </span>
+                    </a>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm mx-5 font-semibold ">Leader</span>
+                </div>
+                @if (@currentUser.UserID.Equals(@ViewBag.Ceo.UserID)){
+                    
+                    <div class="flex items-center gap-2 ">
+                        <a asp-action="TransferCeoOrganization" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID">
+                            <span class="bg-blue-500 text-white font-bold px-3 py-3 ml-5 rounded text-xs">Transfer</span>
+                        </a>
+                    </div>
+                }
+                
+            </li>
+
+            @foreach(var item in Model)
+            {
+                if (item.UserID.Equals(@ViewBag.Ceo.UserID))
+                {
+                    continue;
+                }
+                <li class="flex items-center justify-between bg-white shadow-xl px-5 py-1 my-5 rounded-box ">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 text-sm font-semibold">2.</span>
+                        <a asp-action="Details" asp-controller="EditUser" asp-route-id="@item.UserID">
+                            <img src="@(item.UserAvatar ?? "https://via.placeholder.com/32")" alt="@item.UserFullName" class="w-16 mr-5 rounded-full">
+                        </a>
+
+                        <a asp-action="Details" asp-controller="EditUser" asp-route-id="@item.UserID">
+                            <span class="text-sm mx-5 font-semibold">@item.UserFullName</span>
+                        </a>
+                        
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mx-5 font-semibold">Member</span>
+                    </div>
+
+                    @*ban member*@
+                    @if (currentUser.UserID.Equals(@ViewBag.Ceo.UserID))
+                    {
+                        <form asp-action="OutOrganization" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID">
+                            <input value="@item.UserID" name="userId" type="hidden">
+                            <button class="bg-red-500 hover:bg-red-600 font-bold text-white ml-5 px-3 py-3 rounded text-xs">Remove</button>
+                        </form>
+                    }
+                    
+                </li>
+            }
+            
+            <!-- Repeat the above <li> element 7 more times for the remaining members, removing the Leader span -->
+        </ul>
+    </div>
+
+</div>

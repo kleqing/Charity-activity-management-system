@@ -8,7 +8,7 @@
 
 <div class="container my-5 p-5 pt-12 flex justify-center items-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-        <h1 class="text-2xl font-bold mb-6 text-center">Create new organization to continue:</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center">Update Infomation Organization to continue:</h1>
 
         <p class="text-sm text-gray-600 mb-6 text-center">
             If you are a member of an organization, tell your leader to accept this request instead!
@@ -20,6 +20,7 @@
                 <input asp-for="@Model.OrganizationID" value="@Model.OrganizationID" class="hidden">
                 <input type="date" asp-for="@Model.StartTime" class="hidden" name="StartTime"/>
                 <input asp-for="@Model.CEOID" value="@Model.CEOID" class="hidden">
+                <input asp-for="@Model.OrganizationPictures" name ="OrganizationPictures" class="hidden">
             </div>
             <div class="mb-4">
                 <label asp-for="OrganizationName" class="block text-sm font-medium text-gray-700 mb-1">Enter organization name:</label>
@@ -39,20 +40,20 @@
                         <label for="file-upload" class="file-upload-label px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <span>Choose images</span>
                         </label>
-                        <input asp-for="OrganizationPictures" id="file-upload" type="file" name="image" class="hidden">
+                        <input id="file-upload" type="file" name="image" class="hidden">
                         @* <button type="button" class="px-4 py-2 bg-gray-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                         Use from the request
-                        </button> *@
+                        </button>*@
                     </div>
                 </div>
                 
 
                 <p class="mt-1 text-xs text-gray-500">The images that will appear in the front cover of your organization</p>
-            </div>
+            </div> 
 
             <div class="flex justify-center">
                 <button type="submit" class="px-6 py-2 bg-blue-900 text-white font-medium rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Create!
+                    Save!
                 </button>
             </div>
         </form>

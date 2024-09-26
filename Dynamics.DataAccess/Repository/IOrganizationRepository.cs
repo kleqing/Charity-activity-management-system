@@ -16,8 +16,14 @@ namespace Dynamics.DataAccess.Repository
         Task<bool> AddAsync(Organization entity);
         Task<bool> UpdateAsync(Organization entity);
         Task<Organization> DeleteByIDAsync(Guid id);
-        Task<List<OrganizationMember>> GetAllOrganizationMemberByOrganizationIDAsync(Expression<Func<OrganizationMember, bool>> filter);
 
+        //get OrganizationMember same OrganizationId
+        Task<List<OrganizationMember>> GetAllOrganizationMemberByIDAsync(Expression<Func<OrganizationMember, bool>> filter);
 
+        Task<List<OrganizationMember>> GetAllOrganizationMemberAsync();
+        Task<bool> DeleteOrganizationMemberByOrganizationIDAndUserIDAsync(int organizationId, string userId);
+        Task<OrganizationMember?> GetOrganizationMemberAsync(Expression<Func<OrganizationMember, bool>> filter);
+
+        Task<bool> AddOrganizationMemberSync(OrganizationMember entity);
     }
 }

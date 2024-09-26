@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Dynamics.Models.Models.Organization>
+@{
+    ViewData["Title"] = "MyOrganization";
+}
+
+
+@using Dynamics.Utility
+@using Newtonsoft.Json
+@inject IHttpContextAccessor Accessor
+
+
+
+@{
+    var userString = Accessor.HttpContext.Session.GetString("user");
+    User currentUser = null;
+    if (userString != null)
+    {
+        currentUser = JsonConvert.DeserializeObject<User>(userString);
+    }
+}
+
+<div class="container my-5 p-5 pt-12">
+
+    <div class="my-5 flex justify-center">
+        <h1 class="text-center text-3xl">Organization that You are being the CEO: </h1>
+    </div>
+
+    @foreach(var item in Model)
+    {
+        if (!currentUser.UserID.Equals(item.CEOID))
+        {
+            continue;
+        }
+        <div class="flex justify-center">
+            <div class="card bg-base-100 w-96 shadow-xl ">
+                <figure>
+                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                        <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
+                             alt="@item.OrganizationName" />
+                    </a>
+                </figure>
+                <div class="card-body">
+                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                        <h2 class="card-title">@item.OrganizationName</h2>
+                    </a>
+                    <h4>Start date: @item.StartTime</h4>
+                    <p>@item.OrganizationDescription</p>
+                    <div class="card-actions justify-center my-5">
+                        <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                            <button class="btn btn-primary">View Detail organization</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="container my-5 p-5 pt-12">
+
+    <div class="my-5 flex justify-center">
+        <h1 class="text-center text-3xl">Organization that You are being the Member of that:</h1>
+    </div>
+
+
+    <div class="grid grid-cols-3 gap-4 ml-5 flex justify-center">
+        @foreach (var item in Model)
+        {
+            if (currentUser.UserID.Equals(item.CEOID))
+            {
+                continue;
+            }
+            <div class="card bg-base-100 w-96 shadow-xl ">
+                <figure>
+                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                        <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
+                             alt="@item.OrganizationName" />
+                    </a>
+
+                </figure>
+                <div class="card-body">
+                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                        <h2 class="card-title">@item.OrganizationName</h2>
+                    </a>
+                    <h4>Start date: @item.StartTime</h4>
+                    <p>@item.OrganizationDescription</p>
+                    <div class="card-actions justify-center my-5">
+                        <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                            <button class="btn btn-primary">View Detail organization</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
