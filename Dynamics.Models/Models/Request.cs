@@ -11,6 +11,7 @@ namespace Dynamics.Models.Models
     {
 		public Guid RequestID { get; set; }
 		public Guid UserID { get; set; }
+		public string RequestTitle { get; set; }
 		public string Content { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? CreationDate { get; set; }

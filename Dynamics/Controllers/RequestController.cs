@@ -3,6 +3,8 @@ using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Dynamics.Utility;
 
 namespace Dynamics.Controllers
 {
@@ -30,7 +32,7 @@ namespace Dynamics.Controllers
 				return Unauthorized();
 			}
 			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-			var userId = "";
+			Guid userId = Guid.Empty;
 			var userJson = HttpContext.Session.GetString("user");
 			if (!string.IsNullOrEmpty(userJson))
 			{
@@ -40,9 +42,11 @@ namespace Dynamics.Controllers
 			var request = await _requestRepo.GetAllByRoleAsync(role, userId);
 			return View(request);
 		}
-		public async Task<IActionResult> Detail(int id)
+		public async Task<IActionResult> Detail(Guid? id)
 		{
-			var request = await _requestRepo.GetAsync(r => r.RequestID == id);
+			Guid userId = Guid.NewGuid();
+			
+			var request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); }
 			return View(request);
 		}
@@ -50,6 +54,7 @@ namespace Dynamics.Controllers
 		{
 			return View();
 		}
+		//TODO: handle image upload
 		[HttpPost]
 		public async Task<IActionResult> Create(Request obj)
 		{
@@ -62,9 +67,9 @@ namespace Dynamics.Controllers
 				obj.UserID = user.UserID;
 				await _requestRepo.AddAsync(obj);
 			}
-			return View();
+			return RedirectToAction("Index", "Request");
 		}
-		public async Task<IActionResult> Edit(int? id)
+		public async Task<IActionResult> Edit(Guid? id)
 		{
 			if (id == null)
 			{
@@ -77,14 +82,14 @@ namespace Dynamics.Controllers
 				return Unauthorized();
 			}
 			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
-			var userId = "";
+			Guid userId = Guid.Empty;
 			var userJson = HttpContext.Session.GetString("user");
 			if (!string.IsNullOrEmpty(userJson))
 			{
 				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
 				userId = userJsonC.UserID;
 			}
-			Request request = await _requestRepo.GetByRoleAsync(r => r.RequestID == id, role, userId);
+			Request request = await _requestRepo.GetByRoleAsync(r => r.RequestID.Equals(id), role, userId);
 			if (request == null)
 			{
 				return NotFound();
@@ -94,30 +99,31 @@ namespace Dynamics.Controllers
 				return Forbid(); // If the user is not the owner of the request
 			}
 
-			return View(request);
+            return View(request);
 		}
 		[HttpPost]
-		public async Task<IActionResult> Edit(Request obj)
+		public async Task<IActionResult> Edit(Request obj, List<IFormFile> images)
 		{
-			if (!ModelState.IsValid)
+			/*if (!ModelState.IsValid)
 			{
 				return View(obj);
-			}
-			// Get the currently logged-in user
+			}*/
+			// Get the currently logged-in user (role and id)
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
 			{
 				return Unauthorized();
 			}
 			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
-			var userId = "";
+			Guid userId = Guid.Empty;
 			var userJson = HttpContext.Session.GetString("user");
 			if (!string.IsNullOrEmpty(userJson))
 			{
 				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
 				userId = userJsonC.UserID;
 			}
-			Request existingRequest = await _requestRepo.GetByRoleAsync(r => r.RequestID == obj.RequestID, role, userId);
+			// Get existing request
+			Request existingRequest = await _requestRepo.GetByRoleAsync(r => r.RequestID.Equals(obj.RequestID), role, userId);
 			if (existingRequest == null)
 			{
 				return NotFound();
@@ -127,34 +133,45 @@ namespace Dynamics.Controllers
 				// If the user is "user", allow them to update only certain fields
 				existingRequest.Content = obj.Content;
 				existingRequest.Location = obj.Location;
-				existingRequest.Attachment = obj.Attachment;
 				existingRequest.isEmergency = obj.isEmergency;
+				if (images != null && images.Count > 0)
+				{
+					string imagePath = Util.UploadMultiImage(images, @"images\Requests", userId);
+					// append new images if there are existing images
+					if (!string.IsNullOrEmpty(imagePath))
+					{
+						existingRequest.Attachment = string.IsNullOrEmpty(existingRequest.Attachment) ? imagePath 
+							: existingRequest.Attachment + "," + imagePath;
+					}
+				}
 			}
+			/*TODO: make a separate method to handle update request status by admin
 			else if (role == "Admin")
 			{
 				// If the user is "admin", allow them to update only the Status field
 				existingRequest.Status = obj.Status;
-			}
+			}*/
 			await _requestRepo.UpdateAsync(existingRequest);
-			return RedirectToAction("Index", "Request");
+			return RedirectToAction("MyRequest", "Request");
 		}
-		public async Task<IActionResult> Delete(int? id)
+		public async Task<IActionResult> Delete(Guid? id)
 		{
+
 			if (id == null)
 			{
 				return NotFound();
 			}
-			Request request = await _requestRepo.GetAsync(r => r.RequestID == id);
+			Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); }
 			return View(request);
 		}
 		[HttpPost, ActionName("Delete")]
-		public async Task<IActionResult> DeletePost(int? id)
+		public async Task<IActionResult> DeletePost(Guid? id)
 		{
-			Request request = await _requestRepo.GetAsync(r => r.RequestID == id);
+			Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); };
 			_requestRepo.DeleteAsync(request);
-			return RedirectToAction("Index", "Request");
+			return RedirectToAction("MyRequest", "Request");
 		}
 	}
 }

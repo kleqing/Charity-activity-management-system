@@ -4,7 +4,7 @@ namespace Dynamics.Utility
 {
     public static class Util
     {
-        // TODO: UploadMultiple ?
+        //
         /**
          * Save an image to local file <br />
          * Follow this path: wwwroot/folderpath/id.ext
@@ -28,6 +28,40 @@ namespace Dynamics.Utility
                 return string.Empty;
             }
 
+        }
+        // TODO: create user folder and store each user image in it
+        public static string UploadMultiImage(List<IFormFile> images, string folder, Guid id)
+        {
+            try
+            {
+                // List to hold the individual image paths
+                List<string> imagesPath = new List<string>();
+                // Process each image
+                foreach (var image in images)
+                {
+                    if (image != null && image.Length > 0)
+                    {
+                        string filename = id.ToString();
+                        string filenameExtension = image.FileName;
+                        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder,
+                            filename + filenameExtension);
+                        using (var myFile = new FileStream(fullPath, FileMode.Create))
+                        {
+                            image.CopyTo(myFile);
+                        }
+
+                        string imagePath = Path.Combine(folder, filename + filenameExtension);
+                        imagesPath.Add("/" + imagePath.Replace('\\', '/'));
+                    }
+                }
+
+                // Return all image paths joined by ","
+                return string.Join(",", imagesPath);
+            }
+            catch (Exception e)
+            {
+                return string.Empty;
+            }
         }
     }
 }

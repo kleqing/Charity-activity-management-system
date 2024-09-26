@@ -57,7 +57,7 @@ namespace Dynamics.DataAccess.Repository
 			}
 		}
 
-		public async Task<List<Request>> GetAllByRoleAsync(string role, string id)
+		public async Task<List<Request>> GetAllByRoleAsync(string role, Guid id)
 		{
 			if (role == "Admin")
 			{
@@ -70,7 +70,7 @@ namespace Dynamics.DataAccess.Repository
 			return new List<Request>();
 		}
 
-		public async Task<Request> GetByRoleAsync(Expression<Func<Request, bool>> filter, string role, string id)
+		public async Task<Request> GetByRoleAsync(Expression<Func<Request, bool>> filter, string role, Guid id)
 		{
 			var query = await _db.Requests.Where(filter).FirstOrDefaultAsync();
 			if (role == "User" && query.UserID == id)

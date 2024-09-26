@@ -1,5 +1,68 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Dynamics.Models.Models.Request
 @{
+    ViewData["Title"] = "Create Request";
 }
+<div class="my-5 px-0 pt-12 w-full flex justify-center">
+    <div class="bg-white shadow-md rounded-box my-5 px-5 pt-12 py-5 max-w-xl w-full">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Create your request</h2>
+        <form asp-action="Create" asp-controller="Request" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <input type="hidden" value="@DateOnly.FromDateTime(DateTime.Now)" asp-for="@Model.CreationDate" />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-500 text-sm font-bold mb-2" for="RequestTitle">
+                    Request Title
+                </label>
+                <input asp-for="@Model.RequestTitle" 
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline" 
+                id="RequestTitle" type="text" placeholder="Enter your request title" />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-500 text-sm font-bold mb-2" for="Content">
+                    Request Content
+                </label>
+                <textarea asp-for="@Model.Content"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
+                       id="Content" placeholder="Enter your request content" rows="7" style="resize: none"></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-500 text-sm font-bold mb-2" for="Location">
+                    Request Location
+                </label>
+                <input asp-for="@Model.Location"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline"
+                       id="Location" type="text" placeholder="Enter your request location" />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-500 text-sm font-bold mb-2" for="isEmergency">
+                    Is this an emergency request?
+                </label>
+                <select id="isEmergency" name="isEmergency"
+                        class="form-control"
+                        asp-for="isEmergency">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <div class="flex gap-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Upload request images (Optional)
+                    </label>
+                    <div class="flex space-x-2">
+                        <label for="file-upload" class="file-upload-label px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <span>Choose images</span>
+                        </label>
+                        <input id="file-upload" type="file" name="images" multiple class="hidden">
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
+                    Create Request
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

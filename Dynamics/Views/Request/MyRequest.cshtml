@@ -1,5 +1,122 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Dynamics.Models.Models.Request>
+
 @{
+    ViewData["Title"] = "My Request";
 }
+
+<div class="max-w-full my-5 p-5 pt-12 ml-12">
+    <div class="flex justify-center my-5">
+        <a asp-action="Create" asp-controller="Request" asp- class="my-5">
+            <button id="createOrgBtn" class="btn btn-wide bg-red-500 text-white">
+                Create new request
+            </button>
+        </a>
+    </div>
+
+    <div class="my-5">
+        <h1 class="text-center text-3xl">Your requests</h1>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 ml-5 flex justify-center">
+        @foreach(var item in Model)
+        {
+            <div class="card bg-base-100 w-96 shadow-xl ">
+                <figure>
+                    <a asp-action="Detail" asp-controller="Request" asp-route-organizationId="@item.RequestID">
+                        <img src="@(item.Attachment ?? "https://via.placeholder.com/300x200")"
+                             alt="" />
+                    </a>
+                    
+                </figure>
+                <div class="card-body">
+                    <a asp-action="Detail" asp-controller="Request" asp-route-organizationId="@item.RequestID">
+                        <h2 class="card-title">"@item.RequestTitle"</h2>
+                        </a>
+                    <h4>Start date: @item.CreationDate</h4>
+                    <p>@item.Content</p>
+                    <div class="card-actions justify-center my-5">
+                        <button class="btn btn-primary">View Request Detail</button>
+                        <a asp-action="Edit" asp-controller="Request" asp-route-id="@item.RequestID">
+                            <button class="btn btn-primary">Edit Request</button>
+                        </a>
+                    </div>
+                    @*<div class="card-actions justify-center my-5">
+                        
+                    </div>*@
+                </div>
+            </div>
+        }
+        
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                     alt="Shoes" />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title">Shoes!</h2>
+                <p>If a dog chews shoes whose shoes does he choose?</p>
+                <div class="card-actions justify-end">
+                    <button class="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -11,9 +11,9 @@ namespace Dynamics.DataAccess.Repository
 	public interface IRequestRepository
 	{
 		Task<List<Request>> GetAllAsync();
-		Task<List<Request>> GetAllByRoleAsync(string role, string id);
+		Task<List<Request>> GetAllByRoleAsync(string role, Guid id);
 		Task<Request> GetAsync(Expression<Func<Request, bool>> filter);
-		Task<Request> GetByRoleAsync(Expression<Func<Request, bool>> filter, string role, string id);
+		Task<Request> GetByRoleAsync(Expression<Func<Request, bool>> filter, string role, Guid id);
 		Task AddAsync(Request entity);
 		Task UpdateAsync(Request entity);
 		Task DeleteAsync(Request entity);
