@@ -39,16 +39,16 @@ namespace Dynamics.Areas.Identity.Pages.Account
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
-            // Decoed and get the result
+            // Decode and get the result
             var decodedCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, decodedCode);
             if (result.Succeeded)
             {
                 // Session
-                var businessUser = await _userRepo.Get(u => u.UserID.ToString() == user.Id);
+                var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 //return RedirectToPage("EmailConfirmationSuccess", new { returnUrl });
-                return RedirectToAction("Index", "EditUser");
+                return RedirectToAction("Homepage", "Home", returnUrl);
             }
             else
             {

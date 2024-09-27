@@ -2,11 +2,11 @@
 using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Utility;
+using Dynamics.Utility.Mapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Dynamics
 {
@@ -16,7 +16,7 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
-            
+           
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             // Add service and scope for Google auth
@@ -26,7 +26,7 @@ namespace Dynamics
                 googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
                 googleOptions.Scope.Add(Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoProfile);
                 googleOptions.Scope.Add(Google.Apis.Oauth2.v2.Oauth2Service.Scope.UserinfoEmail);
-                
+
                 // Get user profile
                 googleOptions.ClaimActions.MapJsonKey("picture", "picture");
             });
@@ -40,7 +40,7 @@ namespace Dynamics
                 options.UseSqlServer(builder.Configuration.GetConnectionString("AuthDbContextConnection"));
             });
 
-            // Roles will be created on the fly in the register razor page
+            // Identity and roles
             builder.Services
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
@@ -57,7 +57,13 @@ namespace Dynamics
 
             // Repos here
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+            builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
+            // Automapper:
+            builder.Services.AddAutoMapper(typeof(MyMapper));
+            
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 
@@ -68,7 +74,7 @@ namespace Dynamics
                 options.LogoutPath = "/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
-            
+
             // Enable razor page
             builder.Services.AddRazorPages();
 
@@ -76,14 +82,14 @@ namespace Dynamics
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
             });
-            
+
             var app = builder.Build();
             // Redirect user to 404 page if not found
             app.Use(async (ctx, next) =>
             {
                 await next();
 
-                if(ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
+                if (ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
                 {
                     //Re-execute the request so the user gets the error page
                     string originalPath = ctx.Request.Path.Value;
@@ -92,7 +98,7 @@ namespace Dynamics
                     await next();
                 }
             });
-            
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

@@ -149,11 +149,11 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             new { email = Input.Email, returnUrl = returnUrl });
                     }
 
-                    var businessUser = _userRepo.Get(u => u.UserID.ToString() == user.Id);
+                    var businessUser = _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     // TODO: Return to the home page
-                    return RedirectToAction("Index", "EditUser");
+                    return RedirectToAction("HomePage", "Home");
                 }
 
                 foreach (var error in result.Errors)

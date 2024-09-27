@@ -17,8 +17,8 @@ namespace Dynamics.Models.Models
         public string Message { get; set; }
 		[DataType(DataType.Date)]
 		public DateOnly Time { get; set; }
-		public string Amount { get; set; }
-		public int Unit { get; set; }
+		public int Amount { get; set; }
+		public string Unit { get; set; }
         public virtual Organization Organization { get; set; }
 		public virtual Project Project { get; set; }
 	}

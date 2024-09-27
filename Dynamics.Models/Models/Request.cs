@@ -9,6 +9,7 @@ namespace Dynamics.Models.Models
 {
     public class Request
     {
+	    public string Title { get; set; }
 		public Guid RequestID { get; set; }
 		public Guid UserID { get; set; }
 		public string Content { get; set; }

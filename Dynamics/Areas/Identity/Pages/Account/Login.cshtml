@@ -4,20 +4,26 @@
 @{
     ViewData["Title"] = "Log in";
 }
-<link rel="stylesheet" href="~/css/original.css" />
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet" href="~/css/output.css">
+<link rel="stylesheet" href="~/css/original.css"/>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+
 <section class="vh-100">
     <div class="container py-4 h-100">
         <div class="row d-flex align-items-center justify-content-center h-100 mx-4">
             <div class="col-md-8 col-lg-7 col-xl-6 hidden md:flex justify-content-center align-content-center gap-2 flex-col text-xl font-bold">
                 <h3 class="text-center">“Happiness doesn’t result from what we get, but from what we give."</h3>
-                <h4 class="text-center"><i>Ben Carson</i></h4>
+                <h4 class="text-center">
+                    <i>Ben Carson</i>
+                </h4>
                 <img src="~/images/loginImage.jpeg"
                      class="img-fluid" alt="Phone image">
             </div>
-            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 border-1 rounded-2 border-primary p-4 border-solid shadow-lg">
-                <h2 class="mb-4 italic text-center font-bold"><b>Dynamics</b></h2>
-                <form id="account" method="post" class="" >
+            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 rounded-2 p-4 border-solid shadow-lg bg-white">
+                <h2 class="mb-2 text-center">
+                    <b>Login</b>
+                </h2>
+                <form id="account" method="post" class="">
                     <!-- Email input -->
                     <div data-mdb-input-init class="form-outline mb-4">
                         <input asp-for="Input.Email" type="email" id="form1Example13" class="form-control form-control-lg"/>
@@ -45,11 +51,12 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                     <!-- Submit button -->
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init
-                            class="btn btn-primary w-full"
+                            class="btn btn-primary w-full loading-btn"
                             style="width: 100%; margin-bottom: 12px;"
                             id="login">
                         Sign in
                     </button>
+                    @* <span class="loading loading-spinner loading-md"></span> *@
                     Don't have an account ? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="link-primary">Register here</a>
                 </form>
 
@@ -71,6 +78,7 @@
         </div>
     </div>
 </section>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
 }

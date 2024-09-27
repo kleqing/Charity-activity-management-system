@@ -90,12 +90,12 @@ namespace Dynamics.Areas.Identity.Pages.Account
             if (existingUser != null)
             {
                 // Sign in using that user instead of Google
-                var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
+                var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
                     info.Principal.Identity.Name, info.LoginProvider);
                 await _signInManager.SignInAsync(existingUser, isPersistent: false, authenticationMethod: null);
-                return RedirectToAction("Index", "EditUser");
+                return RedirectToAction("Homepage", "Home");
             }
 
             // Sign in the user with this external login provider if the user already has a login.
@@ -103,13 +103,13 @@ namespace Dynamics.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 // Set the session
-                var businessUser = await _userRepo.Get(u => u.UserEmail == userEmail);
+                var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
                     info.Principal.Identity.Name,
                     info.LoginProvider);
 
-                return RedirectToAction("Index", "EditUser");
+                return RedirectToAction("Homepage", "Home");
             }
 
             if (result.IsLockedOut)
@@ -178,7 +178,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         await _emailSender.SendEmailAsync(Input.Email, "Register Confirmation", $"You have register successfully to Dynamics");
 
                         // Set the session for the app:
-                        var businessUser = await _userRepo.Get(u => u.UserEmail == user.Email);
+                        var businessUser = await _userRepo.GetAsync(u => u.UserEmail == user.Email);
                         HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                         // Provide user with default role as well
                         result = _userManager.AddToRoleAsync(user, RoleConstants.User).GetAwaiter().GetResult();
@@ -186,18 +186,18 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         {
                             await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                             // TODO: Redirect to homepage instead
-                            return RedirectToAction("Index", "EditUser");
+                            return RedirectToAction("HomePage", "Home");
                         }
-                        else
-                        {
-                            return RedirectToAction("Index", "Home");
-                        }
+                        // else
+                        // {
+                        //     return RedirectToAction("Index", "Home");
+                        // }
                     }
-                    else
-                    {
-                        // TODO: Bind the google account with current account
-                        ModelState.AddModelError("Email", "Email already exists in the system.");
-                    }
+                    // else
+                    // {
+                    //     // TODO: Bind the google account with current account
+                    //     ModelState.AddModelError("Email", "Email already exists in the system.");
+                    // }
                 }
 
                 foreach (var error in result.Errors)

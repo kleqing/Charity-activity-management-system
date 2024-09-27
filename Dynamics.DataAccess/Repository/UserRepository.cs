@@ -41,7 +41,7 @@ namespace Dynamics.DataAccess.Repository
             return user;
         }
 
-        public async Task<User?> Get(Expression<Func<User, bool>> filter)
+        public async Task<User?> GetAsync(Expression<Func<User, bool>> filter)
         {
             var user =  await _db.Users.Where(filter).FirstOrDefaultAsync();
             return user;
@@ -54,7 +54,7 @@ namespace Dynamics.DataAccess.Repository
         }
         public async Task<bool> Update(User user)
         {
-            var existingItem = await Get(u => user.UserID == u.UserID);
+            var existingItem = await GetAsync(u => user.UserID == u.UserID);
             if (existingItem == null)
             {
                 return false;

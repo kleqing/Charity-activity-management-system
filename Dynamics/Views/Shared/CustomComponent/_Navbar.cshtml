@@ -17,7 +17,7 @@
     {
         <!-- Navbar -->
         <div
-            class="navbar bg-white shadow-md fixed top-2 right-8 left-8 border z-20 w-full rounded-lg"
+            class="navbar bg-white shadow-md fixed top-2 right-6 left-8 border z-20 w-full rounded-lg"
             style="width: calc(100% - 4rem)">
             <!-- Search bar -->
             <div class="form-control">
@@ -28,7 +28,7 @@
             </div>
             <!-- Logo, press this should return to home -->
             <div class="flex-1 flex justify-center">
-                <a class="text-3xl text-center font-bold text-primary" asp-action="Index" asp-controller="EditUser">
+                <a class="text-3xl text-center font-bold text-primary" asp-action="HomePage" asp-controller="Home">
                     <i>Dynamics</i>
                 </a>
             </div>
@@ -40,17 +40,17 @@
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar shadow-md">
                         <!-- TODO: Insert username avatar here -->
                         <div class="w-20 rounded-full">
-                            <img alt="@currentUser?.UserFullName" src="@(currentUser?.UserAvatar ?? "defaultAva.jpg")"/>
+                            <img alt="@currentUser?.UserFullName" src="@(currentUser?.UserAvatar ?? "/images/User/defaultAva.jpg")"/>
                         </div>
                     </div>
                     <ul
                         tabindex="0"
                         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                         <li>
-                            <a asp-action="Details" asp-route-id="@currentUser.UserID">Profile</a>
+                            <a asp-action="Index" asp-controller="User" asp-route-username="@currentUser.UserFullName">Profile</a>
                         </li>
                         <li>
-                            <a asp-action="Edit" asp-route-id="@currentUser.UserID">Settings</a>
+                            <a asp-action="Edit" asp-controller="User" asp-route-id="@currentUser.UserID">Settings</a>
                         </li>
                         <li>
                             <a>My organization</a>
@@ -77,4 +77,7 @@
         <h1 class="text-rose-500 font-bold text-center text-3xl">Type: @User.Identity.AuthenticationType</h1>
         <h1 class="text-rose-500 font-bold text-center text-3xl">IsAuthenticated: @User.Identity.IsAuthenticated</h1>
     }
+    @* A box to push away from the navbar *@
+    <div class="w-full" style="height: 80px;">
+    </div>
 }

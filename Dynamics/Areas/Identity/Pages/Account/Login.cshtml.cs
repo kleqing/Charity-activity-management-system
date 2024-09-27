@@ -78,6 +78,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 }
                 else
                 {
+                    
                     // Check if verified first before sign in
                     var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
                     if (!isEmailConfirmedAsync)
@@ -88,14 +89,14 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,
                         lockoutOnFailure: false);
-                    var businessUser = await _userRepository.Get(u => u.UserEmail == user.Email);
                     // SerializeObject for session
+                    var businessUser = await _userRepository.GetAsync(u => u.UserEmail == user.Email);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
                         // TODO: Redirect to home page
-                        return RedirectToAction("Index", "EditUser", returnUrl);
+                        return RedirectToAction("Homepage", "Home", returnUrl);
                     }
 
                     // TODO: Ban user in da future
