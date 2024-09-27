@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace Dynamics.Utility
 {
@@ -29,7 +31,7 @@ namespace Dynamics.Utility
             }
 
         }
-        // TODO: create user folder and store each user image in it
+        
         public static string UploadMultiImage(List<IFormFile> images, string folder, Guid id)
         {
             try
@@ -41,16 +43,18 @@ namespace Dynamics.Utility
                 {
                     if (image != null && image.Length > 0)
                     {
-                        string filename = id.ToString();
+                        string folderName = id.ToString();
                         string filenameExtension = image.FileName;
+                        bool folderExists = Directory.Exists(folderName);
+                        if(!folderExists) { Directory.CreateDirectory(@"wwwroot\images\Requests\" + folderName); }
                         var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder,
-                            filename + filenameExtension);
+                            filenameExtension);
                         using (var myFile = new FileStream(fullPath, FileMode.Create))
                         {
                             image.CopyTo(myFile);
                         }
 
-                        string imagePath = Path.Combine(folder, filename + filenameExtension);
+                        string imagePath = Path.Combine(folder,filenameExtension);
                         imagesPath.Add("/" + imagePath.Replace('\\', '/'));
                     }
                 }

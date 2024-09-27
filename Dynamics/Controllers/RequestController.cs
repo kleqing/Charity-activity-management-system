@@ -56,17 +56,25 @@ namespace Dynamics.Controllers
 		}
 		//TODO: handle image upload
 		[HttpPost]
-		public async Task<IActionResult> Create(Request obj)
+		public async Task<IActionResult> Create(Request obj, List<IFormFile> images)
 		{
 			var date = DateOnly.FromDateTime(DateTime.Now);
 			obj.CreationDate = date;
+			Guid userId = Guid.Empty;
 			var userJson = HttpContext.Session.GetString("user");
 			if (!string.IsNullOrEmpty(userJson))
 			{
 				var user = JsonConvert.DeserializeObject<User>(userJson);
-				obj.UserID = user.UserID;
+				userId = user.UserID;
 				await _requestRepo.AddAsync(obj);
 			}
+			obj.UserID = userId;
+			if (images != null && images.Count > 0)
+			{
+				string imagePath = Util.UploadMultiImage(images, $@"images\Requests\" + obj.RequestID.ToString(), userId);
+				obj.Attachment = imagePath;
+			}
+
 			return RedirectToAction("Index", "Request");
 		}
 		public async Task<IActionResult> Edit(Guid? id)
@@ -136,7 +144,7 @@ namespace Dynamics.Controllers
 				existingRequest.isEmergency = obj.isEmergency;
 				if (images != null && images.Count > 0)
 				{
-					string imagePath = Util.UploadMultiImage(images, @"images\Requests", userId);
+					string imagePath = Util.UploadMultiImage(images, $@"images\Requests\" + existingRequest.RequestID.ToString(), userId);
 					// append new images if there are existing images
 					if (!string.IsNullOrEmpty(imagePath))
 					{
