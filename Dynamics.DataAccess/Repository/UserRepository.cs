@@ -47,6 +47,12 @@ namespace Dynamics.DataAccess.Repository
             return user;
         }
 
+        async Task<List<User>> GetUsersByUserId(Expression<Func<User, bool>> filter)
+        {
+            var users = await _db.Users.Where(filter).ToListAsync();
+            return users;
+        }
+
         public async Task<List<User>> GetAllUsers()
         {
             var users = await _db.Users.ToListAsync();

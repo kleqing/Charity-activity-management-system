@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Dynamics.Models.Models.User>
+﻿
 @using Dynamics.Utility
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
@@ -10,6 +10,7 @@
 }
 
 @{
+    //current usser
     var userString = Accessor.HttpContext.Session.GetString("user");
     User currentUser = null;
     if (userString != null)
@@ -17,14 +18,26 @@
         currentUser = JsonConvert.DeserializeObject<User>(userString);
     }
 
-    // Check Current user in Organization
-    var OrganizationMember = Accessor.HttpContext.Session.Get<List<OrganizationMember>>(MySettingSession.SESSION_Organization_Member_KEY);
-
+    //current Organization
     var organizationString = Accessor.HttpContext.Session.GetString("organization");
     Organization currentOrganization = null;
     if (organizationString != null)
     {
         currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
+    }
+
+    //Members in a organization with orrganizationId
+    var userMembersInOrganization = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY);
+
+    //find Ceo Oragnization
+    User userCeoOrganization = new User();
+    foreach (var item in userMembersInOrganization)
+    {
+        if (item.UserID.Equals(currentOrganization.CEOID))
+        {
+            userCeoOrganization = item;
+            break;
+        }
     }
 }
 
@@ -36,17 +49,18 @@
             <li class="flex items-center justify-between bg-white shadow-xl px-5 py-1 my-5 rounded-box ">
                 <div class="flex items-center gap-2">
                     <span class="text-gray-500 text-sm font-semibold">1.</span>
-                    <a asp-action="Details" asp-controller="EditUser" asp-route-id="@ViewBag.Ceo.UserID">
-                        <img src="@(ViewBag.Ceo.UserAvatar ?? "https://via.placeholder.com/32") " alt="ViewBag.Ceo.UserFullName" class=" w-16 mr-5 rounded-full">
+                    <a asp-action="Details" asp-controller="EditUser" asp-route-id="@userCeoOrganization.UserID">
+                        <img src="@(userCeoOrganization.UserAvatar ?? "https://via.placeholder.com/32") " alt="@userCeoOrganization.UserFullName" class=" w-16 mr-5 rounded-full">
                     </a>
-                    <a asp-action="Details" asp-controller="EditUser" asp-route-id="@ViewBag.Ceo.UserID">
-                        <span class="text-sm mx-5 font-semibold">@ViewBag.Ceo.UserFullName </span>
+                    <a asp-action="Details" asp-controller="EditUser" asp-route-id="@userCeoOrganization.UserID">
+                        <span class="text-sm mx-5 font-semibold">@userCeoOrganization.UserFullName </span>
                     </a>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="text-sm mx-5 font-semibold ">Leader</span>
                 </div>
-                @if (@currentUser.UserID.Equals(@ViewBag.Ceo.UserID)){
+                @if (@currentUser.UserID.Equals(@userCeoOrganization.UserID))
+                {
                     
                     <div class="flex items-center gap-2 ">
                         <a asp-action="TransferCeoOrganization" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID">
@@ -57,9 +71,9 @@
                 
             </li>
 
-            @foreach(var item in Model)
+            @foreach (var item in userMembersInOrganization)
             {
-                if (item.UserID.Equals(@ViewBag.Ceo.UserID))
+                if (item.UserID.Equals(@userCeoOrganization.UserID))
                 {
                     continue;
                 }
@@ -80,7 +94,7 @@
                     </div>
 
                     @*ban member*@
-                    @if (currentUser.UserID.Equals(@ViewBag.Ceo.UserID))
+                    @if (currentUser.UserID.Equals(@userCeoOrganization.UserID))
                     {
                         <form asp-action="OutOrganization" asp-controller="Organization" asp-route-organizationId="@currentOrganization.OrganizationID">
                             <input value="@item.UserID" name="userId" type="hidden">
