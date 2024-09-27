@@ -136,6 +136,13 @@ namespace Dynamics.Controllers
         }
 
 
+
+
+
+        /// <summary>
+        /// Manager Member
+        /// </summary>
+        /// <returns></returns>
         //need fix
         public async Task<IActionResult> ManageOrganizationMember()
         {
@@ -243,6 +250,22 @@ namespace Dynamics.Controllers
                 return RedirectToAction("Index", "EditUser");
             }
             return View(organization);
+        }
+
+
+
+
+        ////Manage Project
+        public async Task<IActionResult> ManageOrganizationProject()
+        {
+            return View();
+        }
+
+
+        ///manage history
+        public async Task<IActionResult> ManageOrganizationTranactionHistory(int organizationId)
+        {
+            return View();
         }
     }
 }

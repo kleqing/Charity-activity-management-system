@@ -43,10 +43,17 @@
         {
             <div class="card bg-base-100 w-96 shadow-xl ">
                 <figure>
-                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                        <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
-                             alt="@item.OrganizationName" />
-                    </a>
+                    <div class="relative">
+                        <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                            <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
+                                 alt="@item.OrganizationName" />
+                        </a>
+                        <div class="absolute top-2 left-8">
+                            <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Organization</p>
+
+                        </div>
+                    </div>
+                    
                     
                 </figure>
                 <div class="card-body">
