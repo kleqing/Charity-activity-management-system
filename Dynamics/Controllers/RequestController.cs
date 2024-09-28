@@ -24,7 +24,7 @@ namespace Dynamics.Controllers
 		{
 			return View(await _requestRepo.GetAllAsync());
 		}
-		public async Task<IActionResult> MyRequest()
+		public async Task<IActionResult> MyRequest(string searchQuery, int pageNumber = 1, int pageSize = 4)
 		{
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
@@ -39,13 +39,24 @@ namespace Dynamics.Controllers
 				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
 				userId = userJsonC.UserID;
 			}
-			var request = await _requestRepo.GetAllByRoleAsync(role, userId);
-			return View(request);
+
+			var requests = await _requestRepo.GetAllByRolePaginatedAsync(role, userId, pageNumber, pageSize);
+			// search
+			if (!string.IsNullOrEmpty(searchQuery))
+			{
+				requests = await _requestRepo.SearchIdFilterAsync(searchQuery, userId);
+			}
+			//TODO: rework count logic
+			var totalRequest = await _requestRepo.CountAllByIdAsync(role, userId);
+			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
+			
+			ViewBag.currentPage = pageNumber;
+			ViewBag.totalPages = totalPages;
+			return View(requests);
 		}
 		public async Task<IActionResult> Detail(Guid? id)
 		{
 			Guid userId = Guid.NewGuid();
-			
 			var request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); }
 			return View(request);
@@ -54,10 +65,10 @@ namespace Dynamics.Controllers
 		{
 			return View();
 		}
-		//TODO: handle image upload
 		[HttpPost]
 		public async Task<IActionResult> Create(Request obj, List<IFormFile> images)
 		{
+			obj.RequestID = Guid.NewGuid();
 			var date = DateOnly.FromDateTime(DateTime.Now);
 			obj.CreationDate = date;
 			Guid userId = Guid.Empty;
@@ -66,7 +77,6 @@ namespace Dynamics.Controllers
 			{
 				var user = JsonConvert.DeserializeObject<User>(userJson);
 				userId = user.UserID;
-				await _requestRepo.AddAsync(obj);
 			}
 			obj.UserID = userId;
 			if (images != null && images.Count > 0)
@@ -74,8 +84,12 @@ namespace Dynamics.Controllers
 				string imagePath = Util.UploadMultiImage(images, $@"images\Requests\" + obj.RequestID.ToString(), userId);
 				obj.Attachment = imagePath;
 			}
-
-			return RedirectToAction("Index", "Request");
+			else
+			{
+				obj.Attachment = "/images/Requests/Placeholder/xddFaker.png";
+			}
+			await _requestRepo.AddAsync(obj);
+			return RedirectToAction("MyRequest", "Request");
 		}
 		public async Task<IActionResult> Edit(Guid? id)
 		{
@@ -164,7 +178,6 @@ namespace Dynamics.Controllers
 		}
 		public async Task<IActionResult> Delete(Guid? id)
 		{
-
 			if (id == null)
 			{
 				return NotFound();
@@ -178,7 +191,7 @@ namespace Dynamics.Controllers
 		{
 			Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); };
-			_requestRepo.DeleteAsync(request);
+			await _requestRepo.DeleteAsync(request);
 			return RedirectToAction("MyRequest", "Request");
 		}
 	}

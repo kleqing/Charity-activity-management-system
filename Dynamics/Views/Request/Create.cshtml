@@ -5,7 +5,7 @@
 <div class="my-5 px-0 pt-12 w-full flex justify-center">
     <div class="bg-white shadow-md rounded-box my-5 px-5 pt-12 py-5 max-w-xl w-full">
         <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Create your request</h2>
-        <form asp-action="Create" asp-controller="Request" method="post">
+        <form asp-action="Create" asp-controller="Request" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div>
                 <input type="hidden" value="@DateOnly.FromDateTime(DateTime.Now)" asp-for="@Model.CreationDate" />

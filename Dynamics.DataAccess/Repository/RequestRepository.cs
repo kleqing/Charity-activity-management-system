@@ -35,6 +35,26 @@ namespace Dynamics.DataAccess.Repository
 			}
 		}
 
+		public async Task<int> CountAllByIdAsync(string role, Guid userId)
+		{
+			var query = _db.Requests.AsQueryable();
+
+			if (role == "User")
+			{
+				query = query.Where(r => r.UserID == userId);
+			}
+
+			return await query.CountAsync();
+		}
+
+		public async Task<List<Request>> SearchIdFilterAsync(string searchQuery, Guid userId)
+		{
+			var requests = await _db.Requests
+				.Where(r => r.RequestTitle.Contains(searchQuery) || r.Content.Contains(searchQuery) || r.Location.Contains(searchQuery)
+					&& r.UserID == userId).ToListAsync();
+			return requests;
+		}
+
 		public async Task<Request> GetAsync(Expression<Func<Request, bool>> filter)
 		{
 			var query = await _db.Requests.Where(filter).FirstOrDefaultAsync();
@@ -57,17 +77,18 @@ namespace Dynamics.DataAccess.Repository
 			}
 		}
 
-		public async Task<List<Request>> GetAllByRoleAsync(string role, Guid id)
+		public async Task<List<Request>> GetAllByRolePaginatedAsync(string role, Guid id, int pageNumber, int pageSize)
 		{
-			if (role == "Admin")
-			{
-				return await _db.Requests.ToListAsync();
+			var query = _db.Requests.AsQueryable();
+			if (role == "User")
+			{ 
+				 query = query.Where(r => r.UserID == id);
 			}
-			else if (role == "User")
-			{
-				return await _db.Requests.Where(r => r.UserID == id).ToListAsync();
-			}
-			return new List<Request>();
+			return await query
+				.OrderBy(r => r.CreationDate)
+				.Skip((pageNumber - 1) * pageSize)
+				.Take(pageSize)
+				.ToListAsync();
 		}
 
 		public async Task<Request> GetByRoleAsync(Expression<Func<Request, bool>> filter, string role, Guid id)

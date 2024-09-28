@@ -31,7 +31,7 @@ namespace Dynamics.Utility
             }
 
         }
-        
+        // upload multiple images for request controller
         public static string UploadMultiImage(List<IFormFile> images, string folder, Guid id)
         {
             try
@@ -43,10 +43,11 @@ namespace Dynamics.Utility
                 {
                     if (image != null && image.Length > 0)
                     {
+                        // create folder for each individual request
                         string folderName = id.ToString();
                         string filenameExtension = image.FileName;
-                        bool folderExists = Directory.Exists(folderName);
-                        if(!folderExists) { Directory.CreateDirectory(@"wwwroot\images\Requests\" + folderName); }
+                        bool folderExists = Directory.Exists(folder);
+                        if(!folderExists) { Directory.CreateDirectory(@"wwwroot\" + folder); }
                         var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folder,
                             filenameExtension);
                         using (var myFile = new FileStream(fullPath, FileMode.Create))
