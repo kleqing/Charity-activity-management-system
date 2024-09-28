@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240924064752_Initial")]
+    [Migration("20240927150910_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -35,9 +35,8 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("AwardID");
 
@@ -104,6 +103,9 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly?>("StartTime")
                         .HasColumnType("date");
 
+                    b.Property<bool>("isBanned")
+                        .HasColumnType("bit");
+
                     b.HasKey("OrganizationID");
 
                     b.ToTable("Organizations");
@@ -114,8 +116,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<Guid>("OrganizationID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("OrganizationID", "UserID");
 
@@ -147,8 +149,9 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Unit")
-                        .HasColumnType("int");
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ResourceID");
 
@@ -187,8 +190,9 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
 
-                    b.Property<int>("Unit")
-                        .HasColumnType("int");
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TransactionID");
 
@@ -212,8 +216,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly?>("EndTime")
                         .HasColumnType("date");
 
-                    b.Property<int?>("LeaderID")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("LeaderID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrganizationID")
                         .HasColumnType("uniqueidentifier");
@@ -251,8 +255,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<Guid>("ProjectID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ProjectID", "UserID");
 
@@ -305,8 +309,8 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("CreationDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -315,9 +319,12 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserID")
+                    b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("isEmergency")
                         .HasColumnType("int");
@@ -331,8 +338,9 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.User", b =>
                 {
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserAddress")
                         .HasColumnType("nvarchar(max)");
@@ -356,6 +364,9 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<string>("UserPhoneNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isBanned")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserID");
 
@@ -382,9 +393,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
 
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TransactionID");
 
@@ -422,12 +432,12 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Unit")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserID")
+                    b.Property<string>("Unit")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TransactionID");
 
