@@ -119,6 +119,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             else
             {
                 // If the user does not have an account, then ask the user to create an account.
+                // Do we need this though ?
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))

@@ -1,0 +1,112 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Newtonsoft.Json
+@inject IHttpContextAccessor Accessor
+@model ChangePasswordDto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@{
+    var userString = Accessor.HttpContext.Session.GetString("user");
+    User currentUser = null;
+    if (userString != null)
+    {
+        currentUser = JsonConvert.DeserializeObject<User>(userString);
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Edit page</title>
+    <link rel="stylesheet" href="~/css/output.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body class="h-screen flex flex-col">
+<!-- Edit profile -->
+<div class="flex md:p-6 pb-0 flex-1">
+    <!-- Sidebar -->
+    <div class="p-2 pt-12 w-1/5">
+        <ul class="flex flex-col gap-2">
+            <a asp-action="Index" asp-route-username="@currentUser.UserFullName" asp-controller="User" class="btn btn-ghost text-start"> User profile </a>
+            <a asp-action="Account" class="btn btn-ghost text-start btn-active"> Account </a>
+            <a href="settings/history" class="btn btn-ghost text-start"> History </a>
+            <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
+        </ul>
+    </div>
+    <!-- End sidebar -->
+    <!-- Main content -->
+    <div class="divider divider-horizontal"></div>
+    @{
+        if (TempData["google"] != null)
+        {
+            <h2 class="mb-4 text-center text-3xl">
+                <b>Change password</b>
+            </h2>
+            <br/>
+            <h2 class="mb-4 text-center text-3xl font-bold text-success">@TempData["google"]</h2>
+        }
+        else
+        {
+            <form asp-action="ChangePassword" asp-controller="User" method="post" class="flex flex-col gap-4 justify-center items-center flex-1 px-16 w-1/2">
+                <h2 class="mb-4 text-center text-3xl">
+                    <b>Change password</b>
+                </h2>
+                <div asp-validation-summary="ModelOnly" class="text-error" role="alert"></div>
+                @if (currentUser.UserID != null)
+                {
+                    <input type="hidden" asp-for="@Model.UserId" value="@currentUser.UserID"/>
+                }
+
+                @* Old password *@
+                <label class="form-control w-full">
+                    <span class="label label-text font-bold text-lg">Old password</span>
+                    <input
+                        type="password"
+                        placeholder="Please enter your old password"
+                        class="input input-bordered w-full"
+                        asp-for="@Model.OldPassword"
+                        name="OldPassword"/>
+                    <span asp-validation-for="OldPassword" class="text-error"></span>
+                </label>
+                @* New password *@
+                <label class="form-control w-full">
+                    <span class="label label-text font-bold text-lg">New password</span>
+                    <input
+                        type="password"
+                        placeholder="Please enter your new password"
+                        class="input input-bordered w-full"
+                        asp-for="@Model.NewPassword"
+                        name="NewPassword"/>
+                    <span asp-validation-for="NewPassword" class="text-error"></span>
+                </label>
+
+                @* Confirm password *@
+                <label class="form-control w-full">
+                    <span class="label label-text font-bold text-lg">Confirm new password</span>
+                    <input
+                        type="password"
+                        placeholder="Please enter your confirm new password"
+                        class="input input-bordered w-full"
+                        asp-for="@Model.ConfirmPassword"/>
+                    <span asp-validation-for="ConfirmPassword" class="text-error"></span>
+                </label>
+                <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                        class="btn btn-primary"
+                        id="login">
+                    Save change Password
+                </button>
+            </form>
+        }
+    }
+    <!-- End content -->
+</div>
+<!-- End edit profile -->
+<partial name="CustomComponent/_ToastNotif"/>
+<partial name="_ValidationScriptsPartial"/>
+</body>
+</html>

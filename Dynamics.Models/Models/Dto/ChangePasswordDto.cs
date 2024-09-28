@@ -12,10 +12,13 @@ namespace Dynamics.Models.Models
     {
         public Guid UserId { get; set; }
         [DataType(DataType.Password)]
+        [Required]
         public string OldPassword { get; set; }
         [DataType(DataType.Password)]
+        [Required]
         public string NewPassword { get; set; }
         [DataType(DataType.Password)]
+        [Required]
         public string ConfirmPassword { get; set; }
     }
 }

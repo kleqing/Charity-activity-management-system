@@ -14,5 +14,16 @@
         <script>
             toastr.error('@TempData[MyConstants.Failed]');
         </script>
+    } else if (TempData[MyConstants.Info] != null)
+    {
+        <script>
+            toastr.info('@TempData[MyConstants.Failed]');
+        </script>
+    }
+    else if (TempData[MyConstants.Warning] != null)
+    {
+        <script>
+            toastr.warning('@TempData[MyConstants.Failed]');
+        </script>
     }
 }

@@ -20,7 +20,8 @@
     <!-- Sidebar -->
     <div class="p-2 pt-12 w-1/5">
         <ul class="flex flex-col gap-2">
-            <a asp-action="Details" asp-route-id="@Model.UserID" class="btn btn-ghost text-start"> User profile </a>
+            <a asp-action="Index" asp-route-id="@Model.UserFullName" class="btn btn-ghost text-start"> User profile </a>
+            <a asp-action="Account" asp-route-id="@Model.UserID" class="btn btn-ghost text-start"> Account </a>
             <a href="settings/history" class="btn btn-ghost text-start"> History </a>
             <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
         </ul>
