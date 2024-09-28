@@ -256,14 +256,20 @@ namespace Dynamics.Controllers
 
 
         ////Manage Project
-        public async Task<IActionResult> ManageOrganizationProject()
+        public async Task<IActionResult> ManageOrganizationProject(List<Project> projects)
         {
-            return View();
+            return View(projects);
         }
 
 
         ///manage history
         public async Task<IActionResult> ManageOrganizationTranactionHistory(int organizationId)
+        {
+            return View();
+        }
+
+        //manage Resource
+        public async Task<IActionResult> ManageOrganizationResource()
         {
             return View();
         }

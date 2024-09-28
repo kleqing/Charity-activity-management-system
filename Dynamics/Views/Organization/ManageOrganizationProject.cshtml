@@ -1,4 +1,5 @@
-﻿@using Dynamics.Utility
+﻿@model IEnumerable<Dynamics.Models.Models.Project>
+@using Dynamics.Utility
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
 
@@ -53,23 +54,27 @@
             @if (@currentUser.UserID.Equals(@userCeoOrganization.UserID))
             {
                 
-                 <div class="card mx-5 my-2 w-96 bg-gray-200 rounded-lg shadow-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:shadow-md transition duration-300">
+                 <div class="card mx-5 my-2 w-96 ">
                     <a asp-action="CreateProject" asp-controller="Project">
-                        <p class="text-gray-700 text-3xl text-center font-medium">New Project</p>
-                        <div class="relative mr-2">
-                            <button class="border text-white rounded-full  flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-64 w-64" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                            </button>
+                        <div class="w-full h-full p-12 bg-gray-200 rounded-lg shadow-lg cursor-pointer hover:shadow-lg transition duration-300">
+                            <p class="text-gray-700 text-3xl text-center font-medium pt-12 mb-10">New Project</p>
+                            <div class="relative mr-2 pb-12">
+                                <button class="border text-white rounded-full  flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-64 w-64" fill="none" viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="p-12"></div>
                         </div>
+                        
                     </a>
                 </div>
                 
             }
             
-            @for (int i = 0; i < 8; i++)
+            @foreach(var item in Model)
             {
                 <div class=" card bg-base-100 w-96 shadow-xl mx-5 my-2">
                     <div class="relative">
@@ -82,21 +87,27 @@
 
                             </div>
                             <div class="absolute top-2 right-8">
-                                <p class="bg-pink-300 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Preparing</p>
-                                <p class="bg-red-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">On-going</p>
+                                @if (item.ProjectStatus == 1)
+                                {
+                                    <p class="bg-pink-300 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Preparing</p>
+                                }
+                                
+                                @if(item.ProjectStatus == 2)
+                                {
+                                    <p class="bg-red-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">On-going</p>
+                                }
                             </div>
                         </div>
                         
                     </div>
                     <div class="p-3 card-body">
-                        <h1 class="card-title">Please help me...</h1>
+                        <h1 class="card-title">@item.ProjectName</h1>
                         <div class="flex justify-between items-center text-xs  mb-2">
-                            <h3 class="text-sm">By some user</h3>
+                            <h3 class="text-sm">By @currentOrganization.OrganizationMember</h3>
                             <h3 class="text-sm">Hà Nội</h3>
                         </div>
                         <p class=" text-base mb-3">
-                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean hcommodo
-                            ligula eget dolor. Aenean dapibus. Vivamus elementum semper nisi.
+                            @item.ProjectDescription
                         </p>
                         <div class="flex items-center text-xs text-gray-500 mb-2">
                             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
