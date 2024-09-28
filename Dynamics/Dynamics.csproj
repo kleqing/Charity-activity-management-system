@@ -41,6 +41,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Helps\" />
+	  <Folder Include="wwwroot\images\Project\" />
 	  <Folder Include="wwwroot\images\Organization\" />
 	  <Folder Include="wwwroot\images\User\" />
 	</ItemGroup>

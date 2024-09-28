@@ -47,13 +47,18 @@
 
         <div class="w-full">
             <div class="border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
-                <form class="py-5 px-5" asp-action="CreateProject" asp-controller="Project" method="post">
+                <form class="py-5 px-5" asp-action="CreateProject" asp-controller="Project" enctype="multipart/form-data" method="post">
+                    <div>
+                        <input asp-for="OrganizationID" value="@currentOrganization.OrganizationID" class="hidden">
+                        <input asp-for="RequestID" value="@Model.RequestID" class="hidden">
+                        <input asp-for="ProjectAddress" value="@Model.ProjectAddress" class="hidden">
+                        <input asp-for="ProjectStatus" value="1" class="hidden">
+                    </div>
 
                     <div class="grid grid-cols-2 gap-6 mb-6">
-
                         <div>
-                            <label for="project-name" class="block text-base font-medium text-gray-700 mb-1">Enter project name</label>
-                            <input type="text" id="project-name" class="w-full p-2 border border-gray-300 rounded"
+                            <label asp-for="ProjectName" class="block text-base font-medium text-gray-700 mb-1">Enter project name</label>
+                            <input asp-for="ProjectName" type="text" id="project-name" class="w-full p-2 border border-gray-300 rounded"
                                    placeholder="Enter your name">
                         </div>
 
@@ -64,7 +69,7 @@
                                     <label for="file-upload" class="file-upload-label px-4 py-2 mx-4 bg-blue-900 text-white rounded text-base">
                                         <span>Choose images</span>
                                     </label>
-                                    <input id="file-upload" type="file" name="image" class="hidden">
+                                    <input asp-for="Attachment" id="file-upload" type="file" name="image" class="hidden">
                                 </div>
                             </div>
 
@@ -73,52 +78,68 @@
                     </div>
 
                     <div class="mb-6">
-                        <label for="project-description" class="block text-base font-medium text-gray-700 mb-1">
+                        <label asp-for="ProjectDescription" class="block text-base font-medium text-gray-700 mb-1">
                             Enter project
                             description
                         </label>
-                        <textarea id="project-description" rows="4" class="w-full p-2 border border-gray-300 rounded"
+                        <textarea asp-for="ProjectDescription" id="project-description" rows="4" class="w-full p-2 border border-gray-300 rounded"
                                   placeholder="Enter your text"></textarea>
                     </div>
                     <div class="mb-6">
-                        <label for="project-contact" class="block text-base font-medium text-gray-700 mb-1">
-                            Enter project contact
-                            details
+                        <label asp-for="ProjectEmail" class="block text-base font-medium text-gray-700 mb-1">
+                            Enter project contact Email!
                         </label>
-                        <textarea id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
-                                  placeholder="Enter your text"></textarea>
+                        <input asp-for="ProjectEmail" type="email" id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
+                                  placeholder="Enter Email"></input>
+                    </div>
+
+                    <div class="mb-6">
+                        <label asp-for="ProjectPhone" class="block text-base font-medium text-gray-700 mb-1">
+                            Enter project contact Phone!
+                        </label>
+                        <input asp-for="ProjectPhone" type="tel" id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
+                               placeholder="Enter tel"></input>
                     </div>
 
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div class="w-full">
-                            <label for="start-time" class="block text-base font-medium text-gray-700 mb-1">
+                            <label asp-for="StartTime" class="block text-base font-medium text-gray-700 mb-1">
                                 Select a project start
                                 time
                             </label>
-                            <input type="datetime-local" id="start-time" class="w-full p-2 border rounded">
+                            <input asp-for="StartTime" type="date" id="start-time" class="w-full p-2 border rounded">
                             <p class="text-sm text-gray-500 mt-1">
                                 The date that your project starts. Before that, your project will
                                 continue to receive donations.
                             </p>
                         </div>
                         <div class="w-full ">
-                            <label for="end-time" class="block text-base font-medium text-gray-700 mb-1">
+                            <label asp-for="EndTime" class="block text-base font-medium text-gray-700 mb-1">
                                 Select a project end time
                                 (estimated)
                             </label>
-                            <input type="datetime-local" id="end-time" class="w-full p-2 border rounded">
+                            <input asp-for="EndTime" type="date" id="end-time" class="w-full p-2 border rounded">
                             <p class="text-sm text-gray-500 mt-1">The estimated date that your project will end.</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label for="project-lead" class="block text-base font-medium text-gray-700 mb-1">
+                            <label asp-for="LeaderID" class="block text-base font-medium text-gray-700 mb-1">
                                 Assign a member to lead this
                                 project (Optional)
                             </label>
-                            <select id="project-lead" class="w-full p-2 border border-gray-300 rounded">
+                            <select asp-for="LeaderID" id="project-lead" class="w-full p-2 border border-gray-300 rounded">
                                 <option>Options</option>
+                                @foreach (var item in @userMembersInOrganization)
+                                {
+                                    if (item.UserID.Equals(@currentOrganization.CEOID))
+                                    {
+                                      <option class="text-xl text-black font-semibold" value="@item.UserID">[Yourself] - [@item.UserFullName] - [@item.UserEmail] - [@item.UserID]</option>
+
+                                    }
+                                    <option class="text-xl text-black font-semibold" value="@item.UserID">[@item.UserFullName] - [@item.UserEmail] - [@item.UserID]</option>
+                                }
                             </select>
                         </div>
                         <div>

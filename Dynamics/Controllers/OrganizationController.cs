@@ -256,8 +256,9 @@ namespace Dynamics.Controllers
 
 
         ////Manage Project
-        public async Task<IActionResult> ManageOrganizationProject(List<Project> projects)
+        public async Task<IActionResult> ManageOrganizationProject()
         {
+            var projects = HttpContext.Session.Get<List<Project>>(MySettingSession.SESSION_Projects_In_A_OrganizationID_Key);
             return View(projects);
         }
 

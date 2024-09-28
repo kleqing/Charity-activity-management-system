@@ -13,5 +13,7 @@ namespace Dynamics.Utility
         public const string SESSION_User_In_A_OrganizationID_KEY = "UserMemberInAOrganizationId";//organization that user join 
 
         public const string Session_Organization_User_Ceo_Key = "OrganizationUserIsCeo";// organization that you are ceo
+
+        public const string SESSION_Projects_In_A_OrganizationID_Key = "ProjectsInAOrganization";// project of a organization
     }
 }

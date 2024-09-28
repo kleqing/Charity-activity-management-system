@@ -79,7 +79,7 @@
                 <div class=" card bg-base-100 w-96 shadow-xl mx-5 my-2">
                     <div class="relative">
                         <figure>
-                            <img src="https://localhost:7276/images/Organization/0.jpg" alt="Ảnh dự án" class="w-96 h-64 object-cover">
+                            <img src="@(item.Attachment ?? "https://localhost:7276/images/Organization/0.jpg")" alt="Ảnh dự án" class="w-96 h-64 object-cover">
                         </figure>
                         <div class="">
                             <div class="absolute top-2 left-8">
@@ -103,7 +103,7 @@
                     <div class="p-3 card-body">
                         <h1 class="card-title">@item.ProjectName</h1>
                         <div class="flex justify-between items-center text-xs  mb-2">
-                            <h3 class="text-sm">By @currentOrganization.OrganizationMember</h3>
+                            <h3 class="text-sm">By @currentOrganization.OrganizationName</h3>
                             <h3 class="text-sm">Hà Nội</h3>
                         </div>
                         <p class=" text-base mb-3">

@@ -11,7 +11,13 @@ namespace Dynamics.Models.Models
     {
 		public int OrganizationID { get; set; }
 		public string OrganizationName { get; set; }
-		public string OrganizationDescription { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        public string? OrganizationEmail { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        public string? OrganizationPhoneNumber { get; set; }
+        public string? OrganizationAddress { get; set; }
+        public string OrganizationDescription { get; set; }
 		public string? OrganizationPictures { get; set; }
         [DataType(DataType.Date)]
         public DateOnly StartTime { get; set; }
