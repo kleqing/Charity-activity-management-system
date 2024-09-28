@@ -2,11 +2,16 @@ using Dynamics.DataAccess.Repository;
 using Dynamics.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using AutoMapper;
 using Dynamics.Models.Models;
 using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.ViewModel;
 using Dynamics.Utility.Mapper;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
@@ -19,10 +24,11 @@ namespace Dynamics.Controllers
         private readonly IOrganizationRepository _organizationRepo;
         private readonly IProjectResourceRepository _projectResourceRepo;
         private readonly IMapper _mapper;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
         public HomeController(ILogger<HomeController> logger, IUserRepository userRepo, IRequestRepository requestRepo,
             IProjectRepository projectRepo, IOrganizationRepository organizationRepo,
-            IProjectResourceRepository projectResourceRepo, IMapper mapper)
+            IProjectResourceRepository projectResourceRepo, IMapper mapper, SignInManager<IdentityUser> signInManager)
         {
             _logger = logger;
             _userRepo = userRepo;
@@ -31,6 +37,7 @@ namespace Dynamics.Controllers
             _organizationRepo = organizationRepo;
             _projectResourceRepo = projectResourceRepo;
             _mapper = mapper;
+            _signInManager = signInManager;
         }
 
         // Landing page
@@ -41,6 +48,20 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> Homepage()
         {
+            // Check if there is an authenticated user, set the session of that user
+            if (User.Identity.IsAuthenticated)
+            {
+                var userEmail = User.FindFirstValue(ClaimTypes.Email);
+                var user = _userRepo.GetAsync(u => u.UserEmail == userEmail).Result;
+                // Bad user
+                if (user == null)
+                {
+                    return RedirectToAction("Logout", "Auth");
+                }
+                HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
+            }
+
+
             List<Request> requests = await _requestRepo.GetAllRequestWithUsersAsync();
             List<Project> projects = await _projectRepo.GetAllAsync();
             // Map to view model for display
@@ -57,7 +78,7 @@ namespace Dynamics.Controllers
                 Requests = requests,
                 Projects = projectOverviewDtos
             };
-            
+
             return View(result);
         }
 
@@ -80,11 +101,13 @@ namespace Dynamics.Controllers
             tempProjectOverviewDto.ProjectMembers = _projectRepo.CountMemberOfProjectById(p.ProjectID);
             tempProjectOverviewDto.ProjetDescription = p.ProjectDescription;
             tempProjectOverviewDto.ProjectProgress = _projectRepo.GetProjectProgressById(p.ProjectID);
-            var moneyRaised = await _projectResourceRepo.GetAsync(pr => pr.ResourceName == "Money" && pr.ProjectID == p.ProjectID);
+            var moneyRaised =
+                await _projectResourceRepo.GetAsync(pr => pr.ResourceName == "Money" && pr.ProjectID == p.ProjectID);
             if (moneyRaised != null)
             {
                 tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
             }
+
             tempProjectOverviewDto.ProjectAttachment = p.Attachment;
             tempProjectOverviewDto.ProjectStatus = p.ProjectStatus;
 

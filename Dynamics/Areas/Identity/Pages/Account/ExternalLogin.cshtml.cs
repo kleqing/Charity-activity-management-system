@@ -144,7 +144,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -162,9 +161,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         // Add user to the database after creating the user with external login
                         await _userRepo.Add(new User
                         {
-                            UserID = new Guid(user.Id),
-                            UserFullName =
-                                info.Principal.FindFirstValue(ClaimTypes.Name), // Get user's name from Google
+                            UserID = new Guid(user.Id), // This and email is the only thing that connects between 2 tables, the user name IS NOT the same
+                            UserFullName = info.Principal.FindFirstValue(ClaimTypes.Name),
                             UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email), // Get user's email from Google
                             UserAvatar = info.Principal.FindFirstValue("picture")
                         });

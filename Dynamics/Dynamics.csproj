@@ -42,7 +42,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Helps\" />
-	  <Folder Include="Views\Shared\CustomLayout\" />
 	  <Folder Include="wwwroot\images\User\" />
 	</ItemGroup>
 

@@ -23,11 +23,11 @@ namespace Dynamics.Utility
                 }
                 string imagePath = Path.Combine(folder, fileName + fileNameExtension);
                 return "/" + imagePath.Replace('\\', '/');
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return string.Empty;
             }
-
         }
     }
 }

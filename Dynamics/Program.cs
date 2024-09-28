@@ -1,5 +1,4 @@
-
-using Dynamics.DataAccess;
+﻿using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Utility;
 using Dynamics.Utility.Mapper;
@@ -16,7 +15,7 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
-           
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             // Add service and scope for Google auth
@@ -63,7 +62,7 @@ namespace Dynamics
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
             // Automapper:
             builder.Services.AddAutoMapper(typeof(MyMapper));
-            
+
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 
@@ -121,11 +120,11 @@ namespace Dynamics
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Homepage}/{id?}");
 
             app.MapControllerRoute(
-                 name: "areas",
-                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

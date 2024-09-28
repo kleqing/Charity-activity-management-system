@@ -1,53 +1,20 @@
 ﻿@model Dynamics.Models.Models.ViewModel.HomepageViewModel
 
 @{
-    ViewBag.Title = "Homepage";
-    Layout = null;
+    ViewData["Title"] = "HomePage";
+    var isAuthenticated = User.Identity.IsAuthenticated;
+    if (!isAuthenticated)
+    {
+        Layout = "CustomLayout/_LayoutForGuest";
+    }
+    else
+    {
+        Layout = "CustomLayout/_LayoutWithNavbarAndImage";
+    }
 }
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home page - Dynamics</title>
-    <link href="css/original.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/output.css">
-    <link
-        href="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.4/dist/css/splide.min.css"
-        rel="stylesheet"/>
-</head>
-<body>
-<header class="relative">
-    <partial name="CustomComponent/_Navbar"/>
-    <!-- Background image for navbar and a button -->
-    <div class="relative flex justify-center items-center z-0">
-        <img
-            class="object-cover w-full h-80"
-            src="https://wallpapers.com/images/featured/anime-scenery-ahd1eqpvwq8aoofp.jpg"
-            alt=""/>
-        @* TODO: Create a request *@
-        <button class="btn btn-primary absolute top-100px align-with-navbar-center">Create a request</button>
-    </div>
-    <!-- End background image -->
-</header>
-<style>
-    .align-with-navbar-center {
-        /*margin-left: 80px;*/
-    }
-    .elevate {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .elevate:hover {
-        transform: translateY(-5px); /* Moves the element up */
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Adds a shadow to give a lifted effect */
-    }
-</style>
-
 <!-- The body of the home page -->
 <div class="-mt-12 z-10 relative bg-white rounded-3xl px-8 py-16 flex flex-col gap-20">
+<h1 class="text-center text-3xl text-rose-500">DEBUGGING: Is authenticated: @isAuthenticated</h1>
 <!-- Help request section -->
 <section
     class="flex flex-col justify-center items-center splide"
@@ -542,5 +509,3 @@
         }
     });
 </script>
-</body>
-</html>
