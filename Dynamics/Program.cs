@@ -15,9 +15,11 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
-            
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+
+            // Add cache to the container, allow admin dashboard get the latest data
+            // working with other services as well
+            // builder.Services.AddMemoryCache();
+
             // Add service and scope for Google auth
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
             {
@@ -59,6 +61,12 @@ namespace Dynamics
 
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+            // Admin controller
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
 
             // Enable razor page
             builder.Services.AddRazorPages();

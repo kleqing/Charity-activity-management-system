@@ -4,6 +4,7 @@ using Dynamics.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240929095448_RemoveCreatedDateForOtherTable")]
+    partial class RemoveCreatedDateForOtherTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,11 +97,11 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("ShutdownDay")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("ShutdownDay")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("StartTime")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("isBanned")
                         .HasColumnType("bit");
@@ -210,8 +213,8 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("EndTime")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("LeaderID")
                         .HasColumnType("uniqueidentifier");
@@ -233,8 +236,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<Guid?>("RequestID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("StartTime")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ProjectID");
 

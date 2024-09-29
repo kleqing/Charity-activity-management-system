@@ -11,10 +11,10 @@ namespace Dynamics.Models.Models
     {
 		public Guid RequestID { get; set; }
 		public Guid UserID { get; set; }
-		public string Content { get; set; }
-        [DataType(DataType.Date)]
-        public DateOnly? CreationDate { get; set; }
-		public string Location { get; set; }
+		public string Title { get; set; }
+        public string Content { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public string Location { get; set; }
 		public string Attachment { get; set; }
 		public int isEmergency { get; set; }
 		public int Status { get; set; }
