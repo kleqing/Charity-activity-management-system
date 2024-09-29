@@ -25,5 +25,8 @@ namespace Dynamics.DataAccess.Repository
         Task<OrganizationMember?> GetOrganizationMemberAsync(Expression<Func<OrganizationMember, bool>> filter);
 
         Task<bool> AddOrganizationMemberSync(OrganizationMember entity);
+
+        Task<bool> AddOrganizationResourceSync(OrganizationResource entity);
+        Task<List<OrganizationResource>> GetAllOrganizationResourceByOrganizationIDAsync(Expression<Func<OrganizationResource, bool>> filter);
     }
 }

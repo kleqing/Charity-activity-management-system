@@ -126,7 +126,26 @@ namespace Dynamics.DataAccess.Repository
            
         }
 
+        public async Task<bool> AddOrganizationResourceSync(OrganizationResource organizationResource)
+        {
+            try
+            {
+                _db.OrganizationResources.Add(organizationResource);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<List<OrganizationResource>> GetAllOrganizationResourceByOrganizationIDAsync(Expression<Func<OrganizationResource, bool>> filter)
+        {
+            var organizationResources = await _db.OrganizationResources.Where(filter).ToListAsync();
+            return organizationResources;
+        }
 
-        
+
+
     }
 }

@@ -272,7 +272,35 @@ namespace Dynamics.Controllers
         //manage Resource
         public async Task<IActionResult> ManageOrganizationResource()
         {
+            //current Organization
+            var organizationString = HttpContext.Session.GetString("organization");
+            Organization currentOrganization = null;
+            if (organizationString != null)
+            {
+                currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
+            }
+
+            var organizationResources = await _organizationRepository.GetAllOrganizationResourceByOrganizationIDAsync(or => or.OrganizationID == currentOrganization.OrganizationID);
+            return View(organizationResources);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddNewOrganizationResource()
+        {
+            
+            return View(new OrganizationResource());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewOrganizationResource(OrganizationResource organizationResource)
+        {
+            if (organizationResource != null)
+            {
+                await _organizationRepository.AddOrganizationResourceSync(organizationResource);
+                return RedirectToAction(nameof(ManageOrganizationResource));
+            }
             return View();
+            
         }
     }
 }
