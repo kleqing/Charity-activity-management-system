@@ -34,19 +34,7 @@ namespace Dynamics.DataAccess.Repository
 				await _db.SaveChangesAsync();
 			}
 		}
-
-		public async Task<int> CountAllByIdAsync(string role, Guid userId)
-		{
-			var query = _db.Requests.AsQueryable();
-
-			if (role == "User")
-			{
-				query = query.Where(r => r.UserID == userId);
-			}
-
-			return await query.CountAsync();
-		}
-
+		
 		public async Task<List<Request>> SearchIdFilterAsync(string searchQuery, Guid userId)
 		{
 			var requests = await _db.Requests
@@ -61,7 +49,7 @@ namespace Dynamics.DataAccess.Repository
 			return query;
 		}
 
-		public async Task<List<Request>> GetAllAsync()
+		public async Task<List<Request>> GetAllPaginatedAsync(int pageNumber, int pageSize)
 		{
 			var requests = await _db.Requests.ToListAsync();
 			return requests;

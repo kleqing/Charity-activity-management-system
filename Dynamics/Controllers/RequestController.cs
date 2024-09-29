@@ -20,11 +20,21 @@ namespace Dynamics.Controllers
 			_userRepo = userRepo;
 			_userManager = userManager;
 		}
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 12)
 		{
-			return View(await _requestRepo.GetAllAsync());
+			var requests = await _requestRepo.GetAllPaginatedAsync(pageNumber, pageSize);
+			int totalRequest = 0;
+			foreach (var request in requests)
+			{
+				totalRequest++;
+			}
+			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
+			
+			ViewBag.currentPage = pageNumber;
+			ViewBag.totalPages = totalPages;
+			return View(requests);
 		}
-		public async Task<IActionResult> MyRequest(string searchQuery, int pageNumber = 1, int pageSize = 4)
+		public async Task<IActionResult> MyRequest(string searchQuery, int pageNumber = 1, int pageSize = 12)
 		{
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
@@ -39,15 +49,19 @@ namespace Dynamics.Controllers
 				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
 				userId = userJsonC.UserID;
 			}
-
 			var requests = await _requestRepo.GetAllByRolePaginatedAsync(role, userId, pageNumber, pageSize);
+			
 			// search
 			if (!string.IsNullOrEmpty(searchQuery))
 			{
 				requests = await _requestRepo.SearchIdFilterAsync(searchQuery, userId);
 			}
-			//TODO: rework count logic
-			var totalRequest = await _requestRepo.CountAllByIdAsync(role, userId);
+			//pagination
+			int totalRequest = 0;
+			foreach (var request in requests)
+			{
+				totalRequest++;
+			}
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
 			
 			ViewBag.currentPage = pageNumber;
