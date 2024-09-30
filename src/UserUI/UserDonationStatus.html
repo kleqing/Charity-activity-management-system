@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>activities</title>
+    <link rel="stylesheet" href="../../styles/output.css" />
+  </head>
+  <body>
+    <h1 class="text-xl">TODO: INSERT YOUR NAVBAR HERE</h1>
+    <main class="w-full h-full flex flex-col gap-6 items-center p-32">
+      <div class="w-full flex justify-center gap-4">
+        <a href="UserActivity.html" class="cursor-pointer">Activity history</a>
+        <a class="cursor-pointer text-primary">Donation status</a>
+      </div>
+
+      <section class="w-full">
+        <!-- This will list the user requests to join organizations -->
+        <h1 class="text-3xl font-bold text-center mb-4">Request to join organization status</h1>
+        <!-- right search bar -->
+        <div class="flex w-full justify-end items-center gap-2 mb-4">
+          <!-- TODO: Implement search -->
+          <label class="input input-bordered flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              class="h-4 w-4 opacity-70"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <input type="text" class="grow" placeholder="Search something..." />
+          </label>
+          <!-- TODO: Implement filter dropdown -->
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+            <ul
+              tabindex="0"
+              class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md"
+            >
+              <li><a>Item 1</a></li>
+              <li><a>Item 2</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- End right search bar -->
+
+        <!-- List of activity -->
+        <ul class="flex flex-col gap-2 w-full">
+          <!-- Success join org -->
+          <li class="p-4 shadow-md flex justify-between rounded-md">
+            <!-- Left side -->
+            <div class="flex flex-col gap-2">
+              <!-- User profile + time -->
+              <div class="flex gap-2">
+                <span>1.</span>
+                <span>Organization name of project</span>
+              </div>
+            </div>
+
+            <!-- Right side -->
+            <div class="flex flex-col items-end justify-center gap-2 min-w-48 font-semibold">
+              <!-- Type of donation -->
+              <p class="badge badge-success min-w-24">Accepted</p>
+            </div>
+          </li>
+
+          <!-- Pending join org -->
+          <li class="p-4 shadow-md flex justify-between rounded-md">
+            <!-- Left side -->
+            <div class="flex flex-col gap-2">
+              <!-- User profile + time -->
+              <div class="flex gap-2">
+                <span>1.</span>
+                <span>Organization name of project</span>
+              </div>
+            </div>
+
+            <!-- Right side -->
+            <div class="flex flex-col items-end justify-center gap-2 min-w-48 font-semibold">
+              <!-- Type of donation -->
+              <p class="badge badge-error min-w-24">Pending</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- List of joining request to a project -->
+      <section class="w-full">
+        <!-- This will list the user requests to join organizations -->
+        <h1 class="text-3xl font-bold text-center mb-4">Request to join projects status</h1>
+        <!-- right search bar -->
+        <div class="flex w-full justify-end items-center gap-2 mb-4">
+          <!-- TODO: Implement search -->
+          <label class="input input-bordered flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              class="h-4 w-4 opacity-70"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <input type="text" class="grow" placeholder="Search something..." />
+          </label>
+          <!-- TODO: Implement filter dropdown -->
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+            <ul
+              tabindex="0"
+              class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md"
+            >
+              <li><a>Item 1</a></li>
+              <li><a>Item 2</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- End right search bar -->
+
+        <!-- List of activity -->
+        <ul class="flex flex-col gap-2 w-full">
+          <!-- Success join org -->
+          <li class="p-4 shadow-md flex justify-between rounded-md">
+            <!-- Left side -->
+            <div class="flex flex-col gap-2">
+              <!-- User profile + time -->
+              <div class="flex gap-2">
+                <span>1.</span>
+                <span>Organization name of project</span>
+              </div>
+            </div>
+
+            <!-- Right side -->
+            <div class="flex flex-col items-end justify-center gap-2 min-w-48 font-semibold">
+              <!-- Type of donation -->
+              <p class="badge badge-success min-w-24">Accepted</p>
+            </div>
+          </li>
+
+          <!-- Pending join org -->
+          <li class="p-4 shadow-md flex justify-between rounded-md">
+            <!-- Left side -->
+            <div class="flex flex-col gap-2">
+              <!-- User profile + time -->
+              <div class="flex gap-2">
+                <span>1.</span>
+                <span>Organization name of project</span>
+              </div>
+            </div>
+
+            <!-- Right side -->
+            <div class="flex flex-col items-end justify-center gap-2 min-w-48 font-semibold">
+              <!-- Type of donation -->
+              <p class="badge badge-error min-w-24">Pending</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Donation status -->
+      <section class="w-full">
+        <h1 class="text-3xl font-bold text-center mb-4">Donation status</h1>
+        <!-- right search bar -->
+        <div class="flex w-full justify-end items-center gap-2 mb-4">
+          <!-- TODO: Implement search -->
+          <label class="input input-bordered flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              class="h-4 w-4 opacity-70"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <input type="text" class="grow" placeholder="Search something..." />
+          </label>
+          <!-- TODO: Implement filter dropdown -->
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+            <ul
+              tabindex="0"
+              class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md"
+            >
+              <li><a>Item 1</a></li>
+              <li><a>Item 2</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- End right search bar -->
+
+        <!-- Table of the resources -->
+        <div class="overflow-x-auto">
+          <table class="table table-md">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Donation content</th>
+                <th>Resource name</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Date</th>
+                <th>Sended to</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover">
+                <!-- Content - Resource name - Quantity - Unit - Date - Sended to - Status -->
+                <th>1</th>
+                <td>Hope you guys will get better</td>
+                <td>Rice</td>
+                <td>10</td>
+                <td>Bag</td>
+                <td>12/16/2020</td>
+                <td>Little dark age alskdjalksdjalksjd</td>
+                <td class="text-success font-bold">Accepted</td>
+              </tr>
+              <tr class="hover">
+                <th>1</th>
+                <td>Hope you guys will get better</td>
+                <td>Rice</td>
+                <td>10</td>
+                <td>Bag</td>
+                <td>12/16/2020</td>
+                <td>Little dark age alskdjalksdjalksjd</td>
+                <td class="text-error font-bold">Pending</td>
+              </tr>
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <th></th>
+                <th>Donation content</th>
+                <th>Resource name</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Date</th>
+                <th>Sended to</th>
+                <th>Status</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
