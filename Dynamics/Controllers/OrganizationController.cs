@@ -52,7 +52,19 @@ namespace Dynamics.Controllers
             }
 
             await _organizationRepository.AddAsync(organization);
-           
+
+            var organizationResource = new OrganizationResource()
+            {
+                OrganizationID = organization.OrganizationID,
+                ResourceName = "Money(Tiền)",
+                Quantity = 0,
+                Unit = "VND",
+            };
+            if (organizationResource != null)
+            {
+                await _organizationRepository.AddOrganizationResourceSync(organizationResource); 
+            }
+
             return RedirectToAction(nameof(JoinOrganization), new { organizationId = organization.OrganizationID });
         }
 
@@ -302,6 +314,25 @@ namespace Dynamics.Controllers
             return View();
             
         }
+        public async Task<IActionResult> SendResoueceOrganizationToProject()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> DonateByMoney()
+        {
+            return View();
+        }
+        public async Task<IActionResult> DonateByResource()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ReviewDonateRequest()
+        {
+            return View();
+        }
+
     }
 }
 

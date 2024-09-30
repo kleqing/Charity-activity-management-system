@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "SendResoueceOrganizationToProject";
+    Layout = "_LayoutOrganization";
+}
+
+<div class="py-5 pt-12 px-5 flex justify-center">
+    <div class="border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
+        <h1 class="text-3xl font-semibold mb-10 text-center ">
+            Send Resource
+        </h1>
+        <form class="bg-white p-8 rounded-lg shadow-md w-80">
+            <div class="mb-4">
+                <label for="resource-type" class="block text-sm font-medium text-gray-700 mb-1">Select resource type</label>
+                <select id="resource-type" class="w-full p-2 border border-gray-300 rounded-md appearance-none bg-white">
+                    <option disabled selected>Options</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                <input type="text" id="quantity" placeholder="Enter quantity" class="w-full p-2 border border-gray-300 rounded-md">
+            </div>
+
+            <div class="mb-6">
+                <label for="project" class="block text-sm font-medium text-gray-700 mb-1">Select a project</label>
+                <select id="project" class="w-full p-2 border border-gray-300 rounded-md appearance-none bg-white">
+                    <option disabled selected>Options</option>
+                </select>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Send</button>
+        </form>
+
+
+    </div>
+</div>
+
+

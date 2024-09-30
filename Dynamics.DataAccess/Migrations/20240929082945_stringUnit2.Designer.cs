@@ -4,6 +4,7 @@ using Dynamics.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240929082945_stringUnit2")]
+    partial class stringUnit2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,6 +146,12 @@ namespace Dynamics.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResourceID"));
 
+                    b.Property<string>("ContentTransaction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ExpectedQuantity")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrganizationID")
                         .HasColumnType("int");
 
@@ -153,9 +162,8 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Unit")
+                        .HasColumnType("int");
 
                     b.HasKey("ResourceID");
 

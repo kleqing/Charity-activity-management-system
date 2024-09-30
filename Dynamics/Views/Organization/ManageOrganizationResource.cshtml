@@ -62,21 +62,21 @@
             @if (currentUser.UserID.Equals(currentOrganization.CEOID))
             {
                 <div class="max-w-3xl border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
-                @if (currentUser.UserID.Equals(currentOrganization.CEOID))
-                {
-                    <h1 class="text-2xl mb-4 font-bold text-center">Current organization resources</h1>
 
-                    <div class="flex justify-center">
-                        <a asp-action="AddNewOrganizationResource" asp-controller="Organization">
-                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-                                Add new
-                            </button>
-                        </a>  
-                    </div>
-                }
+                    @if (currentUser.UserID.Equals(currentOrganization.CEOID))
+                    {
+                        <h1 class="text-2xl mb-4 font-bold text-center">Current organization resources</h1>
+                        <div class="flex justify-center mt-10">
+                            <a asp-action="AddNewOrganizationResource" asp-controller="Organization">
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                                    Add new Resource
+                                </button>
+                            </a>
+                        </div>
 
-                <div class=" px-5 py-3 w-auto">
-                    <ul class="space-y-2">
+                    }
+                    <div class=" px-5 py-3 w-auto">
+                        <ul class="space-y-2">
 
                         @foreach (var item in Model)
                         {
@@ -98,13 +98,25 @@
  *@
                                 @if (currentUser.UserID.Equals(currentOrganization.CEOID))
                                 {
-                                    <div class="flex items-center gap-2 ">
-                                        <span class="bg-red-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Remove</span>
-                                    </div>
+                                        @if(item.Quantity == 0)
+                                        {
+                                            <div class="flex items-center gap-2 ">
+                                                <span class="bg-red-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Remove</span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="flex items-center gap-2 ">
+                                                <span class="bg-gray-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Remove</span>
+                                            </div>
+                                        }
 
-                                    <div class="flex items-center gap-2 ">
-                                        <span class="bg-blue-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
-                                    </div>
+                                    <a asp-action="SendResoueceOrganizationToProject" asp-controller="Organization">
+                                            <div class="flex items-center gap-2 ">
+                                                <span class="bg-blue-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
+                                            </div>
+                                    </a>
+                                    
                                 }
 
                             </li>
@@ -112,7 +124,7 @@
 
 
                     </ul>
-                </div>
+                    </div>
                 </div>
             }
             else
@@ -136,9 +148,30 @@
                                         <span class="text-sm mx-5 font-semibold ">@item.Unit</span>
                                     </div>
 
+                                    @if (item.ResourceName.ToUpper().Contains("Money".ToUpper()))
+                                    {
+                                        <a asp-action="DonateByMoney" asp-controller="Organization">
+                                            <div class="flex items-center gap-2 ">
+                                                <span class="bg-green-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Donate Here</span>
+                                            </div>
+                                        </a>
+                                        
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="DonateByResource" asp-controller="Organization">
+                                            <div class="flex items-center gap-2 ">
+                                                <span class="bg-green-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Donate Here</span>
+                                            </div>
+                                        </a>
+                                        
+                                    }
+
+
                                 </li>
                             }
 
+                            
 
                         </ul>
                     </div>
