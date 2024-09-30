@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../../styles/output.css" />
+  </head>
+  <body class="bg-base-100">
+    <main>
+      <!-- If the color is wrong, copy the "my theme" option in tailwind.config.js to your tailwind config file  -->
+      <!-- Title + Lead + Optional image ? -->
+      <div class="relative w-full h-[200px] flex flex-col gap-4 justify-center items-center">
+        <!-- If use an image put it here -->
+        <!-- <img
+          src=""
+          alt=""
+          class="-z-10 pointer-events-none object-cover absolute w-full h-[200px] opacity-50"
+        /> -->
+        <h1 class="text-center font-bold text-3xl">Support for typhoon Yagi victims</h1>
+        <h3 class="text-center text-neutral">By ABCXYZ Organization</h3>
+      </div>
+
+      <!-- Navigation links -->
+      <nav class="flex justify-center gap-2 p-4 border border-black shadow-sm">
+        <a class="link-primary">Details</a>
+        <a>Donors</a>
+        <a>Members</a>
+        <a>Resources</a>
+        <a>Updates</a>
+        <a>Manage</a>
+      </nav>
+
+      <!-- Donate by money -->
+      <section class="md:px-32 my-16">
+        <h2 class="text-center font-bold text-2xl mb-6">Donate by money</h2>
+        <div class="flex md:gap-32 gap-16">
+          <!-- Inputs -->
+          <div class="flex-1">
+            <!-- User name ? Maybe replace this with user name -->
+            <label class="form-control w-full">
+              <span class="label label-text text-lg">Enter your name</span>
+              <input
+                type="text"
+                placeholder="Enter name"
+                class="input input-md input-bordered w-full"
+              />
+            </label>
+            <!-- Money amount -->
+            <label class="form-control w-full">
+              <span class="label label-text text-lg">Enter money ammount (Unit here)</span>
+              <input
+                type="number"
+                placeholder="Enter money ammount"
+                class="input input-bordered w-full"
+              />
+            </label>
+            <!-- Message (maybe limit them ?) -->
+            <label class="form-control w-full">
+              <span class="label label-text text-lg">Leave a message (optional)</span>
+              <textarea
+                placeholder="Enter message"
+                class="textarea textarea-bordered textarea-md w-full"
+              ></textarea>
+            </label>
+          </div>
+          <!-- Buttons -->
+          <div class="flex-1 flex flex-col gap-4 justify-center">
+            <!-- Button for CEO -->
+            <div>
+              <button class="btn btn-success w-full font-bold text-lg">
+                Donate with organization
+              </button>
+              <p class="text-center text-neutral">
+                Donate as CEO to show your organization's support
+              </p>
+            </div>
+            <!-- Other button -->
+            <button class="btn btn-success w-full font-bold text-lg">Confirm payment</button>
+            <button class="btn bg-base-200 hover:bg-base-300 font-bold text-lg">
+              Back to project &larr;
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Donate by resource -->
+      <section class="md:px-32 mb-16">
+        <h2 class="text-center font-bold text-2xl mb-6">Donate by resource</h2>
+        <!-- Step 1 -->
+        <div class="flex flex-col justify-center items-center gap-4 mb-8">
+          <h3 class="text-center font-bold text-xl">1. Register a donation request</h3>
+          <!-- Select a resource -->
+          <label class="form-control w-full max-w-md">
+            <span class="label label-text text-lg">Select a resource</span>
+            <select name="" id="" class="select select-bordered">
+              <option disabled selected>Pick one</option>
+              <option value="Value1">Value1</option>
+              <option value="Value2">Value2</option>
+              <option value="Value3">Value3</option>
+            </select>
+          </label>
+          <!-- Enter amount -->
+          <label class="form-control w-full max-w-md">
+            <span class="label label-text text-lg">Enter amount</span>
+            <input type="number" placeholder="Enter ammount" class="input input-bordered" />
+          </label>
+          <button class="btn btn-primary font-bold">Confirm</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col justify-center items-center gap-4 mb-8">
+          <h3 class="text-center font-bold text-xl">
+            2. Contact with the leader of the project to discuss further
+          </h3>
+          <div>
+            <!-- If you already have this script at layout, you won't need it here. It is for displaying the icons -->
+            <script
+              src="https://kit.fontawesome.com/ba8c3661b4.js"
+              crossorigin="anonymous"
+            ></script>
+            <p><i class="fa-solid fa-at"></i> abcxyz@gmail.com</p>
+            <p><i class="fa-solid fa-phone"></i> 123456789</p>
+            <p><i class="fa-solid fa-location-dot"></i> Ngu hanh son abc xyz</p>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <!-- Either show user a button to redirect to user history page or just use the table below -->
+        <div class="flex flex-col justify-center items-center gap-4">
+          <h3 class="text-center font-bold text-xl">3. Keep track of your donation at ...</h3>
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- row 1 -->
+                <tr>
+                  <th>1</th>
+                  <td>Cy Ganderton</td>
+                  <td>Quality Control Specialist</td>
+                  <td>
+                    <div class="badge badge-success min-w-24">Accepted</div>
+                  </td>
+                </tr>
+                <!-- row 2 -->
+                <tr>
+                  <th>2</th>
+                  <td>Hart Hagerty</td>
+                  <td>Desktop Support Technician</td>
+                  <td>
+                    <div class="badge badge-error min-w-24">Pending</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- End table -->
+          <button class="btn btn-primary">Click me</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
