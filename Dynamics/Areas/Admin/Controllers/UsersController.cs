@@ -14,9 +14,9 @@ namespace Dynamics.Areas.Admin.Controllers
     [Area("Admin")]
     public class UsersController : Controller
     {
-        private readonly IAdminRepository _adminRepository;
+        private readonly IAdminRepository _adminRepository = null;
 
-        public UsersController(AdminRepository adminRepository)
+        public UsersController(IAdminRepository adminRepository)
         {
             _adminRepository = adminRepository;
         }
@@ -26,6 +26,16 @@ namespace Dynamics.Areas.Admin.Controllers
         {
             var users = await _adminRepository.ViewUser();
             return View(users);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> BanUser(Guid id)
+        {
+            var result = await _adminRepository.BanUserById(id);
+            return Json(new
+            {
+                isBanned = result
+            });
         }
     }
 }

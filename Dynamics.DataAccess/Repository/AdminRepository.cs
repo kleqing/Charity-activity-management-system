@@ -1,5 +1,6 @@
 ﻿using Dynamics.Models.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,22 +13,36 @@ namespace Dynamics.DataAccess.Repository
     public class AdminRepository : IAdminRepository
     {
         public readonly ApplicationDbContext _db;
-        public AdminRepository(ApplicationDbContext db)
+        public readonly IMemoryCache _memoryCache;
+        private const string UserCountCacheKey = "PreviousUserCount";
+        public AdminRepository(ApplicationDbContext db, IMemoryCache memoryCache)
         {
             _db = db;
+            _memoryCache = memoryCache;
         }
 
-        // Organization
+        // ---------------------------------------
+        // Organization (View, Ban, Top 5)
+        public async Task<Organization?> GetOrganization(Expression<Func<Organization, bool>> filter)
+        {
+            var org = await _db.Organizations.Where(filter).FirstOrDefaultAsync();
+            if (org == null)
+            {
+                return null;
+            }
+            return org;
+        }
+
         public async Task<bool> BanOrganizationById(Guid id)
         {
-            var user = await _db.Organizations.FindAsync(id);
-            if (user != null)
+            var org = await GetOrganization(c => c.OrganizationID == id);
+            if (org != null)
             {
-                user.isBanned = true;  // Đặt trạng thái bị ban thành true
-                await _db.SaveChangesAsync();
-                return true;
+                org.isBanned = !org.isBanned;
+                _db.SaveChangesAsync();
+                return org.isBanned;
             }
-            return false;
+            return org.isBanned;
         }
 
         public async Task<List<Organization>> GetTop5Organization()
@@ -39,7 +54,7 @@ namespace Dynamics.DataAccess.Repository
                     OrganizationID = g.Key,
                     ProjectCount = g.Count()                   // Count if user is in project or not
                 })
-                .OrderByDescending(x => x.ProjectCount)
+                .OrderBy(x => x.ProjectCount)
                 .Take(5)
                 .ToListAsync();
 
@@ -49,6 +64,10 @@ namespace Dynamics.DataAccess.Repository
                 .Where(u => orgID.Contains(u.OrganizationID))
                 .ToListAsync();
 
+            foreach (var org in organization)
+            {
+                org.ProjectCount = TopOrganizations.FirstOrDefault(x => x.OrganizationID == org.OrganizationID)?.ProjectCount ?? 0;
+            }
             return organization;
         }
 
@@ -58,7 +77,8 @@ namespace Dynamics.DataAccess.Repository
             return organizations;
         }
 
-        // Request
+        // ---------------------------------------
+        // Request (View, Update)
 
         public async Task<List<Request>> ViewRequest()
         {
@@ -66,65 +86,111 @@ namespace Dynamics.DataAccess.Repository
             return request;
         }
 
-        public async Task<Request?> Get(Expression<Func<Request, bool>> filter)
+        public async Task<Request> GetRequestByID(Guid id)
         {
-            var request = await _db.Requests.Where(filter).FirstOrDefaultAsync();
+            var request = await _db.Requests.FirstOrDefaultAsync(c => c.RequestID == id);
+            if (request == null)
+            {
+                return null;
+            }
             return request;
         }
 
-        public async Task<bool> UpdateRequest(Request request)
+        public async Task UpdateRequest(Request request)
         {
-            var existingItem = await Get(r => r.RequestID == request.RequestID);
+            var existingItem = await GetRequestByID(request.RequestID);
             if (existingItem == null)
             {
-                return false;
+                return;
             }
-            // Only update the property that has the same name between 2 models
-            _db.Entry(existingItem).CurrentValues.SetValues(request);
+            _db.Requests.Update(request);
             await _db.SaveChangesAsync();
-            return true;
         }
 
-        // User
+        // ---------------------------------------
+        // User (View, Ban, Top 5)
 
         public async Task<List<User>> ViewUser()
         {
-            var users = await _db.Users.ToListAsync();
-            return users;
+            return await _db.Users.ToListAsync();
         }
 
         public async Task<List<User>> GetTop5User()
         {
             // Group by UserID in ProjectMember to count the number of projects each user participates in
             var topUsers = await _db.ProjectMembers
-                .GroupBy(pm => pm.UserID)                      // Group userID
+                .GroupBy(pm => pm.UserID)    // Group by UserID
                 .Select(g => new
                 {
                     UserID = g.Key,
-                    ProjectCount = g.Count()                   // Count if user is in project or not
+                    ProjectCount = g.Count()  // Count how many projects each user is in
                 })
-                .OrderByDescending(x => x.ProjectCount)
-                .Take(5)
+                .OrderByDescending(x => x.ProjectCount)  // Order by project count (desc)
+                .Take(5)    // Take the top 5
                 .ToListAsync();
 
             // Get the detailed information of the top 5 users
             var userIds = topUsers.Select(x => x.UserID).ToList();
             var users = await _db.Users
-                .Where(u => userIds.Contains(u.UserID))
+                .Where(u => userIds.Contains(u.UserID))  // Find users in the top list
                 .ToListAsync();
+
+            // Add the project count to each user (manually map the project count)
+            foreach (var user in users)
+            {
+                user.ProjectCount = topUsers.FirstOrDefault(x => x.UserID == user.UserID)?.ProjectCount ?? 0;
+            }
 
             return users;
         }
+
         public async Task<bool> BanUserById(Guid id)
         {
-            var user = await _db.Users.FindAsync(id);
+            var user = await GetUser(u => id == u.UserID);
             if (user != null)
             {
-                user.isBanned = true;  // Đặt trạng thái bị ban thành true
-                await _db.SaveChangesAsync();
-                return true;
+                user.isBanned = !user.isBanned;
+                _db.SaveChangesAsync();
+                return user.isBanned;  // Return ban value (true/false)
             }
-            return false;  // Trả về false nếu không tìm thấy user
+            return user.isBanned;
+        }
+
+        public async Task<User?> GetUser(Expression<Func<User, bool>> filter)
+        {
+            var user = await _db.Users.Where(filter).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return null;
+            }
+            return user;
+        }
+
+        // View Recent request (Recent item in dashoard page)
+        public async Task<List<Request>> ViewRecentItem()
+        {
+            return await _db.Requests.Include(r => r.User).OrderByDescending(x => x.CreationDate).Take(7).ToListAsync();
+        }
+
+        // Count (count number of user, organization, request, project in database)
+        public async Task<int> CountUser()
+        {
+            return await _db.Users.CountAsync();
+        }
+
+        public async Task<int> CountOrganization()
+        {
+            return await _db.Organizations.CountAsync();
+        }
+
+        public async Task<int> CountRequest()
+        {
+            return await _db.Requests.CountAsync();
+        }
+
+        public async Task<int> CountProject()
+        {
+            return await _db.Projects.CountAsync();
         }
     }
 }

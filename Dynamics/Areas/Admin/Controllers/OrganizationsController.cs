@@ -16,7 +16,7 @@ namespace Dynamics.Areas.Admin.Controllers
     {
         private readonly IAdminRepository _adminRepository;
 
-        public OrganizationsController(AdminRepository adminRepository)
+        public OrganizationsController(IAdminRepository adminRepository)
         {
             _adminRepository = adminRepository;
         }
@@ -25,6 +25,16 @@ namespace Dynamics.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _adminRepository.ViewOrganization());
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> BanOrganization(Guid id)
+        {
+            var result = await _adminRepository.BanOrganizationById(id);
+            return Json(new
+            {
+                isBanned = result
+            });
         }
     }
 }

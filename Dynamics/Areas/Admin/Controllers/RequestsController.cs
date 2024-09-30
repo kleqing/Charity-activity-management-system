@@ -16,7 +16,7 @@ namespace Dynamics.Areas.Admin.Controllers
     {
         private readonly IAdminRepository _adminRepository;
 
-        public RequestsController(AdminRepository adminRepository)
+        public RequestsController(IAdminRepository adminRepository)
         {
             _adminRepository = adminRepository;
         }

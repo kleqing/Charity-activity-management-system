@@ -67,7 +67,6 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
             // Only update the property that has the same name between 2 models
-          
             _db.Entry(existingItem).CurrentValues.SetValues(user);
             await _db.SaveChangesAsync();
             return true;

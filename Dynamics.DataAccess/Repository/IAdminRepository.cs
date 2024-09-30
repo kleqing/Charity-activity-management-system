@@ -11,20 +11,30 @@ namespace Dynamics.DataAccess.Repository
     public interface IAdminRepository
     {
         // Request
-        Task<IEnumerable<Request>> ViewRequest();
+        Task<List<Request>> ViewRequest();
         Task UpdateRequest(Request request);
         Task<Request> GetRequestByID(Guid id);
 
         // User   
-        Task<IEnumerable<User>> ViewUser();
+        Task<List<User>> ViewUser();
         Task<bool> BanUserById(Guid id);
-        Task<IEnumerable<User>> GetTop5User();
+        Task<List<User>> GetTop5User();
+        public Task<User?> GetUser(Expression<Func<User, bool>> filter);
 
         // Organization
-        Task<IEnumerable<Organization>> ViewOrganization();
+        Task<List<Organization>> ViewOrganization();
         Task<bool> BanOrganizationById(Guid id);
-        Task<IEnumerable<Organization>> GetTop5Organization();
+        Task<List<Organization>> GetTop5Organization();
+        public Task<Organization?> GetOrganization(Expression<Func<Organization, bool>> filter);
 
+        // Recent item
+        Task<List<Request>> ViewRecentItem();
+
+        // Count (For Dashboard)
+        Task<int> CountUser();
+        Task<int> CountOrganization();
+        Task<int> CountRequest();
+        Task<int> CountProject();
 
     }
 }
