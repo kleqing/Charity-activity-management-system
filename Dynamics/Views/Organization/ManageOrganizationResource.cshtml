@@ -98,7 +98,11 @@
  *@
                                 @if (currentUser.UserID.Equals(currentOrganization.CEOID))
                                 {
-                                        @if(item.Quantity == 0)
+                                        @if (item.ResourceName.ToUpper().Contains("Money".ToUpper()))
+                                        {
+                                            
+                                        }
+                                        else if(item.Quantity == 0)
                                         {
                                             <div class="flex items-center gap-2 ">
                                                 <span class="bg-red-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Remove</span>
@@ -111,13 +115,24 @@
                                             </div>
                                         }
 
-                                    <a asp-action="SendResoueceOrganizationToProject" asp-controller="Organization">
+                                        @if(item.Quantity > 0)
+                                        {
+                                            <a asp-action="SendResoueceOrganizationToProject" asp-controller="Organization" asp-route-resourceId="@item.ResourceID">
+                                                <div class="flex items-center gap-2 ">
+                                                    <span class="bg-blue-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
+                                                </div>
+                                            </a>
+                                        }
+                                        else
+                                        {
                                             <div class="flex items-center gap-2 ">
-                                                <span class="bg-blue-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
+                                                <span class="bg-gray-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
                                             </div>
-                                    </a>
-                                    
-                                }
+                                        }
+
+
+
+                            }
 
                             </li>
                         }
@@ -159,7 +174,7 @@
                                     }
                                     else
                                     {
-                                        <a asp-action="DonateByResource" asp-controller="Organization">
+                                        <a asp-action="DonateByResource" asp-controller="Organization" asp-route-resourceId="@item.ResourceID">
                                             <div class="flex items-center gap-2 ">
                                                 <span class="bg-green-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Donate Here</span>
                                             </div>

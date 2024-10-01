@@ -145,6 +145,153 @@ namespace Dynamics.DataAccess.Repository
             return organizationResources;
         }
 
+        public async Task<OrganizationResource> GetOrganizationResourceByOrganizationIDAndResourceIDAsync(int organizationId, int resourceId)
+        {
+            var organizationResource = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId && or.ResourceID == resourceId).FirstOrDefaultAsync();
+            return organizationResource;
+        }
+
+        public async Task<bool> UpdateOrganizationResourceAsync(OrganizationResource entity)
+        {
+            var organizationResourceItem = await GetOrganizationResourceByOrganizationIDAndResourceIDAsync(entity.OrganizationID, entity.ResourceID);
+
+            if (organizationResourceItem == null)
+            {
+                return false;
+            }
+            _db.Entry(organizationResourceItem).CurrentValues.SetValues(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+
+
+
+        public async Task<bool> AddUserToOrganizationTransactionHistoryASync(UserToOrganizationTransactionHistory transactionHistory)
+        {
+            try
+            {
+                _db.UserToOrganizationTransactionHistories.Add(transactionHistory);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryAsync()
+        {
+            var uerToOrganizationTransactionHistorys = await _db.UserToOrganizationTransactionHistories.ToListAsync();
+            return uerToOrganizationTransactionHistorys;
+        }
+
+        public async Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByProcessingAsync(int organizationId)
+        {
+            var organizationResources = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId).ToListAsync();// list resource have ina organization
+            var UserToOrganizationTransactionHistoryInAOrganizations = new List<UserToOrganizationTransactionHistory>();
+            foreach (var item in await GetAllUserToOrganizationTransactionHistoryAsync())
+            {
+                foreach (var el in organizationResources)
+                {
+                    if (item.ResourceID == el.ResourceID && item.Status == 0)
+                    {
+                        UserToOrganizationTransactionHistoryInAOrganizations.Add(item);
+                    }
+                }
+            }
+            return UserToOrganizationTransactionHistoryInAOrganizations;
+        }
+
+        public async Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByAcceptedAsync(int organizationId)
+        {
+            var organizationResources = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId).ToListAsync();// list resource have ina organization
+            var UserToOrganizationTransactionHistoryInAOrganizations = new List<UserToOrganizationTransactionHistory>();
+            foreach (var item in await GetAllUserToOrganizationTransactionHistoryAsync())
+            {
+                foreach (var el in organizationResources)
+                {
+                    if (item.ResourceID == el.ResourceID && item.Status == 1)
+                    {
+                        UserToOrganizationTransactionHistoryInAOrganizations.Add(item);
+                    }
+                }
+            }
+            return UserToOrganizationTransactionHistoryInAOrganizations;
+        }
+
+        public async Task<UserToOrganizationTransactionHistory> GetUserToOrganizationTransactionHistoryByTransactionIDAsync(Expression<Func<UserToOrganizationTransactionHistory, bool>> filter)
+        {
+            var userToOrganizationTransactionHistory = await _db.UserToOrganizationTransactionHistories.Where(filter).FirstOrDefaultAsync();
+            return userToOrganizationTransactionHistory;
+        }
+
+        public async Task<bool> DeleteUserToOrganizationTransactionHistoryByTransactionIDAsync(int transactionID)
+        {
+            var userToOrganizationTransactionHistory = await GetUserToOrganizationTransactionHistoryByTransactionIDAsync(uto => uto.TransactionID == transactionID);
+            try
+            {
+                _db.UserToOrganizationTransactionHistories.Remove(userToOrganizationTransactionHistory);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateUserToOrganizationTransactionHistoryAsync(UserToOrganizationTransactionHistory entity)
+        {
+            var userToOrganizationTransactionHistoryItem = await GetUserToOrganizationTransactionHistoryByTransactionIDAsync(uto => uto.TransactionID == entity.TransactionID);
+
+            if (userToOrganizationTransactionHistoryItem == null)
+            {
+                return false;
+            }
+            _db.Entry(userToOrganizationTransactionHistoryItem).CurrentValues.SetValues(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> AddOrganizationToProjectHistoryAsync(OrganizationToProjectHistory entity)
+        {
+            try
+            {
+                _db.OrganizationToProjectTransactionHistory.Add(entity);
+                await _db.SaveChangesAsync();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryAsync()
+        {
+            var organizationToProjectHistorys = await _db.OrganizationToProjectTransactionHistory.ToListAsync();
+            return organizationToProjectHistorys;
+        }
+
+        public async Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByProcessingAsync(int organizationId)
+        {
+            var organizationResources = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId).ToListAsync();// list resource have ina organization
+            var organizationToProjectHistoryInAOrganizations  = new List<OrganizationToProjectHistory>();
+            foreach(var item in await GetAllOrganizationToProjectHistoryAsync())
+            {
+                foreach(var or in organizationResources)
+                {
+                    if(item.ProjectResourceID == or.ResourceID && item.Status == 0)
+                    {
+                        organizationToProjectHistoryInAOrganizations.Add(item);
+                    }
+                }
+            }
+            return organizationToProjectHistoryInAOrganizations;
+
+        }
 
 
     }

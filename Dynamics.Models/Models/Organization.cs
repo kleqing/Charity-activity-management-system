@@ -28,7 +28,5 @@ namespace Dynamics.Models.Models
 		public virtual ICollection<Project> Project { get; set; }
 		public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
 		public virtual ICollection<OrganizationResource> OrganizationResource { get; set; }
-		public virtual ICollection<OrganizationToProjectHistory> OrganizationToProjectTransactions { get; set; }
-		public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactions { get; set; }
 	}
 }

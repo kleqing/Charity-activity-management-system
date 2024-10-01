@@ -51,5 +51,19 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
         }
+
+        public async Task<bool> AddProjectResourceAsync(ProjectResource projectResource)
+        {
+            try
+            {
+                _db.ProjectResources.Add(projectResource);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

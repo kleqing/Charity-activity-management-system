@@ -28,5 +28,19 @@ namespace Dynamics.DataAccess.Repository
 
         Task<bool> AddOrganizationResourceSync(OrganizationResource entity);
         Task<List<OrganizationResource>> GetAllOrganizationResourceByOrganizationIDAsync(Expression<Func<OrganizationResource, bool>> filter);
+        Task<OrganizationResource> GetOrganizationResourceByOrganizationIDAndResourceIDAsync(int organizationId, int resourceId);
+        Task<bool> UpdateOrganizationResourceAsync(OrganizationResource entity);
+
+        Task<bool> AddUserToOrganizationTransactionHistoryASync(UserToOrganizationTransactionHistory transactionHistory);
+        Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryAsync();
+        Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByProcessingAsync(int organizationId);
+        Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByAcceptedAsync(int organizationId);
+        Task<UserToOrganizationTransactionHistory> GetUserToOrganizationTransactionHistoryByTransactionIDAsync(Expression<Func<UserToOrganizationTransactionHistory, bool>> filter);
+        Task<bool> DeleteUserToOrganizationTransactionHistoryByTransactionIDAsync(int transactionID);
+        Task<bool> UpdateUserToOrganizationTransactionHistoryAsync(UserToOrganizationTransactionHistory entity);
+
+        Task<bool> AddOrganizationToProjectHistoryAsync(OrganizationToProjectHistory entity);
+        Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryAsync();
+        Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByProcessingAsync(int organizationId);
     }
 }

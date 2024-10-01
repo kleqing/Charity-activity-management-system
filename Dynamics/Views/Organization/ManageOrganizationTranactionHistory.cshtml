@@ -1,6 +1,7 @@
 ﻿@using Dynamics.Utility
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
+@model IEnumerable<Dynamics.Models.Models.UserToOrganizationTransactionHistory>
 
 
 @{
@@ -38,6 +39,11 @@
             break;
         }
     }
+
+    //resource is donated
+    var organizationResources = Accessor.HttpContext.Session.Get<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_UserToOrganizationHistory_Key);
+    //user donated
+    var userDonates = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_UserName_For_UserToOrganizationHistory_Key);
 }
 
 <div class="py-5 pt-12 px-5 flex justify-center">
@@ -48,27 +54,30 @@
 
         <div class="py-5">
             <div class="max-w-2xl mx-auto space-y-4">
-                @for(int i = 0; i < 4; i++)
+                @{int i = 0;}
+                @foreach(var item in Model)
                 {
                     <!-- Positive Automatic Transaction -->
                     <div class="bg-white rounded-lg shadow-lg p-6">
                         <div class="flex items-start justify-between mb-2">
                             <div class="flex items-center">
-                                <img src="/images/User/11465230-a4a1-4cf7-aa13-bae9d0d1f3f1.jpg" alt="User avatar"
+                                <img src="@(userDonates[i].UserAvatar)" alt="User avatar"
                                      class="w-12 h-12 rounded-full mr-4 border-2 border-gray-200">
                                 <div>
-                                    <h2 class="text-lg font-semibold">User name</h2>
-                                    <p class="text-sm text-gray-500">Donated on @@datetime</p>
+                                    <h2 class="text-lg font-semibold">@(userDonates[i].UserFullName)</h2>
+                                    <p class="text-sm text-gray-500">@item.Time</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-lg font-bold text-green-500">123,123,123 VND</p>
+                                <p class="text-lg font-bold text-green-500">+ @item.Amount @item.Unit @(organizationResources[i].ResourceName)</p>
                                 <span class="bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full">Automatic</span>
                             </div>
                         </div>
-                        <p class="text-gray-700 mt-2">My mom help me with the budget</p>
+                        <p class="text-gray-700 mt-2">@item.Message</p>
                     </div>
 
+                    i++;
+                }
                     <!-- Negative Manual Transaction -->
                     <div class="bg-white rounded-lg shadow-lg p-6">
                         <div class="flex items-start justify-between mb-2">
@@ -87,7 +96,7 @@
                         </div>
                         <p class="text-gray-700 mt-2">Spent money on project 1</p>
                     </div>
-                }
+                
                
             </div>
 
