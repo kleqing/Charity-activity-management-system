@@ -283,7 +283,7 @@ namespace Dynamics.DataAccess.Repository
             {
                 foreach(var or in organizationResources)
                 {
-                    if(item.ProjectResourceID == or.ResourceID && item.Status == 0)
+                    if(item.OrganizationResourceID == or.ResourceID && item.Status == 0)
                     {
                         organizationToProjectHistoryInAOrganizations.Add(item);
                     }

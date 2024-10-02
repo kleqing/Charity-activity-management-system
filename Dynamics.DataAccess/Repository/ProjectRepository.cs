@@ -65,5 +65,12 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
         }
+
+        public async Task<Project> GetProjectByProjectIDAsync(Expression<Func<Project, bool>> filter)
+        {
+            var project = await _db.Projects.Where(filter).FirstOrDefaultAsync();
+            return project;
+        }
+
     }
 }

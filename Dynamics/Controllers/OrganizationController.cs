@@ -331,19 +331,21 @@ namespace Dynamics.Controllers
             var organizationToProjectHistoryInAOrganizations = await _organizationRepository.GetAllOrganizationToProjectHistoryByProcessingAsync(currentOrganization.OrganizationID);
 
 
-            ////list resource in a organization
-            //var organizationResources = new List<OrganizationResource>();
-            //var userDonates = new List<User>();
-            //foreach (var item in UserToOrganizationTransactionHistoryInAOrganizations)
-            //{
-            //    var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, item.ResourceID);
-            //    organizationResources.Add(organizationResource);
-            //    var userDonate = await _userRepository.Get(u => u.UserID.Equals(item.UserID));
-            //    userDonates.Add(userDonate);
-            //}
-            ////Create session
-            //HttpContext.Session.Set<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_UserToOrganizationHistory_Key, organizationResources);
-            //HttpContext.Session.Set<List<User>>(MySettingSession.SESSION_UserName_For_UserToOrganizationHistory_Key, userDonates);
+            //list resource in a organization in processing allocate
+            var organizationResourcesInHistory = new List<OrganizationResource>();
+            //list project reciver
+            var ProjectRecivers = new List<Project>();
+            foreach (var item in organizationToProjectHistoryInAOrganizations)
+            {
+                var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, item.OrganizationResourceID);
+                organizationResourcesInHistory.Add(organizationResource);
+                var project = await _projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID == Convert.ToInt32(item.Message));
+                ProjectRecivers.Add(project);
+            }
+            //Create session
+            HttpContext.Session.Set<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_OrganizationToProjectHistory_Key, organizationResourcesInHistory);
+            HttpContext.Session.Set<List<Project>>(MySettingSession.SESSION_ProjectName_For_OrganizzationToProjectHistory_Key, ProjectRecivers);
+            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, organizationToProjectHistoryInAOrganizations);
 
 
             return View(organizationResources);
@@ -397,6 +399,7 @@ namespace Dynamics.Controllers
         {
             if(organizationToProjectHistory != null && projectId != null)
             {
+                organizationToProjectHistory.Message = projectId+"";// tạm thời
                 await _organizationRepository.AddOrganizationToProjectHistoryAsync(organizationToProjectHistory);
                 return RedirectToAction(nameof(ManageOrganizationResource));
             }

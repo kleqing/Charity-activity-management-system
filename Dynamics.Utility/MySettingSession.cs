@@ -21,5 +21,11 @@ namespace Dynamics.Utility
         public const string SESSION_ResourceName_For_UserToOrganizationHistory_Key = "resourceNameUTOHistory"; //get resource name for  UTO history
 
         public const string SESSION_UserName_For_UserToOrganizationHistory_Key = "userNameUTOHistory"; //get userName for UTO history
+
+        public const string SESSION_ResourceName_For_OrganizationToProjectHistory_Key = "resourceNameOTPHistory"; //get resource name for  OTP history
+
+        public const string SESSION_ProjectName_For_OrganizzationToProjectHistory_Key = "projectNameOTPHistory"; //get projectName for OTP history
+
+        public const string SESSION_OrganizzationToProjectHistory_For_Organization_Key = "OTPHistory In project"; // get OTPHistory In project
     }
 }

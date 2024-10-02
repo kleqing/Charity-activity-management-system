@@ -17,5 +17,6 @@ namespace Dynamics.DataAccess.Repository
         Task<bool> AddProjectMemberAsync(ProjectMember entity);
 
         Task<bool> AddProjectResourceAsync(ProjectResource entity);
+        Task<Project> GetProjectByProjectIDAsync(Expression<Func<Project, bool>> filter);
     }
 }
