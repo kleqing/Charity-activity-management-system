@@ -1,0 +1,304 @@
+﻿@using Dynamics.Models.Models.ViewModel
+@using Microsoft.CodeAnalysis.Operations
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Microsoft.IdentityModel.Tokens
+@model Dynamics.Models.Models.ViewModel.UserRequestsStatusViewModel
+@{
+    Layout = "CustomLayout/_LayoutWithNavbarOnly";
+    ViewData["Title"] = "Activity history";
+    // For incrementing the rows
+    var prjCount = 0;
+    var orgCount = 0;
+    var donCount = 0;
+}
+
+<main class="flex md:p-6 pb-0 flex-1 min-h-screen">
+@* Left *@
+@Html.Partial("CustomComponent/_UserSidebar", "History")
+<div class="divider divider-horizontal"></div>
+@* Right *@
+<div class="w-full h-full flex flex-col gap-6 items-center p-16">
+<div class="w-full flex justify-center gap-4">
+    <div role="tablist" class="tabs tabs-bordered">
+        <a asp-action="History" asp-controller="User" class="tab">Activity history</a>
+        <a asp-action="RequestsStatus" asp-controller="User" class="tab tab-active">Requests status</a>
+    </div>
+</div>
+
+<!-- List of joining request to an organization -->
+<section class="w-full">
+    <!-- This will list the user requests to join organizations -->
+    <h1 class="text-3xl font-bold text-center mb-4">Your request to join projects:</h1>
+    <!-- right search bar -->
+    <div class="flex w-full justify-end items-center gap-2 mb-4">
+        <!-- TODO: Implement search -->
+        <label class="input input-bordered flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 16 16"
+                 fill="currentColor"
+                 class="h-4 w-4 opacity-70">
+                <path fill-rule="evenodd"
+                      d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                      clip-rule="evenodd"/>
+            </svg>
+            <input type="text" class="grow" placeholder="Search something..."/>
+        </label>
+        <!-- TODO: Implement filter dropdown -->
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+            <ul tabindex="0"
+                class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md">
+                <li>
+                    <a>Item 1</a>
+                </li>
+                <li>
+                    <a>Item 2</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End right search bar -->
+    <!-- List of activity -->
+    <ul class="flex flex-col gap-2 w-full">
+        @{
+            if (Model.OrganizationJoinRequests.IsNullOrEmpty())
+            {
+                <h3 class="font-bold text-center text-2xl">You have not requested to join anything</h3>
+            }
+            else
+            {
+                foreach (var modelOrganizationJoinRequest in Model.OrganizationJoinRequests)
+                {
+                    orgCount += 1;
+                    <li class="p-4 shadow-md flex justify-between rounded-md">
+                        <!-- Left side -->
+                        <div class="flex flex-col gap-2">
+                            <div class="flex gap-2">
+                                <span>@orgCount.</span>
+                                <span>@modelOrganizationJoinRequest.Organization.OrganizationName</span>
+                            </div>
+                        </div>
+
+                        <!-- Right side -->
+                        <div class="flex flex-col items-end justify-center gap-2 min-w-48 font-semibold">
+                            @switch (modelOrganizationJoinRequest.Status)
+                            {
+                                case 0:
+                                    <p class="badge badge-error min-w-24">Pending</p>
+                                    break;
+                                case 1:
+                                    <p class="badge badge-success min-w-24">Accepted</p>
+                                    break;
+                                default:
+                                    <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p>
+                                    break;
+                            }
+                        </div>
+                    </li>
+                }
+            }
+        }
+    </ul>
+</section>
+
+<!-- List of joining request to a project -->
+<section class="w-full">
+    <!-- This will list the user requests to join organizations -->
+    <h1 class="text-3xl font-bold text-center mb-4">Your requests to join organizations:</h1>
+    <!-- right search bar -->
+    <div class="flex w-full justify-end items-center gap-2 mb-4">
+        <!-- TODO: Implement search -->
+        <label class="input input-bordered flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 16 16"
+                 fill="currentColor"
+                 class="h-4 w-4 opacity-70">
+                <path fill-rule="evenodd"
+                      d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                      clip-rule="evenodd"/>
+            </svg>
+            <input type="text" class="grow" placeholder="Search something..."/>
+        </label>
+        <!-- TODO: Implement filter dropdown -->
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+            <ul tabindex="0"
+                class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md">
+                <li>
+                    <a>Item 1</a>
+                </li>
+                <li>
+                    <a>Item 2</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End right search bar -->
+    <!-- List of activity -->
+    <ul class="flex flex-col gap-2 w-full">
+        @{
+            if (Model.ProjectJoinRequests.IsNullOrEmpty())
+            {
+                <h3 class="font-bold text-center text-2xl">You have not requested to join anything</h3>
+            }
+            else
+            {
+                foreach (var modelProjectJoinRequest in Model.ProjectJoinRequests)
+                {
+                    prjCount += 1;
+                    <li class="p-4 shadow-md flex justify-between rounded-md">
+                        <!-- Left side -->
+                        <div class="flex flex-col gap-2">
+                            <div class="flex gap-2">
+                                <span>@prjCount.</span>
+                                <span>@modelProjectJoinRequest.Project.ProjectName</span>
+                            </div>
+                        </div>
+
+                        <!-- Right side -->
+                        <div class="flex flex-col items-end justify-center gap-2 min-w-48 font-semibold">
+                            @switch (modelProjectJoinRequest.Status)
+                            {
+                                case 0:
+                                    <p class="badge badge-error min-w-24">Pending</p>
+                                    break;
+                                case 1:
+                                    <p class="badge badge-success min-w-24">Accepted</p>
+                                    break;
+                                default:
+                                    <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p>
+                                    break;
+                            }
+                        </div>
+                    </li>
+                }
+            }
+        }
+    </ul>
+</section>
+
+<!-- Pending donation requests -->
+<section class="w-full">
+    <h1 class="text-3xl font-bold text-center mb-4">Pending resources donation requests</h1>
+    <h3 class="text-neutral text-center">
+        <i>Please wait while the receivers confirm your donation.</i>
+    </h3>
+    <!-- right search bar -->
+    <div class="flex w-full justify-end items-center gap-2 mb-4">
+        <!-- TODO: Implement search -->
+        <label class="input input-bordered flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 viewBox="0 0 16 16"
+                 fill="currentColor"
+                 class="h-4 w-4 opacity-70">
+                <path fill-rule="evenodd"
+                      d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                      clip-rule="evenodd"/>
+            </svg>
+            <input type="text" class="grow" placeholder="Search something..."/>
+        </label>
+        <!-- TODO: Implement filter dropdown -->
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+            <ul tabindex="0"
+                class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md">
+                <li>
+                    <a>Item 1</a>
+                </li>
+                <li>
+                    <a>Item 2</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End right search bar -->
+    <!-- Table of the resources -->
+    @{
+        if (Model.ResourcesDonationRequests.IsNullOrEmpty())
+        {
+            <h3 class="font-bold text-center text-2xl">You have not requested to donate anything</h3>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="table table-md">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Donation content</th>
+                        <th>Resource name</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Date</th>
+                        <th>Sent to</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @{
+                        foreach (var donationRequest in Model.ResourcesDonationRequests)
+                        {
+                            donCount += 1;
+                            <tr class="hover">
+                                <!-- Content - Resource name - Quantity - Unit - Date - Sent to - Status -->
+                                <th>@donCount</th>
+                                <td>@donationRequest.Message</td>
+                                <td>@donationRequest.ResourceName</td>
+                                <td>@donationRequest.Amount</td>
+                                <td>@donationRequest.Unit</td>
+                                <td>@Html.DisplayFor(u => donationRequest.Time)</td>
+                                <td>@donationRequest.Target</td>
+                                <td>
+                                    <div class="flex justify-center items-center h-full">
+                                        @switch (donationRequest.Status)
+                                        {
+                                            case 0:
+                                                <p class="badge badge-error min-w-24">Pending</p>
+                                                break;
+                                            case 1:
+                                                <p class="badge badge-success min-w-24">Accepted</p>
+                                                break;
+                                            default:
+                                                <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p>
+                                                break;
+                                        }
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                    <tr class="hover">
+                        <th>1</th>
+                        <td>Hope you guys will get better</td>
+                        <td>Rice</td>
+                        <td>10</td>
+                        <td>Bag</td>
+                        <td>12/16/2020</td>
+                        <td>Little dark age alskdjalksdjalksjd</td>
+                        <td class="text-error font-bold">Pending</td>
+                    </tr>
+                    </tbody>
+
+                    <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Donation content</th>
+                        <th>Resource name</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Date</th>
+                        <th>Sended to</th>
+                        <th>Status</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    }
+
+</section>
+</div>
+</main>

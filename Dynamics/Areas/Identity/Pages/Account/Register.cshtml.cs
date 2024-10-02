@@ -120,7 +120,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     // Add real user to database
-                    await _userRepo.Add(new User
+                    await _userRepo.AddAsync(new User
                     {
                         UserID = new Guid(user.Id), // The link between 2 user table should be this id
                         UserFullName = Input.Name,

@@ -1,8 +1,10 @@
 ﻿using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
+using Dynamics.Services;
 using Dynamics.Utility;
 using Dynamics.Utility.Mapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -54,15 +56,32 @@ namespace Dynamics
                 .AddEntityFrameworkStores<AuthDbContext>()
                 .AddDefaultTokenProviders();
 
+            // Configure authentication cookie
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.SlidingExpiration = true; // Auto re-new authentication cookie when almost ended
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Cookie expires after 60 minutes
+                });
             // Repos here
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            // Project repos
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
-            // Automapper:
+            builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+            // Organization repos
+            builder.Services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
+            builder.Services.AddScoped<IOrganizationResourceRepository, OrganizationResourceRepository>();
+            // Transaction repos
+            builder.Services
+                .AddScoped<IUserToOrganizationTransactionHistoryRepository, UserToOrganizationTransactionHistoryRepositoryRepository>();
+            builder.Services.AddScoped<IUserToProjectTransactionHistoryRepository, UserToProjectTransactionHistoryRepositoryRepository>();
+            
+            // Automapper
             builder.Services.AddAutoMapper(typeof(MyMapper));
-
+            // Add custom services
+            builder.Services.AddScoped<ITransactionViewService, TransactionViewService>();
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 

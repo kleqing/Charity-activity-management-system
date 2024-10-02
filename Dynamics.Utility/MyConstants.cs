@@ -7,6 +7,5 @@
         public static string Failed = "Failed";
         public static string Info = "Failed";
         public static string Warning = "Warning";
-        
     }
 }

@@ -74,7 +74,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Wrong email or password!");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
                 }
                 else
                 {

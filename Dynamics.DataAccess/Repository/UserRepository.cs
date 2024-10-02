@@ -17,11 +17,11 @@ namespace Dynamics.DataAccess.Repository
         }
 
         // TODO: Decide whether we use one database or 2 database for managing the user
-        public async Task<bool> Add(User entity)
+        public async Task<bool> AddAsync(User entity)
         {
             try
             {
-                _db.Users.Add(entity);
+                await _db.Users.AddAsync(entity);
                 await _db.SaveChangesAsync();
                 return true;
             }
@@ -50,13 +50,13 @@ namespace Dynamics.DataAccess.Repository
             return user;
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             var users = await _db.Users.ToListAsync();
             return users;
         }
         //
-        public async Task<bool> Update(User user)
+        public async Task<bool> UpdateAsync(User user)
         {
             var existingItem = await GetAsync(u => user.UserID == u.UserID);
             if (existingItem == null)

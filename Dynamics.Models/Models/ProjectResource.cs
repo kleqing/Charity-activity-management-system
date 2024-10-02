@@ -15,5 +15,9 @@ namespace Dynamics.Models.Models
 		public int? ExpectedQuantity { get; set; }
 		public string Unit { get; set; }
 		public virtual Project Project { get; set; }
-	}
+        public virtual ICollection<OrganizationToProjectHistory> OrganizationToProjectHistory { get; set; }
+        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactionHistory { get; set; }
+
+
+    }
 }

@@ -159,7 +159,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     if (result.Succeeded && existed != null)
                     {
                         // Add user to the database after creating the user with external login
-                        await _userRepo.Add(new User
+                        await _userRepo.AddAsync(new User
                         {
                             UserID = new Guid(user.Id), // This and email is the only thing that connects between 2 tables, the user name IS NOT the same
                             UserFullName = info.Principal.FindFirstValue(ClaimTypes.Name),

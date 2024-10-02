@@ -1,17 +1,14 @@
+using AutoMapper;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Security.Claims;
-using AutoMapper;
 using Dynamics.Models.Models;
 using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.ViewModel;
-using Dynamics.Utility.Mapper;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualBasic;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Dynamics.Controllers
 {
@@ -21,20 +18,18 @@ namespace Dynamics.Controllers
         private readonly IUserRepository _userRepo;
         private readonly IRequestRepository _requestRepo;
         private readonly IProjectRepository _projectRepo;
-        private readonly IOrganizationRepository _organizationRepo;
         private readonly IProjectResourceRepository _projectResourceRepo;
         private readonly IMapper _mapper;
         private readonly SignInManager<IdentityUser> _signInManager;
 
         public HomeController(ILogger<HomeController> logger, IUserRepository userRepo, IRequestRepository requestRepo,
-            IProjectRepository projectRepo, IOrganizationRepository organizationRepo,
-            IProjectResourceRepository projectResourceRepo, IMapper mapper, SignInManager<IdentityUser> signInManager)
+            IProjectRepository projectRepo,IProjectResourceRepository projectResourceRepo, 
+            IMapper mapper, SignInManager<IdentityUser> signInManager)
         {
             _logger = logger;
             _userRepo = userRepo;
             _requestRepo = requestRepo;
             _projectRepo = projectRepo;
-            _organizationRepo = organizationRepo;
             _projectResourceRepo = projectResourceRepo;
             _mapper = mapper;
             _signInManager = signInManager;
@@ -48,6 +43,7 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> Homepage()
         {
+            ModelState.AddModelError("Not found", "ABCXYZ");
             // Check if there is an authenticated user, set the session of that user
             if (User.Identity.IsAuthenticated)
             {
@@ -58,6 +54,7 @@ namespace Dynamics.Controllers
                 {
                     return RedirectToAction("Logout", "Auth");
                 }
+
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
             }
 
@@ -92,14 +89,17 @@ namespace Dynamics.Controllers
         private async Task<ProjectOverviewDto> MapToProjectOverviewDto(Project p)
         {
             // TODO: Use mapper instead
-            var testMappedObject = _mapper.Map<ProjectOverviewDto>(p);
-            var tempProjectOverviewDto = new ProjectOverviewDto();
+            var tempProjectOverviewDto = _mapper.Map<ProjectOverviewDto>(p);
+            //var tempProjectOverviewDto = new ProjectOverviewDto();
             tempProjectOverviewDto.ProjectName = p.ProjectName;
-            tempProjectOverviewDto.ProjectUser = (await _userRepo.GetAsync(u => u.UserID == p.LeaderID)).UserFullName;
             tempProjectOverviewDto.ProjectId = p.ProjectID;
-            tempProjectOverviewDto.ProjectLocation = "Not implemented";
-            tempProjectOverviewDto.ProjectMembers = _projectRepo.CountMemberOfProjectById(p.ProjectID);
             tempProjectOverviewDto.ProjetDescription = p.ProjectDescription;
+            tempProjectOverviewDto.ProjectLocation = "Not implemented";
+            tempProjectOverviewDto.ProjectAttachment = p.Attachment;
+            tempProjectOverviewDto.ProjectStatus = p.ProjectStatus;
+
+            //tempProjectOverviewDto.ProjectUser = (await _userRepo.GetAsync(u => u.UserID == p.LeaderID)).UserFullName;
+            tempProjectOverviewDto.ProjectMembers = await _projectRepo.CountMembersOfProjectByIdAsync(p.ProjectID);
             tempProjectOverviewDto.ProjectProgress = _projectRepo.GetProjectProgressById(p.ProjectID);
             var moneyRaised =
                 await _projectResourceRepo.GetAsync(pr => pr.ResourceName == "Money" && pr.ProjectID == p.ProjectID);
@@ -107,9 +107,6 @@ namespace Dynamics.Controllers
             {
                 tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
             }
-
-            tempProjectOverviewDto.ProjectAttachment = p.Attachment;
-            tempProjectOverviewDto.ProjectStatus = p.ProjectStatus;
 
             return tempProjectOverviewDto;
         }

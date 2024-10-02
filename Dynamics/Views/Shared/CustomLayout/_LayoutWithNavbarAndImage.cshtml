@@ -25,19 +25,6 @@
     </div>
     <!-- End background image -->
 </header>
-<style>
-    .align-with-navbar-center {
-        /*margin-left: 80px;*/
-    }
-    .elevate {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .elevate:hover {
-        transform: translateY(-5px); /* Moves the element up */
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Adds a shadow to give a lifted effect */
-    }
-</style>
 
 @RenderBody()
 
@@ -48,5 +35,6 @@
 @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
 @* <script src="~/js/site.js" asp-append-version="true"></script> *@
 @await RenderSectionAsync("Scripts", required: false)
+    <partial name="CustomComponent/_Footer" />
 </body>
 </html>

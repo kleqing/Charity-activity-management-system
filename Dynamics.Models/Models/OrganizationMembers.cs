@@ -10,6 +10,7 @@ namespace Dynamics.Models.Models
     {
 		public Guid UserID { get; set; }
 		public Guid OrganizationID { get; set; }
+		public int? Status { get; set; }
 		public virtual User User { get; set; }
 		public virtual Organization Organization { get; set; }
 	}

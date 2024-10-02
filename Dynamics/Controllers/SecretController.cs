@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dynamics.Controllers;
 
 // For testing purposes
-// [Authorize(Roles = RoleConstants.Admin)]
+[Authorize(Roles = RoleConstants.Admin)]
 public class SecretController : Controller
 {
     // GET

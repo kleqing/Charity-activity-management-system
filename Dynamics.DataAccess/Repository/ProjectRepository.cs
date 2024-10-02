@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dynamics.DataAccess.Repository;
 
-public class ProjectRepository:IProjectRepository
+public class ProjectRepository : IProjectRepository
 {
     private readonly ApplicationDbContext _context;
 
@@ -39,21 +39,23 @@ public class ProjectRepository:IProjectRepository
         throw new NotImplementedException();
     }
 
-    public int CountMemberOfProjectById(Guid projectId)
+    public async Task<int> CountMembersOfProjectByIdAsync(Guid projectId)
     {
-        return _context.ProjectMembers.Count(p => p.ProjectID == projectId);
+        
+        return await _context.ProjectMembers.CountAsync(p => p.ProjectID == projectId);
     }
 
     public int? GetProjectProgressById(Guid projectId)
     {
-        var resourceNumbers =  _context.ProjectResources
-            .Where(p => p.ProjectID == projectId && p.ResourceName == "Money")
+        var resourceNumbers = _context.ProjectResources
+            .Where(p => p.ProjectID == projectId && p.ResourceName.ToLower().Equals("money"))
             .Select(resource => new
             {
                 quantity = resource.Quantity,
                 expectedQuantity = resource.ExpectedQuantity
             }).FirstOrDefault();
         if (resourceNumbers == null) return -1;
+        if (resourceNumbers.expectedQuantity == 0) return 0;
         return resourceNumbers.quantity * 100 / resourceNumbers.expectedQuantity;
     }
 }

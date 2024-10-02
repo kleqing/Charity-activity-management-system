@@ -17,11 +17,13 @@ namespace Dynamics.Areas.Identity.Pages.Account
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserRepository _userRepo;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public ConfirmEmailModel(UserManager<IdentityUser> userManager, IUserRepository userRepo)
+        public ConfirmEmailModel(UserManager<IdentityUser> userManager, IUserRepository userRepo, SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _userRepo = userRepo;
+            _signInManager = signInManager;
         }
 
         [TempData]
@@ -44,10 +46,11 @@ namespace Dynamics.Areas.Identity.Pages.Account
             var result = await _userManager.ConfirmEmailAsync(user, decodedCode);
             if (result.Succeeded)
             {
+                // Sign in
+                await _signInManager.SignInAsync(user, isPersistent: false);
                 // Session
                 var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                //return RedirectToPage("EmailConfirmationSuccess", new { returnUrl });
                 return RedirectToAction("Homepage", "Home", returnUrl);
             }
             else

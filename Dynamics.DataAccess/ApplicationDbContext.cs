@@ -20,8 +20,8 @@ namespace Dynamics.DataAccess
         public virtual DbSet<OrganizationToProjectHistory> OrganizationToProjectTransactionHistory { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserToOrganizationHistory> UserToOrganizationTransactionHistories { get; set; }
-        public virtual DbSet<UserToProjectHistory> UserToProjectTransactionHistories { get; set; }
+        public virtual DbSet<UserToOrganizationTransactionHistory> UserToOrganizationTransactionHistories { get; set; }
+        public virtual DbSet<UserToProjectTransactionHistory> UserToProjectTransactionHistories { get; set; }
         public virtual DbSet<ProjectMember> ProjectMembers { get; set; }
         public virtual DbSet<ProjectResource> ProjectResources { get; set; }
         public virtual DbSet<Request> Requests { get; set; }
@@ -35,6 +35,11 @@ namespace Dynamics.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Columns that require unique:
+            modelBuilder.Entity<User>().HasIndex(u => u.UserEmail).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(u => u.UserFullName).IsUnique();
+            modelBuilder.Entity<Organization>().HasIndex(u => u.OrganizationName).IsUnique();
+            modelBuilder.Entity<Organization>().HasIndex(u => u.OrganizationEmail).IsUnique();
             // If you have other entity configurations or relationships
             // model them here as well.
 
@@ -53,10 +58,10 @@ namespace Dynamics.DataAccess
             modelBuilder.Entity<OrganizationToProjectHistory>()
                 .HasKey(o => new { o.TransactionID });
 
-            modelBuilder.Entity<UserToOrganizationHistory>()
+            modelBuilder.Entity<UserToOrganizationTransactionHistory>()
                 .HasKey(u => new { u.TransactionID });
 
-            modelBuilder.Entity<UserToProjectHistory>()
+            modelBuilder.Entity<UserToProjectTransactionHistory>()
                 .HasKey(u => new { u.TransactionID });
 
             modelBuilder.Entity<ProjectResource>()
@@ -109,6 +114,8 @@ namespace Dynamics.DataAccess
                 .WithMany(p => p.ProjectResource)
                 .HasForeignKey(pr => pr.ProjectID);
 
+           
+
             // Request to User
             modelBuilder.Entity<Request>()
                 .HasOne(r => r.User)
@@ -140,47 +147,55 @@ namespace Dynamics.DataAccess
                 .HasForeignKey(om => om.OrganizationID);
 
             // UserToOrganizationTransactionHistory to User
-            modelBuilder.Entity<UserToOrganizationHistory>()
+            modelBuilder.Entity<UserToOrganizationTransactionHistory>()
                 .HasOne(ut => ut.User)
                 .WithMany(u => u.UserToOrganizationTransactions)
                 .HasForeignKey(ut => ut.UserID);
 
-            // UserToOrganizationTransactionHistory to Organization
-            modelBuilder.Entity<UserToOrganizationHistory>()
-                .HasOne(ut => ut.Organization)
-                .WithMany(o => o.UserToOrganizationTransactions)
-                .HasForeignKey(ut => ut.OrganizationID);
-
             // UserToProjectTransactionHistory to User
-            modelBuilder.Entity<UserToProjectHistory>()
+            modelBuilder.Entity<UserToProjectTransactionHistory>()
                 .HasOne(ut => ut.User)
                 .WithMany(u => u.UserToProjectTransactions)
                 .HasForeignKey(ut => ut.UserID);
 
-            // UserToProjectTransactionHistory to Project
-            modelBuilder.Entity<UserToProjectHistory>()
-                .HasOne(ut => ut.Project)
-                .WithMany(p => p.UserToProjectTransactions)
-                .HasForeignKey(ut => ut.ProjectID);
-
-            // OrganizationToProjectTransactionHistory to Organization
-            modelBuilder.Entity<OrganizationToProjectHistory>()
-                .HasOne(ot => ot.Organization)
-                .WithMany(o => o.OrganizationToProjectTransactions)
-                .HasForeignKey(ot => ot.OrganizationID);
-
-            // OrganizationToProjectTransactionHistory  to Project
-            modelBuilder.Entity<Project>()
-                .HasMany(ot => ot.OrganizationToProjectTransactions)
-                .WithOne(p => p.Project)
-                .HasForeignKey(ot => ot.ProjectID)
-                .OnDelete(DeleteBehavior.NoAction);
+            // UserToProjectTransactionHistory to ProjectResource 
+            modelBuilder.Entity<UserToProjectTransactionHistory>()
+                .HasOne(ut => ut.ProjectResource)
+                .WithMany(p => p.UserToProjectTransactionHistory)
+                .HasForeignKey(ut => ut.ResourceID);
 
             // History to Project
             modelBuilder.Entity<History>()
                 .HasOne(h => h.Project)
                 .WithMany(p => p.History)
                 .HasForeignKey(h => h.ProjectID);
+
+            //UserToOrganizationTransactionHistory to OrganizationResource
+            modelBuilder.Entity<UserToOrganizationTransactionHistory>()
+                .HasOne(ut => ut.OrganizationResource)
+                .WithMany(or => or.UserToOrganizationTransactionHistory)
+                .HasForeignKey(ut => ut.ResourceID);
+
+           //OrganizationToProjectHistory to OrganizationResource
+            modelBuilder.Entity<OrganizationToProjectHistory>()
+                .HasOne(o => o.OrganizationResource)
+                .WithMany(or => or.OrganizationToProjectHistory)
+                .HasForeignKey(o => o.OrganizationResourceID);
+
+            //ProjectResource to OrganizationToProjectHistory
+            //modelBuilder.Entity<ProjectResource>()
+            //    .HasMany(pr => pr.OrganizationToProjectHistory)
+            //    .WithOne(p => p.ProjectResource)
+            //    .HasForeignKey(pr => pr.ProjectResourceID)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //OrganizationToProjectHistory to ProjectResource
+            modelBuilder.Entity<OrganizationToProjectHistory>()
+                .HasOne(a => a.ProjectResource)
+                .WithMany(p => p.OrganizationToProjectHistory)
+                .HasForeignKey(k => k.ProjectResourceID)
+                .OnDelete(DeleteBehavior.NoAction);
+
             //    // -----------------
             //    // OnDelete()
 
