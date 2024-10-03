@@ -5,11 +5,6 @@ module.exports = {
         './Views/**/*.cshtml',
         './Areas/**/*.cshtml',
     ],
-    safelist: [
-        {
-            pattern: /bg-+/, //
-        },
-    ],
     theme: {
         extend: {},
     },
@@ -22,14 +17,14 @@ module.exports = {
                     secondary: "#FACC15",
                     // "secondary-content": "#150f00",
                     accent: "#D29191",
-                    "accent-content": "#150f00",
+                    // "accent-content": "#150f00",
                     neutral: "#696E78",
                     // "neutral-content": "#000000",
                     "base-100": "#F5F5F5",
                     "base-200": "#D3D4D6",
-                    "base-300": "#B4B5B7",
+                    "base-300": "#E2E7E9",
                     // "base-content": "#150f00",
-                    info: "#0A2F6C",
+                    info: "#1E429F",
                     "info-content": "#f5f5f5",
                     success: "#22c55e",
                     "success-content": "#f5f5f5",

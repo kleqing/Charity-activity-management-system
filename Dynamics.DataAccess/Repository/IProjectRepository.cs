@@ -11,5 +11,4 @@ public interface IProjectRepository
     Task<bool> UpdateAsync(Project project);
     Task<Project> DeleteAsync(Expression<Func<Project, bool>> predicate);
     Task<int> CountMembersOfProjectByIdAsync(Guid projectId);
-    int? GetProjectProgressById(Guid projectId);
 }

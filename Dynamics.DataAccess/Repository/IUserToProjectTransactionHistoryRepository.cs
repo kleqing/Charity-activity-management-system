@@ -12,6 +12,6 @@ public interface IUserToProjectTransactionHistoryRepository
     Task<UserToProjectTransactionHistory?> GetAsync(Expression<Func<UserToProjectTransactionHistory, bool>> filter);
     Task<bool> Add(UserToProjectTransactionHistory entity);
     Task<bool> Update(UserToProjectTransactionHistory entity);
-    Task<UserToProjectTransactionHistory> DeleteById(Guid id);
+    Task<UserToProjectTransactionHistory> DeleteTransactionByIdAsync(Guid id);
 }
 

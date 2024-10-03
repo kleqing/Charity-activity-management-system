@@ -5,23 +5,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dynamics.DataAccess.Repository;
 
-public class UserToOrganizationTransactionHistoryRepositoryRepository : IUserToOrganizationTransactionHistoryRepository
+public class UserToOrganizationTransactionHistoryRepository : IUserToOrganizationTransactionHistoryRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public UserToOrganizationTransactionHistoryRepositoryRepository(ApplicationDbContext context)
+    public UserToOrganizationTransactionHistoryRepository(ApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<List<UserToOrganizationTransactionHistory>> GetAllAsync()
+    public Task<List<UserToOrganizationTransactionHistory>> GetAllAsync()
     {
-        return await _context.UserToOrganizationTransactionHistories.ToListAsync();
+        return _context.UserToOrganizationTransactionHistories.ToListAsync();
     }
 
     public async Task<List<UserToOrganizationTransactionHistory>> GetAllAsyncWithExpression(
         Expression<Func<UserToOrganizationTransactionHistory, bool>> filter)
     {
+        var test = await _context.UserToOrganizationTransactionHistories.Where(filter)
+            .Include(ut => ut.User)
+            .Include(ut => ut.OrganizationResource)
+            .ThenInclude(ut => ut.Organization)
+            .ToListAsync();
+        test.FirstOrDefault(u => u.UserID == new Guid());
         return await _context.UserToOrganizationTransactionHistories.Where(filter)
             .Include(ut => ut.User)
             .Include(ut => ut.OrganizationResource)
@@ -32,7 +38,8 @@ public class UserToOrganizationTransactionHistoryRepositoryRepository : IUserToO
     public Task<UserToOrganizationTransactionHistory?> GetAsync(
         Expression<Func<UserToOrganizationTransactionHistory, bool>> filter)
     {
-        throw new NotImplementedException();
+        return _context.UserToOrganizationTransactionHistories.Where(filter).FirstOrDefaultAsync();
+
     }
 
     public Task<bool> Add(UserToOrganizationTransactionHistory entity)
@@ -45,8 +52,12 @@ public class UserToOrganizationTransactionHistoryRepositoryRepository : IUserToO
         throw new NotImplementedException();
     }
 
-    public Task<UserToOrganizationTransactionHistory> DeleteById(Guid id)
+    public async Task<UserToOrganizationTransactionHistory> DeleteTransactionByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var entity = await GetAsync(tr => tr.TransactionID.Equals(id));
+        if (entity == null) return null;
+        var final = _context.UserToOrganizationTransactionHistories.Remove(entity);
+        await _context.SaveChangesAsync();
+        return final.Entity;
     }
 }

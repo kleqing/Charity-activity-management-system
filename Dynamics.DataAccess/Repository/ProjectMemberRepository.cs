@@ -12,21 +12,23 @@ public class ProjectMemberRepository : IProjectMemberRepository
     {
         _context = context;
     }
+
     public async Task<List<ProjectMember>> GetAllAsync(Expression<Func<ProjectMember, bool>>? predicate = null)
     {
         if (predicate is null)
         {
             return await _context.ProjectMembers.Include(p => p.Project).ToListAsync();
         }
-        else
-        {
-            return await _context.ProjectMembers.Where(predicate).Include(p => p.Project).ToListAsync();
-        }
+        return await _context.ProjectMembers.Where(predicate).Include(p => p.Project).ToListAsync();
     }
 
-    public Task<ProjectMember?> GetAsync(Expression<Func<ProjectMember, bool>> predicate)
+    public async Task<ProjectMember?> GetAsync(Expression<Func<ProjectMember, bool>>? predicate)
     {
-        throw new NotImplementedException();
+        if (predicate is null)
+        {
+            return await _context.ProjectMembers.Include(pm => pm.User).FirstOrDefaultAsync();
+        }
+        return await _context.ProjectMembers.Where(predicate).Include(pm => pm.User).FirstOrDefaultAsync();
     }
 
     public Task<bool> CreateAsync(ProjectMember project)
@@ -39,8 +41,12 @@ public class ProjectMemberRepository : IProjectMemberRepository
         throw new NotImplementedException();
     }
 
-    public Task<ProjectMember> DeleteAsync(Expression<Func<ProjectMember, bool>> predicate)
+    public async Task<ProjectMember> DeleteAsync(Expression<Func<ProjectMember, bool>> predicate)
     {
-        throw new NotImplementedException();
+        var target = await GetAsync(predicate);
+        if (target is null) return null;
+        var final = _context.ProjectMembers.Remove(target);
+        await _context.SaveChangesAsync();
+        return final.Entity;
     }
 }

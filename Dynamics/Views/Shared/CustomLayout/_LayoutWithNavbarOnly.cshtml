@@ -21,10 +21,10 @@
 
 @* This is used for icons *@
 <script src="https://kit.fontawesome.com/ba8c3661b4.js" crossorigin="anonymous"></script>
-@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
-@* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
-@* <script src="~/js/site.js" asp-append-version="true"></script> *@
 @await RenderSectionAsync("Scripts", required: false)
-    <partial name="CustomComponent/_Footer" />
+<script src="~/js/myJquery.js"></script>
+<partial name="CustomComponent/_ToastNotif"/>
+<partial name="_ValidationScriptsPartial"/>
+<partial name="CustomComponent/_Footer"/>
 </body>
 </html>

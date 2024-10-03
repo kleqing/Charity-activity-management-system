@@ -98,20 +98,17 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         // TODO: Redirect to home page
                         return RedirectToAction("Homepage", "Home", returnUrl);
                     }
-
                     // TODO: Ban user in da future
                     if (result.IsLockedOut)
                     {
                         _logger.LogWarning("User account locked out.");
                         return RedirectToPage("./Lockout");
                     }
-
                     // If we get here, something went wrong.
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
         }

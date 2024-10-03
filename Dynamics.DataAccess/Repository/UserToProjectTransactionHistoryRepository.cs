@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dynamics.DataAccess.Repository;
 
-public class UserToProjectTransactionHistoryRepositoryRepository : IUserToProjectTransactionHistoryRepository
+public class UserToProjectTransactionHistoryRepository : IUserToProjectTransactionHistoryRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public UserToProjectTransactionHistoryRepositoryRepository(ApplicationDbContext context)
+    public UserToProjectTransactionHistoryRepository(ApplicationDbContext context)
     {
         _context = context;
     }
@@ -27,7 +27,7 @@ public class UserToProjectTransactionHistoryRepositoryRepository : IUserToProjec
     public Task<UserToProjectTransactionHistory?> GetAsync(
         Expression<Func<UserToProjectTransactionHistory, bool>> filter)
     {
-        throw new NotImplementedException();
+        return _context.UserToProjectTransactionHistories.Where(filter).FirstOrDefaultAsync();
     }
 
     public Task<bool> Add(UserToProjectTransactionHistory entity)
@@ -40,8 +40,12 @@ public class UserToProjectTransactionHistoryRepositoryRepository : IUserToProjec
         throw new NotImplementedException();
     }
 
-    public Task<UserToProjectTransactionHistory> DeleteById(Guid id)
+    public async Task<UserToProjectTransactionHistory> DeleteTransactionByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var entity = await GetAsync(tr => tr.TransactionID.Equals(id));
+        if (entity == null) return null;
+        var final = _context.UserToProjectTransactionHistories.Remove(entity);
+        await _context.SaveChangesAsync();
+        return final.Entity;
     }
 }

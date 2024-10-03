@@ -18,7 +18,7 @@
 }
 
 <!-- Edit profile -->
-<main class="flex md:p-6 pb-0 flex-1">
+<main class="flex md:p-6 pb-0 flex-1 h-screen">
     @*     <!-- Sidebar -->
     <div class="p-2 pt-12 w-1/5">
     <ul class="flex flex-col gap-2">
@@ -36,17 +36,16 @@
     @{
         if (TempData["google"] != null)
         {
-            <div class="flex flex-col gap-2 justify-center items-center w-full">
+            <div class="flex flex-col gap-2 justify-start items-center w-full">
                 <h2 class="mb-4 text-center text-3xl">
                     <b>Change password</b>
                 </h2>
                 <h2 class="mb-4 text-center text-3xl font-bold text-success">@TempData["google"]</h2>
             </div>
-
         }
         else
         {
-            <form asp-action="ChangePassword" asp-controller="User" method="post" class="flex flex-col gap-4 justify-center items-center flex-1 px-16 w-1/2">
+            <form asp-action="ChangePassword" asp-controller="User" method="post" class="flex flex-col gap-4 justify-start items-center flex-1 px-16 w-1/2">
                 <h2 class="mb-4 text-center text-3xl">
                     <b>Change password</b>
                 </h2>
@@ -61,7 +60,7 @@
                     <span class="label label-text font-bold text-lg">Old password</span>
                     <input type="password"
                            placeholder="Please enter your old password"
-                           class="input input-bordered w-full bg-white"
+                           class="input input-bordered w-full bg-white input-info"
                            asp-for="@Model.OldPassword"
                            name="OldPassword" />
                     <span asp-validation-for="OldPassword" class="text-error"></span>
@@ -71,7 +70,7 @@
                     <span class="label label-text font-bold text-lg">New password</span>
                     <input type="password"
                            placeholder="Please enter your new password"
-                           class="input input-bordered w-full bg-white"
+                           class="input input-bordered w-full bg-white input-info"
                            asp-for="@Model.NewPassword"
                            name="NewPassword" />
                     <span asp-validation-for="NewPassword" class="text-error"></span>
@@ -82,7 +81,7 @@
                     <span class="label label-text font-bold text-lg">Confirm new password</span>
                     <input type="password"
                            placeholder="Please enter your confirm new password"
-                           class="input input-bordered w-full bg-white"
+                           class="input input-bordered w-full bg-white input-info"
                            asp-for="@Model.ConfirmPassword" />
                     <span asp-validation-for="ConfirmPassword" class="text-error"></span>
                 </label>

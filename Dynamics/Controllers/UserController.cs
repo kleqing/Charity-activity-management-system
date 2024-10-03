@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Update;
 using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
@@ -20,10 +21,15 @@ namespace Dynamics.Controllers
         private readonly ITransactionViewService _transactionViewService;
         private readonly IProjectMemberRepository _projectMemberRepository;
         private readonly IOrganizationMemberRepository _organizationMemberRepository;
+        private readonly IUserToOrganizationTransactionHistoryRepository _userToOrgRepo;
+        private readonly IUserToProjectTransactionHistoryRepository _userToPrjRepo;
 
         public UserController(IUserRepository userRepo, UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager, ITransactionViewService transactionViewService,
-            IProjectMemberRepository projectMemberRepository, IOrganizationMemberRepository organizationMemberRepository)
+            IProjectMemberRepository projectMemberRepository,
+            IOrganizationMemberRepository organizationMemberRepository,
+            IUserToOrganizationTransactionHistoryRepository userToOrgRepo,
+            IUserToProjectTransactionHistoryRepository userToPrjRepo)
         {
             _userRepository = userRepo;
             _userManager = userManager;
@@ -31,6 +37,8 @@ namespace Dynamics.Controllers
             _transactionViewService = transactionViewService;
             _projectMemberRepository = projectMemberRepository;
             _organizationMemberRepository = organizationMemberRepository;
+            _userToOrgRepo = userToOrgRepo;
+            _userToPrjRepo = userToPrjRepo;
         }
 
         // User/username
@@ -54,11 +62,13 @@ namespace Dynamics.Controllers
             {
                 return RedirectToAction("Logout", "Auth");
             }
+
             var user = await _userRepository.GetAsync(u => u.UserID.Equals(currentUser.UserID));
             if (user == null)
             {
                 return NotFound();
             }
+
             return View(user);
         }
 
@@ -77,15 +87,18 @@ namespace Dynamics.Controllers
                     ModelState.AddModelError("", "Username or email is already taken.");
                     return View(user);
                 }
+
                 if (user.UserFullName == null || user.UserEmail == null)
                 {
                     TempData[MyConstants.Failed] = "Update failed...";
                     return View(user);
                 }
+
                 if (image != null)
                 {
                     user.UserAvatar = Util.UploadImage(image, @"images\User", user.UserID.ToString());
                 }
+
                 await _userRepository.UpdateAsync(user);
                 // Update the session as well
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
@@ -96,6 +109,7 @@ namespace Dynamics.Controllers
                 ModelState.AddModelError("", "Something went wrong, please try again later.");
                 return View(user);
             }
+
             return View(user);
         }
 
@@ -129,17 +143,20 @@ namespace Dynamics.Controllers
                 TempData[MyConstants.Failed] = "Change password failed...";
                 return RedirectToAction("Account", "User");
             }
+
             if (changePassword.NewPassword != changePassword.ConfirmPassword)
             {
                 TempData[MyConstants.Failed] = "The password and confirmation password do not match.";
                 return RedirectToAction("Account", "User");
             }
+
             var currentUser = await _userManager.FindByIdAsync(changePassword.UserId.ToString());
             if (currentUser.PasswordHash == null)
             {
                 TempData["Google"] = "Your account is bound with google account.";
                 return RedirectToAction("Account", "User");
             }
+
             var changePasswordResult = await _userManager.ChangePasswordAsync(currentUser, changePassword.OldPassword,
                 changePassword.NewPassword);
             if (!changePasswordResult.Succeeded)
@@ -168,10 +185,12 @@ namespace Dynamics.Controllers
             // Get current userID
             var userString = HttpContext.Session.GetString("user");
             User currentUser = null;
-            if (userString != null) currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("user"));
+            if (userString != null)
+                currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("user"));
             else return RedirectToAction("Logout", "Auth");
             var userToOrgTransaction = await _transactionViewService
-                .GetUserToOrganizationTransactionDTOsAsync(ut => ut.UserID.Equals(currentUser.UserID) && ut.Status == 1);
+                .GetUserToOrganizationTransactionDTOsAsync(ut =>
+                    ut.UserID.Equals(currentUser.UserID) && ut.Status == 1);
             var userToPrjTransaction = await _transactionViewService
                 .GetUserToProjectTransactionDTOsAsync(ut => ut.UserID.Equals(currentUser.UserID) && ut.Status == 1);
             // Merge into a list and display
@@ -190,24 +209,103 @@ namespace Dynamics.Controllers
             // Get current userID
             var userString = HttpContext.Session.GetString("user");
             User currentUser = null;
-            if (userString != null) currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("user"));
+            if (userString != null)
+                currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("user"));
             else return RedirectToAction("Logout", "Auth");
-            // Join requests
-            var userRequestProjects = await _projectMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID));
-            var userRequestOrganizations = await _organizationMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID));
+            // Get join requests except for the one with status of 2 (User is already the leader of)
+            var userRequestProjects =
+                await _projectMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID));
+            userRequestProjects = userRequestProjects.Where(urp => urp.Status < 2).ToList();
+            var userRequestOrganizations =
+                await _organizationMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID));
+
             // Donation requests only get the pending ones (Money is automatically accepted so it should not be here.)
             var userToOrgTransaction = await _transactionViewService
                 .GetUserToOrganizationTransactionDTOsAsync(ut => ut.UserID.Equals(currentUser.UserID) && ut.Status == 0);
             var userToPrjTransaction = await _transactionViewService
                 .GetUserToProjectTransactionDTOsAsync(ut => ut.UserID.Equals(currentUser.UserID) && ut.Status == 0);
             userToPrjTransaction.AddRange(userToOrgTransaction);
-            
+
             return View(new UserRequestsStatusViewModel
             {
                 OrganizationJoinRequests = userRequestOrganizations,
                 ProjectJoinRequests = userRequestProjects,
                 ResourcesDonationRequests = userToPrjTransaction,
             });
+        }
+
+        // Cancel a user pending donation
+        public async Task<IActionResult> CancelDonation(Guid transactionID, string type)
+        {
+            try
+            {
+                switch (type.ToLower())
+                {
+                    case "project":
+                    {
+                        var result = await _userToPrjRepo.DeleteTransactionByIdAsync(transactionID);
+                        if (result == null) throw new Exception();
+                        break;
+                    }
+                    case "organization":
+                    {
+                        var result = await _userToOrgRepo.DeleteTransactionByIdAsync(transactionID);
+                        if (result == null) throw new Exception();
+                        break;
+                    }
+                    default:
+                        throw new ArgumentException("Invalid type");
+                }
+                TempData[MyConstants.Success] = "Donation cancelled successful!";
+            }
+            catch (Exception e)
+            {
+                TempData[MyConstants.Failed] = "Something went wrong, please try again later.";
+            }
+
+            return RedirectToAction("RequestsStatus", "User");
+        }
+
+        public async Task<IActionResult> CancelJoinRequest(Guid userID, Guid targetID, string type)
+        {
+            var msg = "Something went wrong, please try again later.";
+            // TODO: Wait for Tuan and Huyen's delete from project table
+            try
+            {
+                switch (type.ToLower())
+                {
+                    case "project":
+                    {
+                        var result = await _projectMemberRepository.DeleteAsync(pm => pm.UserID == userID && pm.ProjectID == targetID);
+                        if (result == null)
+                        {
+                            msg = "No request found for this transaction.";
+                            throw new Exception("No request found for cancel");
+                        }
+                        break;
+                    }
+                    case "organization":
+                    {
+                        var result = await _organizationMemberRepository.DeleteAsync(om => om.UserID == userID && om.OrganizationID == targetID);
+                        if (result == null)
+                        {
+                            msg = "No request found for this transaction.";
+                            throw new Exception("No request found for cancel");
+                        }
+                        break;
+                    }
+                    default:
+                        throw new ArgumentException("Invalid type");
+                }
+
+                TempData[MyConstants.Success] = "Cancel successful!";
+            }
+            catch (Exception e)
+            {
+                TempData[MyConstants.Failed] = msg;
+            }
+
+            return RedirectToAction("RequestsStatus", "User");
         }
     }
 }

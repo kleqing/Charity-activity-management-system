@@ -70,18 +70,20 @@ namespace Dynamics
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+            builder.Services
+                .AddScoped<IUserToProjectTransactionHistoryRepository,
+                    UserToProjectTransactionHistoryRepository>();
             // Organization repos
             builder.Services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             builder.Services.AddScoped<IOrganizationResourceRepository, OrganizationResourceRepository>();
-            // Transaction repos
             builder.Services
-                .AddScoped<IUserToOrganizationTransactionHistoryRepository, UserToOrganizationTransactionHistoryRepositoryRepository>();
-            builder.Services.AddScoped<IUserToProjectTransactionHistoryRepository, UserToProjectTransactionHistoryRepositoryRepository>();
-            
+                .AddScoped<IUserToOrganizationTransactionHistoryRepository,
+                    UserToOrganizationTransactionHistoryRepository>();
             // Automapper
             builder.Services.AddAutoMapper(typeof(MyMapper));
             // Add custom services
             builder.Services.AddScoped<ITransactionViewService, TransactionViewService>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 

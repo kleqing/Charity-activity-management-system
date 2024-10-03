@@ -24,9 +24,9 @@ public class OrganizationMemberRepository : IOrganizationMemberRepository
         }
     }
 
-    public Task<OrganizationMember?> GetAsync(Expression<Func<OrganizationMember, bool>> predicate)
+    public async Task<OrganizationMember?> GetAsync(Expression<Func<OrganizationMember, bool>> predicate)
     {
-        throw new NotImplementedException();
+        return await _context.OrganizationMember.FirstOrDefaultAsync(predicate);
     }
 
     public Task<bool> CreateAsync(OrganizationMember project)
@@ -39,8 +39,12 @@ public class OrganizationMemberRepository : IOrganizationMemberRepository
         throw new NotImplementedException();
     }
 
-    public Task<OrganizationMember> DeleteAsync(Expression<Func<OrganizationMember, bool>> predicate)
+    public async Task<OrganizationMember> DeleteAsync(Expression<Func<OrganizationMember, bool>> predicate)
     {
-        throw new NotImplementedException();
+        var target = await GetAsync(predicate);
+        if (target is null) return null;
+        var final = _context.OrganizationMember.Remove(target);
+        await _context.SaveChangesAsync();
+        return final.Entity;
     }
 }

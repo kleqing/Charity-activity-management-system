@@ -6,6 +6,15 @@ namespace Dynamics.Services;
 
 public interface ITransactionViewService
 {
-    Task<List<UserTransactionDto>> GetUserToOrganizationTransactionDTOsAsync(Expression<Func<UserToOrganizationTransactionHistory, bool>> predicate);
-    Task<List<UserTransactionDto>> GetUserToProjectTransactionDTOsAsync(Expression<Func<UserToProjectTransactionHistory, bool>> predicate);
+    /**
+     * Get the transaction entity in dto for display
+     */
+    Task<List<UserTransactionDto>> GetUserToOrganizationTransactionDTOsAsync(
+        Expression<Func<UserToOrganizationTransactionHistory, bool>> predicate);
+
+    /**
+    * Get the transaction entity in dto for display
+    */
+    Task<List<UserTransactionDto>> GetUserToProjectTransactionDTOsAsync(
+        Expression<Func<UserToProjectTransactionHistory, bool>> predicate);
 }
