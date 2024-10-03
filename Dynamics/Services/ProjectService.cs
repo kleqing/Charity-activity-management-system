@@ -32,9 +32,9 @@ public class ProjectService : IProjectService
         if (p.ProjectMember.IsNullOrEmpty()) throw new Exception("WARNING PROJECT MEMBER IS EMPTY");
         var tempProjectOverviewDto = _mapper.Map<ProjectOverviewDto>(p);
         // Get leader project
-        var leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 2).FirstOrDefault().User;
+        var leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 2).FirstOrDefault();
         if (leader == null) throw new Exception("No leader for project found");
-        tempProjectOverviewDto.ProjectLeader = leader;
+        tempProjectOverviewDto.ProjectLeader = leader.User;
         tempProjectOverviewDto.ProjectMembers = p.ProjectMember.Count(pm => pm.ProjectID == p.ProjectID);
         tempProjectOverviewDto.ProjectProgress = GetProjectProgress(p);
         var moneyRaised = p.ProjectResource.FirstOrDefault(pr => pr.ResourceName.Equals("Money", StringComparison.CurrentCultureIgnoreCase) && pr.ProjectID == p.ProjectID);

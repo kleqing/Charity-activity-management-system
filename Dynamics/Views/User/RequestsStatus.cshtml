@@ -84,14 +84,33 @@
                             {
                                 case 0:
                                     <p class="badge badge-primary min-w-24 relative">Pending</p>
-                                    <form asp-action="CancelJoinRequest" asp-controller="User" method="post">
-                                        <input type="hidden" name="userID" value="@modelOrganizationJoinRequest.UserID"/>
-                                        <input type="hidden" name="targetID" value="@modelOrganizationJoinRequest.OrganizationID"/>
-                                        <input type="hidden" name="type" value="organization"/>
-                                        <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel join request">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </form>
+                                    <dialog id="@("dModal" + orgCount)" class="modal">
+                                        <div class="modal-box">
+                                            <form method="dialog">
+                                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                            </form>
+                                            <h3 class="text-lg font-bold">Are you sure?</h3>
+                                            <p class="py-4">You are about to cancel your request</p>
+                                            <div class="modal-action gap-4">
+                                                <form asp-action="CancelJoinRequest" asp-controller="User" method="post" class="btn btn-error btn-sm">
+                                                    <input type="hidden" name="userID" value="@modelOrganizationJoinRequest.UserID"/>
+                                                    <input type="hidden" name="targetID" value="@modelOrganizationJoinRequest.OrganizationID"/>
+                                                    <input type="hidden" name="type" value="project"/>
+                                                    <button type="submit">Confirm</button>
+                                                </form>
+                                                <form method="dialog" class="btn btn-primary btn-sm">
+                                                    <button>Go back</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <form method="dialog" class="modal-backdrop">
+                                            <button>close</button>
+                                        </form>
+                                    </dialog>
+                                    <!-- Open the modal using ID.showModal() method -->
+                                    <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel request?" onclick="@("dModal" + orgCount).showModal()">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
                                     break;
                                 case 1:
                                     <p class="badge badge-success min-w-24">Accepted</p>
@@ -167,14 +186,33 @@
                             {
                                 case 0:
                                     <div class="badge badge-primary min-w-24 relative">Pending</div>
-                                    <form class="indicator" asp-action="CancelJoinRequest" asp-controller="User" method="post">
-                                        <input type="hidden" name="userID" value="@modelProjectJoinRequest.UserID"/>
-                                        <input type="hidden" name="targetID" value="@modelProjectJoinRequest.ProjectID"/>
-                                        <input type="hidden" name="type" value="project"/>
-                                        <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel join request">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </form>
+                                    <dialog id="@("dModal" + prjCount)" class="modal">
+                                        <div class="modal-box">
+                                            <form method="dialog">
+                                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                            </form>
+                                            <h3 class="text-lg font-bold">Are you sure?</h3>
+                                            <p class="py-4">You are about to cancel your request</p>
+                                            <div class="modal-action gap-4">
+                                                <form asp-action="CancelJoinRequest" asp-controller="User" method="post" class="btn btn-error btn-sm">
+                                                    <input type="hidden" name="userID" value="@modelProjectJoinRequest.UserID"/>
+                                                    <input type="hidden" name="targetID" value="@modelProjectJoinRequest.ProjectID"/>
+                                                    <input type="hidden" name="type" value="project"/>
+                                                    <button type="submit">Confirm</button>
+                                                </form>
+                                                <form method="dialog" class="btn btn-primary btn-sm">
+                                                    <button>Go back</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <form method="dialog" class="modal-backdrop">
+                                            <button>close</button>
+                                        </form>
+                                    </dialog>
+                                    <!-- Open the modal using ID.showModal() method -->
+                                    <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel request?" onclick="@("dModal" + prjCount).showModal()">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
                                     break;
                                 case 1:
                                     <p class="badge badge-success min-w-24">Accepted</p>
@@ -280,13 +318,32 @@
                                 </div>
                             </td>
                             <td>
-                                <form asp-action="CancelDonation" asp-controller="User" method="post">
-                                    <input type="hidden" name="transactionID" value="@donationRequest.TransactionID"/>
-                                    <input type="hidden" name="type" value="@donationRequest.Type"/>
-                                    <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel donation ?">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </form>
+                                <dialog id="@("dModal" + donCount)" class="modal">
+                                    <div class="modal-box">
+                                        <form method="dialog">
+                                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                        </form>
+                                        <h3 class="text-lg font-bold">Are you sure?</h3>
+                                        <p class="py-4">You are about to cancel your donation</p>
+                                        <div class="modal-action gap-4">
+                                            <form asp-action="CancelDonation" asp-controller="User" method="post" class="btn btn-error btn-sm">
+                                                <input type="hidden" name="transactionID" value="@donationRequest.TransactionID"/>
+                                                <input type="hidden" name="type" value="@donationRequest.Type"/>
+                                                <button type="submit">Confirm</button>
+                                            </form>
+                                            <form method="dialog" class="btn btn-primary btn-sm">
+                                                <button>Go back</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <form method="dialog" class="modal-backdrop">
+                                        <button>close</button>
+                                    </form>
+                                </dialog>
+                                <!-- Open the modal using ID.showModal() method -->
+                                <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel donation ?" onclick="@("dModal" + donCount).showModal()">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
                             </td>
                         </tr>
                     }
