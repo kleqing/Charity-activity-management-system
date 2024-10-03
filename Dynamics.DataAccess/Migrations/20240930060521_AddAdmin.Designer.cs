@@ -4,6 +4,7 @@ using Dynamics.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240930060521_AddAdmin")]
+    partial class AddAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,15 +85,7 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<Guid?>("CEOID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("OrganizationAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OrganizationDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -98,19 +93,15 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganizationPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OrganizationPictures")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ShutdownDay")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("ShutdownDay")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("StartTime")
+                        .HasColumnType("date");
 
                     b.Property<bool>("isBanned")
                         .HasColumnType("bit");
@@ -245,11 +236,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<Guid?>("RequestID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isBanned")
-                        .HasColumnType("bit");
+                    b.Property<DateOnly>("StartTime")
+                        .HasColumnType("date");
 
                     b.HasKey("ProjectID");
 
@@ -307,30 +295,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.ToTable("ProjectResources");
                 });
 
-            modelBuilder.Entity("Dynamics.Models.Models.Report", b =>
-                {
-                    b.Property<Guid>("ReportID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ObjectID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ReportDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReportID");
-
-                    b.ToTable("Reports");
-                });
-
             modelBuilder.Entity("Dynamics.Models.Models.Request", b =>
                 {
                     b.Property<Guid>("RequestID")
@@ -378,7 +342,7 @@ namespace Dynamics.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedDate")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserAddress")
@@ -432,8 +396,8 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<Guid>("OrganizationID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("Time")
+                        .HasColumnType("date");
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");

@@ -26,7 +26,7 @@ namespace Dynamics.DataAccess
         public virtual DbSet<ProjectResource> ProjectResources { get; set; }
         public virtual DbSet<Request> Requests { get; set; }
         public virtual DbSet<History> Histories { get; set; }
-
+        public virtual DbSet<Report> Reports { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Enable sensitive data logging
@@ -76,6 +76,10 @@ namespace Dynamics.DataAccess
 
             modelBuilder.Entity<User>()
                 .HasKey(u => new { u.UserID });
+
+            modelBuilder.Entity<Report>()
+                .HasKey(u => new { u.ReportID });
+
 
             //    // ---------------------
             //    // Foreign Key

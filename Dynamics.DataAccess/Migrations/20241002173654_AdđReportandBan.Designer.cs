@@ -4,6 +4,7 @@ using Dynamics.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241002173654_AdđReportandBan")]
+    partial class AdđReportandBan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,9 +251,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("isBanned")
-                        .HasColumnType("bit");
-
                     b.HasKey("ProjectID");
 
                     b.HasIndex("OrganizationID");
@@ -305,30 +305,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.HasIndex("ProjectID");
 
                     b.ToTable("ProjectResources");
-                });
-
-            modelBuilder.Entity("Dynamics.Models.Models.Report", b =>
-                {
-                    b.Property<Guid>("ReportID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ObjectID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ReportDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReportID");
-
-                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Dynamics.Models.Models.Request", b =>
