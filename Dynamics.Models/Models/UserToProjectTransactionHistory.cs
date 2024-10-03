@@ -9,16 +9,16 @@ namespace Dynamics.Models.Models
 {
     public class UserToProjectTransactionHistory
     {
-		
 		public Guid TransactionID { get; set; }
-        public Guid ResourceID { get; set; }
+        public Guid ProjectResourceID { get; set; }
         public Guid UserID { get; set; }
 		public int Status { get; set; }
 		public string Unit { get; set; }
+		[Required]
 		public int Amount { get; set; }
-        public string Message { get; set; }
         [DataType(DataType.Date)]
         public DateOnly Time { get; set; }
+        public string? Message { get; set; }
         public virtual User User { get; set; }
 		public virtual ProjectResource ProjectResource { get; set; }
 	}

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +12,20 @@ namespace Dynamics.Models.Models
     {
 		public Guid ResourceID { get; set; }
 		public Guid ProjectID { get; set; }
+		[Required]
 		public string ResourceName { get; set; }
-		public int? Quantity { get; set; }
+        [ValidateNever]
+        public int? Quantity { get; set; }
+		[Required]
 		public int? ExpectedQuantity { get; set; }
+		[Required]
 		public string Unit { get; set; }
-		public virtual Project Project { get; set; }
-        public virtual ICollection<OrganizationToProjectHistory> OrganizationToProjectHistory { get; set; }
-        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactionHistory { get; set; }
-
+        [ValidateNever]
+        public virtual Project Project { get; set; }
+		[ValidateNever]
+		public virtual ICollection<UserToProjectTransactionHistory>? UserToProjectTransactionHistories { get; set; }
+		[ValidateNever]
+		public virtual ICollection<OrganizationToProjectHistory>? OrganizationToProjectTransactionHistories { get; set; } 
 
     }
 }

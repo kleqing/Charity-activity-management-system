@@ -33,7 +33,7 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<User> DeleteById(Guid id)
         {
-            var user = _db.Users.Find(id);
+            var user = await _db.Users.FirstOrDefaultAsync(x=>x.UserID.Equals(id));
             if (user != null)
             {
                 // TODO NO NO DON'T Delete, BAN HIM INSTEAD

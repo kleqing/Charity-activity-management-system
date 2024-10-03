@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dynamics.Models.Models
 {
@@ -20,14 +21,20 @@ namespace Dynamics.Models.Models
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Phone Number")]
         public string? UserPhoneNumber { get; set; }
+        [ValidateNever]
         public string? UserAddress { get; set; }
+        [ValidateNever]
         public string? UserAvatar { get; set; }
         public string? UserDescription { get; set; }
+        [ValidateNever]
+        // Self-referencing relationships for reports
+        public virtual ICollection<Report> ReportsMade { get; set; }  // Reports this user submitted
+
         public virtual ICollection<Award> Award { get; set; }
         public virtual ICollection<Request> Request { get; set; }
         public virtual ICollection<ProjectMember> ProjectMember { get; set; }
         public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
-        public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactions { get; set; }
-        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactions { get; set; }
+        public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactionHistories { get; set; }
+        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactionHistories { get; set; }
     }
 }

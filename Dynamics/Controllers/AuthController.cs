@@ -32,6 +32,5 @@ namespace Dynamics.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("HomePage", "Home");
         }
-
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Dynamics.DataAccess.Repository;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -80,18 +81,20 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 {
                     
                     // Check if verified first before sign in
-                    var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
-                    if (!isEmailConfirmedAsync)
-                    {
-                        ModelState.AddModelError(string.Empty, "User account is not confirmed!");
-                        return Page();
-                    }
+                    //var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
+                    //if (!isEmailConfirmedAsync)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, "User account is not confirmed!");
+                    //    return Page();
+                    //}
 
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,
                         lockoutOnFailure: false);
                     // SerializeObject for session
                     var businessUser = await _userRepository.GetAsync(u => u.UserEmail == user.Email);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                    HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
+                    
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");

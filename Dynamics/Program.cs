@@ -47,7 +47,7 @@ namespace Dynamics
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -75,6 +75,7 @@ namespace Dynamics
                 .AddScoped<IUserToProjectTransactionHistoryRepository,
                     UserToProjectTransactionHistoryRepository>();
             // Organization repos
+            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             builder.Services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             builder.Services.AddScoped<IOrganizationResourceRepository, OrganizationResourceRepository>();
             builder.Services
@@ -87,6 +88,12 @@ namespace Dynamics
             builder.Services.AddScoped<IProjectService, ProjectService>();
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+            builder.Services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
 
             // Configure default routes (This should be after configured the Identity)
             builder.Services.ConfigureApplicationCookie(options =>

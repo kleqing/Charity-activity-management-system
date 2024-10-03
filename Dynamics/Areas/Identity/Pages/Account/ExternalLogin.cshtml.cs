@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using JsonConverter = Newtonsoft.Json.JsonConverter;
+using Microsoft.AspNetCore.Http;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -105,10 +107,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 // Set the session
                 var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
-                    info.Principal.Identity.Name,
-                    info.LoginProvider);
-
+                HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return RedirectToAction("Homepage", "Home");
             }
 
@@ -179,6 +179,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         // Set the session for the app:
                         var businessUser = await _userRepo.GetAsync(u => u.UserEmail == user.Email);
                         HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                        HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
                         // Provide user with default role as well
                         result = _userManager.AddToRoleAsync(user, RoleConstants.User).GetAwaiter().GetResult();
                         if (result.Succeeded)
