@@ -95,7 +95,7 @@
                             <label for="ExpectedQuantity" class="block mb-2 text-md font-medium text-gray-900">
                                 Enter expected quantity
                             </label>
-                            <input name="ExpectedQuantity" type="number" value="@item.ExpectedQuantity"
+                            <input min="0" name="ExpectedQuantity" type="number" value="@item.ExpectedQuantity"
                                    class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                    required />
                             <span asp-validation-for="@item.ExpectedQuantity" class="text-error"></span>
@@ -115,7 +115,7 @@
                     </div>
 
                     <div class="flex justify-center gap-x-6">
-                        <button type="submit" id="updateResourceBtn"
+                        <button type="submit" id="updateResourceBtn" onclick="validateUpdateResource('@item.ResourceID')"
                                 class="mt-4 text-md text-white bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
                             Update
                         </button>
@@ -206,7 +206,7 @@
                     Enter
                     expected quantity
                 </label>
-                    <input asp-for="@projectResource.ExpectedQuantity" type="number"
+                    <input min="0" asp-for="@projectResource.ExpectedQuantity" type="number"
                        class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                        placeholder="164" required />
                     <span asp-validation-for="@projectResource.ExpectedQuantity" class="text-error text-red-500 text-sm font-semibold"></span>
@@ -293,9 +293,12 @@
 
             // Check for duplicates
             var duplicateFound = existingResources.some(function (resource) {
-                return resource.ResourceName === resourceName && resource.Unit === unit;
-            });
-
+            console.log(`Comparing: ${resource.ResourceName} with ${resourceName} and ${resource.Unit} with ${unit}`);
+            return resource.ResourceName.trim().toLowerCase() === resourceName.toLowerCase() &&
+                resource.Unit.trim().toLowerCase() === unit.toLowerCase();
+        });
+        console.log("duplicateFound", duplicateFound);
+        debugger;
             if (duplicateFound) {
                 // Show error and clear input
                
@@ -312,6 +315,7 @@
         @* //validate update resource *@
       
     function validateUpdateResource(resourceIDvalue) {
+        preventDefault();
         console.log("validateUpdateResource function called"); // Debug log
 
         // Get values from inputs
@@ -347,9 +351,12 @@
          debugger;
         // Check for duplicates
         var duplicateFound = existingUpdateResources.some(function (resource) {
-            console.log( "check duplicate!");
-            return resource.ResourceName == resourceName && resource.Unit == unit;
+                console.log(`Comparing: ${resource.ResourceName} with ${resourceName} and ${resource.Unit} with ${unit}`);
+                return resource.ResourceName.trim().toLowerCase() === resourceName.toLowerCase() &&
+                    resource.Unit.trim().toLowerCase() === unit.toLowerCase();
         });
+            console.log("duplicateFound", duplicateFound);
+
          debugger;
         if (duplicateFound) {
             // Show error and clear input
@@ -377,17 +384,17 @@
             console.error("Add Resource button not found");
         }
 
-        var updateResourceBtn = document.getElementById('updateResourceBtn');
-        if (updateResourceBtn) {
-            updateResourceBtn.addEventListener('click', function (event) {
-                event.preventDefault(); // Prevent default form submission
-                   var currentResourceID = document.getElementById('currentResourceID');
-                var resourceIDvalue = currentResourceID.value.trim();
-                validateUpdateResource(resourceIDvalue);
-            });
-        } else {
-            console.error("Update Resource button not found");
-        }
+     @*     var updateResourceBtn = document.getElementById('updateResourceBtn');
+         if (updateResourceBtn) {
+             updateResourceBtn.addEventListener('click', function (event) {
+                 event.preventDefault(); // Prevent default form submission
+                    var currentResourceID = document.getElementById('currentResourceID');
+                 var resourceIDvalue = currentResourceID.value.trim();
+                 validateUpdateResource(resourceIDvalue);
+             });
+         } else {
+             console.error("Update Resource button not found");
+         } *@
     });
 </script>
 

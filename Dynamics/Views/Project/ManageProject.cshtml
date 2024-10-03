@@ -231,47 +231,92 @@
                     </button>
                 </a>
             }
-            <button onclick="showReportForm()" type="button" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+           @*  <button onclick="showReportForm()" type="button" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+            <span class="relative w-full px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                Report
+            </span>
+        </button> *@
+            <button onclick="ReportModal.showModal()" type="button" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
             <span class="relative w-full px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                 Report
             </span>
         </button>
     </div>
-    @* report form *@
-        <div id="Overlay" class="fixed inset-0 bg-black opacity-60 z-40 hidden"></div>
+   
+        </div>
+        @* alternative form *@
+    <!-- Open the modal using ID.showModal() method -->
 
-        <div id="ReportForm" class="fixed hidden bg-white bg-opacity-70 w-1/4 mx-auto flex-col shadow-md shadow-gray-500/30 p-6 rounded-md my-10 z-50" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
-            <h2 class="font-serif text-black font-bold text-3xl text-center mb-4">Report project</h2>
-
-            <!-- form report -->
-            <form method="post" asp-action="SendReportProjectRequest" asp-controller="Project">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="@report.ObjectID" value="@currentProjectID" />
-                <div class="grid grid-cols-1 gap-y-3">
-                    <div>
-                        <label asp-for="@report.Reason" class="block mb-2 text-md font-medium text-gray-900">Enter reason to report project</label>
-                        <textarea asp-for="@report.Reason" id="Reason" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white bg-opacity-70 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Write reason here..."></textarea>
-                        <span asp-validation-for="@report.Reason" class="text-danger"></span>
+    <dialog id="ReportModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <div class="modal-action  flex flex-col">
+                <h2 class="font-serif text-black font-bold text-3xl text-center mb-4">Report project</h2>
+                <form method="post" asp-action="SendReportProjectRequest" asp-controller="Project">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="@report.ObjectID" value="@currentProjectID" />
+                    <div class="grid grid-cols-1 gap-y-3">
+                        <div>
+                            <label asp-for="@report.Reason" class="block mb-2 text-md font-medium text-gray-900">Enter reason to report project</label>
+                            <textarea asp-for="@report.Reason" id="Reason" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white bg-opacity-70 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Write reason here..."></textarea>
+                            <span asp-validation-for="@report.Reason" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="flex justify-center items-center gap-x-6">
-                    <button type="submit"
-                            class="mt-4 text-md text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
-                        Report
-                    </button>
-                    <button onclick="cancelReportForm()" type="reset"
-                            class="mt-4 text-md text-white bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
-                        Cancel
-                    </button>
-                </div>
 
-            </form>
-            <!-- end form report -->
+                    <div class="flex justify-center items-center gap-x-6">
+                        <button type="submit"
+                                class="mt-4 text-md text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+                            Report
+                        </button>
+                        <button type="button" onclick="closeModal()" class="mt-4 text-md text-white bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300
+                            font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+                            Cancel
+                        </button>
+
+                    </div>
+                </form>
+            </div>
         </div>
-        </div>
+    </dialog>
+
+    @* report form *@
+    <div id="Overlay" class="fixed inset-0 bg-black opacity-60 z-40 hidden"></div>
+
+    <div id="ReportForm" class="fixed hidden bg-white bg-opacity-70 w-1/4 mx-auto flex-col shadow-md shadow-gray-500/30 p-6 rounded-md my-10 z-50" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <h2 class="font-serif text-black font-bold text-3xl text-center mb-4">Report project</h2>
+
+        <!-- form report -->
+        <form method="post" asp-action="SendReportProjectRequest" asp-controller="Project">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="@report.ObjectID" value="@currentProjectID" />
+            <div class="grid grid-cols-1 gap-y-3">
+                <div>
+                    <label asp-for="@report.Reason" class="block mb-2 text-md font-medium text-gray-900">Enter reason to report project</label>
+                    <textarea asp-for="@report.Reason" id="Reason" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white bg-opacity-70 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Write reason here..."></textarea>
+                    <span asp-validation-for="@report.Reason" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="flex justify-center items-center gap-x-6">
+                <button type="submit"
+                        class="mt-4 text-md text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+                    Report
+                </button>
+                <button onclick="cancelReportForm()" type="reset"
+                        class="mt-4 text-md text-white bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+                    Cancel
+                </button>
+            </div>
+
+        </form>
+        <!-- end form report -->
+    </div>
 </div>
 
 <script>
+    @* close modal *@
+        function closeModal() {
+            document.getElementById('ReportModal').close();
+        }
+
     @* handle carousel *@
     const carousel = document.getElementById('carousel');
     const prevBtn = document.getElementById('prevBtn');

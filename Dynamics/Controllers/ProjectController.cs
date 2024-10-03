@@ -838,12 +838,12 @@ namespace Dynamics.Controllers
             if (projectResourceObj.FirstOrDefault() != null)
             {
                 //check whether the resource has same name and same unit is existed
-                //var existingResource = await projectRepository.FilterProjectResourceAsync(p => p.ProjectID.Equals(projectResource.ProjectID) && p.ResourceName.Equals(projectResource.ResourceName) && p.Unit.Equals(projectResource.Unit));
-                //if (existingResource.FirstOrDefault() != null)
-                //{
-                //    TempData[MyConstants.Error] = "Resource type has the same unit is existed!";
-                //    return RedirectToAction(nameof(ManageProjectResource), new { id = projectResource.ProjectID });
-                //}
+                var existingResource = await projectRepository.FilterProjectResourceAsync(p => !p.ResourceID.Equals(projectResource.ResourceID) && p.ResourceName.Equals(projectResource.ResourceName) && p.Unit.Equals(projectResource.Unit));
+                if (existingResource.FirstOrDefault() != null)
+                {
+                    TempData[MyConstants.Error] = "Resource type has the same unit is existed!";
+                    return RedirectToAction(nameof(ManageProjectResource), new { id = projectResource.ProjectID });
+                }
                 var res = await projectRepository.UpdateResourceTypeAsync(projectResource);
                 if (res)
                 {
