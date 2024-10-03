@@ -8,6 +8,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
 		<PackageReference Include="Google.Apis.Oauth2.v2" Version="1.68.0.1869" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.8" />
@@ -48,8 +49,13 @@
 		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <AdditionalFiles Include="Views\Error\PageNotFound.cshtml" />
+	  <AdditionalFiles Include="Views\Secret\Index.cshtml" />
+	</ItemGroup>
+
 	<Target Name="Tailwind" BeforeTargets="Build">
-		<Exec Command="npm run css:build"/>
+		<Exec Command="npm run css:build" />
 	</Target>
 
 </Project>

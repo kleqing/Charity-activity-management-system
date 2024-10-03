@@ -66,7 +66,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            // returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -74,10 +74,11 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Wrong email or password!");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt");
                 }
                 else
                 {
+                    
                     // Check if verified first before sign in
                     var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
                     if (!isEmailConfirmedAsync)
@@ -88,30 +89,26 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,
                         lockoutOnFailure: false);
-                    var businessUser = await _userRepository.Get(u => u.Email == user.Email);
                     // SerializeObject for session
+                    var businessUser = await _userRepository.GetAsync(u => u.UserEmail == user.Email);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                    
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
                         // TODO: Redirect to home page
-                        return RedirectToAction("Index", "EditUser");
+                        return RedirectToAction("Homepage", "Home", returnUrl);
                     }
-
                     // TODO: Ban user in da future
                     if (result.IsLockedOut)
                     {
                         _logger.LogWarning("User account locked out.");
                         return RedirectToPage("./Lockout");
                     }
-
                     // If we get here, something went wrong.
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
         }

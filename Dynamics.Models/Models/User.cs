@@ -4,23 +4,30 @@ namespace Dynamics.Models.Models
 {
     public class User
     {
+        
+        public Guid UserID { get; set; }
         [Required]
-        public string UserId { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string UserName { get; set; }
+        [Display(Name = "Username")]
+        public string UserFullName { get; set; }
         [DataType(DataType.Date)]
-        public DateTime? Dob { get; set; }
+        [Display(Name = "Date of Birth")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateOnly? UserDOB { get; set; }
+        [Required]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        [Display(Name = "Email Address")]
+        public string UserEmail { get; set; }
         [DataType(DataType.PhoneNumber)]
-        public string? PhoneNumber { get; set; }
-        [MaxLength(300)]
-        public string? Address { get; set; }
-        public string? Avatar { get; set; }
-        [MaxLength(300)]
-        public string? Description { get; set; }
-        public bool IsBanned { get; set; }
-        // Role ID and password will be passed to identity table instead
+        [Display(Name = "Phone Number")]
+        public string? UserPhoneNumber { get; set; }
+        public string? UserAddress { get; set; }
+        public string? UserAvatar { get; set; }
+        public string? UserDescription { get; set; }
+        public virtual ICollection<Award> Award { get; set; }
+        public virtual ICollection<Request> Request { get; set; }
+        public virtual ICollection<ProjectMember> ProjectMember { get; set; }
+        public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
+        public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactions { get; set; }
+        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactions { get; set; }
     }
 }

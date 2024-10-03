@@ -1,0 +1,147 @@
+﻿@using Azure.Core
+@using Dynamics.Models.AuthModels
+@model Dynamics.Models.Models.User
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Edit page</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body class="h-screen flex flex-col">
+<!-- Edit profile -->
+<div class="flex md:p-6 pb-0 flex-1">
+    @*         <!-- Sidebar -->
+        <div class="p-2 pt-12 w-1/5">
+        <ul class="flex flex-col gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.UserID" asp-controller="User" class="btn btn-ghost text-start btn-active"> Change profile </a>
+        <a asp-action="Account" asp-route-id="@Model.UserID" class="btn btn-ghost text-start"> Account </a>
+        <a href="settings/history" class="btn btn-ghost text-start"> History </a>
+        <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
+        </ul>
+        </div>
+        <!-- End sidebar --> *@
+    @Html.Partial("CustomComponent/_UserSidebar", "Edit")
+
+    <!-- Main content -->
+    <div class="divider divider-horizontal"></div>
+    <form asp-action="Edit" asp-controller="User" enctype="multipart/form-data" method="post" id="user-information" class="flex flex-col gap-4 justify-center items-center flex-1">
+        <h1 class="font-bold text-center text-3xl">Change user profile</h1>
+        <div class="flex justify-around p-12 w-full h-full">
+            <div class="flex flex-col w-1/2">
+                <div asp-validation-summary="ModelOnly" class="text-error"></div>
+                <input type="hidden" asp-for="UserID"/>
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Username</span>
+                    </div>
+                    <!-- TODO: Subtitute the input here and all the input below with correct user values -->
+                    <input type="text" placeholder="Enter new name" asp-for="UserFullName"
+                           class="input input-bordered w-full bg-white input-info"
+                           name="UserFullName"/>
+                    <br/>
+                    <span asp-validation-for="@Model.UserFullName" class="text-error"></span>
+                </label>
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Email</span>
+                    </div>
+                    <input type="email" placeholder="Enter new email" asp-for="UserEmail"
+                           class="input input-bordered w-full bg-white input-info"
+                           name="UserEmail"/>
+                    <br/>
+                    <span asp-validation-for="@Model.UserEmail" class="text-error"></span>
+                </label>
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Phone number</span>
+                    </div>
+                    <input type="tel" placeholder="Enter new phone" asp-for="UserPhoneNumber"
+                           class="input input-bordered w-full bg-white input-info"
+                           name="UserPhoneNumber"/>
+                    <br/>
+                    <span asp-validation-for="@Model.UserPhoneNumber" class="text-error"></span>
+                </label>
+                <label class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Home address</span>
+                    </div>
+                    <input type="text" placeholder="Enter new address" asp-for="UserAddress"
+                           class="input input-bordered w-full bg-white input-info"
+                           name="UserAddress"/>
+                    <br/>
+                    <span asp-validation-for="@Model.UserAddress" class="text-error"></span>
+                </label>
+                <!-- Be careful as this one must strictly follow format YYYY-MM-DD -->
+                <label asp-for="UserDOB" class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">Date of birth (Month/Day/Year)</span>
+                    </div>
+                    <input type="date" asp-for="UserDOB"
+                           class="input input-bordered w-full bg-white input-info"
+                           name="UserDOB"/>
+                </label>
+
+                <label asp-for="UserDescription" class="form-control w-full">
+                    <div class="label">
+                        <span class="label-text">User description</span>
+                    </div>
+                    <textarea
+                            placeholder="Tell people more about you"
+                            class="textarea textarea-bordered textarea-md textarea-info w-full bg-white"
+                            asp-for="UserDescription"
+                            rows="5"
+                            name="UserDescription">
+                    </textarea>
+                    <br/>
+                    <span asp-validation-for="@Model.UserDescription" class="text-error"></span>
+                </label>
+                @* <textarea placeholder="Tell people more about you" class="textarea textarea-bordered textarea-md textarea-info w-full bg-white"></textarea> *@
+
+            </div>
+            <div class="flex flex-col gap-2 font-bold">
+                <h3>Profile picture</h3>
+                <label for="changeProfile" class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
+                    <input type="hidden" name="UserAvatar" asp-for="UserAvatar" value="@Model.UserAvatar"/>
+                    <input type="file" name="image" id="changeProfile" style="display: none"/>
+                    <!-- TODO: Subtitles the user avatar here -->
+                    <img src="@Model.UserAvatar" alt="User's Name" id="avatar"
+                         class="avatar w-40 h-40 object-cover rounded-full shadow-md"/>
+                    <div id="uploadBtn"
+                         class="bg-slate-900 text-white flex gap-2 items-center justify-center rounded w-16 p-1 text-sm h-8 absolute bottom-0 left-0 hover:bg-slate-600">
+                        &#x270E; Edit
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div id="buttons" class="flex gap-2">
+            <!-- This button should send to the update controller, then redirect to this route again -->
+            <input type="submit" value="Save" class="btn btn-info rounded-btn min-w-40"/>
+            <!-- This button redirect user to this page AGAIN to reset their value -->
+
+            @* <button id="revert" class="btn btn-accent rounded-btn min-w-40">Revert default</button> *@
+
+        </div>
+    </form>
+    <!-- End content -->
+</div>
+<!-- End edit profile -->
+<partial name="CustomComponent/_Footer"/>
+<partial name="CustomComponent/_ToastNotif"/>
+<partial name="_ValidationScriptsPartial"/>
+@* Change picture realtime *@
+<script>
+        $("#changeProfile").on("change", function (event) {
+            const file = event.target.files[0];
+            const tempUrl = URL.createObjectURL(file);
+            $("#avatar").attr("src", tempUrl);
+        });
+    </script>
+</body>
+</html>
