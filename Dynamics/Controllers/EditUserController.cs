@@ -42,7 +42,7 @@ namespace Dynamics.Controllers
         // GET: Client/Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            var user = await _userRepository.Get(u => u.UserID.Equals(id));
+            var user = await _userRepository.Get(u => u.UserID.Equals(new Guid(id)));
             if (user == null)
             {
                 return NotFound();
@@ -92,12 +92,12 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    user.UserAvatar = Util.UploadImage(image, @"images\User", user.UserID);
+                    user.UserAvatar = Util.UploadImage(image, @"images\User");
                     await _userRepository.Update(user);
                     return RedirectToAction(nameof(Index));
                 }
             }
-            // Update the session as well
+            // Update the session as well      
             HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
             return View(user);
         }

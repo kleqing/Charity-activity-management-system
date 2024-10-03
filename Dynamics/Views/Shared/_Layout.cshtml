@@ -7,14 +7,18 @@
     @* This layout should not contains anybootstrap stuff at all *@
     <link href="css/original.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/output.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/2.1.7/css/dataTables.dataTables.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
 </head>
 <body class="bg-base-100 relative">
 <partial name="CustomComponent/_Navbar"/>
+    <partial name="_Notification"/>
 @RenderBody()
 
 @* This is used for icons *@
 <script src="https://kit.fontawesome.com/ba8c3661b4.js" crossorigin="anonymous"></script>
-
+    <script src="//cdn.datatables.net/2.1.7/js/dataTables.min.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
 @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
 @* <script src="~/js/site.js" asp-append-version="true"></script> *@

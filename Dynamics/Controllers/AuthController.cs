@@ -48,7 +48,7 @@ namespace Dynamics.Controllers
             }
             //assign current user to userDto
             ViewData["Title"] = "Change password";
-            var userDto = new ChangePasswordDto() { UserId = currentUser.Id };
+            var userDto = new ChangePasswordDto() { UserId = Guid.Parse(currentUser.Id) };
             return View(userDto);
         }
 
@@ -62,7 +62,7 @@ namespace Dynamics.Controllers
             {
                 return RedirectToAction("ChangePassword", "Auth");
             }
-            var currentUser = await _userManager.FindByIdAsync(changePassword.UserId);
+            var currentUser = await _userManager.FindByIdAsync(changePassword.UserId.ToString());
 
             var changePasswordResult = await _userManager.ChangePasswordAsync(currentUser, changePassword.OldPassword, changePassword.NewPassword);
             if (!changePasswordResult.Succeeded)

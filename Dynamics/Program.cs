@@ -40,7 +40,7 @@ namespace Dynamics
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -52,9 +52,18 @@ namespace Dynamics
 
             // Repos here
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+            builder.Services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
 
             // Enable razor page
             builder.Services.AddRazorPages();

@@ -1,9 +1,21 @@
 ﻿@model IEnumerable<Dynamics.Models.Models.User>
-
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject IHttpContextAccessor Accessor
 @{
     ViewData["Title"] = "Index";
 }
 
+<link rel="stylesheet" href="~/css/output.css">
+<!-- Navbar -->
+@{
+    var userString = Accessor.HttpContext.Session.GetString("user");
+    User currentUser = null;
+    if (userString != null)
+    {
+        currentUser = JsonConvert.DeserializeObject<User>(userString);
+    }
+}
 @* <h1>Index</h1> *@
 <p>
     <a asp-action="Create">Create New</a>
@@ -75,7 +87,8 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.UserID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.UserID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.UserID">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.UserID">Delete</a>|
+                    <a asp-action="Index" asp-controller="Project" asp-route-id="@currentUser?.UserID">Project</a> |
                 </td>
             </tr>
         }

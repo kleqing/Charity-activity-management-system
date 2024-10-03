@@ -3,37 +3,21 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Dynamics.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class seedToSeeResources : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Organizations",
-                columns: table => new
-                {
-                    OrganizationID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrganizationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganizationDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrganizationPictures = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartTime = table.Column<DateOnly>(type: "date", nullable: true),
-                    ShutdownDay = table.Column<DateOnly>(type: "date", nullable: true),
-                    CEOID = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Organizations", x => x.OrganizationID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserFullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserDOB = table.Column<DateOnly>(type: "date", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -48,36 +32,12 @@ namespace Dynamics.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrganizationResources",
-                columns: table => new
-                {
-                    ResourceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
-                    ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: true),
-                    Unit = table.Column<int>(type: "int", nullable: false),
-                    ContentTransaction = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExpectedQuantity = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrganizationResources", x => x.ResourceID);
-                    table.ForeignKey(
-                        name: "FK_OrganizationResources_Organizations_OrganizationID",
-                        column: x => x.OrganizationID,
-                        principalTable: "Organizations",
-                        principalColumn: "OrganizationID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Awards",
                 columns: table => new
                 {
-                    AwardID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AwardID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AwardName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,11 +51,57 @@ namespace Dynamics.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Organizations",
+                columns: table => new
+                {
+                    OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrganizationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrganizationPictures = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartTime = table.Column<DateOnly>(type: "date", nullable: true),
+                    ShutdownDay = table.Column<DateOnly>(type: "date", nullable: true),
+                    CEOID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Organizations", x => x.OrganizationID);
+                    table.ForeignKey(
+                        name: "FK_Organizations_Users_CEOID",
+                        column: x => x.CEOID,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Requests",
+                columns: table => new
+                {
+                    RequestID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreationDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Attachment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isEmergency = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Requests", x => x.RequestID);
+                    table.ForeignKey(
+                        name: "FK_Requests_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrganizationMember",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,27 +121,25 @@ namespace Dynamics.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Requests",
+                name: "OrganizationResources",
                 columns: table => new
                 {
-                    RequestID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreationDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Attachment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isEmergency = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    ResourceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContentTransaction = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpectedQuantity = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Requests", x => x.RequestID);
+                    table.PrimaryKey("PK_OrganizationResources", x => x.ResourceID);
                     table.ForeignKey(
-                        name: "FK_Requests_Users_UserID",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "UserID",
+                        name: "FK_OrganizationResources_Organizations_OrganizationID",
+                        column: x => x.OrganizationID,
+                        principalTable: "Organizations",
+                        principalColumn: "OrganizationID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -143,13 +147,12 @@ namespace Dynamics.DataAccess.Migrations
                 name: "UserToOrganizationTransactionHistories",
                 columns: table => new
                 {
-                    TransactionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
+                    TransactionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Time = table.Column<DateOnly>(type: "date", nullable: false),
-                    MoneyTransactionAmout = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Amount = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -172,17 +175,16 @@ namespace Dynamics.DataAccess.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    ProjectID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
-                    RequestID = table.Column<int>(type: "int", nullable: true),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RequestID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectStatus = table.Column<int>(type: "int", nullable: false),
-                    Attachment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProjectDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Attachment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProjectDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartTime = table.Column<DateOnly>(type: "date", nullable: true),
                     EndTime = table.Column<DateOnly>(type: "date", nullable: true),
-                    LeaderID = table.Column<int>(type: "int", nullable: true)
+                    LeaderID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -198,15 +200,19 @@ namespace Dynamics.DataAccess.Migrations
                         column: x => x.RequestID,
                         principalTable: "Requests",
                         principalColumn: "RequestID");
+                    table.ForeignKey(
+                        name: "FK_Projects_Users_LeaderID",
+                        column: x => x.LeaderID,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Histories",
                 columns: table => new
                 {
-                    HistoryID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    HistoryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Phase = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -227,16 +233,14 @@ namespace Dynamics.DataAccess.Migrations
                 name: "OrganizationToProjectTransactionHistory",
                 columns: table => new
                 {
-                    TransactionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrganizationID = table.Column<int>(type: "int", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
-                    ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransactionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrganizationID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Time = table.Column<DateOnly>(type: "date", nullable: false),
-                    Amount = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Unit = table.Column<int>(type: "int", nullable: false)
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -258,8 +262,8 @@ namespace Dynamics.DataAccess.Migrations
                 name: "ProjectMembers",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,9 +286,8 @@ namespace Dynamics.DataAccess.Migrations
                 name: "ProjectResources",
                 columns: table => new
                 {
-                    ResourceID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    ResourceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     ExpectedQuantity = table.Column<int>(type: "int", nullable: true),
@@ -305,16 +308,15 @@ namespace Dynamics.DataAccess.Migrations
                 name: "UserToProjectTransactionHistories",
                 columns: table => new
                 {
-                    TransactionID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    TransactionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Unit = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<double>(type: "float", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Time = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MoneyTransactionAmout = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Time = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -331,6 +333,15 @@ namespace Dynamics.DataAccess.Migrations
                         principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Organizations",
+                columns: new[] { "OrganizationID", "CEOID", "OrganizationDescription", "OrganizationName", "OrganizationPictures", "ShutdownDay", "StartTime" },
+                values: new object[,]
+                {
+                    { new Guid("4641b799-7fba-4d20-a78a-4d68db162e98"), null, "llalalala", "Organization 1", null, null, null },
+                    { new Guid("c2f983db-d9bb-4214-ae40-eab93cc2de72"), null, "llalalala222", "Organization 2", null, null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -354,6 +365,11 @@ namespace Dynamics.DataAccess.Migrations
                 column: "OrganizationID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Organizations_CEOID",
+                table: "Organizations",
+                column: "CEOID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrganizationToProjectTransactionHistory_OrganizationID",
                 table: "OrganizationToProjectTransactionHistory",
                 column: "OrganizationID");
@@ -372,6 +388,11 @@ namespace Dynamics.DataAccess.Migrations
                 name: "IX_ProjectResources_ProjectID",
                 table: "ProjectResources",
                 column: "ProjectID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_LeaderID",
+                table: "Projects",
+                column: "LeaderID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_OrganizationID",

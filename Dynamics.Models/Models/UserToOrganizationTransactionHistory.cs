@@ -9,13 +9,14 @@ namespace Dynamics.Models.Models
 {
     public class UserToOrganizationTransactionHistory
     {
-		public int TransactionID { get; set; }
-		public string UserID { get; set; }
-		public int OrganizationID { get; set; }
+		public Guid TransactionID { get; set; }
+		public Guid UserID { get; set; }
+		public Guid OrganizationID { get; set; }
 		public string Message { get; set; }
 		[DataType(DataType.Date)]
 		public DateOnly Time { get; set; }
-        public string MoneyTransactionAmout { get; set; }
+        //change to double, delete MoneyTransactionAmout
+        public int Amount { get; set; }
         public virtual User User { get; set; }
 		public virtual Organization Organization { get; set; }
 	}

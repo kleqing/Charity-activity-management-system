@@ -118,7 +118,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     // Add real user to database
                     await _userRepo.Add(new User
                     {
-                        UserID = user.Id, // The link between 2 user table should be this id
+                        UserID = Guid.Parse(user.Id), // The link between 2 user table should be this id
                         UserFullName = Input.Name,
                         UserEmail = Input.Email,
                         UserAvatar = MyConstants.DefaultAvatarUrl,

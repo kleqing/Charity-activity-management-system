@@ -1,5 +1,6 @@
 ﻿using Dynamics.Models.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dynamics.DataAccess
 {
@@ -13,6 +14,7 @@ namespace Dynamics.DataAccess
         {
 
         }
+        public virtual DbSet<Report> Reports { get; set; }
         public virtual DbSet<Award> Awards { get; set; }
         public virtual DbSet<Organization> Organizations { get; set; }
         public virtual DbSet<OrganizationMember> OrganizationMember { get; set; }
@@ -40,6 +42,8 @@ namespace Dynamics.DataAccess
 
             // ---------------------
             // Primary Key
+            modelBuilder.Entity<Report>()
+               .HasKey(a => new { a.ReportID });
 
             modelBuilder.Entity<Award>()
                 .HasKey(a => new { a.AwardID });
@@ -79,6 +83,14 @@ namespace Dynamics.DataAccess
 
             //    // ---------------------
             //    // Foreign Key
+
+            //Report to User: one user can have many reports
+            modelBuilder.Entity<Report>()
+                .HasOne(r => r.Reporter)
+                .WithMany(u => u.ReportsMade)
+                .HasForeignKey(r => r.ReporterID)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Award to User
             modelBuilder.Entity<Award>()
                 .HasOne(a => a.User)
@@ -107,7 +119,7 @@ namespace Dynamics.DataAccess
             modelBuilder.Entity<ProjectResource>()
                 .HasOne(pr => pr.Project)
                 .WithMany(p => p.ProjectResource)
-                .HasForeignKey(pr => pr.ProjectID);
+                .HasForeignKey(pr => pr.ProjectID);       
 
             // Request to User
             modelBuilder.Entity<Request>()
@@ -162,12 +174,26 @@ namespace Dynamics.DataAccess
                 .HasOne(ut => ut.Project)
                 .WithMany(p => p.UserToProjectTransactions)
                 .HasForeignKey(ut => ut.ProjectID);
+            // UserToProjectTransactionHistory to ProjectResource
+            modelBuilder.Entity<UserToProjectTransactionHistory>()
+               .HasOne(ut => ut.Resource)
+               .WithMany(p => p.UserToProjectTransactionHistories)
+               .HasForeignKey(ut => ut.ResourceID)
+                 .OnDelete(DeleteBehavior.NoAction); 
+
 
             // OrganizationToProjectTransactionHistory to Organization
             modelBuilder.Entity<OrganizationToProjectHistory>()
                 .HasOne(ot => ot.Organization)
                 .WithMany(o => o.OrganizationToProjectTransactions)
                 .HasForeignKey(ot => ot.OrganizationID);
+            // OrganizationToProjectTransactionHistory to ProjectResource
+            modelBuilder.Entity<OrganizationToProjectHistory>()
+             .HasOne(ut => ut.Resource)
+             .WithMany(p => p.OrganizationToProjectHistories)
+             .HasForeignKey(ut => ut.ResourceID)
+               .OnDelete(DeleteBehavior.NoAction); 
+
 
             // OrganizationToProjectTransactionHistory  to Project
             modelBuilder.Entity<Project>()
@@ -175,6 +201,17 @@ namespace Dynamics.DataAccess
                 .WithOne(p => p.Project)
                 .HasForeignKey(ot => ot.ProjectID)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ProjectResource>()
+               .HasMany(ot => ot.UserToProjectTransactionHistories)
+               .WithOne(p => p.Resource)
+               .HasForeignKey(ot => ot.ResourceID)
+               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ProjectResource>()
+             .HasMany(ot => ot.OrganizationToProjectHistories)
+             .WithOne(p => p.Resource)
+             .HasForeignKey(ot => ot.ResourceID)
+             .OnDelete(DeleteBehavior.NoAction);
 
             // History to Project
             modelBuilder.Entity<History>()
@@ -192,6 +229,61 @@ namespace Dynamics.DataAccess
             //    modelBuilder.Entity<User>()
             //        .Property(u => u.userID)
             //        .ValueGeneratedOnAdd();  // Auto-increment
+
+            //seed organization
+            modelBuilder.Entity<Organization>().HasData(
+          new Organization()
+          {
+              OrganizationID = Guid.Parse("4641b799-7fba-4d20-a78a-4d68db162e98"),
+              OrganizationName = "Organization 1",
+              OrganizationDescription = "llalalala"
+          },
+           new Organization()
+           {
+               OrganizationID = Guid.Parse("c2f983db-d9bb-4214-ae40-eab93cc2de72"),
+               OrganizationName = "Organization 2",
+               OrganizationDescription = "llalalala222"
+           }
+      );
+            //seed request
+            modelBuilder.Entity<Request>().HasData(
+          new Request()
+          {
+              RequestID = Guid.Parse("ad111cb1-39d5-42e2-a2f5-e943898e59e6"),
+              UserID = Guid.Parse("FBD9F087-D6D2-4A27-A763-F1951DA04361"),
+              Title = "Request 1",
+              Content = "Content of request 1"
+          },
+           new Request()
+           {
+               RequestID = Guid.Parse("4398bfb2-5a6d-4daf-a8be-52ef92f455a9"),
+               UserID = Guid.Parse("FBD9F087-D6D2-4A27-A763-F1951DA04361"),
+               Title = "Request 2",
+               Content = "Content of request 2"
+           }
+      );
+            //      //seed project
+
+            //      //seed member project
+            //modelBuilder.Entity<ProjectMember>().HasData(
+            //    new ProjectMember()
+            //    {
+            //        ProjectID = Guid.Parse("2d3c8b76-4e52-4446-8a5a-25cfa18b12aa"),
+            //        UserID = Guid.Parse("E4894112-58A3-4FE6-9222-8AD70816ADFE")
+            //    },
+            //      new ProjectMember()
+            //      {
+            //          ProjectID = Guid.Parse("2d3c8b76-4e52-4446-8a5a-25cfa18b12aa"),
+            //          UserID = Guid.Parse("FBD9F087-D6D2-4A27-A763-F1951DA04361")
+            //      },
+            //        new ProjectMember()
+            //        {
+            //            ProjectID = Guid.Parse("2d3c8b76-4e52-4446-8a5a-25cfa18b12aa"),
+            //            UserID = Guid.Parse("C3488DB1-AFE6-40AE-BEBB-424C4ACF97C1")
+            //        }
+            //    );
+            //      //seeding tiền organ gửi tới project-true   // 1 organization gửi tới 1 project 2 transaction
+           
         }
     }
 }

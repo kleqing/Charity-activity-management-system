@@ -8,9 +8,10 @@ namespace Dynamics.Models.Models
 {
     public class ProjectMember
     {
-		public string UserID { get; set; }
-		public int ProjectID { get; set; }
-		public virtual User User { get; set; }
+		public Guid UserID { get; set; }
+		public Guid ProjectID { get; set; }
+        public int Status { get; set; }
+        public virtual User User { get; set; }
 		public virtual Project Project { get; set; }
 	}
 }

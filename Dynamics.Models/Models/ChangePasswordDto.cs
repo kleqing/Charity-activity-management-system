@@ -10,7 +10,7 @@ namespace Dynamics.Models.Models
 {
     public class ChangePasswordDto
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         [DataType(DataType.Password)]
         public string OldPassword { get; set; }
         [DataType(DataType.Password)]
