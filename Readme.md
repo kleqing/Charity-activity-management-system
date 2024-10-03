@@ -10,9 +10,7 @@
   Select the default projects to Dynamics.DataAccess  
    Add migration: `Add-Migration initial -context ApplicationDbContext`  
    Update database: `Update-Database -context ApplicationDbContext`
-
 3. Run the project
-
 # For second time installation:
 1. Run `dotnet restore` and `dotnet build` to check for errors
 2. Run the project

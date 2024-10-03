@@ -26,7 +26,7 @@ namespace Dynamics.Models.Models
         [DataType(DataType.Date)]
         public DateOnly? EndTime { get; set; }
         public string? ShutdownReason { get; set; }
-		public Guid LeaderID { get; set; }
+		public Guid? LeaderID { get; set; }
 		public virtual Organization Organization { get; set; }
 		public virtual Request Request { get; set; }
 		public virtual ICollection<ProjectMember> ProjectMember { get; set; }

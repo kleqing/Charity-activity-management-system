@@ -51,8 +51,8 @@ namespace Dynamics.Controllers
 
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
             }
-            
-            List<Request> requests = await _requestRepo.GetAllRequestWithUsersAsync();
+
+            List<Request> requests = await _requestRepo.GetRequestsAsync();
             List<Project> projects = await _projectRepo.GetAllAsync();
             
             // Map to view model for display
