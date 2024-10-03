@@ -4,82 +4,120 @@
 ViewData["Title"] = "My Request";
 }
 
-<div class="max-w-full my-5 p-5 pt-12">
-    <div class="flex justify-center my-5">
+<head>
+    <link rel="stylesheet" href="wwwroot/css/output.css" />
+</head>
+<body>
+    <main class="w-full h-full flex flex-col gap-6 items-center p-32">
         <a asp-action="Create" asp-controller="Request" class="my-5">
             <button id="createOrgBtn" class="btn btn-wide bg-red-500 text-white">
                 Create new request
             </button>
         </a>
-    </div>
-
-    <div class="my-5">
-        <h1 class="text-center text-3xl">Your requests</h1>
-    </div>
-    <form asp-action="MyRequest" method="get" class="mb-6">
-        <input type="text" name="searchQuery" placeholder="Search requests"
-               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline">
-        <button type="submit" class="btn btn-primary mt-3">Search</button>
-    </form>
-    @if (!Model.Any())
-    {
-        <h5>No request found!</h5>
-    }
-    else
-    {
-        <div class="grid grid-cols-4 gap-4 ml-5 flex justify-center">
-            @foreach(var item in Model)
-            {
-                <div class="card bg-base-100 w-64 shadow-xl">
-                    <figure>
-                        <a asp-action="Detail" asp-controller="Request" asp-route-id="@item.RequestID">
-                            <img src="@item.Attachment" alt="Request Image" />
-                        </a>
-                    </figure>
-                    <div class="card-body h-96">
-                        <a asp-action="Detail" asp-controller="Request" asp-route-id="@item.RequestID">
-                            <h2 class="card-title">@item.RequestTitle</h2>
-                        </a>
-                        <h4>Start date: @item.CreationDate</h4>
-                        <p class="truncate ...">@item.Content</p>
-                        <div class="card-actions justify-center my-5">
+        <h1 class="text-3xl">Manage your requests</h1>
+        <div class="flex w-full justify-end items-center gap-2 mb-3">
+            <label class="input input-bordered flex items-center gap-2">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    class="h-4 w-4 opacity-70 align-middle"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+                <form asp-action="MyRequest" method="get" class="">
+                    <input type="text" name="searchQuery" class="grow align-middle" placeholder="Search something..." />
+                </form>
+            </label>
+            <!-- TODO: Implement filter dropdown -->
+            @*<div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+                <ul
+                    tabindex="0"
+                    class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md">
+                    <li><a>All</a></li>
+                    <li><a>Title</a></li>
+                    <li><a>Location</a></li>
+                    <li><a>Content</a></li>
+                </ul>
+            </div>*@
+        </div>
+        @if (!Model.Any())
+        {
+            <h4>No request found!</h4>
+        }
+        else
+        {
+            <ul class="flex flex-col gap-3 w-full shadow-md">
+                @*TODO: implement indexing*@
+                @{
+                    int? currentPage = ViewBag.currentPage;
+                    int? pageSize = ViewBag.pageSize;
+                    var i = (currentPage - 1) * pageSize;
+                }
+                @foreach (var item in Model)
+                {
+                    i++;
+                    <li class="flex justify-between w-full shadow-md p-4 rounded-md">
+                        <!-- Left -->
+                        <div class="flex gap-8">
+                            <div class="font-bold flex flex-col justify-center h-full text-xl">@i.</div>
                             <a asp-action="Detail" asp-controller="Request" asp-route-id="@item.RequestID">
-                                <button class="btn btn-primary">View Request Detail</button>
-                            </a>
-                            <a asp-action="Edit" asp-controller="Request" asp-route-id="@item.RequestID">
-                                <button class="btn btn-primary">Edit Request</button>
-                            </a>
-                            <a asp-action="Delete" asp-controller="Request" asp-route-id="@item.RequestID">
-                                <button class="btn bg-red-700 text-white hover:bg-red-900">Delete Request</button>
+                                <div class="flex flex-col gap-2">
+                                    <!-- Check if it's already approved or not -->
+                                    @if (@item.Status == 0)
+                                    {
+                                        <p>@item.RequestTitle - <span class="text-warning font-bold">Pending approve</span></p>
+                                    }
+                                    else
+                                    {
+                                        <p>@item.RequestTitle - <span class="text-success font-bold">Approved</span></p>
+                                    }
+
+                                    <span class="text-neutral">@item.CreationDate</span>
+                                </div>
                             </a>
                         </div>
-                    </div>
-                </div>
-            }
-        </div>   
-    }
+                        <!-- right -->
+                        <div class="flex gap-4 items-center">
+                            <a asp-action="Edit" asp-controller="Request" asp-route-id="@item.RequestID">
+                                <button class="btn btn-primary w-28">Edit</button>
+                            </a>
+                            <a asp-action="Delete" asp-controller="Request" asp-route-id="@item.RequestID">
+                                <button class="btn btn-error w-28">Remove</button>
+                            </a>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
 
-    <div class="pagination mt-4 flex justify-center space-x-1.5">
-        @if (ViewBag.CurrentPage > 1)
-        {
-                <a href="@Url.Action("MyRequest", new { pageNumber = ViewBag.currentPage - 1, pageSize = 4 })">
+        <div class="pagination mt-4 flex justify-center space-x-1.5">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <a href="@Url.Action("MyRequest", new { pageNumber = ViewBag.currentPage - 1, pageSize = 12 })">
                     <button class="btn bg-white text-black rounded-lg border-solid">Previous</button>
                 </a>
-        }
+            }
 
-        @for (int i = 1; i <= ViewBag.totalPages; i++)
-        {
-                <a href="@Url.Action("MyRequest", new { pageNumber = i, pageSize = 4 })"
-                   class="@(ViewBag.CurrentPage == i ? "active" : "")">
+            @for (int i = 1; i <= ViewBag.totalPages; i++)
+            {
+                <a href="@Url.Action("MyRequest", new { pageNumber = i, pageSize = 12 })"
+                   class="@(ViewBag.CurrentPage == i ? "btn-primary" : "")">
                     <button class="btn bg-white text-black rounded-lg border-solid">@i</button>
                 </a>
-        }
+            }
 
-        @if (ViewBag.CurrentPage < ViewBag.totalPages)
-        {
-                <a href="@Url.Action("MyRequest", new { pageNumber = ViewBag.currentPage + 1, pageSize = 4 })">
+            @if (ViewBag.CurrentPage < ViewBag.totalPages)
+            {
+                <a href="@Url.Action("MyRequest", new { pageNumber = ViewBag.currentPage + 1, pageSize = 12 })">
                     <button class="btn bg-white text-black rounded-lg border-solid">Next</button>
                 </a>
-        }
-    </div>
-</div>
+            }
+        </div>
+    </main>
+</body>

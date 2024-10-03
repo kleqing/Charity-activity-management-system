@@ -1,11 +1,14 @@
 ﻿@model IEnumerable<Dynamics.Models.Models.Request>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Request";
 }
-
-<div class="max-w-full my-5 p-5 pt-12 ml-12">
-    <div class="p-4 rounded-lg shadow-md border bg-white max-w-xl mt-4 justify-center w-1/2 mx-auto">
+<head>
+    <link rel="stylesheet" href="wwwroot/css/output.css" />
+</head>
+<body>
+<main class="w-full h-full flex flex-col gap-6 items-center p-16">
+    <div class="p-4 rounded-lg shadow-md border bg-white max-w-xl mt-4 justify-center mx-auto">
         <div class="my-5 flex justify-center">
             <h1 class="text-center text-3xl">Are you the one in need?</h1>
         </div>
@@ -18,105 +21,125 @@
             </a>
         </div>
     </div>
+
+    <h1 class="text-3xl text-error font-bold text-center mt-4">Discover all active requests</h1>
     
-    <div class="my-5">
-        <h1 class="text-center text-3xl text-red-600">Discover all active requests</h1>
+    <div class="flex w-full justify-end items-center gap-2 mb-3">
+        <label class="input input-bordered flex items-center gap-2">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                class="h-4 w-4 opacity-70 align-middle"
+            >
+                <path
+                    fill-rule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clip-rule="evenodd"
+                />
+            </svg>
+            <form asp-action="Index" method="get" class="">
+                <input type="text" name="searchQuery" class="grow align-middle" placeholder="Search something..." />
+            </form>
+        </label>
+        <!-- TODO: Implement filter dropdown -->
+        @*<div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
+            <ul
+                tabindex="0"
+                class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md"
+            >
+                <li><a>Item 1</a></li>
+                <li><a>Item 2</a></li>
+            </ul>
+        </div>*@
     </div>
-
-    <div class="grid grid-cols-3 gap-4 ml-5 justify-center">
-        @foreach(var item in Model)
-        {
-            <div class="card bg-base-100 w-96 shadow-xl ">
-                <figure>
-                    <a asp-action="Detail" asp-controller="Request" asp-route-organizationId="@item.RequestID">
-                        <img src="@item.Attachment"
-                             alt="" />
-                    </a>
-                    
-                </figure>
-                <div class="card-body">
-                    <a asp-action="Detail" asp-controller="Request" asp-route-organizationId="@item.RequestID">
-                        <h2 class="card-title">"@item.RequestTitle"</h2>
+    @if (!Model.Any())
+    {
+        <h4>No request found!</h4>
+    }
+    else
+    {
+        <section class="w-full bg-base-100 flex flex-wrap gap-16 justify-center">
+            @foreach (var item in Model)
+            {
+                <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide">
+                    <figure>
+                        <a asp-action="Detail" asp-controller="Request" asp-route-organizationId="@item.RequestID">
+                            <img src="@item.Attachment"
+                                 alt="@item.RequestTitle"
+                                 class="w-full object-cover h-48"/>
                         </a>
-                    <h4>Start date: @item.CreationDate</h4>
-                    <p>@item.Content</p>
-                    <div class="card-actions justify-center my-5">
-                        <button class="btn btn-primary">View Request Detail</button>
+                    </figure>
+                    <div class="card-body p-4 gap-3 w-full">
+                        <!-- Badge left -->
+                        <div class="badge badge-secondary absolute top-0 left-0 bg-error font-bold text-white px-4 py-3">
+                            Request
+                        </div>
+                        <div class="flex flex-col">
+                            <a asp-action="Detail" asp-controller="Request" asp-route-RequestID="@item.RequestID">
+                                <h2
+                                    class="card-title text-cyan-950 font-bold h-14"
+                                    style="display: -webkit-box;
+                                          line-clamp: 2;
+                                          -webkit-line-clamp: 2; /* Limit to 2 lines */
+                                          -webkit-box-orient: vertical;
+                                          overflow: hidden;"
+                                >
+                                    @item.RequestTitle
+                                </h2>
+                            </a>
+                            @{
+                            var address = item.Location ?? "";
+                            var provinceOnly = address.Split(',')[3];
+                            }
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">@item.CreationDate</span>
+                                <span>@provinceOnly</span>
+                            </div>
+                        </div>
+                        <p
+                            style="display: -webkit-box;
+                                    line-clamp: 3;
+                                    -webkit-line-clamp: 3; /* Limit to 3 lines */
+                                    -webkit-box-orient: vertical;
+                                    overflow: hidden;
+                                    margin-bottom: 16px;"
+                        >
+                            @item.Content
+                        </p>
+                        <div class="card-actions justify-center">
+                            <button class="btn bg-accent h-8 min-h-0 outline-none border-none text-black">
+                                Detail
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </li>
+            }
+        </section>
+    }
+    <div class="pagination join flex gap-2 mt-6">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Index", new { pageNumber = ViewBag.currentPage - 1, pageSize = 12 })">
+                <button class="join-item btn btn-ghost">Previous</button>
+            </a>
         }
-        
 
-        <div class="card bg-base-100 w-96 shadow-xl">
-            <figure>
-                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                     alt="Shoes" />
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title">Shoes!</h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <button class="btn btn-primary">Buy Now</button>
-                </div>
-            </div>
-        </div>
+        @for (int i = 1; i <= ViewBag.totalPages; i++)
+        {
+            <a href="@Url.Action("Index", new { pageNumber = i, pageSize = 12 })"
+               class="@(ViewBag.CurrentPage == i ? "btn-primary" : "")">
+                <button class="join-item btn btn-ghost">@i</button>
+            </a>
+        }
 
-        <div class="card bg-base-100 w-96 shadow-xl">
-            <figure>
-                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                     alt="Shoes" />
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title">Shoes!</h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <button class="btn btn-primary">Buy Now</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card bg-base-100 w-96 shadow-xl">
-            <figure>
-                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                     alt="Shoes" />
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title">Shoes!</h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <button class="btn btn-primary">Buy Now</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card bg-base-100 w-96 shadow-xl">
-            <figure>
-                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                     alt="Shoes" />
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title">Shoes!</h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <button class="btn btn-primary">Buy Now</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card bg-base-100 w-96 shadow-xl">
-            <figure>
-                <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                     alt="Shoes" />
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title">Shoes!</h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <button class="btn btn-primary">Buy Now</button>
-                </div>
-            </div>
-        </div>
-
+        @if (ViewBag.CurrentPage < ViewBag.totalPages)
+        {
+            <a href="@Url.Action("Index", new { pageNumber = ViewBag.currentPage + 1, pageSize = 12 })">
+                <button class="join-item btn btn-ghost">Next</button>
+            </a>
+        }
     </div>
-</div>
+    </main>
+</body>

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.ViewModel;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Dynamics.Utility;
 
 namespace Dynamics.Controllers
@@ -20,10 +20,15 @@ namespace Dynamics.Controllers
 			_userRepo = userRepo;
 			_userManager = userManager;
 		}
-		public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 12)
+		//TODO: implement filter for each field (search)
+		public async Task<IActionResult> Index(string searchQuery, int pageNumber = 1, int pageSize = 12)
 		{
 			var requests = await _requestRepo.GetAllPaginatedAsync(pageNumber, pageSize);
-			int totalRequest = 0;
+			if (!string.IsNullOrEmpty(searchQuery))
+			{
+				requests = await _requestRepo.SearchIndexFilterAsync(searchQuery);
+			}
+			var totalRequest = 0;
 			foreach (var request in requests)
 			{
 				totalRequest++;
@@ -49,7 +54,7 @@ namespace Dynamics.Controllers
 				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
 				userId = userJsonC.UserID;
 			}
-			var requests = await _requestRepo.GetAllByRolePaginatedAsync(role, userId, pageNumber, pageSize);
+			var requests = await _requestRepo.GetAllByIdPaginatedAsync(role, userId, pageNumber, pageSize);
 			
 			// search
 			if (!string.IsNullOrEmpty(searchQuery))
@@ -57,11 +62,7 @@ namespace Dynamics.Controllers
 				requests = await _requestRepo.SearchIdFilterAsync(searchQuery, userId);
 			}
 			//pagination
-			int totalRequest = 0;
-			foreach (var request in requests)
-			{
-				totalRequest++;
-			}
+			var totalRequest = 1 + requests.Count;
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
 			
 			ViewBag.currentPage = pageNumber;
@@ -70,22 +71,40 @@ namespace Dynamics.Controllers
 		}
 		public async Task<IActionResult> Detail(Guid? id)
 		{
-			Guid userId = Guid.NewGuid();
 			var request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); }
 			return View(request);
 		}
 		public IActionResult Create()
 		{
-			return View();
+			var userJson = HttpContext.Session.GetString("user");
+			var user  = JsonConvert.DeserializeObject<User>(userJson);
+
+			var viewModel = new RequestCreateVM
+			{
+				UserEmail = user.UserEmail,
+				UserPhoneNumber = user.UserPhoneNumber,
+				UserAddress = user.UserAddress,
+				
+				RequestTitle = string.Empty,
+				Content = string.Empty,
+				CreationDate = null,
+				RequestEmail = string.Empty,
+				RequestPhoneNumber = string.Empty,
+				Location = string.Empty,
+				isEmergency = 0
+			};
+			return View(viewModel);
 		}
 		[HttpPost]
-		public async Task<IActionResult> Create(Request obj, List<IFormFile> images)
+		public async Task<IActionResult> Create(Request obj, List<IFormFile> images, 
+			string? cityNameInput, string? districtNameInput, string? wardNameInput)
 		{
 			obj.RequestID = Guid.NewGuid();
-			var date = DateOnly.FromDateTime(DateTime.Now);
-			obj.CreationDate = date;
-			Guid userId = Guid.Empty;
+			/*var date = DateOnly.FromDateTime(DateTime.Now);
+			obj.CreationDate = date;*/
+			obj.Location += ", " + wardNameInput + ", " + districtNameInput + ", " + cityNameInput;
+			var userId = Guid.Empty;
 			var userJson = HttpContext.Session.GetString("user");
 			if (!string.IsNullOrEmpty(userJson))
 			{
@@ -125,7 +144,7 @@ namespace Dynamics.Controllers
 				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
 				userId = userJsonC.UserID;
 			}
-			Request request = await _requestRepo.GetByRoleAsync(r => r.RequestID.Equals(id), role, userId);
+			var request = await _requestRepo.GetByIdAsync(r => r.RequestID.Equals(id), role, userId);
 			if (request == null)
 			{
 				return NotFound();
@@ -138,20 +157,22 @@ namespace Dynamics.Controllers
             return View(request);
 		}
 		[HttpPost]
-		public async Task<IActionResult> Edit(Request obj, List<IFormFile> images)
+		public async Task<IActionResult> Edit(Request obj, List<IFormFile> images, 
+			string? cityNameInput, string? districtNameInput, string? wardNameInput)
 		{
 			/*if (!ModelState.IsValid)
 			{
 				return View(obj);
 			}*/
 			// Get the currently logged-in user (role and id)
+			obj.Location += ", " + wardNameInput + ", " + districtNameInput + ", " + cityNameInput;
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
 			{
 				return Unauthorized();
 			}
 			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
-			Guid userId = Guid.Empty;
+			var userId = Guid.Empty;
 			var userJson = HttpContext.Session.GetString("user");
 			if (!string.IsNullOrEmpty(userJson))
 			{
@@ -159,7 +180,7 @@ namespace Dynamics.Controllers
 				userId = userJsonC.UserID;
 			}
 			// Get existing request
-			Request existingRequest = await _requestRepo.GetByRoleAsync(r => r.RequestID.Equals(obj.RequestID), role, userId);
+			var existingRequest = await _requestRepo.GetByIdAsync(r => r.RequestID.Equals(obj.RequestID), role, userId);
 			if (existingRequest == null)
 			{
 				return NotFound();
@@ -181,12 +202,6 @@ namespace Dynamics.Controllers
 					}
 				}
 			}
-			/*TODO: make a separate method to handle update request status by admin
-			else if (role == "Admin")
-			{
-				// If the user is "admin", allow them to update only the Status field
-				existingRequest.Status = obj.Status;
-			}*/
 			await _requestRepo.UpdateAsync(existingRequest);
 			return RedirectToAction("MyRequest", "Request");
 		}

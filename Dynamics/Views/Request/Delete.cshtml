@@ -8,11 +8,7 @@
 
 <div class="container my-5 p-5 pt-12 flex justify-center items-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-        <h1 class="text-2xl font-bold mb-6 text-center">Create new organization to continue:</h1>
-
-        <p class="text-sm text-gray-600 mb-6 text-center">
-            If you are a member of an organization, tell your leader to accept this request instead!
-        </p>
+        <h1 class="text-2xl font-bold mb-6 text-center">Delete @Model.RequestTitle</h1>
 
         <form asp-action="Delete" asp-controller="Request" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -50,5 +46,4 @@
             </div>
         </form>
     </div>
-
 </div>

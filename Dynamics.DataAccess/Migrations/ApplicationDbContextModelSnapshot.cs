@@ -308,6 +308,13 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RequestEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RequestTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

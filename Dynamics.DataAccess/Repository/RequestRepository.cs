@@ -11,7 +11,7 @@ using Request = Dynamics.Models.Models.Request;
 
 namespace Dynamics.DataAccess.Repository
 {
-	//TODO make methods for get user request (all and individual) and update edit and delete
+	//TODO: filter by status (currently no filter for testing purpose)
 	public class RequestRepository : IRequestRepository
 	{
 		private readonly ApplicationDbContext _db;
@@ -43,16 +43,31 @@ namespace Dynamics.DataAccess.Repository
 			return requests;
 		}
 
+		public async Task<List<Request>> SearchIndexFilterAsync(string searchQuery)
+		{
+			var requests = await _db.Requests.Where(r => r.RequestTitle.Contains(searchQuery) 
+			                                             || r.Content.Contains(searchQuery)
+			                                             || r.Location.Contains(searchQuery)).ToListAsync();
+			return requests;
+		}
+
 		public async Task<Request> GetAsync(Expression<Func<Request, bool>> filter)
 		{
-			var query = await _db.Requests.Where(filter).FirstOrDefaultAsync();
+			var query = await _db.Requests.Include(r => r.User).Where(filter).FirstOrDefaultAsync();
 			return query;
 		}
 
 		public async Task<List<Request>> GetAllPaginatedAsync(int pageNumber, int pageSize)
 		{
-			var requests = await _db.Requests.ToListAsync();
-			return requests;
+			var req = _db.Requests.ToList();
+			var requests = _db.Requests
+													.Include(r => r.User)
+													.AsQueryable();
+			return await requests
+				.OrderBy(r => r.CreationDate)
+				.Skip((pageNumber - 1) * pageSize)
+				.Take(pageSize)
+				.ToListAsync();
 		}
 
 		public async Task UpdateAsync(Request entity)
@@ -65,7 +80,7 @@ namespace Dynamics.DataAccess.Repository
 			}
 		}
 
-		public async Task<List<Request>> GetAllByRolePaginatedAsync(string role, Guid id, int pageNumber, int pageSize)
+		public async Task<List<Request>> GetAllByIdPaginatedAsync(string role, Guid id, int pageNumber, int pageSize)
 		{
 			var query = _db.Requests.AsQueryable();
 			if (role == "User")
@@ -79,16 +94,17 @@ namespace Dynamics.DataAccess.Repository
 				.ToListAsync();
 		}
 
-		public async Task<Request> GetByRoleAsync(Expression<Func<Request, bool>> filter, string role, Guid id)
+		public async Task<Request> GetByIdAsync(Expression<Func<Request, bool>> filter, string role, Guid id)
 		{
-			var query = await _db.Requests.Where(filter).FirstOrDefaultAsync();
-			if (role == "User" && query.UserID == id)
+			var query = _db.Requests.Include(r => r.User).Where(filter).AsQueryable();
+			var request = await query.Where(filter).FirstOrDefaultAsync();
+			if (role == "User" && request.UserID == id)
 			{
-				return query;
+				return request;
 			}
 			else if (role == "Admin")
 			{
-				return query;
+				return request;
 			}
 			return null;
 		}
