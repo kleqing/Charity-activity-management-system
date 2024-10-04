@@ -16,6 +16,10 @@ namespace Dynamics.Utility
 
         public const string SESSION_Current_Organization_Resource_KEY = "CurrentOrganizationResource";//current Organization Resource
 
+        public const string SESSION_OrganizzationToProjectHistory_For_Organization_Key = "OTPHistory In project"; // get OTPHistory In project
+
+
+
 
         public const string SESSION_Resources_In_A_PRoject_KEY = "ResourcesInProject"; //all resource in a project
 
@@ -34,7 +38,5 @@ namespace Dynamics.Utility
         public const string SESSION_ResourceName_For_OrganizationToProjectHistory_Key = "resourceNameOTPHistory"; //get resource name for  OTP history
 
         public const string SESSION_ProjectName_For_OrganizzationToProjectHistory_Key = "projectNameOTPHistory"; //get projectName for OTP history
-
-        public const string SESSION_OrganizzationToProjectHistory_For_Organization_Key = "OTPHistory In project"; // get OTPHistory In project
     }
 }

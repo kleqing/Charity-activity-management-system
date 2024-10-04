@@ -58,6 +58,7 @@ namespace Dynamics
             builder.Services.AddScoped<IOrganizationVMService, OrganizationVMService>();
             builder.Services.AddScoped<IUserToOragnizationTransactionHistoryVMService, UserToOragnizationTransactionHistoryVMService>();
             builder.Services.AddScoped<IProjectVMService, ProjectVMService>();
+            builder.Services.AddScoped<IOrganizationToProjectHistoryVMService, OrganizationToProjectHistoryVMService>();
 
 
             // Add email sender

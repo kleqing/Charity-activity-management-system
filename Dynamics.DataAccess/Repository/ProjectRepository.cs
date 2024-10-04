@@ -86,13 +86,13 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<bool> UpdateProjectResource(ProjectResource entity)
         {
-            var projectItem = await GetProjectResourceByResourceIDAsync(p => p.ProjectID.Equals(entity.ProjectID));
+            var projectResourceItem = await GetProjectResourceByResourceIDAsync(p => p.ResourceID.Equals(entity.ResourceID));
 
-            if (projectItem == null)
+            if (projectResourceItem == null)
             {
                 return false;
             }
-            _db.Entry(projectItem).CurrentValues.SetValues(entity);
+            _db.Entry(projectResourceItem).CurrentValues.SetValues(entity);
             await _db.SaveChangesAsync();
             return true;
         }

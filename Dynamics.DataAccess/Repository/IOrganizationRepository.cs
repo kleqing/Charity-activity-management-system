@@ -34,8 +34,6 @@ namespace Dynamics.DataAccess.Repository
 
         //UserToOrganizationTransactionHistory Table
         Task<bool> AddUserToOrganizationTransactionHistoryASync(UserToOrganizationTransactionHistory transactionHistory);
-        Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryAsync();
-        Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByAcceptedAsync(Guid organizationId);
         Task<UserToOrganizationTransactionHistory> GetUserToOrganizationTransactionHistoryByTransactionIDAsync(Expression<Func<UserToOrganizationTransactionHistory, bool>> filter);
         Task<bool> DeleteUserToOrganizationTransactionHistoryByTransactionIDAsync(Guid transactionID);
         Task<bool> UpdateUserToOrganizationTransactionHistoryAsync(UserToOrganizationTransactionHistory entity);
@@ -44,7 +42,8 @@ namespace Dynamics.DataAccess.Repository
 
         //OrganizationToProjectHistory table
         Task<bool> AddOrganizationToProjectHistoryAsync(OrganizationToProjectHistory entity);
-        Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryAsync();
-        Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByProcessingAsync(Guid organizationId);
+        Task<OrganizationToProjectHistory> GetOrganizationToProjectHistoryAsync(Expression<Func<OrganizationToProjectHistory, bool>> filter);
+
+        Task<bool> DeleteOrganizationToProjectHistoryAsync(Guid transactionId);
     }
 }

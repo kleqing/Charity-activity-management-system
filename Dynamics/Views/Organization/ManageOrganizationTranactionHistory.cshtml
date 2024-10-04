@@ -8,6 +8,11 @@
     ViewData["Title"] = "ManageOrganizationTranactionHistory";
     Layout = "_LayoutOrganizationForm";
 }
+
+@{
+    var OrganizationToProjectHistorys = Accessor.HttpContext.Session.Get<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key);
+}
+
 <div class="py-5 pt-12 px-5 flex justify-center">
     <div class="border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
         <h1 class="text-3xl font-semibold mb-4 text-center ">
@@ -16,7 +21,28 @@
 
         <div class="py-5">
             <div class="max-w-2xl mx-auto space-y-4">
-                @{int i = 0;}
+               
+                @foreach (var item in OrganizationToProjectHistorys)
+                {
+                    <!-- Negative Manual Transaction -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center">
+                                <img src="@item.ProjectResource.Project.Attachment" alt="User avatar"
+                                     class="w-12 h-12 rounded-full mr-4 border-2 border-gray-200">
+                                <div>
+                                    <h2 class="text-lg font-semibold">@item.ProjectResource.Project.ProjectName</h2>
+                                    <p class="text-sm text-gray-500">Donated on @item.Time</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-red-500">- @item.Amount @item.ProjectResource.ResourceName @item.Unit</p>
+                                <span class="bg-orange-100 text-orange-800 text-xs font-medium px-3 py-1 rounded-full">Processing</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mt-2">Spent @item.ProjectResource.ResourceName to project @item.ProjectResource.Project.ProjectName</p>
+                    </div>
+                }
                 @foreach(var item in Model)
                 {
                     <!-- Positive Automatic Transaction -->
@@ -37,28 +63,7 @@
                         </div>
                         <p class="text-gray-700 mt-2">@item.Message</p>
                     </div>
-
-                    i++;
                 }
-                    <!-- Negative Manual Transaction -->
-                    <div class="bg-white rounded-lg shadow-lg p-6">
-                        <div class="flex items-start justify-between mb-2">
-                            <div class="flex items-center">
-                                <img src="/images/User/11465230-a4a1-4cf7-aa13-bae9d0d1f3f1.jpg" alt="User avatar"
-                                     class="w-12 h-12 rounded-full mr-4 border-2 border-gray-200">
-                                <div>
-                                    <h2 class="text-lg font-semibold">User name</h2>
-                                    <p class="text-sm text-gray-500">Donated on @@datetime</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-lg font-bold text-red-500">123,123,123 VND</p>
-                                <span class="bg-orange-100 text-orange-800 text-xs font-medium px-3 py-1 rounded-full">Manual</span>
-                            </div>
-                        </div>
-                        <p class="text-gray-700 mt-2">Spent money on project 1</p>
-                    </div>
-                
                
             </div>
 

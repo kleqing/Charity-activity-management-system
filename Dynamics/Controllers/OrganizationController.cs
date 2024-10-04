@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Resources;
 
 namespace Dynamics.Controllers
 {
@@ -20,8 +21,15 @@ namespace Dynamics.Controllers
         IOrganizationVMService _organizationService;
         IUserToOragnizationTransactionHistoryVMService _userToOragnizationTransactionHistoryVMService;
         IProjectVMService _projectVMService;
+        IOrganizationToProjectHistoryVMService _organizationToProjectHistoryVMService;
 
-        public OrganizationController(IOrganizationRepository organizationRepository, IUserRepository userRepository, IProjectRepository projectRepository, IOrganizationVMService organizationService, IUserToOragnizationTransactionHistoryVMService userToOragnizationTransactionHistoryVMService, IProjectVMService projectVMService)
+        public OrganizationController(IOrganizationRepository organizationRepository, 
+            IUserRepository userRepository, 
+            IProjectRepository projectRepository, 
+            IOrganizationVMService organizationService, 
+            IUserToOragnizationTransactionHistoryVMService userToOragnizationTransactionHistoryVMService, 
+            IProjectVMService projectVMService,
+            IOrganizationToProjectHistoryVMService organizationToProjectHistoryVMService)
         {
             
             _organizationRepository = organizationRepository;
@@ -30,6 +38,7 @@ namespace Dynamics.Controllers
             _organizationService = organizationService;
             _userToOragnizationTransactionHistoryVMService = userToOragnizationTransactionHistoryVMService ;
             _projectVMService = projectVMService;
+            _organizationToProjectHistoryVMService = organizationToProjectHistoryVMService ;
         }
 
         //GET: /Organization
@@ -306,10 +315,12 @@ namespace Dynamics.Controllers
         {
 
             var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
-
-
             //requets donate is accpected
             var UserToOrganizationTransactionHistoryInAOrganizations = await _userToOragnizationTransactionHistoryVMService.GetTransactionHistoryIsAccept(currentOrganization.OrganizationID);
+
+            var OrganizationToProjectHistorys = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByPendingAsync(currentOrganization.OrganizationID);
+            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, OrganizationToProjectHistorys);
+
             return View(UserToOrganizationTransactionHistoryInAOrganizations);
         }
 
@@ -320,34 +331,8 @@ namespace Dynamics.Controllers
             var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(currentOrganization.OrganizationID));
             HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
             
-
-           
-
-            ////Resource of a organization
-            //var organizationResources = await _organizationRepository.GetAllOrganizationResourceByOrganizationIDAsync(or => or.OrganizationID == currentOrganization.OrganizationID);
-
-            ////History of a Organnization To project in a organization
-            //var organizationToProjectHistoryInAOrganizations = await _organizationRepository.GetAllOrganizationToProjectHistoryByProcessingAsync(currentOrganization.OrganizationID);
-
-
-            ////list resource in a organization in processing allocate
-            //var organizationResourcesInHistory = new List<OrganizationResource>();
-            ////list project reciver
-            //var ProjectRecivers = new List<Project>();
-            //foreach (var item in organizationToProjectHistoryInAOrganizations)
-            //{
-            //    var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, item.OrganizationResourceID);
-            //    organizationResourcesInHistory.Add(organizationResource);
-            //    var project = await _projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(item.Message));
-            //    ProjectRecivers.Add(project);
-            //}
-            ////Create session
-            //HttpContext.Session.Set<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_OrganizationToProjectHistory_Key, organizationResourcesInHistory);
-            //HttpContext.Session.Set<List<Project>>(MySettingSession.SESSION_ProjectName_For_OrganizzationToProjectHistory_Key, ProjectRecivers);
-            //HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, organizationToProjectHistoryInAOrganizations);
-
-
-
+            var OrganizationToProjectHistorys = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByPendingAsync(currentOrganization.OrganizationID);
+            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, OrganizationToProjectHistorys);
             return View(organizationVM);
         }
 
@@ -404,7 +389,7 @@ namespace Dynamics.Controllers
             {
                 OrganizationResourceID = currentResource.ResourceID,
                 Status = 0,
-                Unit = currentResource.ResourceName,
+                Unit = currentResource.Unit,
                 Time = DateOnly.FromDateTime(DateTime.UtcNow),
             };
 
@@ -412,7 +397,7 @@ namespace Dynamics.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendResoueceOrganizationToProject(OrganizationToProjectHistory organizationToProjectHistory, int projectId)
+        public async Task<IActionResult> SendResoueceOrganizationToProject(OrganizationToProjectHistory organizationToProjectHistory, Guid projectId)
         {
             if(organizationToProjectHistory != null && projectId != null && organizationToProjectHistory.Amount > 0)
             {
@@ -425,9 +410,10 @@ namespace Dynamics.Controllers
                 bool duplicate = false;
 
                 var projectResource = new ProjectResource();
+
                 foreach(var item in Project.ProjectResource)
                 {
-                    if(item.ResourceName.Equals(ResourceSend.ResourceName) && item.Unit.Equals(ResourceSend.Unit))
+                    if(item.ResourceName.ToUpper().Contains(ResourceSend.ResourceName.ToUpper()) && item.Unit.ToUpper().Contains(ResourceSend.Unit.ToUpper()))
                     {
                         duplicate = true;
                         projectResource = item;
@@ -437,8 +423,7 @@ namespace Dynamics.Controllers
 
                 if (duplicate)
                 {
-                    projectResource.Quantity += ResourceSend.Quantity;
-                    await _projectRepository.UpdateProjectResource(projectResource);
+                   organizationToProjectHistory.ProjectResourceID = projectResource.ResourceID;
                 }
                 else
                 {
@@ -446,31 +431,58 @@ namespace Dynamics.Controllers
                     {
                         ProjectID = Project.ProjectID,
                         ResourceName = ResourceSend.ResourceName,
+                        Quantity = 0,
+                        ExpectedQuantity = 0,
                         Unit = ResourceSend.Unit,
                     };
 
                     await _projectRepository.AddProjectResourceAsync(newProjectResource);
-                }
 
-                var projectResource1 = new ProjectResource();
-                foreach (var item in Project.ProjectResource)
-                {
-                    if (item.ResourceName.Equals(ResourceSend.ResourceName) && item.Unit.Equals(ResourceSend.Unit))
+                    Project = await _projectVMService.GetProjectAsync(p => p.ProjectID.Equals(projectId));
+                    var projectResource1 = new ProjectResource();
+
+                    foreach (var item in Project.ProjectResource)
                     {
-                        duplicate = true;
-                        projectResource1 = item;
-                        break;
+                        if (item.ResourceName.ToUpper().Contains(ResourceSend.ResourceName.ToUpper()) && item.Unit.ToUpper().Contains(ResourceSend.Unit.ToUpper()))
+                        {
+                            duplicate = true;
+                            projectResource1 = item;
+                            break;
+                        }
+                    }
+
+                    if (duplicate)
+                    {
+                       organizationToProjectHistory.ProjectResourceID = projectResource1.ResourceID;
                     }
                 }
+                if (await _organizationRepository.AddOrganizationToProjectHistoryAsync(organizationToProjectHistory))
+                {
+                    ResourceSend.Quantity -= organizationToProjectHistory.Amount;
 
-                organizationToProjectHistory.ProjectResourceID = projectResource1.ResourceID;
-                if(await _organizationRepository.AddOrganizationToProjectHistoryAsync(organizationToProjectHistory))
-                    return RedirectToAction(nameof(ManageOrganizationResource));
+                    if(await _organizationRepository.UpdateOrganizationResourceAsync(ResourceSend))
+                        return RedirectToAction(nameof(ManageOrganizationResource));
+                }
+                   
             }
 
             return View(organizationToProjectHistory);
         }
 
+        public async Task<IActionResult> CancelSendResource(Guid transactionId)
+        {
+            var transactionHistory = await _organizationRepository.GetOrganizationToProjectHistoryAsync(otp => otp.TransactionID.Equals(transactionId));
+
+            var OrganizationResource = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(transactionHistory.OrganizationResourceID));
+
+            OrganizationResource.Quantity += transactionHistory.Amount;
+
+            await _organizationRepository.UpdateOrganizationResourceAsync(OrganizationResource);
+
+            await _organizationRepository.DeleteOrganizationToProjectHistoryAsync(transactionId);
+            
+            return RedirectToAction(nameof(ManageOrganizationResource));
+        }
 
         public async Task<IActionResult> DonateByMoney()
         {
@@ -552,6 +564,3 @@ namespace Dynamics.Controllers
 
     }
 }
-
-
-//4 method can be use Session current organization that is: 2 Edit 2 transfer
