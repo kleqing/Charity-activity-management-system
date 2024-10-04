@@ -185,6 +185,12 @@ namespace Dynamics.DataAccess
                 .HasOne(h => h.Project)
                 .WithMany(p => p.History)
                 .HasForeignKey(h => h.ProjectID);
+
+            // Report to User
+            modelBuilder.Entity<Report>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Report)
+                .HasForeignKey(r => r.ReporterID);
             //    // -----------------
             //    // OnDelete()
 

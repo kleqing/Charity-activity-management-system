@@ -4,6 +4,7 @@ using Dynamics.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241003085127_ChangeProperties")]
+    partial class ChangeProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -323,16 +326,11 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("ReporterID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ReportID");
-
-                    b.HasIndex("ReporterID");
 
                     b.ToTable("Reports");
                 });
@@ -614,15 +612,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Dynamics.Models.Models.Report", b =>
-                {
-                    b.HasOne("Dynamics.Models.Models.User", "User")
-                        .WithMany("Report")
-                        .HasForeignKey("ReporterID");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Dynamics.Models.Models.Request", b =>
                 {
                     b.HasOne("Dynamics.Models.Models.User", "User")
@@ -711,8 +700,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Navigation("OrganizationMember");
 
                     b.Navigation("ProjectMember");
-
-                    b.Navigation("Report");
 
                     b.Navigation("Request");
 
