@@ -14,10 +14,11 @@ namespace Dynamics.Models.Models
 		public string OrganizationName { get; set; }
 		public string OrganizationDescription { get; set; }
 		public string OrganizationPictures { get; set; }
-		[DataType(DataType.Date)]
-        public DateOnly StartTime { get; set; }
-        [DataType(DataType.Date)]
-        public DateOnly? ShutdownDay { get; set; }
+		public string OrganizationPhoneNumber { get; set; }
+        public string OrganizationEmail { get; set; }
+        public string OrganizationAddress { get; set; }
+        public DateTime? StartTime { get; set; } = DateTime.Now;
+        public DateTime? ShutdownDay { get; set; }
 		public Guid? CEOID { get; set; }
 		public bool isBanned { get; set; }
         [NotMapped]

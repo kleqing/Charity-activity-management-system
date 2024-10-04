@@ -13,8 +13,7 @@ namespace Dynamics.Models.Models
 		public Guid UserID { get; set; }
 		public Guid OrganizationID { get; set; }
 		public string Message { get; set; }
-		[DataType(DataType.Date)]
-		public DateOnly Time { get; set; }
+		public DateTime Time { get; set; }
         public string MoneyTransactionAmout { get; set; }
         public virtual User User { get; set; }
 		public virtual Organization Organization { get; set; }

@@ -13,7 +13,7 @@ namespace Dynamics.Models.Models
 		public Guid UserID { get; set; }
 		public string Title { get; set; }
         public string Content { get; set; }
-        public DateTime? CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
         public string Location { get; set; }
 		public string Attachment { get; set; }
 		public int isEmergency { get; set; }

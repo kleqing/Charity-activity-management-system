@@ -17,14 +17,14 @@ namespace Dynamics.Models.Models
 		public int ProjectStatus { get; set; }
         public string Attachment { get; set; }
 		public string ProjectDescription { get; set; }
+        public DateTime? StartTime { get; set; } = DateTime.Now;
         [DataType(DataType.Date)]
-        public DateOnly StartTime { get; set; }
-		[DataType(DataType.Date)]
         public DateOnly? EndTime { get; set; }
         public Guid? LeaderID { get; set; }
-		public virtual Organization Organization { get; set; }
+		public bool isBanned { get; set; }
+        public virtual Organization Organization { get; set; }
 		public virtual Request Request { get; set; }
-		public virtual ICollection<ProjectMember> ProjectMember { get; set; }
+        public virtual ICollection<ProjectMember> ProjectMember { get; set; }
 		public virtual ICollection<ProjectResource> ProjectResource { get; set; }
 		public virtual ICollection<History> History { get; set; }
         public virtual ICollection<UserToProjectHistory> UserToProjectTransactions { get; set; }
