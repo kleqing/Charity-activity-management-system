@@ -10,6 +10,7 @@ namespace Dynamics.Models.Models.ViewModel
     {
         public Guid ProjectID { get; set; }
         public string TypeDonor { get; set; }
+        public Guid OrganizationUserLeadID { get; set; }
         public UserToProjectTransactionHistory? UserDonate { get; set; }
         public OrganizationToProjectHistory? OrgDonate { get; set; }
         public List<UserToProjectTransactionHistory>? UserTransactionHistory { get; set; }

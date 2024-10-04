@@ -187,10 +187,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("TransactionID");
 
                     b.HasIndex("OrganizationResourceID");
@@ -452,10 +448,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
@@ -491,10 +483,6 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");

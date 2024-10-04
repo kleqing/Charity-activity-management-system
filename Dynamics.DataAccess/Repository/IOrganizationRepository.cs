@@ -19,6 +19,6 @@ public interface IOrganizationRepository
     
     Task<List<Organization>> GetAllOrganizationsAsync(string? includeObjects = null);
     IQueryable<Organization> GetAll();
-    Task<Organization> GetOrganizationOfAUser(Guid userId);
     Task<Organization> GetOrganizationUserLead(Guid userId);
+    Task<Guid> GetOrgResourceIDCorresponding(Guid projectResourceID,Guid organizationUserLeadID);
 }

@@ -22,7 +22,8 @@
         leader = ProjectRepository.GetProjectLeaderAsync(new Guid(currentProjectID), "User").Result;
     }
     var organizationUserLead = await OrganizationRepository.GetOrganizationUserLead(currentUser.UserID);
-   
+
+
 }
 <!-- Donate by money -->
 <section class="md:px-32 my-16">
@@ -35,13 +36,12 @@
         {
             <div class="flex-1">
                 <input type="hidden" asp-for="@Model.UserDonate.UserID" value="@currentUser?.UserID" />
-                <input type="hidden" asp-for="@Model.UserDonate.ProjectResource.ProjectID" value="@currentProjectID" />
                 <!-- Money amount -->
                 <label asp-for="@Model.UserDonate.Amount" class="form-control w-full">
                     <span class="label label-text text-lg">Enter money amount (Unit here)</span>
                     <input asp-for="@Model.UserDonate.Amount" type="number"
                            placeholder="Enter money ammount"
-                           class="input input-bordered w-full" min="0" />
+                           class="input input-bordered w-full" min="1" />
                     <span class="text-gray-800 font-semibold">If the field is empty, the default amount is 1</span>
                    
                 </label>
@@ -58,9 +58,9 @@
         {
             @* REMIND *@
             <div class="flex-1">
-                <h2 class="w-full max-w-md font-semibold text-blue-600 text-lg"> You are donate as Your Organization</h2>
-                <input type="hidden" asp-for="@Model.OrgDonate.OrganizationResource.OrganizationID" value="@ViewData["OrganizationOfUserID"]"></input>
-                <input type="hidden" asp-for="@Model.OrgDonate.ProjectResource.ProjectID" value="@currentProjectID" />
+                <h2 class="w-full max-w-md font-semibold text-blue-600 text-lg"> You are donate as @(organizationUserLead != null ? organizationUserLead.OrganizationName : "Your Organization")</h2>
+                <input type="hidden" asp-for="@Model.OrganizationUserLeadID" />
+
                 <!-- Money amount -->
                 <label asp-for="@Model.OrgDonate.Amount" class="form-control w-full">
                     <span class="label label-text text-lg">Enter money amount (Unit here)</span>
@@ -117,10 +117,8 @@
         <input type="hidden" asp-for="@Model.ProjectID" value="@currentProjectID" />
          @if (Model.TypeDonor.Equals("User"))
         {
-          <input type="hidden" asp-for="@Model.UserDonate.ProjectResource.ProjectID" value="@currentProjectID" />
           <input type="hidden" asp-for="@Model.UserDonate.UserID" value="@currentUser?.UserID" />
             <input type="hidden" asp-for="@Model.TypeDonor" value="User" />
-
             <div class="form-control w-full max-w-md">
                 <label asp-for="@Model.UserDonate.ProjectResourceID" class="block mb-2 text-lg font-medium text-gray-900">Select a resource </label>
                 <select asp-for="@Model.UserDonate.ProjectResourceID"
@@ -146,19 +144,20 @@
         }
         @if (Model.TypeDonor.Equals("Organization"))
         {
-            <h2 class="w-full max-w-md font-semibold text-blue-600 text-lg"> You are donate as Your Organization</h2>
-             <input type="hidden" asp-for="@Model.OrgDonate.ProjectResource.ProjectID" value="@currentProjectID" />
+            <h2 class="w-full max-w-md font-semibold text-blue-600 text-lg"> You are donate as @(organizationUserLead != null ? organizationUserLead.OrganizationName : "Your Organization")</h2>
             <input type="hidden" asp-for="@Model.TypeDonor" value="Organization" />
-            <input type="hidden" asp-for="@Model.OrgDonate.OrganizationResource.OrganizationID" value="@ViewData["OrganizationOfUserID"]" />
+            <input type="hidden" asp-for="@Model.OrganizationUserLeadID" />
+
             <!-- Select a resource -->
             <div class="form-control w-full max-w-md">
-                <label asp-for="@Model.UserDonate.ProjectResourceID" class="block mb-2 text-lg font-medium text-gray-900">Select a resource </label>
-                <select asp-for="@Model.UserDonate.ProjectResourceID"
+
+                <label asp-for="@Model.OrgDonate.ProjectResourceID" class="block mb-2 text-lg font-medium text-gray-900">Select a resource </label>
+                <select asp-for="@Model.OrgDonate.ProjectResourceID"
                         class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         asp-items="@(ViewData["ResourceTypeList"] as ICollection<SelectListItem>)">
                     <option disabled selected>---Select Resource Type---</option>
                 </select>
-                <span asp-validation-for="@Model.UserDonate.ProjectResourceID" class="text-danger text-red-500 font-semibold"></span>
+                <span asp-validation-for="@Model.OrgDonate.ProjectResourceID" class="text-danger text-red-500 font-semibold"></span>
             </div>
 
             <!-- Enter amount -->
@@ -260,12 +259,14 @@
 </section>
 <script>
     //---------------sweetalert for donate---------------------
-    // Target only the Shutdown project form
     document.querySelector('#donateResourceForm').addEventListener('submit', function (event) {
-        // Prevent the form from submitting
+        // Prevent the default form submission
         event.preventDefault();
-        var form = $(this);
-        if (form.valid()) {  // jQuery validation check for client-side validation
+        var form = this;  // Reference to the form
+
+        // Validate the form using jQuery validation (or you can use native JavaScript validation if desired)
+        if ($(form).valid()) {  // Assuming jQuery validation is used
+
             // Custom SweetAlert2 dialog using Tailwind CSS
             const swalWithTailwind = Swal.mixin({
                 customClass: {
@@ -285,25 +286,54 @@
                 reverseButtons: true
             }).then(result => {
                 if (result.isConfirmed) {
-                    // If confirmed, submit the form programmatically
-                    swalWithTailwind.fire({
-                        title: "Donate!",
-                        text: "Your donate request sent successfully!",
-                        icon: "success"
-                    }).then(() => {
-                        // Submit the form after the success message is shown
-                        event.target.submit();
-                    });
+                    // If confirmed, send the form data using fetch API
+                    fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'  // Set the content type for form data
+                        },
+                        body: new URLSearchParams(new FormData(form))  // Serialize the form data
+                    })
+                        .then(response => response.json())  // Parse the JSON response
+                        .then(data => {
+                            // Check if the server returned success
+                            if (data.success) {
+                                swalWithTailwind.fire({
+                                    title: "Donate!",
+                                    html: `<p>${data.message}</p><p>Thank you for your contribution!</p>`,
+                                    icon: "success"
+                                }).then(() => {
+                                    // Optionally, reload or redirect after success
+                                    window.location.reload();
+                                });
+                            } else {
+                                swalWithTailwind.fire({
+                                    title: "Error",
+                                    text: data.message,
+                                    icon: "error"
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            // Handle network errors or other issues
+                            swalWithTailwind.fire({
+                                title: "Error",
+                                text: "An error occurred while processing your request: " + error,
+                                icon: "error"
+                            });
+                        });
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     swalWithTailwind.fire({
                         title: "Cancelled",
-                        text: "Your donate request was canceled successfully :)",
+                        text: "Your donation request was canceled.",
                         icon: "error"
                     });
                 }
             });
-        } 
+        }
     });
+</script>
+
 
 </script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

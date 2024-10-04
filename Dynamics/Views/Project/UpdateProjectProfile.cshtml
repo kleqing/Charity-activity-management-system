@@ -128,25 +128,25 @@
                 <div class="grid grid-cols-3 gap-x-10 my-4">
                       <!-- email,phone,address-->
                     <div>
-                        <label asp-for="@Model.Email" class="block mb-2 text-md font-medium text-gray-900">Enter project email</label>
-                        <input asp-for="@Model.Email" type="email" id="email"
+                        <label asp-for="@Model.ProjectEmail" class="block mb-2 text-md font-medium text-gray-900">Enter project email</label>
+                        <input asp-for="@Model.ProjectEmail" type="email" id="email"
                                class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
-                        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                        <span asp-validation-for="@Model.ProjectEmail" class="text-danger"></span>
                     </div>
                     <div>
-                        <label asp-for="@Model.PhoneNumber" class="block mb-2 text-md font-medium text-gray-900">Enter project phone number</label>
-                        <input asp-for="@Model.PhoneNumber" id="phone"
+                        <label asp-for="@Model.ProjectPhoneNumber" class="block mb-2 text-md font-medium text-gray-900">Enter project phone number</label>
+                        <input asp-for="@Model.ProjectPhoneNumber" id="phone"
                                class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
-                        <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                        <span asp-validation-for="@Model.ProjectPhoneNumber" class="text-danger"></span>
                     </div>
                     <div>
-                        <label asp-for="@Model.Address" class="block mb-2 text-md font-medium text-gray-900">Enter project address</label>
-                        <input asp-for="@Model.Address" type="text" id="address"
+                        <label asp-for="@Model.ProjectAddress" class="block mb-2 text-md font-medium text-gray-900">Enter project address</label>
+                        <input asp-for="@Model.ProjectAddress" type="text" id="address"
                                class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                 required />
-                        <span asp-validation-for="@Model.Address" class="text-danger"></span>
+                        <span asp-validation-for="@Model.ProjectAddress" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="flex justify-center gap-x-6">
@@ -287,12 +287,14 @@
     }
     });
     //---------------sweetalert for shutdown---------------------
-              // Target only the Shutdown project form
-        document.querySelector('#shutdownProjectForm').addEventListener('submit', function(event) {
-            // Prevent the form from submitting
-            event.preventDefault();
+    document.querySelector('#shutdownProjectForm').addEventListener('submit', function (event) {
+        // Prevent the default form submission
+        event.preventDefault();
+        var form = this;  // Reference to the form
 
-             // Custom SweetAlert2 dialog using Tailwind CSS
+        if ($(form).valid()) {  // Assuming jQuery validation is used
+
+            // Custom SweetAlert2 dialog using Tailwind CSS
             const swalWithTailwind = Swal.mixin({
                 customClass: {
                     confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
@@ -301,34 +303,61 @@
                 buttonsStyling: false // Disable default styling to use custom classes
             });
 
-        swalWithTailwind.fire({
+            swalWithTailwind.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Yes, shut it down!",
+                confirmButtonText: "Yes, I confirm!",
                 cancelButtonText: "No, cancel!",
                 reverseButtons: true
-            }).then((result) => {
+            }).then(result => {
                 if (result.isConfirmed) {
-                    // If confirmed, submit the form programmatically
-                    swalWithTailwind.fire({
-                        title: "Shutdown!",
-                        text: "Your project has been shut down.",
-                        icon: "success"
-                    }).then(() => {
-                        // Submit the form after the success message is shown
-                        event.target.submit();
-                    });
+                    // If confirmed, send the form data using fetch API
+                    fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'  // Set the content type for form data
+                        },
+                        body: new URLSearchParams(new FormData(form))  // Serialize the form data
+                    })
+                        .then(response => response.json())  // Parse the JSON response
+                        .then(data => {
+                            // Check if the server returned success
+                            if (data.success) {
+                                swalWithTailwind.fire({
+                                    title: "Shutdown!",
+                                    html: `<p>${data.message}</p><p>${data.remind}</p>`,
+                                    icon: "success"
+                                }).then(() => {
+                                    window.location.href = `/Project/Index/${data.userIDString}`;
+                                });
+                            } else {
+                                swalWithTailwind.fire({
+                                    title: "Error",
+                                    text: data.message,
+                                    icon: "error"
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            // Handle network errors or other issues
+                            swalWithTailwind.fire({
+                                title: "Error",
+                                text: "An error occurred while processing your request: " + error,
+                                icon: "error"
+                            });
+                        });
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     swalWithTailwind.fire({
                         title: "Cancelled",
-                        text: "Your project is safe :)",
+                        text: "Your shutdown request was canceled.",
                         icon: "error"
                     });
                 }
             });
-        });
+        }
+    });
         //------------validate date-------------
          document.addEventListener('DOMContentLoaded', function () {
         // Cache DOM elements

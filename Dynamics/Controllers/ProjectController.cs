@@ -310,7 +310,7 @@ namespace Dynamics.Controllers
                     TempData[MyConstants.Info] = "You are no longer a leader for this project!";
                     return RedirectToAction(nameof(ManageProject), new { id = projectObj.ProjectID.ToString() });
                 }
-
+                TempData[MyConstants.Success] = "Update project successfully!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectObj.ProjectID.ToString() });
             }
 
@@ -323,15 +323,14 @@ namespace Dynamics.Controllers
         {
             var userIDString = HttpContext.Session.GetString("currentUserID");
             var res = await projectRepository.ShutdownProjectAsync(shutdownProjectVM);
-            if (res)
+            if (res&&!string.IsNullOrEmpty(userIDString))
             {
-                TempData[MyConstants.Success] = "Shutdown project successfully!";
-                TempData[MyConstants.Info] = "You just have shut down a project for " + shutdownProjectVM.Reason;
-                return RedirectToAction(nameof(Index), new { id = new Guid(userIDString) });
+                return Json(new { success = true, message = "Shutdown project successful!",
+                    remind = "You just have shut down a project for \"" + shutdownProjectVM.Reason+"\"",
+                    userIDString = userIDString
+                });
             }
-
-            TempData[MyConstants.Error] = "Fail to shut down project!";
-            return RedirectToAction(nameof(UpdateProjectProfile), new { id = shutdownProjectVM.ProjectID });
+            return Json(new { success = false, message = "Fail to shutdown project!" });
         }
 
         public async Task<IActionResult> SendReportProjectRequest(Report report)
@@ -362,8 +361,11 @@ namespace Dynamics.Controllers
             if (projectObj != null)
             {
                 // TODO
-                projectObj.Request =
-                    await requestRepository.GetRequestAsync(r => r.RequestID.Equals(projectObj.RequestID), "User");
+                var request = await requestRepository.GetRequestAsync(r => r.RequestID.Equals(projectObj.RequestID), "User");
+                if (request != null)
+                {
+                    projectObj.Request = request;
+                }                 
                 HttpContext.Session.SetString("currentProjectID", projectObj.ProjectID.ToString());
                 var leaderOfProject = await projectRepository.GetProjectLeaderAsync(projectObj.ProjectID, "User");
                 HttpContext.Session.SetString("currentProjectLeaderID", leaderOfProject.UserID.ToString());
@@ -379,7 +381,10 @@ namespace Dynamics.Controllers
                     TimeLeftEndDay = Convert.ToInt32(statistic[3]),
                     Random5Donors = await projectRepository.GetRandom5Donors(projectObj.ProjectID)
                 };
-                return View(detailProjectVM);
+                if (detailProjectVM != null)
+                {
+                    return View(detailProjectVM);
+                }
             }
 
             TempData[MyConstants.Error] = "Fail to get project!";
@@ -607,6 +612,16 @@ namespace Dynamics.Controllers
                 Value = x.ResourceID.ToString(),
             }).ToList();
             ViewData["ResourceTypeList"] = ResourceTypeList;
+            //get organization user lead
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
+            {
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
+            }
+            var organizationUserLead = await organizationRepository.GetOrganizationUserLead(currentUser.UserID);
+
+            //set value for View Model
             SendDonateRequestVM sendDonateRequestVM = null;
             if (!string.IsNullOrEmpty(donor) && donor.Equals("User"))
             {
@@ -615,8 +630,8 @@ namespace Dynamics.Controllers
                 if (currentUserID != null)
                 {
                     donateHistoryOfUser = await projectRepository.GetAllUserDonateAsync(
-                        u => u.UserID.Equals(new Guid(currentUserID)) && u.ProjectResource.ProjectID.Equals(projectID),
-                        "User,ProjectResource");
+                        u => u.UserID.Equals(new Guid(currentUserID)) && u.ProjectResource.ProjectID.Equals(projectID)
+                   );
                     sendDonateRequestVM = new SendDonateRequestVM()
                     {
                         ProjectID = projectID,
@@ -629,21 +644,19 @@ namespace Dynamics.Controllers
             {
                 var currentUserID = HttpContext.Session.GetString("currentUserID");
                 List<OrganizationToProjectHistory> donateHistoryOfOrg;
-                if (currentUserID != null)
+                if (currentUserID != null&& organizationUserLead!=null)
                 {
-                    var OrganizationOfUser =
-                        await organizationRepository.GetOrganizationOfAUser(new Guid(currentUserID));
-                    var OrganizationOfUserID = OrganizationOfUser.OrganizationID;
-                    ViewData["OrganizationOfUserID"] = OrganizationOfUserID;
-                    donateHistoryOfOrg = await projectRepository.GetAllOrganizationDonateAsync(
-                        u => u.OrganizationResourceID.Equals(OrganizationOfUserID) && u.ProjectResource.ProjectID.Equals(projectID),
-                        "Organization,ProjectResource");
+
+                     donateHistoryOfOrg = await projectRepository.GetAllOrganizationDonateAsync(
+                        u => u.OrganizationResource.OrganizationID.Equals(organizationUserLead.OrganizationID) && u.ProjectResource.ProjectID.Equals(projectID)
+                     );
                     sendDonateRequestVM = new SendDonateRequestVM()
                     {
                         ProjectID = projectID,
                         TypeDonor = donor,
-                        OrgTransactionHistory = donateHistoryOfOrg
-                    };
+                        OrgTransactionHistory = donateHistoryOfOrg,
+                        OrganizationUserLeadID = organizationUserLead.OrganizationID
+                    };                             
                 }
             }
 
@@ -661,52 +674,59 @@ namespace Dynamics.Controllers
                     var currentUserID = HttpContext.Session.GetString("currentUserID");
                     if (currentUserID != null)
                     {
-                        //write code
                         var res = await projectRepository.AddUserDonateRequestAsync(sendDonateRequestVM.UserDonate);
                         if (!res)
                         {
-                            TempData[MyConstants.Error] = "Fail to send user donate request!";
-                            return RedirectToAction(nameof(SendDonateRequest),
-                                new { projectID = sendDonateRequestVM.ProjectID, donor = "User" });
+                            // Return JSON response with failure message
+                            return Json(new { success = false, message = "Fail to send your donation request!" });
                         }
                     }
                 }
                 else if (!string.IsNullOrEmpty(sendDonateRequestVM.TypeDonor) &&
                          sendDonateRequestVM.TypeDonor.Equals("Organization"))
                 {
-                    var res = await projectRepository.AddOrgDonateRequestAsync(sendDonateRequestVM.OrgDonate);
-                    if (!res)
+                    var organizationResourceIDCoressponding = await organizationRepository.GetOrgResourceIDCorresponding(
+                        sendDonateRequestVM.OrgDonate.ProjectResourceID.Value,
+                        sendDonateRequestVM.OrganizationUserLeadID
+                    );
+
+                    if (!organizationResourceIDCoressponding.Equals(Guid.Empty))
                     {
-                        TempData[MyConstants.Error] = "Fail to send organization donate request!";
-                        return RedirectToAction(nameof(SendDonateRequest),
-                            new { projectID = sendDonateRequestVM.ProjectID, donor = "Organization" });
+                        sendDonateRequestVM.OrgDonate.OrganizationResourceID = organizationResourceIDCoressponding;
+                        var res = await projectRepository.AddOrgDonateRequestAsync(sendDonateRequestVM.OrgDonate);
+                        if (!res)
+                        {
+                            // Return JSON response with failure message
+                            return Json(new { success = false, message = "Failed to send your donation request !" });
+                        }
+                    }
+                    else
+                    {
+                        // Return JSON response with failure message for organization donation
+                        return Json(new { success = false, message = "Failed to send your donation request !" });
                     }
                 }
 
-                TempData[MyConstants.Success] = "Send donate request successfully!";
-                return RedirectToAction(nameof(SendDonateRequest),
-                    new { projectID = sendDonateRequestVM.ProjectID, donor = "User" });
+                // Return success response
+                return Json(new { success = true, message = "Your donation request was sent successfully!" });
             }
 
-            TempData[MyConstants.Error] = "Fail to send donate request!";
-            return RedirectToAction(nameof(SendDonateRequest),
-                new { projectID = sendDonateRequestVM.ProjectID, donor = "User" });
+            // Return failure response if the input data is invalid
+            return Json(new { success = false, message = "Failed to send your donation request!" });
         }
 
         [Route("Project/ManageProjectDonor/{projectID}")]
         public async Task<IActionResult> ManageProjectDonor(Guid projectID)
         {
             var allUserDonate =
-                await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1,
-                    "User,ProjectResource");
+                await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
             if (allUserDonate == null)
             {
                 return NotFound();
             }
 
             var allOrganizationDonate =
-                await projectRepository.GetAllOrganizationDonateAsync(
-                    u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1, "Organization,ProjectResource");
+                await projectRepository.GetAllOrganizationDonateAsync(  u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
             if (allOrganizationDonate == null)
             {
                 return NotFound();
@@ -718,13 +738,12 @@ namespace Dynamics.Controllers
                 OrganizationDonate = allOrganizationDonate
             };
             int nums =
-                (await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0,
-                    "User,ProjectResource") ?? new List<UserToProjectTransactionHistory>()).Count();
+                (await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0) ?? new List<UserToProjectTransactionHistory>()).Count();
             var hasUserDonateRequest = nums > 0;
 
             int nums2 =
                 (await projectRepository.GetAllOrganizationDonateAsync(
-                     u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0, "Organization,ProjectResource") ??
+                     u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0) ??
                  new List<OrganizationToProjectHistory>()).Count();
             var hasOrgDonateRequest = nums2 > 0;
 
@@ -738,8 +757,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ReviewUserDonateRequest(Guid projectID)
         {
             var allUserDonate =
-                await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0,
-                    "User,ProjectResource");
+                await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0);
             if (allUserDonate == null)
             {
                 return NotFound();
@@ -754,7 +772,7 @@ namespace Dynamics.Controllers
         {
             var allOrgDonate =
                 await projectRepository.GetAllOrganizationDonateAsync(
-                    u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0, "Organization,ProjectResource");
+                    u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0);
             if (allOrgDonate == null)
             {
                 return NotFound();
@@ -805,7 +823,7 @@ namespace Dynamics.Controllers
                 case "User":
                     var allUserDonateRequest =
                         await projectRepository.GetAllUserDonateAsync(
-                            u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0, "User,ProjectResource");
+                            u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0);
                     if (allUserDonateRequest == null)
                     {
                         return NotFound();
@@ -825,7 +843,7 @@ namespace Dynamics.Controllers
                     break;
                 case "Organization":
                     var allOrgDonateRequest = await projectRepository.GetAllOrganizationDonateAsync(
-                        u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0, "Organization,ProjectResource");
+                        u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0);
                     if (allOrgDonateRequest == null)
                     {
                         return NotFound();
@@ -893,7 +911,7 @@ namespace Dynamics.Controllers
                 case "User":
                     var allUserDonateRequest =
                         await projectRepository.GetAllUserDonateAsync(
-                            u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0, "User,ProjectResource");
+                            u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0);
                     if (allUserDonateRequest == null)
                     {
                         return NotFound();
@@ -913,7 +931,7 @@ namespace Dynamics.Controllers
                     break;
                 case "Organization":
                     var allOrgDonateRequest = await projectRepository.GetAllOrganizationDonateAsync(
-                        u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0, "Organization,ProjectResource");
+                        u => u.ProjectResource.ProjectID.Equals(new Guid(currentProjectID)) && u.Status == 0);
                     if (allOrgDonateRequest == null)
                     {
                         return NotFound();
@@ -1134,13 +1152,13 @@ namespace Dynamics.Controllers
                 if (resAttachment.Equals("No file"))
                 {
                     TempData[MyConstants.Error] = "No file to upload!";
-                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = history.ProjectID });
+                    return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
                 }
 
                 if (resAttachment.Equals("Wrong extension"))
                 {
                     TempData[MyConstants.Error] = "Extension of some files is wrong!";
-                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = history.ProjectID });
+                    return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
                 }
 
                 history.Attachment = resAttachment;

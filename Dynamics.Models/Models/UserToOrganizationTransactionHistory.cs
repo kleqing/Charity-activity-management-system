@@ -14,7 +14,6 @@ namespace Dynamics.Models.Models
 		public Guid OrganizationID { get; set; }
         public Guid ResourceID { get; set; }
         public int Status { get; set; }
-        public string Unit { get; set; }
         public int Amount { get; set; }
         public string? Message { get; set; }
 		[DataType(DataType.Date)]

@@ -41,10 +41,10 @@ namespace Dynamics.DataAccess.Repository
         Task<List<UserToProjectTransactionHistory>> GetRandom5Donors(Guid projectID);
 
         Task<List<UserToProjectTransactionHistory>> GetAllUserDonateAsync(
-            Expression<Func<UserToProjectTransactionHistory, bool>> filter, string? includeObjects = null);
+            Expression<Func<UserToProjectTransactionHistory, bool>> filter);
 
         Task<List<OrganizationToProjectHistory>> GetAllOrganizationDonateAsync(
-            Expression<Func<OrganizationToProjectHistory, bool>> filter, string? includeObjects = null);
+            Expression<Func<OrganizationToProjectHistory, bool>> filter);
 
         Task<bool> AcceptedUserDonateRequestAsync(Guid transactionID);
         Task<bool> DenyUserDonateRequestAsync(Guid transactionID);

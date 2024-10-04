@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241003162148_huyenDb")]
-    partial class huyenDb
+    [Migration("20241004083536_deleteProjectID")]
+    partial class deleteProjectID
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,10 +189,6 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TransactionID");
 
@@ -455,10 +451,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
@@ -494,10 +486,6 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
