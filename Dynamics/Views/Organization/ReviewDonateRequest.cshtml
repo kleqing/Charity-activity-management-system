@@ -8,22 +8,9 @@
 
 @{
     ViewData["Title"] = "ReviewDonateRequest";
-    Layout = "_LayoutOrganization";
-}
+    Layout = "_LayoutOrganizationForm";
+ }
 
-@{
-    var organizationResources = Accessor.HttpContext.Session.Get<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_UserToOrganizationHistory_Key);
-
-    var userDonates = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_UserName_For_UserToOrganizationHistory_Key);
-
-    //current Organization
-    var organizationString = Accessor.HttpContext.Session.GetString("organization");
-    Organization currentOrganization = null;
-    if (organizationString != null)
-    {
-        currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-    }
-}
 
 <div class="py-5 pt-12 px-5 flex justify-center">
     <div class="border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
@@ -43,9 +30,9 @@
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex items-center space-x-3 mr-5">
                                         <span class="font-semibold">@(i+1).</span>
-                                    <img src="@(userDonates[i].UserAvatar)" alt="User avatar" class="w-10 h-10 rounded-full">
+                                    <img src="@item.User.UserAvatar" alt="User avatar" class="w-10 h-10 rounded-full">
                                         <div class="mx-5">
-                                            <h2 class="font-semibold">@(userDonates[i].UserFullName)</h2>
+                                            <h2 class="font-semibold">@(item.User.UserFullName)</h2>
                                             <p class="text-sm text-gray-500">@item.Time</p>
                                         </div>
                                     </div>
@@ -61,10 +48,10 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-4 gap-6">
-                                <span class="font-semibold">@(organizationResources[i].ResourceName)</span>
+                                <span class="font-semibold">@(item.OrganizationResource.ResourceName)</span>
                                     <span>@item.Unit</span>
                                     <span>@item.Amount</span>
-                                    <span class="text-gray-600">send To this Organization: @currentOrganization.OrganizationName</span>
+                                    <span class="text-gray-600">send To this Organization: @item.OrganizationResource.Organization.OrganizationName</span>
                                 </div>
                             </div>
                             i++;

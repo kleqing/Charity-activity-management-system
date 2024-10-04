@@ -9,9 +9,9 @@ namespace Dynamics.Models.Models
 {
     public class OrganizationToProjectHistory
     {
-		public int TransactionID { get; set; }
-        public int OrganizationResourceID { get; set; }
-        public int? ProjectResourceID { get; set; }
+		public Guid TransactionID { get; set; }
+        public Guid OrganizationResourceID { get; set; }
+        public Guid? ProjectResourceID { get; set; }
         public int Status { get; set; }
         public string Unit { get; set; }
         public int Amount { get; set; }

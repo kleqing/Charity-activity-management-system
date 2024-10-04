@@ -1,7 +1,7 @@
 ﻿@using Dynamics.Utility
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
-@model IEnumerable<Dynamics.Models.Models.OrganizationResource>
+@model Dynamics.Models.Models.ViewModel.OrganizationVM
 
 
 @{
@@ -17,44 +17,13 @@
     {
         currentUser = JsonConvert.DeserializeObject<User>(userString);
     }
-
-    //current Organization
-    var organizationString = Accessor.HttpContext.Session.GetString("organization");
-    Organization currentOrganization = null;
-    if (organizationString != null)
-    {
-        currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-    }
-
-    //Members in a organization with orrganizationId
-    var userMembersInOrganization = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY);
-
-    //find Ceo Oragnization
-    User userCeoOrganization = new User();
-    foreach (var item in userMembersInOrganization)
-    {
-        if (item.UserID.Equals(currentOrganization.CEOID))
-        {
-            userCeoOrganization = item;
-            break;
-        }
-    }
-
-    //history organization To Project History
-    var organizationToProjectHistoryInAOrganizations = Accessor.HttpContext.Session.Get<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key);
-    //get Resource Name
-    var organizationResourcesInHistory = Accessor.HttpContext.Session.Get<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_OrganizationToProjectHistory_Key);
-    //get Project Name is Send to
-    var ProjectRecivers = Accessor.HttpContext.Session.Get<List<Project>>(MySettingSession.SESSION_ProjectName_For_OrganizzationToProjectHistory_Key);
-
-
 }
 
 <div class="py-5 pt-12 px-5 flex justify-center">
     <div class="border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
 
         <h1 class="text-3xl font-semibold mb-10 text-center ">
-            @if (currentUser.UserID.Equals(currentOrganization.CEOID))
+           @if (currentUser.UserID.Equals(Model.CEO.UserID))
             {
                 <span class="border-b-2 border-gray-500 border-solid py-2">Manage and allocate resources for your projects</span>
             }
@@ -68,11 +37,11 @@
 
         <div class=" flex justify-center mt-10 mb-10">
 
-            @if (currentUser.UserID.Equals(currentOrganization.CEOID))
+           @if (currentUser.UserID.Equals(Model.CEO.UserID))
             {
                 <div class="max-w-3xl border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
 
-                    @if (currentUser.UserID.Equals(currentOrganization.CEOID))
+                    @if (currentUser.UserID.Equals(Model.CEO.UserID))
                     {
                         <h1 class="text-2xl mb-4 font-bold text-center">Current organization resources</h1>
                         <div class="flex justify-center mt-10">
@@ -87,11 +56,12 @@
                     <div class=" px-5 py-3 w-auto">
                         <ul class="space-y-2">
 
-                        @foreach (var item in Model)
+                        @{int i = 1;}
+                        @foreach (var item in Model.OrganizationResource)
                         {
                             <li class="flex items-center justify-between bg-white shadow-xl px-5 py-4 rounded-box ">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-gray-500 text-sm font-semibold">1.</span>
+                                    <span class="text-gray-500 text-sm font-semibold">@i.</span>
                                     <span class="text-sm mx-5 font-semibold">@item.ResourceName</span>
                                 </div>
                                 <div class="flex items-center gap-2">
@@ -100,50 +70,51 @@
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm mx-5 font-semibold ">@item.Unit</span>
                                 </div>
-                                @* 
-                                <div class="flex items-center gap-2 ">
-                                    <span class="bg-green-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Update</span>
-                                </div>
- *@
-                                @if (currentUser.UserID.Equals(currentOrganization.CEOID))
+
+                                @if (currentUser.UserID.Equals(Model.CEO.UserID))
                                 {
-                                        @if (item.ResourceName.ToUpper().Contains("Money".ToUpper()))
-                                        {
-                                            
-                                        }
-                                        else if(item.Quantity == 0)
-                                        {
+                                    @if (item.ResourceName.ToUpper().Contains("Money".ToUpper()))
+                                    {
+                                            continue;    
+                                    }
+                                    else if(item.Quantity == 0)
+                                    {
+                                            <a asp-action="RemoveOrganizationResource" asp-controller="Organization" asp-route-resourceId="@item.ResourceID">
                                             <div class="flex items-center gap-2 ">
                                                 <span class="bg-red-500 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Remove</span>
                                             </div>
-                                        }
-                                        else
-                                        {
+                                        </a>
+                                        
+                                    }
+                                    else
+                                    {
+                                        <div class="flex items-center gap-2 ">
+                                            <span class="bg-gray-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Remove</span>
+                                        </div>
+                                    }
+
+
+
+                                    @if(item.Quantity > 0)
+                                    {
+                                        <a asp-action="SendResoueceOrganizationToProject" asp-controller="Organization" asp-route-resourceId="@item.ResourceID">
                                             <div class="flex items-center gap-2 ">
-                                                <span class="bg-gray-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Remove</span>
+                                                <span class="bg-blue-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
                                             </div>
-                                        }
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <div class="flex items-center gap-2 ">
+                                            <span class="bg-gray-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
+                                        </div>
+                                    }
 
-                                        @if(item.Quantity > 0)
-                                        {
-                                            <a asp-action="SendResoueceOrganizationToProject" asp-controller="Organization" asp-route-resourceId="@item.ResourceID">
-                                                <div class="flex items-center gap-2 ">
-                                                    <span class="bg-blue-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
-                                                </div>
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <div class="flex items-center gap-2 ">
-                                                <span class="bg-gray-600 text-white font-bold px-3 py-2 ml-5 rounded text-xs">Send</span>
-                                            </div>
-                                        }
-
-
-
-                            }
+                                }
 
                             </li>
+
+                            i++;
                         }
 
 
@@ -157,12 +128,12 @@
 
                     <div class=" px-5 py-3 w-auto">
                         <ul class="space-y-2">
-
-                            @foreach (var item in Model)
+                            @{int i = 1;}
+                            @foreach (var item in Model.OrganizationResource)
                             {
                                 <li class="flex items-center justify-between bg-base-100 shadow-xl px-5 py-4 rounded-box ">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-gray-500 text-sm font-semibold">1.</span>
+                                        <span class="text-gray-500 text-sm font-semibold">@i.</span>
                                         <span class="text-sm mx-5 font-semibold">@item.ResourceName</span>
                                     </div>
                                     <div class="flex items-center gap-2">
@@ -190,78 +161,77 @@
                                         </a>
                                         
                                     }
-
-
                                 </li>
-                            }
-
-                            
-
-                        </ul>
-                    </div>
-                </div>
-            }
-
-           
-        </div>
-
-        @if (currentUser.UserID.Equals(currentOrganization.CEOID))
-        {
-            <div class=" flex justify-center mt-10 mb-10">
-                <div class="max-w-3xl border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
-
-                    <h1 class="text-2xl font-bold mb-2 text-center">Project resource allocations</h1>
-                    <p class="text-gray-600 mb-4 text-center">Send your organization resources to your projects</p>
-                    @*
-                <div class="flex justify-center">
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-md mb-2 hover:bg-blue-700 transition">
-                Allocate new resource
-                </button>
-                </div>
-                *@
-
-                    <div class=" px-5 py-3 w-auto">
-                        <ul class="space-y-4">
-                            @{int i = 0;}
-                            @foreach (var item in organizationToProjectHistoryInAOrganizations)
-                            {
-                                <div class="w-full border rounded-lg  p-4 bg-white shadow-xl rounded-box ">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <div class="flex items-center space-x-3 mr-5">
-                                            <span class="font-semibold">1.</span>
-                                            <div class="mx-5">
-                                                <h2 class="font-semibold">@(organizationResourcesInHistory[i].ResourceName)</h2>
-                                                <p class="text-sm text-gray-500">@item.Time</p>
-                                            </div>
-                                        </div>
-                                        <div class="space-x-3 mx-5">
-                                            <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                                                Processing
-                                            </button>
-                                            <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
-                                                Accepted
-                                            </button>
-                                            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-4 gap-6">
-                                        <span class="font-semibold">@(organizationResourcesInHistory[i].ResourceName)</span>
-                                        <span>@item.Amount</span>
-                                        <span>@item.Unit</span>
-                                        <span class="text-gray-600">To: @(ProjectRecivers[i].ProjectName)</span>
-                                    </div>
-                                </div>
                                 i++;
                             }
                         </ul>
                     </div>
                 </div>
+           }   
+        </div>
+
+
+        <div>
+            @*
+            @if (currentUser.UserID.Equals(currentOrganization.CEOID))
+            {
+            <div class=" flex justify-center mt-10 mb-10">
+            <div class="max-w-3xl border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
+
+            <h1 class="text-2xl font-bold mb-2 text-center">Project resource allocations</h1>
+            <p class="text-gray-600 mb-4 text-center">Send your organization resources to your projects</p>
+            @*
+            <div class="flex justify-center">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-md mb-2 hover:bg-blue-700 transition">
+            Allocate new resource
+            </button>
+            </div>
+            *@
+            @*
+            <div class=" px-5 py-3 w-auto">
+            <ul class="space-y-4">
+            @{int i = 0;}
+            @foreach (var item in organizationToProjectHistoryInAOrganizations)
+            {
+            <div class="w-full border rounded-lg  p-4 bg-white shadow-xl rounded-box ">
+            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3 mr-5">
+            <span class="font-semibold">1.</span>
+            <div class="mx-5">
+            <h2 class="font-semibold">@(organizationResourcesInHistory[i].ResourceName)</h2>
+            <p class="text-sm text-gray-500">@item.Time</p>
+            </div>
+            </div>
+            <div class="space-x-3 mx-5">
+            <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+            Processing
+            </button>
+            <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+            Accepted
+            </button>
+            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+            Cancel
+            </button>
+            </div>
+            </div>
+            <div class="flex items-center space-x-4 gap-6">
+            <span class="font-semibold">@(organizationResourcesInHistory[i].ResourceName)</span>
+            <span>@item.Amount</span>
+            <span>@item.Unit</span>
+            <span class="text-gray-600">To: @(ProjectRecivers[i].ProjectName)</span>
+            </div>
+            </div>
+            i++;
+            }
+            </ul>
+            </div>
+            </div>
 
 
             </div>
-        }
+            }
+            *@
+        </div>
 
         
     </div>

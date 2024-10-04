@@ -9,7 +9,10 @@ namespace Dynamics.Models.Models
 {
     public class Organization
     {
-		public int OrganizationID { get; set; }
+		public Guid OrganizationID { get; set; }
+
+        [Required(ErrorMessage = "The Organization Name field is required *")]
+        [MaxLength(100, ErrorMessage = "Organization Name length cannot be longer than 100 characters.")]
 		public string OrganizationName { get; set; }
 
         [DataType(DataType.EmailAddress)]
@@ -17,14 +20,14 @@ namespace Dynamics.Models.Models
         [DataType(DataType.PhoneNumber)]
         public string? OrganizationPhoneNumber { get; set; }
         public string? OrganizationAddress { get; set; }
+
+        [Required(ErrorMessage = "The Organization Name field is required *")]
         public string OrganizationDescription { get; set; }
 		public string? OrganizationPictures { get; set; }
         [DataType(DataType.Date)]
         public DateOnly StartTime { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? ShutdownDay { get; set; }
-		public string? CEOID { get; set; }
-
 		public virtual ICollection<Project> Project { get; set; }
 		public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
 		public virtual ICollection<OrganizationResource> OrganizationResource { get; set; }

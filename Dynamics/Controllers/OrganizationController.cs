@@ -1,10 +1,13 @@
 ﻿using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.ViewModel;
+using Dynamics.Services;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Dynamics.Controllers
 {
@@ -14,116 +17,125 @@ namespace Dynamics.Controllers
         IOrganizationRepository _organizationRepository;
         IUserRepository _userRepository;
         IProjectRepository _projectRepository;
+        IOrganizationVMService _organizationService;
+        IUserToOragnizationTransactionHistoryVMService _userToOragnizationTransactionHistoryVMService;
+        IProjectVMService _projectVMService;
 
-        public OrganizationController(IOrganizationRepository organizationRepository, IUserRepository userRepository, IProjectRepository projectRepository)
+        public OrganizationController(IOrganizationRepository organizationRepository, IUserRepository userRepository, IProjectRepository projectRepository, IOrganizationVMService organizationService, IUserToOragnizationTransactionHistoryVMService userToOragnizationTransactionHistoryVMService, IProjectVMService projectVMService)
         {
+            
             _organizationRepository = organizationRepository;
             _userRepository = userRepository;
             _projectRepository = projectRepository;
+            _organizationService = organizationService;
+            _userToOragnizationTransactionHistoryVMService = userToOragnizationTransactionHistoryVMService ;
+            _projectVMService = projectVMService;
         }
 
-
         //GET: /Organization
-        //s1-done
         public async Task<IActionResult> Index()
         {
-            var organizationMembers = await _organizationRepository.GetAllOrganizationMemberAsync();
-            HttpContext.Session.Set<List<OrganizationMember>>(MySettingSession.SESSION_Organization_Member_KEY, organizationMembers);
-
-
-            var organizations = await _organizationRepository.GetAllOrganizationsAsync();
-            return View(organizations);
+            var organizationVMs = await _organizationService.GetAllOrganizationVMsAsync();
+            return View(organizationVMs);
         }
 
         //GET: /Organization/Create
-        
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            //get current user
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
+            {
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
+            }
 
-            return View(new Organization());
+
+            var organization = new Organization()
+            {
+                OrganizationID = Guid.NewGuid(),
+                StartTime = DateOnly.FromDateTime(DateTime.UtcNow),
+                OrganizationEmail = currentUser.UserEmail,
+                OrganizationPhoneNumber = currentUser.UserPhoneNumber,
+                OrganizationAddress = currentUser.UserAddress,
+            };
+
+
+            return View(organization);
         }
 
         //POST: /Organizations/Create
         [HttpPost]
         public async Task<IActionResult> Create(Organization organization, IFormFile image)
         {
+            //set picture for Organization
             if (image != null)
             {
-                organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization", organization.OrganizationID + "");
+                organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization", organization.OrganizationID.ToString());
             }
 
-            await _organizationRepository.AddAsync(organization);
-
-            var organizationResource = new OrganizationResource()
+            //get current user
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
             {
-                OrganizationID = organization.OrganizationID,
-                ResourceName = "Money(Tiền)",
-                Quantity = 0,
-                Unit = "VND",
-            };
-            if (organizationResource != null)
-            {
-                await _organizationRepository.AddOrganizationResourceSync(organizationResource); 
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
             }
 
-            return RedirectToAction(nameof(JoinOrganization), new { organizationId = organization.OrganizationID });
+            //set contact for Organization
+            if (organization.OrganizationEmail == null)
+            {
+                organization.OrganizationEmail = currentUser.UserEmail;
+            }
+
+            if(organization.OrganizationPhoneNumber == null)
+            {
+                organization.OrganizationPhoneNumber = currentUser.UserPhoneNumber;
+            }
+
+            if(organization.OrganizationAddress == null)
+            {
+                organization.OrganizationAddress = currentUser.UserAddress;
+            }
+
+            if (await _organizationRepository.AddOrganizationAsync(organization))
+            {
+                var organizationResource = new OrganizationResource()
+                {
+                    OrganizationID = organization.OrganizationID,
+                    ResourceName = "Money",
+                    Quantity = 0,
+                    Unit = "VND",
+                };
+                await _organizationRepository.AddOrganizationResourceSync(organizationResource);
+
+                return RedirectToAction(nameof(JoinOrganization), new { organizationId = organization.OrganizationID, status = 2, userId = currentUser.UserID });//status 2 : CEOID   0 : processing   1 : membert
+            }
+            else
+                return View(organization);
         }
-
-
         
-        //s1-done
-        public async Task<IActionResult> MyOrganization(string userId)
+        public async Task<IActionResult> MyOrganization(Guid userId)
         {
+            var organizationVMsByUserID = await _organizationService.GetOrganizationVMsByUserIDAsync(userId);
+            return View(organizationVMsByUserID);
 
-            //find table organization member
-            var organizationMembers = await _organizationRepository.GetAllOrganizationMemberByIDAsync(om => om.UserID == userId);
-            List<Organization> organizations = new List<Organization>();
-            foreach (var item in organizationMembers)
-            {
-                var organization = await _organizationRepository.GetAsync(o => o.OrganizationID == item.OrganizationID);
-                organizations.Add(organization);
-            }
-
-            return View(organizations);
         }//fix session done
 
-        public async Task<IActionResult> Detail(int organizationId)
+        public async Task<IActionResult> Detail(Guid organizationId)
         {
-            //find table organization member. member in a organization
-            var organizationMembers = await _organizationRepository.GetAllOrganizationMemberByIDAsync(om => om.OrganizationID == organizationId);
-            var users = new List<User>();
-            foreach (var item in organizationMembers)
-            {
-                User user = await _userRepository.Get(u => u.UserID.Equals(item.UserID));
-                users.Add(user);
-            }
-            //create session for save user member in specify organizationId - for _DetailOrganization.cshtml
-            HttpContext.Session.Set<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY, users);
-
-
             //Creat current organization
-            var organization = await _organizationRepository.GetAsync(o => o.OrganizationID == organizationId);
-            if (organization == null)
-            {
-                return NotFound();  
-            }
+            var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(organizationId));
+            HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
 
-            //Create session current Organization
-            var settings = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
-            
-            HttpContext.Session.SetString("organization", JsonConvert.SerializeObject(organization, settings));
-
-            return View(organization);
+            return View(organizationVM);
         }
 
-        public async Task<IActionResult> Edit(int organizationId)
+        public async Task<IActionResult> Edit(Guid organizationId)
         {
             // can be use Session current organization
-            var organization = await _organizationRepository.GetAsync(o => o.OrganizationID == organizationId);
+            var organization = await _organizationRepository.GetOrganizationAsync(o => o.OrganizationID.Equals(organizationId));
             if (organization == null)
             {
                 return NotFound();
@@ -139,34 +151,86 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization", organization.OrganizationID + "");
+                    organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization", organization.OrganizationID.ToString());
                     
                 }
-                await _organizationRepository.UpdateAsync(organization);
+                await _organizationRepository.UpdateOrganizationAsync(organization);
                 return RedirectToAction("Detail", new { organizationId = organization.OrganizationID });
 
             }
             return View(organization);
         }
 
-
-
-
-
-        /// <summary>
-        /// Manager Member
-        /// </summary>
-        /// <returns></returns>
-        //need fix
+        
+        //Organization Member
         public async Task<IActionResult> ManageOrganizationMember()
         {
-            return View();
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            return View(currentOrganization);
+        }
+
+        public async Task<IActionResult> sendRequestJoinOrganization(Guid organizationId, Guid userId)
+        {
+            return RedirectToAction(nameof(JoinOrganization), new { organizationId = organizationId, status = 0, userId = userId});
+        }
+
+        public async Task<IActionResult> ManageRequestJoinOrganization(Guid organizationId)
+        {
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            return View(currentOrganization);
         }
 
 
-        //s1-done
-        public async Task<IActionResult> JoinOrganization(int organizationId)
+        public async Task<IActionResult> AcceptRquestJoin(Guid organizationId, Guid userId)
         {
+            return RedirectToAction(nameof(JoinOrganization), new { organizationId = organizationId, status = 1, userId = userId});
+        }
+
+
+        public async Task<IActionResult> JoinOrganization(Guid organizationId, int status, Guid userId)
+        {
+            
+            var organizationMember = new OrganizationMember()
+            {
+                UserID = userId,
+                OrganizationID = organizationId,
+                Status = status,
+            };
+            
+            if(status == 2 || status == 0)
+            {
+                await _organizationRepository.AddOrganizationMemberSync(organizationMember);
+            }
+            else
+            {
+                await _organizationRepository.UpdateOrganizationMemberAsync(organizationMember);
+            }
+
+
+
+            var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(organizationId));
+            HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
+
+            if (status == 1)
+            {
+                return RedirectToAction(nameof(ManageRequestJoinOrganization), new { organizationId = organizationId });
+            }
+
+            return RedirectToAction(nameof(Detail), new { organizationId = organizationId});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OutOrganization(Guid organizationId, Guid userId)
+        {
+            //user out or ban or deny
+            var organizationMember = await _organizationRepository.GetOrganizationMemberAsync(om => om.OrganizationID == organizationId && om.UserID == userId);
+            var statusUserOut = organizationMember.Status;
+            //out organization
+            await _organizationRepository.DeleteOrganizationMemberByOrganizationIDAndUserIDAsync(organizationId, userId);
+
+            var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(organizationId));
+            HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
+
             //get current user
             var userString = HttpContext.Session.GetString("user");
             User currentUser = null;
@@ -175,97 +239,56 @@ namespace Dynamics.Controllers
                 currentUser = JsonConvert.DeserializeObject<User>(userString);
             }
 
-
-            //join organization
-            var organizationMember = new OrganizationMember() {
-                UserID = currentUser.UserID, 
-                OrganizationID = organizationId,
-            };
-            await _organizationRepository.AddOrganizationMemberSync(organizationMember);
-
-
-            //re-set session for detail organization
-            //find table organization member. member in a organization
-            var organizationMembers = await _organizationRepository.GetAllOrganizationMemberByIDAsync(om => om.OrganizationID == organizationId);
-            var users = new List<User>();
-            foreach (var item in organizationMembers)
+            //deny or deny request
+            if (statusUserOut == 0 && currentUser.UserID.Equals(organizationVM.CEO.UserID))
             {
-                User user = await _userRepository.Get(u => u.UserID.Equals(item.UserID));
-                users.Add(user);
+                return RedirectToAction(nameof(ManageRequestJoinOrganization), new { organizationId = organizationId });
             }
-            //create session for save user member in specify organizationId - for _DetailOrganization.cshtml
-            HttpContext.Session.Set<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY, users);
-
-
-            return RedirectToAction(nameof(Detail), new { organizationId = organizationId});
-        }
-
-        [HttpPost]
-        //s1-done
-        public async Task<IActionResult> OutOrganization(int organizationId, string userId)
-        {
-            //out organization
-            await _organizationRepository.DeleteOrganizationMemberByOrganizationIDAndUserIDAsync(organizationId, userId);
-
-            //find table organization member. member in a organization
-            var organizationMembers = await _organizationRepository.GetAllOrganizationMemberByIDAsync(om => om.OrganizationID == organizationId);
-            var users = new List<User>();
-            foreach (var item in organizationMembers)
+            else if(statusUserOut == 0)
             {
-                User user = await _userRepository.Get(u => u.UserID.Equals(item.UserID));
-                users.Add(user);
+                return RedirectToAction(nameof(Index));
             }
-            //create session for save user member in specify organizationId - for _DetailOrganization.cshtml
-            HttpContext.Session.Set<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY, users);
-
-
-            //get current user session
-            var userString = HttpContext.Session.GetString("user");
-            User currentUser = null;
-            if (userString != null)
+            else
             {
-                currentUser = JsonConvert.DeserializeObject<User>(userString);
-            }
-
-
-            //currentOrganization
-            var currentOrganization = await _organizationRepository.GetAsync(o => o.OrganizationID.Equals(organizationId));
-
-            if (currentUser.UserID.Equals(currentOrganization.CEOID))
-            {
-                //remove member by ceo
+                //return RedirectToAction(nameof(Detail), new { organizationId = organizationId });
                 return RedirectToAction(nameof(ManageOrganizationMember), new { organizationId = organizationId });
             }
-            return RedirectToAction(nameof(Detail), new { organizationId = organizationId });
+            
         }
 
-
-        //s1
-        public async Task<IActionResult> TransferCeoOrganization(int organizationId)
+        public async Task<IActionResult> TransferCeoOrganization()
         {
             // send to form to save vallue not change
             // can be use Session current organization
-            var organization = await _organizationRepository.GetAsync(o => o.OrganizationID == organizationId);
-            if (organization == null)
-            {
-                return NotFound();
-            }
-
-            return View(organization);
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            return View(currentOrganization);
         }
 
         [HttpPost]
-        public async Task<IActionResult> TransferCeoOrganization(Organization organization)
+        public async Task<IActionResult> TransferCeoOrganization(Guid organizationId, Guid currentCEOID, Guid newCEOID)
         {
             // can be use Session current organization
-            if (organization != null)
+            if (!newCEOID.Equals(currentCEOID))
             {
-                await _organizationRepository.UpdateAsync(organization);
+                var organizationMemberCurrent = new OrganizationMember()
+                {
+                    UserID = currentCEOID,
+                    OrganizationID = organizationId,
+                    Status = 1,
+                };
+                await _organizationRepository.UpdateOrganizationMemberAsync(organizationMemberCurrent);
+
+                var organizationMemberNew = new OrganizationMember()
+                {
+                    UserID = newCEOID,
+                    OrganizationID = organizationId,
+                    Status = 2,
+                };
+                await _organizationRepository.UpdateOrganizationMemberAsync(organizationMemberNew);
                 return RedirectToAction("Index", "EditUser");
             }
-            return View(organization);
+            return RedirectToAction(nameof(ManageOrganizationMember), new { organizationId = organizationId });
         }
-
 
 
 
@@ -273,89 +296,74 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ManageOrganizationProject()
         {
 
-            var projects = HttpContext.Session.Get<List<Project>>(MySettingSession.SESSION_Projects_In_A_OrganizationID_Key);
-
-
-            return View(projects);
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            return View(currentOrganization);
         }
 
 
-        ///manage history
+        //Manage history
         public async Task<IActionResult> ManageOrganizationTranactionHistory()
         {
-            //current Organization
-            var organizationString = HttpContext.Session.GetString("organization");
-            Organization currentOrganization = null;
-            if (organizationString != null)
-            {
-                currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-            }
+
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
 
             //requets donate is accpected
-            var UserToOrganizationTransactionHistoryInAOrganizations = await _organizationRepository.GetAllUserToOrganizationTransactionHistoryByAcceptedAsync(currentOrganization.OrganizationID);
-
-
-            //list resource in a organization
-            var organizationResources = new List<OrganizationResource>();
-            var userDonates = new List<User>();
-            foreach (var item in UserToOrganizationTransactionHistoryInAOrganizations)
-            {
-                var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, item.ResourceID);
-                organizationResources.Add(organizationResource);
-                var userDonate = await _userRepository.Get(u => u.UserID.Equals(item.UserID));
-                userDonates.Add(userDonate);
-            }
-            //Create session
-            HttpContext.Session.Set<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_UserToOrganizationHistory_Key, organizationResources);
-            HttpContext.Session.Set<List<User>>(MySettingSession.SESSION_UserName_For_UserToOrganizationHistory_Key, userDonates);
-
-
+            var UserToOrganizationTransactionHistoryInAOrganizations = await _userToOragnizationTransactionHistoryVMService.GetTransactionHistoryIsAccept(currentOrganization.OrganizationID);
             return View(UserToOrganizationTransactionHistoryInAOrganizations);
         }
 
-        //manage Resource
+        //Manage Resource
         public async Task<IActionResult> ManageOrganizationResource()
         {
-            //current Organization
-            var organizationString = HttpContext.Session.GetString("organization");
-            Organization currentOrganization = null;
-            if (organizationString != null)
-            {
-                currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-            }
-            //Resource of a organization
-            var organizationResources = await _organizationRepository.GetAllOrganizationResourceByOrganizationIDAsync(or => or.OrganizationID == currentOrganization.OrganizationID);
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(currentOrganization.OrganizationID));
+            HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
+            
 
-            //History of a Organnization To project in a organization
-            var organizationToProjectHistoryInAOrganizations = await _organizationRepository.GetAllOrganizationToProjectHistoryByProcessingAsync(currentOrganization.OrganizationID);
+           
 
+            ////Resource of a organization
+            //var organizationResources = await _organizationRepository.GetAllOrganizationResourceByOrganizationIDAsync(or => or.OrganizationID == currentOrganization.OrganizationID);
 
-            //list resource in a organization in processing allocate
-            var organizationResourcesInHistory = new List<OrganizationResource>();
-            //list project reciver
-            var ProjectRecivers = new List<Project>();
-            foreach (var item in organizationToProjectHistoryInAOrganizations)
-            {
-                var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, item.OrganizationResourceID);
-                organizationResourcesInHistory.Add(organizationResource);
-                var project = await _projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID == Convert.ToInt32(item.Message));
-                ProjectRecivers.Add(project);
-            }
-            //Create session
-            HttpContext.Session.Set<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_OrganizationToProjectHistory_Key, organizationResourcesInHistory);
-            HttpContext.Session.Set<List<Project>>(MySettingSession.SESSION_ProjectName_For_OrganizzationToProjectHistory_Key, ProjectRecivers);
-            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, organizationToProjectHistoryInAOrganizations);
+            ////History of a Organnization To project in a organization
+            //var organizationToProjectHistoryInAOrganizations = await _organizationRepository.GetAllOrganizationToProjectHistoryByProcessingAsync(currentOrganization.OrganizationID);
 
 
-            return View(organizationResources);
+            ////list resource in a organization in processing allocate
+            //var organizationResourcesInHistory = new List<OrganizationResource>();
+            ////list project reciver
+            //var ProjectRecivers = new List<Project>();
+            //foreach (var item in organizationToProjectHistoryInAOrganizations)
+            //{
+            //    var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, item.OrganizationResourceID);
+            //    organizationResourcesInHistory.Add(organizationResource);
+            //    var project = await _projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(item.Message));
+            //    ProjectRecivers.Add(project);
+            //}
+            ////Create session
+            //HttpContext.Session.Set<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_OrganizationToProjectHistory_Key, organizationResourcesInHistory);
+            //HttpContext.Session.Set<List<Project>>(MySettingSession.SESSION_ProjectName_For_OrganizzationToProjectHistory_Key, ProjectRecivers);
+            //HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, organizationToProjectHistoryInAOrganizations);
+
+
+
+            return View(organizationVM);
         }
 
         [HttpGet]
         public async Task<IActionResult> AddNewOrganizationResource()
         {
-            
-            return View(new OrganizationResource());
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+
+            var organizationResource = new OrganizationResource()
+            {
+                ResourceID = new Guid(),
+                OrganizationID = currentOrganization.OrganizationID,
+                Quantity = 0,
+            };
+
+            return View(organizationResource);
         }
 
         [HttpPost]
@@ -363,45 +371,101 @@ namespace Dynamics.Controllers
         {
             if (organizationResource != null)
             {
-                await _organizationRepository.AddOrganizationResourceSync(organizationResource);
-                return RedirectToAction(nameof(ManageOrganizationResource));
+                if(await _organizationRepository.AddOrganizationResourceSync(organizationResource))
+                {
+                    var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(organizationResource.OrganizationID));
+                    HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM); 
+                    return RedirectToAction(nameof(ManageOrganizationResource));
+                }
+                    
             }
-            return View();
+            return View(organizationResource);
             
         }
 
-        [HttpGet]
-        public async Task<IActionResult> SendResoueceOrganizationToProject(int resourceId)
+        public async Task<IActionResult> RemoveOrganizationResource(Guid resourceId)
         {
-            //current Organization
-            var organizationString = HttpContext.Session.GetString("organization");
-            Organization currentOrganization = null;
-            if (organizationString != null)
+            await _organizationRepository.DeleteOrganizationResourceAsync(resourceId);
+
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(currentOrganization.OrganizationID));
+            HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
+            return RedirectToAction(nameof(ManageOrganizationResource));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SendResoueceOrganizationToProject(Guid resourceId)
+        {
+            // get current resource
+            var currentResource = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(resourceId));
+            HttpContext.Session.Set<OrganizationResource>(MySettingSession.SESSION_Current_Organization_Resource_KEY, currentResource);
+
+            var organizationToProjectHistory = new OrganizationToProjectHistory()
             {
-                currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-            }
+                OrganizationResourceID = currentResource.ResourceID,
+                Status = 0,
+                Unit = currentResource.ResourceName,
+                Time = DateOnly.FromDateTime(DateTime.UtcNow),
+            };
 
-            //resource user wanto donate session
-            var currentOrganizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, resourceId);
-            HttpContext.Session.Set<OrganizationResource>(MySettingSession.SESSION_Organization_Resource_Current_Key, currentOrganizationResource);
-
-            //find list project is manage by a Organization
-            var projects = await _projectRepository.GetAllProjectsByOrganizationIDAsync(p => p.OrganizationID == currentOrganization.OrganizationID);
-
-            //Create session for list project of a organization
-            HttpContext.Session.Set<List<Project>>(MySettingSession.SESSION_Projects_In_A_OrganizationID_Key, projects);
-
-            return View(new OrganizationToProjectHistory());
+            return View(organizationToProjectHistory);
         }
 
         [HttpPost]
         public async Task<IActionResult> SendResoueceOrganizationToProject(OrganizationToProjectHistory organizationToProjectHistory, int projectId)
         {
-            if(organizationToProjectHistory != null && projectId != null)
+            if(organizationToProjectHistory != null && projectId != null && organizationToProjectHistory.Amount > 0)
             {
-                organizationToProjectHistory.Message = projectId+"";// tạm thời
-                await _organizationRepository.AddOrganizationToProjectHistoryAsync(organizationToProjectHistory);
-                return RedirectToAction(nameof(ManageOrganizationResource));
+                var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+
+                var ResourceSend = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(organizationToProjectHistory.OrganizationResourceID));
+
+                var Project = await _projectVMService.GetProjectAsync(p => p.ProjectID.Equals(projectId));
+
+                bool duplicate = false;
+
+                var projectResource = new ProjectResource();
+                foreach(var item in Project.ProjectResource)
+                {
+                    if(item.ResourceName.Equals(ResourceSend.ResourceName) && item.Unit.Equals(ResourceSend.Unit))
+                    {
+                        duplicate = true;
+                        projectResource = item;
+                        break;
+                    }
+                }
+
+                if (duplicate)
+                {
+                    projectResource.Quantity += ResourceSend.Quantity;
+                    await _projectRepository.UpdateProjectResource(projectResource);
+                }
+                else
+                {
+                    var newProjectResource = new ProjectResource()
+                    {
+                        ProjectID = Project.ProjectID,
+                        ResourceName = ResourceSend.ResourceName,
+                        Unit = ResourceSend.Unit,
+                    };
+
+                    await _projectRepository.AddProjectResourceAsync(newProjectResource);
+                }
+
+                var projectResource1 = new ProjectResource();
+                foreach (var item in Project.ProjectResource)
+                {
+                    if (item.ResourceName.Equals(ResourceSend.ResourceName) && item.Unit.Equals(ResourceSend.Unit))
+                    {
+                        duplicate = true;
+                        projectResource1 = item;
+                        break;
+                    }
+                }
+
+                organizationToProjectHistory.ProjectResourceID = projectResource1.ResourceID;
+                if(await _organizationRepository.AddOrganizationToProjectHistoryAsync(organizationToProjectHistory))
+                    return RedirectToAction(nameof(ManageOrganizationResource));
             }
 
             return View(organizationToProjectHistory);
@@ -413,30 +477,41 @@ namespace Dynamics.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> DonateByResource(int resourceId)
+        public async Task<IActionResult> DonateByResource(Guid resourceId)
         {
-            //current Organization
-            var organizationString = HttpContext.Session.GetString("organization");
-            Organization currentOrganization = null;
-            if (organizationString != null)
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+
+            //get current user
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
             {
-                currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
             }
 
-            //resource user wanto donate session
-            var currentOrganizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, resourceId);
-            HttpContext.Session.Set<OrganizationResource>(MySettingSession.SESSION_Organization_Resource_Current_Key, currentOrganizationResource);
+            // get current resource
+            var currentResource = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(resourceId));
+            HttpContext.Session.Set<OrganizationResource>(MySettingSession.SESSION_Current_Organization_Resource_KEY, currentResource);
 
-
-            return View(new UserToOrganizationTransactionHistory());
+            var userToOrganizationTransactionHistory = new UserToOrganizationTransactionHistory()
+            {
+                ResourceID = resourceId,
+                UserID = currentUser.UserID,
+                Status = 0,
+                Unit = currentResource.Unit,
+                Time = DateOnly.FromDateTime(DateTime.UtcNow),
+            };
+            return View(userToOrganizationTransactionHistory);
         }
         [HttpPost]
         public async Task<IActionResult> DonateByResource(UserToOrganizationTransactionHistory transactionHistory)
         {
             if (transactionHistory != null)
             {
-                await _organizationRepository.AddUserToOrganizationTransactionHistoryASync(transactionHistory);
-                return RedirectToAction(nameof(ManageOrganizationResource));
+                if(await _organizationRepository.AddUserToOrganizationTransactionHistoryASync(transactionHistory))
+                {
+                    return RedirectToAction(nameof(ManageOrganizationResource));
+                }        
             }
 
             return View(transactionHistory);
@@ -444,63 +519,33 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> ReviewDonateRequest()
         {
-            //current Organization
-            var organizationString = HttpContext.Session.GetString("organization");
-            Organization currentOrganization = null;
-            if (organizationString != null)
-            {
-                currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-            }
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
-            var UserToOrganizationTransactionHistoryInAOrganizations = await _organizationRepository.GetAllUserToOrganizationTransactionHistoryByProcessingAsync(currentOrganization.OrganizationID);
+            var userToOrganizationTransactionHistoryInAOrganizations = await _userToOragnizationTransactionHistoryVMService.GetTransactionHistory(currentOrganization.OrganizationID);
 
-
-            //list resource in a organization
-            var organizationResources = new List<OrganizationResource>();
-            var userDonates = new List<User>();
-            foreach(var item in UserToOrganizationTransactionHistoryInAOrganizations)
-            {
-                var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, item.ResourceID);
-                organizationResources.Add(organizationResource);
-                var userDonate = await _userRepository.Get(u => u.UserID.Equals(item.UserID));
-                userDonates.Add(userDonate);
-            }
-            //Create session
-            HttpContext.Session.Set<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_UserToOrganizationHistory_Key, organizationResources);
-            HttpContext.Session.Set<List<User>>(MySettingSession.SESSION_UserName_For_UserToOrganizationHistory_Key, userDonates);
-
-            return View(UserToOrganizationTransactionHistoryInAOrganizations);
+            return View(userToOrganizationTransactionHistoryInAOrganizations);
         }
 
-        public async Task<IActionResult> DenyRequestDonate(int transactionId)
+        public async Task<IActionResult> DenyRequestDonate(Guid transactionId)
         {
 
             await _organizationRepository.DeleteUserToOrganizationTransactionHistoryByTransactionIDAsync(transactionId);
 
             return RedirectToAction(nameof(ReviewDonateRequest));
         }
-        public async Task<IActionResult> AcceptRquestDonate(int transactionId)
+        public async Task<IActionResult> AcceptRquestDonate(Guid transactionId)
         {
             //update table UserToOrganizationTransactionHistory
-            var userToOrganizationTransactionHistory = await _organizationRepository.GetUserToOrganizationTransactionHistoryByTransactionIDAsync(uto => uto.TransactionID == transactionId);
+            var userToOrganizationTransactionHistory = await _organizationRepository.GetUserToOrganizationTransactionHistoryByTransactionIDAsync(uto => uto.TransactionID.Equals(transactionId));
             userToOrganizationTransactionHistory.Status = 1;
             await _organizationRepository.UpdateUserToOrganizationTransactionHistoryAsync(userToOrganizationTransactionHistory);
 
-
-            //current Organization
-            var organizationString = HttpContext.Session.GetString("organization");
-            Organization currentOrganization = null;
-            if (organizationString != null)
-            {
-                currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-            }
-
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
             //update table resource
             var organizationResource = await _organizationRepository.GetOrganizationResourceByOrganizationIDAndResourceIDAsync(currentOrganization.OrganizationID, userToOrganizationTransactionHistory.ResourceID);
             organizationResource.Quantity += userToOrganizationTransactionHistory.Amount;
             await _organizationRepository.UpdateOrganizationResourceAsync(organizationResource);
-
 
             return RedirectToAction(nameof(ManageOrganizationResource));
         }

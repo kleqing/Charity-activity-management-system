@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Dynamics.Models.Models.Organization>
+﻿@model IEnumerable<Dynamics.Models.Models.ViewModel.OrganizationVM>
 @{
     ViewData["Title"] = "MyOrganization";
 }
@@ -27,10 +27,12 @@
 
     @foreach(var item in Model)
     {
-        if (!currentUser.UserID.Equals(item.CEOID))
-        {
-            continue;
-        }
+        
+
+         if (!currentUser.UserID.Equals(item.CEO.UserID))
+         {
+             continue;
+         }
         <div class="flex justify-center">
             <div class="card bg-base-100 w-96 shadow-xl ">
                 <figure>
@@ -73,37 +75,82 @@
     <div class="grid grid-cols-3 gap-4 ml-5 flex justify-center">
         @foreach (var item in Model)
         {
-            if (currentUser.UserID.Equals(item.CEOID))
+
+            var organizationMemberTemp = new OrganizationMember();
+            foreach (var organizationMember in item.OrganizationMember)
+            {
+                if (organizationMember.UserID.Equals(currentUser.UserID))
+                {
+                    organizationMemberTemp = organizationMember;
+                }
+            }
+            if (organizationMemberTemp.Status == 0)
+            {
+                <div class="flex justify-center">
+                    <div class="card bg-base-100 w-96 shadow-xl ">
+                        <figure>
+                            <div class="relative">
+                                <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                    <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
+                                            alt="@item.OrganizationName" />
+                                </a>
+                                <div class="absolute top-2 left-8">
+                                    <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Organization</p>
+
+                                </div>
+                            </div>
+
+                        </figure>
+                        <div class="card-body">
+                            <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                <h2 class="card-title">@item.OrganizationName</h2>
+                            </a>
+                            <h4>Start date: @item.StartTime</h4>
+                            <p>@item.OrganizationDescription</p>
+                            <div class="card-actions justify-center my-5">
+                                <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                    <button class="btn btn-primary">Processing Accpect request join Organization</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (currentUser.UserID.Equals(item.CEO.UserID))
             {
                 continue;
             }
-            <div class="card bg-base-100 w-96 shadow-xl ">
-                <figure>
-                    <div class="relative">
-                        <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                            <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
-                                 alt="@item.OrganizationName" />
-                        </a>
-                        <div class="absolute top-2 left-8">
-                            <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Organization</p>
+            else
+            {
+                <div class="card bg-base-100 w-96 shadow-xl ">
+                    <figure>
+                        <div class="relative">
+                            <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
+                                        alt="@item.OrganizationName" />
+                            </a>
+                            <div class="absolute top-2 left-8">
+                                <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Organization</p>
 
+                            </div>
+                        </div>
+
+                    </figure>
+                    <div class="card-body">
+                        <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                            <h2 class="card-title">@item.OrganizationName</h2>
+                        </a>
+                        <h4>Start date: @item.StartTime</h4>
+                        <p>@item.OrganizationDescription</p>
+                        <div class="card-actions justify-center my-5">
+                            <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                <button class="btn btn-primary">View Detail organization</button>
+                            </a>
                         </div>
                     </div>
-
-                </figure>
-                <div class="card-body">
-                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                        <h2 class="card-title">@item.OrganizationName</h2>
-                    </a>
-                    <h4>Start date: @item.StartTime</h4>
-                    <p>@item.OrganizationDescription</p>
-                    <div class="card-actions justify-center my-5">
-                        <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                            <button class="btn btn-primary">View Detail organization</button>
-                        </a>
-                    </div>
                 </div>
-            </div>
+            }
+
         }
     </div>
 

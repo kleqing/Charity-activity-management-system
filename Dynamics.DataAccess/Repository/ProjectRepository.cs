@@ -72,5 +72,30 @@ namespace Dynamics.DataAccess.Repository
             return project;
         }
 
+        public async Task<List<ProjectResource>> GetAllResourceByProjectIDAsync(Expression<Func<ProjectResource, bool>> filter)
+        {
+            var projectRsources = await _db.ProjectResources.Where(filter).ToListAsync();
+            return projectRsources;
+        }
+
+        public async Task<ProjectResource> GetProjectResourceByResourceIDAsync(Expression<Func<ProjectResource, bool>> filter)
+        {
+            var projectResource = await _db.ProjectResources.Where(filter).FirstOrDefaultAsync();
+            return projectResource;
+        }
+
+        public async Task<bool> UpdateProjectResource(ProjectResource entity)
+        {
+            var projectItem = await GetProjectResourceByResourceIDAsync(p => p.ProjectID.Equals(entity.ProjectID));
+
+            if (projectItem == null)
+            {
+                return false;
+            }
+            _db.Entry(projectItem).CurrentValues.SetValues(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

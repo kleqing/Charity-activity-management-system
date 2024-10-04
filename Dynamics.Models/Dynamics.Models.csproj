@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ViewModel\" />
     <Folder Include="Dto\" />
   </ItemGroup>
 

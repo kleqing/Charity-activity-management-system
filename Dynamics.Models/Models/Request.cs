@@ -9,8 +9,8 @@ namespace Dynamics.Models.Models
 {
     public class Request
     {
-		public int RequestID { get; set; }
-		public string UserID { get; set; }
+		public Guid RequestID { get; set; }
+		public Guid UserID { get; set; }
 		public string Content { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? CreationDate { get; set; }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Dynamics.Models.Models.Project>
+﻿@model Dynamics.Models.Models.ViewModel.OrganizationVM
 @using Dynamics.Utility
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
@@ -19,28 +19,7 @@
     {
         currentUser = JsonConvert.DeserializeObject<User>(userString);
     }
-
-    //current Organization
-    var organizationString = Accessor.HttpContext.Session.GetString("organization");
-    Organization currentOrganization = null;
-    if (organizationString != null)
-    {
-        currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-    }
-
-    //Members in a organization with orrganizationId
-    var userMembersInOrganization = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY);
-
-    //find Ceo Oragnization
-    User userCeoOrganization = new User();
-    foreach (var item in userMembersInOrganization)
-    {
-        if (item.UserID.Equals(currentOrganization.CEOID))
-        {
-            userCeoOrganization = item;
-            break;
-        }
-    }
+    
 }
 
 
@@ -51,7 +30,7 @@
         </h1>
 
         <div class="grid grid-cols-3 gap-6 py-5 flex justify-center">
-            @if (@currentUser.UserID.Equals(@userCeoOrganization.UserID))
+            @if (@currentUser.UserID.Equals(Model.CEO.UserID))
             {
                 
                  <div class="card mx-5 my-2 w-96 ">
@@ -74,12 +53,15 @@
                 
             }
             
-            @foreach(var item in Model)
+            @foreach(var item in Model.Project)
             {
                 <div class=" card bg-base-100 w-96 shadow-xl mx-5 my-2">
                     <div class="relative">
                         <figure>
-                            <img src="@(item.Attachment ?? "https://localhost:7276/images/Organization/0.jpg")" alt="Ảnh dự án" class="w-96 h-64 object-cover">
+                            <a asp-action="DetailProject" asp-controller="Project" asp-route-projectId="@item.ProjectID">
+                                <img src="@(item.Attachment ?? "https://localhost:7276/images/Organization/0.jpg")" alt="Ảnh dự án" class="w-96 h-64 object-cover">
+
+                            </a>
                         </figure>
                         <div class="">
                             <div class="absolute top-2 left-8">
@@ -87,23 +69,30 @@
 
                             </div>
                             <div class="absolute top-2 right-8">
-                                @if (item.ProjectStatus == 1)
+                                @if (item.ProjectStatus == 0)
                                 {
                                     <p class="bg-pink-300 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Preparing</p>
                                 }
                                 
-                                @if(item.ProjectStatus == 2)
+                                @if(item.ProjectStatus == 1)
                                 {
                                     <p class="bg-red-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">On-going</p>
+                                }
+
+                                @if (item.ProjectStatus == 2)
+                                {
+                                    <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">finish</p>
                                 }
                             </div>
                         </div>
                         
                     </div>
                     <div class="p-3 card-body">
-                        <h1 class="card-title">@item.ProjectName</h1>
+                        <a asp-action="DetailProject" asp-controller="Project" asp-route-projectId="@item.ProjectID">
+                            <h1 class="card-title">@item.ProjectName</h1>
+                        </a>
                         <div class="flex justify-between items-center text-xs  mb-2">
-                            <h3 class="text-sm">By @currentOrganization.OrganizationName</h3>
+                            <h3 class="text-sm">By @Model.OrganizationName</h3>
                             <h3 class="text-sm">Hà Nội</h3>
                         </div>
                         <p class=" text-base mb-3">

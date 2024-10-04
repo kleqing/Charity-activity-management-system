@@ -1,6 +1,6 @@
 ﻿@using Dynamics.Utility
 @using Newtonsoft.Json
-@model Dynamics.Models.Models.Project
+@model Dynamics.Models.Models.ViewModel.ProjectVM
 @inject IHttpContextAccessor Accessor
 
 
@@ -10,27 +10,27 @@
 }
 
 @{
-    //current Organization
-    var organizationString = Accessor.HttpContext.Session.GetString("organization");
-    Organization currentOrganization = null;
-    if (organizationString != null)
-    {
-        currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-    }
+    // current Organization
+    // var organizationString = Accessor.HttpContext.Session.GetString("organization");
+    // Organization currentOrganization = null;
+    // if (organizationString != null)
+    // {
+    //     currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
+    // }
 
-    //Members in a organization with orrganizationId
-    var userMembersInOrganization = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY);
+    // Members in a organization with orrganizationId
+    // var userMembersInOrganization = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY);
 
-    //find Ceo Oragnization
-    User userCeoOrganization = new User();
-    foreach (var item in userMembersInOrganization)
-    {
-        if (item.UserID.Equals(currentOrganization.CEOID))
-        {
-            userCeoOrganization = item;
-            break;
-        }
-    }
+    // find Ceo Oragnization
+    // User userCeoOrganization = new User();
+    // foreach (var item in userMembersInOrganization)
+    // {
+    //     if (item.UserID.Equals(currentOrganization.CEOID))
+    //     {
+    //         userCeoOrganization = item;
+    //         break;
+    //     }
+    // }
 }
 
 
@@ -49,10 +49,12 @@
             <div class="border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
                 <form class="py-5 px-5" asp-action="CreateProject" asp-controller="Project" enctype="multipart/form-data" method="post">
                     <div>
-                        <input asp-for="OrganizationID" value="@currentOrganization.OrganizationID" class="hidden">
-                        <input asp-for="RequestID" value="@Model.RequestID" class="hidden">
-                        <input asp-for="ProjectAddress" value="@Model.ProjectAddress" class="hidden">
-                        <input asp-for="ProjectStatus" value="1" class="hidden">
+                        <input asp-for="ProjectID" name="ProjectID" class="hidden">
+                        <input asp-for="OrganizationID" name="OrganizationID"  class="hidden">
+                        <input asp-for="RequestID" name="RequestID" class="hidden">
+                        <input asp-for="ProjectStatus" name="ProjectStatus" class="hidden">
+                        <input asp-for="Attachment" name="Attachment" class="hidden">
+                       
                     </div>
 
                     <div class="grid grid-cols-2 gap-6 mb-6">
@@ -60,6 +62,8 @@
                             <label asp-for="ProjectName" class="block text-base font-medium text-gray-700 mb-1">Enter project name</label>
                             <input asp-for="ProjectName" type="text" id="project-name" class="w-full p-2 border border-gray-300 rounded"
                                    placeholder="Enter your name">
+                            <span asp-validation-for="ProjectName" class="text-red-500"></span>
+
                         </div>
 
                         <div>
@@ -84,21 +88,31 @@
                         </label>
                         <textarea asp-for="ProjectDescription" id="project-description" rows="4" class="w-full p-2 border border-gray-300 rounded"
                                   placeholder="Enter your text"></textarea>
+                        <span asp-validation-for="ProjectDescription" class="text-red-500"></span>
+
                     </div>
                     <div class="mb-6">
                         <label asp-for="ProjectEmail" class="block text-base font-medium text-gray-700 mb-1">
                             Enter project contact Email!
                         </label>
-                        <input asp-for="ProjectEmail" type="email" id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
-                                  placeholder="Enter Email"></input>
+                        <input asp-for="ProjectEmail" name="ProjectEmail" type="email" id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
+                                  placeholder="Enter Email">
                     </div>
 
                     <div class="mb-6">
                         <label asp-for="ProjectPhoneNumber" class="block text-base font-medium text-gray-700 mb-1">
                             Enter project contact Phone!
                         </label>
-                        <input asp-for="ProjectPhoneNumber" type="tel" id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
-                               placeholder="Enter tel"></input>
+                        <input asp-for="ProjectPhoneNumber" name="ProjectPhoneNumber" type="tel" id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
+                               placeholder="Enter tel">
+                    </div>
+
+                    <div class="mb-6">
+                        <label asp-for="ProjectAddress" class="block text-base font-medium text-gray-700 mb-1">
+                            Enter project Address!
+                        </label>
+                        <input asp-for="ProjectAddress" name="ProjectAddress" type="text" id="project-contact" rows="4" class="w-full p-2 border border-gray-300 rounded"
+                               placeholder="Enter tel">
                     </div>
 
                     <div class="grid grid-cols-2 gap-6 mb-6">
@@ -125,20 +139,20 @@
 
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label asp-for="LeaderID" class="block text-base font-medium text-gray-700 mb-1">
+                           <label asp-for="LeaderID" class="block text-base font-medium text-gray-700 mb-1">
                                 Assign a member to lead this
                                 project (Optional)
                             </label>
                             <select asp-for="LeaderID" id="project-lead" class="w-full p-2 border border-gray-300 rounded">
                                 <option>Options</option>
-                                @foreach (var item in @userMembersInOrganization)
+                                @foreach (var item in Model.OrganizationVM.OrganizationMember)
                                 {
-                                    if (item.UserID.Equals(@currentOrganization.CEOID))
+                                    if (item.UserID.Equals(Model.OrganizationVM.CEO.UserID))
                                     {
-                                      <option class="text-xl text-black font-semibold" value="@item.UserID">[Yourself] - [@item.UserFullName] - [@item.UserEmail] - [@item.UserID]</option>
-
+                                        <option class="text-xl text-black font-semibold" value="@item.UserID">[CEO-Organization-@Model.OrganizationVM.OrganizationName] - [@item.User.UserFullName] - [@item.User.UserEmail] - [@item.UserID]</option>
+                                        continue;
                                     }
-                                    <option class="text-xl text-black font-semibold" value="@item.UserID">[@item.UserFullName] - [@item.UserEmail] - [@item.UserID]</option>
+                                    <option class="text-xl text-black font-semibold" value="@item.UserID">[@item.User.UserFullName] - [@item.User.UserEmail] - [@item.UserID]</option>
                                 }
                             </select>
                         </div>

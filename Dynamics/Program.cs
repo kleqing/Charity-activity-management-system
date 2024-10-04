@@ -1,6 +1,7 @@
 
 using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
+using Dynamics.Services;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -54,6 +55,9 @@ namespace Dynamics
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IOrganizationVMService, OrganizationVMService>();
+            builder.Services.AddScoped<IUserToOragnizationTransactionHistoryVMService, UserToOragnizationTransactionHistoryVMService>();
+            builder.Services.AddScoped<IProjectVMService, ProjectVMService>();
 
 
             // Add email sender

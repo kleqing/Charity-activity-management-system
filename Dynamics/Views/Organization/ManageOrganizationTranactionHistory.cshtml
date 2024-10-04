@@ -6,46 +6,8 @@
 
 @{
     ViewData["Title"] = "ManageOrganizationTranactionHistory";
-    Layout = "_LayoutOrganization";
+    Layout = "_LayoutOrganizationForm";
 }
-
-@{
-    //current usser
-    var userString = Accessor.HttpContext.Session.GetString("user");
-    User currentUser = null;
-    if (userString != null)
-    {
-        currentUser = JsonConvert.DeserializeObject<User>(userString);
-    }
-
-    //current Organization
-    var organizationString = Accessor.HttpContext.Session.GetString("organization");
-    Organization currentOrganization = null;
-    if (organizationString != null)
-    {
-        currentOrganization = JsonConvert.DeserializeObject<Organization>(organizationString);
-    }
-
-    //Members in a organization with orrganizationId
-    var userMembersInOrganization = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_User_In_A_OrganizationID_KEY);
-
-    //find Ceo Oragnization
-    User userCeoOrganization = new User();
-    foreach (var item in userMembersInOrganization)
-    {
-        if (item.UserID.Equals(currentOrganization.CEOID))
-        {
-            userCeoOrganization = item;
-            break;
-        }
-    }
-
-    //resource is donated
-    var organizationResources = Accessor.HttpContext.Session.Get<List<OrganizationResource>>(MySettingSession.SESSION_ResourceName_For_UserToOrganizationHistory_Key);
-    //user donated
-    var userDonates = Accessor.HttpContext.Session.Get<List<User>>(MySettingSession.SESSION_UserName_For_UserToOrganizationHistory_Key);
-}
-
 <div class="py-5 pt-12 px-5 flex justify-center">
     <div class="border border-solid border-gray-500 rounded-box px-5 py-5 w-auto">
         <h1 class="text-3xl font-semibold mb-4 text-center ">
@@ -61,15 +23,15 @@
                     <div class="bg-white rounded-lg shadow-lg p-6">
                         <div class="flex items-start justify-between mb-2">
                             <div class="flex items-center">
-                                <img src="@(userDonates[i].UserAvatar)" alt="User avatar"
+                                <img src="@(item.User.UserAvatar)" alt="User avatar"
                                      class="w-12 h-12 rounded-full mr-4 border-2 border-gray-200">
                                 <div>
-                                    <h2 class="text-lg font-semibold">@(userDonates[i].UserFullName)</h2>
+                                    <h2 class="text-lg font-semibold">@(item.User.UserFullName)</h2>
                                     <p class="text-sm text-gray-500">@item.Time</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-lg font-bold text-green-500">+ @item.Amount @item.Unit @(organizationResources[i].ResourceName)</p>
+                                <p class="text-lg font-bold text-green-500">+ @item.Amount @item.Unit @(item.OrganizationResource.ResourceName)</p>
                                 <span class="bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full">Automatic</span>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 ﻿using Dynamics.Models.Models;
+using Dynamics.Models.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,10 @@ namespace Dynamics.DataAccess.Repository
             _db = db;
         }
 
-        public async Task<bool> AddAsync(Organization organization)
+
+        //Organization table
+
+        public async Task<bool> AddOrganizationAsync(Organization organization)
         {
             try
             {
@@ -31,37 +35,20 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
         }
-
-        public async Task<Organization> DeleteByIDAsync(Guid id)
-        {
-            var organization = _db.Organizations.Find(id);
-            if (organization != null)
-            {
-                throw new Exception("Organizaion scope standards community");
-            }
-            return organization;
-        }
-
-        public async Task<Organization?> GetAsync(Expression<Func<Organization, bool>> filter)
+        public async Task<Organization?> GetOrganizationAsync(Expression<Func<Organization, bool>> filter)
         {
             var organization = await _db.Organizations.Where(filter).FirstOrDefaultAsync();
             return organization;
         }
+        //public async Task<List<Organization>> GetListOrganizationsByUserIDAsync(Expression<Func<Organization, bool>> filter)
+        //{
+        //    var organizations = await _db.Organizations.Where(filter).ToListAsync();
+        //    return organizations;
+        //}
 
-        public async Task<List<Organization>> GetAllOrganizationsAsync()
+        public async Task<bool> UpdateOrganizationAsync(Organization organization)
         {
-            var organizations = await _db.Organizations.ToListAsync();
-            return organizations;
-        }
-        public async Task<List<Organization>> GetListOrganizationsByUserIDAsync(Expression<Func<Organization, bool>> filter)
-        {
-            var organizations = await _db.Organizations.Where(filter).ToListAsync();
-            return organizations;
-        }
-
-        public async Task<bool> UpdateAsync(Organization organization)
-        {
-            var organizationItem = await GetAsync(o => o.OrganizationID == organization.OrganizationID);
+            var organizationItem = await GetOrganizationAsync(o => o.OrganizationID == organization.OrganizationID);
 
             if (organizationItem == null)
             {
@@ -73,19 +60,8 @@ namespace Dynamics.DataAccess.Repository
 
         }
 
-        public async Task<List<OrganizationMember>> GetAllOrganizationMemberByIDAsync(Expression<Func<OrganizationMember, bool>> filter)
-        {
-            var organizationMembers = await _db.OrganizationMember.Where(filter).ToListAsync();
-            return organizationMembers;
 
-        }
-
-        public async Task<List<OrganizationMember>> GetAllOrganizationMemberAsync()
-        {
-            var organizationMembers = await _db.OrganizationMember.ToListAsync();
-            return organizationMembers;
-        }
-
+        //Organization Member table
         //Member join organization
         public async Task<bool> AddOrganizationMemberSync(OrganizationMember organizationMember)
         {
@@ -101,16 +77,27 @@ namespace Dynamics.DataAccess.Repository
             }
         }
 
-
         public async Task<OrganizationMember> GetOrganizationMemberAsync(Expression<Func<OrganizationMember, bool>> filter)
         {
             var organizationMember = await _db.OrganizationMember.Where(filter).FirstOrDefaultAsync();
             return organizationMember;
         }
 
+        public async Task<bool> UpdateOrganizationMemberAsync(OrganizationMember entity)
+        {
+            var organizationItem = await GetOrganizationMemberAsync(om => om.OrganizationID == entity.OrganizationID && om.UserID == entity.UserID);
+
+            if (organizationItem == null)
+            {
+                return false;
+            }
+            _db.Entry(organizationItem).CurrentValues.SetValues(entity);
+            await _db.SaveChangesAsync();
+            return true;
+        }
 
         //Member out or remove 
-        public async Task<bool> DeleteOrganizationMemberByOrganizationIDAndUserIDAsync(int organizationId, string userId)
+        public async Task<bool> DeleteOrganizationMemberByOrganizationIDAndUserIDAsync(Guid organizationId, Guid userId)
         {
             var organizationMember = await GetOrganizationMemberAsync(om => om.OrganizationID == organizationId && om.UserID == userId);
             try
@@ -126,6 +113,8 @@ namespace Dynamics.DataAccess.Repository
            
         }
 
+
+        //Organization Resource
         public async Task<bool> AddOrganizationResourceSync(OrganizationResource organizationResource)
         {
             try
@@ -139,15 +128,16 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
         }
-        public async Task<List<OrganizationResource>> GetAllOrganizationResourceByOrganizationIDAsync(Expression<Func<OrganizationResource, bool>> filter)
-        {
-            var organizationResources = await _db.OrganizationResources.Where(filter).ToListAsync();
-            return organizationResources;
-        }
 
-        public async Task<OrganizationResource> GetOrganizationResourceByOrganizationIDAndResourceIDAsync(int organizationId, int resourceId)
+        public async Task<OrganizationResource> GetOrganizationResourceByOrganizationIDAndResourceIDAsync(Guid organizationId, Guid resourceId)
         {
             var organizationResource = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId && or.ResourceID == resourceId).FirstOrDefaultAsync();
+            return organizationResource;
+        }
+
+        public async Task<OrganizationResource> GetOrganizationResourceAsync(Expression<Func<OrganizationResource, bool>> filter)
+        {
+            var organizationResource = await _db.OrganizationResources.Where(filter).FirstOrDefaultAsync();
             return organizationResource;
         }
 
@@ -163,6 +153,22 @@ namespace Dynamics.DataAccess.Repository
             await _db.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> DeleteOrganizationResourceAsync(Guid resourceId)
+        {
+            var organizationResource = await GetOrganizationResourceAsync(om => om.ResourceID.Equals(resourceId));
+            try
+            {
+                _db.OrganizationResources.Remove(organizationResource);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
 
 
 
@@ -186,24 +192,8 @@ namespace Dynamics.DataAccess.Repository
             return uerToOrganizationTransactionHistorys;
         }
 
-        public async Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByProcessingAsync(int organizationId)
-        {
-            var organizationResources = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId).ToListAsync();// list resource have ina organization
-            var UserToOrganizationTransactionHistoryInAOrganizations = new List<UserToOrganizationTransactionHistory>();
-            foreach (var item in await GetAllUserToOrganizationTransactionHistoryAsync())
-            {
-                foreach (var el in organizationResources)
-                {
-                    if (item.ResourceID == el.ResourceID && item.Status == 0)
-                    {
-                        UserToOrganizationTransactionHistoryInAOrganizations.Add(item);
-                    }
-                }
-            }
-            return UserToOrganizationTransactionHistoryInAOrganizations;
-        }
 
-        public async Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByAcceptedAsync(int organizationId)
+        public async Task<List<UserToOrganizationTransactionHistory>> GetAllUserToOrganizationTransactionHistoryByAcceptedAsync(Guid organizationId)
         {
             var organizationResources = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId).ToListAsync();// list resource have ina organization
             var UserToOrganizationTransactionHistoryInAOrganizations = new List<UserToOrganizationTransactionHistory>();
@@ -226,7 +216,7 @@ namespace Dynamics.DataAccess.Repository
             return userToOrganizationTransactionHistory;
         }
 
-        public async Task<bool> DeleteUserToOrganizationTransactionHistoryByTransactionIDAsync(int transactionID)
+        public async Task<bool> DeleteUserToOrganizationTransactionHistoryByTransactionIDAsync(Guid transactionID)
         {
             var userToOrganizationTransactionHistory = await GetUserToOrganizationTransactionHistoryByTransactionIDAsync(uto => uto.TransactionID == transactionID);
             try
@@ -243,7 +233,7 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<bool> UpdateUserToOrganizationTransactionHistoryAsync(UserToOrganizationTransactionHistory entity)
         {
-            var userToOrganizationTransactionHistoryItem = await GetUserToOrganizationTransactionHistoryByTransactionIDAsync(uto => uto.TransactionID == entity.TransactionID);
+            var userToOrganizationTransactionHistoryItem = await GetUserToOrganizationTransactionHistoryByTransactionIDAsync(uto => uto.TransactionID.Equals(entity.TransactionID));
 
             if (userToOrganizationTransactionHistoryItem == null)
             {
@@ -275,7 +265,7 @@ namespace Dynamics.DataAccess.Repository
             return organizationToProjectHistorys;
         }
 
-        public async Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByProcessingAsync(int organizationId)
+        public async Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByProcessingAsync(Guid organizationId)
         {
             var organizationResources = await _db.OrganizationResources.Where(or => or.OrganizationID == organizationId).ToListAsync();// list resource have ina organization
             var organizationToProjectHistoryInAOrganizations  = new List<OrganizationToProjectHistory>();
