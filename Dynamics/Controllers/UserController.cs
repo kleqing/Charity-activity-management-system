@@ -201,7 +201,7 @@ namespace Dynamics.Controllers
             total.AddRange(userToPrjTransaction);
             var final = new UserHistoryViewModel
             {
-                userTransactions = total.OrderByDescending(ut => ut.Time).ToList() // default
+                userTransactions = total.OrderByDescending(ut => ut.Time).ToList() // Display descending by time
             };
             return View(final);
         }
@@ -282,7 +282,7 @@ namespace Dynamics.Controllers
                         if (result == null)
                         {
                             msg = "No request found for this transaction.";
-                            throw new Exception("No request found for cancel");
+                            throw new Exception("Cancel failed.");
                         }
                         break;
                     }
@@ -292,7 +292,7 @@ namespace Dynamics.Controllers
                         if (result == null)
                         {
                             msg = "No request found for this transaction.";
-                            throw new Exception("No request found for cancel");
+                            throw new Exception("Cancel failed.");
                         }
                         break;
                     }

@@ -17,7 +17,7 @@
 <div class="w-full h-full flex flex-col gap-6 items-center px-16">
 <div class="w-full flex justify-center gap-4">
     <div role="tablist" class="tabs tabs-bordered">
-        <a asp-action="History" asp-controller="User" class="tab">Activity history</a>
+        <a asp-action="History" asp-controller="User" class="tab">Transaction history</a>
         <a asp-action="RequestsStatus" asp-controller="User" class="tab tab-active">Requests status</a>
     </div>
 </div>
@@ -31,7 +31,7 @@
     <!-- This will list the user requests to join organizations -->
     @if (!Model.OrganizationJoinRequests.IsNullOrEmpty())
     {
-        <h1 class="text-3xl font-bold text-center mb-4">Your request to join organizations:</h1>
+        <h1 class="text-3xl font-bold text-center mb-4">Your requests to join organizations:</h1>
         <!-- Right search bar -->
         <div class="flex w-full justify-end items-center gap-2 mb-4">
             @* Search bar *@
@@ -84,7 +84,7 @@
                             {
                                 case 0:
                                     <p class="badge badge-primary min-w-24 relative">Pending</p>
-                                    <dialog id="@("dModal" + orgCount)" class="modal">
+                                    <dialog id="@("oModal" + orgCount)" class="modal">
                                         <div class="modal-box">
                                             <form method="dialog">
                                                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -108,7 +108,8 @@
                                         </form>
                                     </dialog>
                                     <!-- Open the modal using ID.showModal() method -->
-                                    <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel request?" onclick="@("dModal" + orgCount).showModal()">
+                                    <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel request?"
+                                            onclick="document.getElementById('@("oModal" + orgCount)').showModal()">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
                                     break;
@@ -186,7 +187,7 @@
                             {
                                 case 0:
                                     <div class="badge badge-primary min-w-24 relative">Pending</div>
-                                    <dialog id="@("dModal" + prjCount)" class="modal">
+                                    <dialog id="@("pModal" + prjCount)" class="modal">
                                         <div class="modal-box">
                                             <form method="dialog">
                                                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -210,8 +211,9 @@
                                         </form>
                                     </dialog>
                                     <!-- Open the modal using ID.showModal() method -->
-                                    <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel request?" onclick="@("dModal" + prjCount).showModal()">
-                                        <i class="fa-solid fa-xmark"></i>
+                                    <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel request?"
+                                            onclick="document.getElementById('@("pModal" + prjCount)').showModal()">
+                                    <i class="fa-solid fa-xmark"></i>
                                     </button>
                                     break;
                                 case 1:
@@ -282,7 +284,7 @@
                     <th > Unit </th >
                     <th > Date </th >
                     <th > Sent to </th >
-                    <th > Status </th >
+                    @* <th > Status </th > *@
                     <th> Cancel ?</th>
                 </tr >
                 </thead >
@@ -300,23 +302,22 @@
                             <td>@donationRequest.Unit</td>
                             <td>@Html.DisplayFor(u => donationRequest.Time)</td>
                             <td>@donationRequest.Target</td>
-                            <td>
-                                <div class="flex justify-start items-center h-full">
-                                    @switch (donationRequest.Status)
-                                    {
-                                        case 0:
-                                            <div class="badge badge-primary min-w-24 relative">Pending</div>
-
-                                            break;
-                                        case 1:
-                                            <p class="badge badge-success min-w-24">Accepted</p>
-                                            break;
-                                        default:
-                                            <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p>
-                                            break;
-                                    }
-                                </div>
-                            </td>
+                            @* <td> *@
+                            @*     <div class="flex justify-start items-center h-full"> *@
+                            @*         @switch (donationRequest.Status) *@
+                            @*         { *@
+                            @*             case 0: *@
+                            @*                 <div class="badge badge-primary min-w-24 relative">Pending</div> *@
+                            @*                 break; *@
+                            @*             case 1: *@
+                            @*                 <p class="badge badge-success min-w-24">Accepted</p> *@
+                            @*                 break; *@
+                            @*             default: *@
+                            @*                 <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p> *@
+                            @*                 break; *@
+                            @*         } *@
+                            @*     </div> *@
+                            @* </td> *@
                             <td>
                                 <dialog id="@("dModal" + donCount)" class="modal">
                                     <div class="modal-box">
@@ -341,7 +342,8 @@
                                     </form>
                                 </dialog>
                                 <!-- Open the modal using ID.showModal() method -->
-                                <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel donation ?" onclick="@("dModal" + donCount).showModal()">
+                                <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel donation ?"
+                                        onclick="document.getElementById('@("dModal" + donCount)').showModal()">
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>
                             </td>
@@ -370,8 +372,8 @@
                     <th > Unit </th >
                     <th > Date </th >
                     <th > Sent to </th >
-                    <th > Status </th >
-                    <th> </th>
+                    @* <th > Status </th > *@
+                    <th> Cancel ?</th>
                 </tr >
                 </tfoot >
             </table >

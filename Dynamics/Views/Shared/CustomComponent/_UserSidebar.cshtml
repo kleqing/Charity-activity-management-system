@@ -1,7 +1,7 @@
 ﻿@model string
 <!-- Sidebar -->
-<div class="p-2 pt-12 w-full max-w-52">
-    <ul class="flex flex-col gap-2">
+<div class="p-2 pt-12 w-full max-w-52 relative">
+    <ul class="flex flex-col gap-2 sticky top-1/4">
         @{
             if (Model.Equals("Edit", StringComparison.OrdinalIgnoreCase))
             {
