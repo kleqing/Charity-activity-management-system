@@ -11,9 +11,12 @@
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
 		<PackageReference Include="Google.Apis.Oauth2.v2" Version="1.68.0.1869" />
+		<PackageReference Include="Google.Apis.Sheets.v4" Version="1.68.0.3547" />
+		<PackageReference Include="Json.Net" Version="1.0.33" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
@@ -42,6 +45,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Helps\" />
+	  <Folder Include="wwwroot\images\Organization\" />
+	  <Folder Include="wwwroot\files\Project\" />
+	  <Folder Include="wwwroot\images\Project\Phase\" />
 	  <Folder Include="wwwroot\images\User\" />
 	</ItemGroup>
 

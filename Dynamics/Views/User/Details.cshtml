@@ -1,8 +1,21 @@
 ﻿@model Dynamics.Models.Models.User
 
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject IHttpContextAccessor Accessor
 
 @{
     ViewData["Title"] = "Details";
+    var projectID = Accessor.HttpContext.Session.GetString("projectID");
+    if(projectID!=null)
+    {
+        Layout = "~/Views/Shared/_LayoutProject.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    
 }
 
 <div class="container mx-auto my-5 p-5">

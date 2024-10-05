@@ -15,7 +15,7 @@ namespace Dynamics.Models.Models
         [DataType(DataType.Date)]
         public DateOnly Date { get; set; }
         public string Content { get; set; }
-        public string Attachment { get; set; }
+        public string? Attachment { get; set; }
         public virtual Project Project { get; set; }
     }
 }

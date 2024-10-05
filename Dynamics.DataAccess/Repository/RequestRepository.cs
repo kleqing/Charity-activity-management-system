@@ -43,6 +43,25 @@ namespace Dynamics.DataAccess.Repository
 			return requests;
 		}
 
+		public async Task<List<Request>> GetAllRequestsAsync(string? includeObjects = null)
+		{
+			IQueryable<Request> organizations = _db.Requests;
+			if (!string.IsNullOrEmpty(includeObjects))
+			{
+				foreach (var includeObj in includeObjects.Split(
+					         new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					organizations = organizations.Include(includeObj);
+				}
+			}
+			return await organizations.ToListAsync();
+		}
+
+		public IQueryable<Request> GetAll()
+        {
+            return _db.Requests;
+        }
+
 		public async Task<List<Request>> SearchIndexFilterAsync(string searchQuery)
 		{
 			var requests = await _db.Requests.Where(r => r.RequestTitle.Contains(searchQuery) 
@@ -114,5 +133,19 @@ namespace Dynamics.DataAccess.Repository
 			}
 			return null;
 		}
-	}
+		
+        public Task<Request?> GetRequestAsync(Expression<Func<Request,bool>> filter, string? includeObjects = null)
+        {
+            var request = _db.Requests.Where(filter);
+            if (!string.IsNullOrEmpty(includeObjects))
+            {
+                foreach (var includeObj in includeObjects.Split(
+                    new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    request = request.Include(includeObj);
+                }
+            }
+            return request.FirstOrDefaultAsync();
+        }
+    }
 }

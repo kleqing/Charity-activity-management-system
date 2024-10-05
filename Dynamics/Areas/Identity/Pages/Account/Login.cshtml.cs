@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Dynamics.DataAccess.Repository;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -78,8 +79,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    
-                    // Check if verified first before sign in
+                    //Check if verified first before sign in
                     var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
                     if (!isEmailConfirmedAsync)
                     {
@@ -92,6 +92,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     // SerializeObject for session
                     var businessUser = await _userRepository.GetAsync(u => u.UserEmail == user.Email);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                    HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
+                    
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
