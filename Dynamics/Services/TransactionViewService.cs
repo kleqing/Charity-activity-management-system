@@ -32,7 +32,7 @@ public class TransactionViewService : ITransactionViewService
                 ResourceName = ut.OrganizationResource.ResourceName,
                 Target = "Organization - " + ut.OrganizationResource.Organization.OrganizationName,
                 Time = ut.Time,
-                Unit = ut.Unit,
+                Unit = ut.OrganizationResource.Unit,
                 Type = "organization"
             });
         return await result.ToListAsync();
@@ -52,7 +52,7 @@ public class TransactionViewService : ITransactionViewService
                 ResourceName = ut.ProjectResource.ResourceName,
                 Target = "Project - " + ut.ProjectResource.Project.ProjectName,
                 Time = ut.Time,
-                Unit = ut.Unit,
+                Unit = ut.ProjectResource.Unit,
                 Type = "project"
             });
         return result.ToListAsync();

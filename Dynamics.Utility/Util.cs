@@ -93,7 +93,7 @@ namespace Dynamics.Utility
         public async static Task<string> UploadImages(List<IFormFile> images, string folder)
         {
             string imagesPath = "";
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" }; 
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif",".webp" }; 
             try
             {
                 if(images.Count == 0)

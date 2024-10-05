@@ -15,11 +15,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
 </head>
 <body class="bg-base-100 relative">
-<partial name="CustomComponent/_Navbar"/>
-@* A box to push away from the navbar *@
-<div class="w-full" style="height: 80px;">
-</div>
-@RenderBody()
+    <partial name="CustomComponent/_Navbar" />
+    <partial name="CustomComponent/_NavbarBox"/>
+     <div class=" pt-5"> 
+        @RenderBody()
+     </div>
+
     <partial name="_Notification"/>
 
 

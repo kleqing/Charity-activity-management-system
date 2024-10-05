@@ -12,7 +12,7 @@
     var allProjectMember = projectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)), "User");
     Report report = new Report();
     var beMember = 0;
-    if (allProjectMember != null)
+    if (allProjectMember != null&& !string.IsNullOrEmpty(userIDString))
     {
         if (!allProjectMember.Any(p => p.UserID.Equals(new Guid(userIDString))))
         {//no join request
@@ -133,44 +133,50 @@
                         <p class="text-gray-400 font-normal text-base ">Address: @Model.CurrentLeaderProject.UserAddress</p>
                 </div>
             </div>
-            <div class="flex justify-start">
-                <div>
-                    <img class="rounded-full w-14 h-14 mx-4 mb-4"
-                         src="@Model.CurrentProject.Request?.User.UserAvatar"
-                         alt="avatar">
-                </div>
-                <div class="flex flex-col ">
-                    <p class="text-gray-600 font-normal">
-                        Requester: <span class="text-black font-bold">
-                                @Model.CurrentProject.Request?.User.UserFullName
-                        </span>
-                    </p>
-                        <p class="text-gray-400 font-normal text-base ">Address: @Model.CurrentProject.Request?.User.UserAddress</p>
-                </div>
-            </div>
-        </div>
-        <div class="border-t p-4 mt-0">
-            <h2 class="font-semibold mb-2 text-black text-3xl">Donors</h2>
-            @foreach (var item in Model.Random5Donors)
+            @if (Model.CurrentProject.Request != null)
             {
-                <div class="flex justify-between items-center p-4 shadow-md shadow-green-500/30  rounded-3xl mb-4">
-                    <div class="flex justify-start items-center mx-0 my-0">
+                <div class="flex justify-start">
                     <div>
-                        <img class="rounded-full w-14 h-14 mx-4"
-                             src="@item.User.UserAvatar"
+                        <img class="rounded-full w-14 h-14 mx-4 mb-4"
+                             src="@Model.CurrentProject.Request?.User.UserAvatar"
                              alt="avatar">
                     </div>
                     <div class="flex flex-col ">
-                        <p class="text-black font-bold">@item.User.UserFullName</p>
-                        <p class="text-gray-400 font-normal text-base ">Donate on @item.Time</p>
+                        <p class="text-gray-600 font-normal">
+                            Requester: <span class="text-black font-bold">
+                                @Model.CurrentProject.Request?.User.UserFullName
+                            </span>
+                        </p>
+                        <p class="text-gray-400 font-normal text-base ">Address: @Model.CurrentProject.Request?.User.UserAddress</p>
                     </div>
                 </div>
-                <p class="text-green-700 font-semibold ">@item.Amount @item.ProjectResource?.ResourceName</p>
-            </div>
-            }
-            <a asp-action="ManageProjectDonor" asp-route-projectID="@currentProjectID" class="text-gray-400 flex justify-center font-normal">See more donors...</a>
-
+            }          
         </div>
+        @if (Model.Random5Donors.Count > 0)
+        {
+            <div class="border-t p-4 mt-0">
+                <h2 class="font-semibold mb-2 text-black text-3xl">Donors</h2>
+
+                @foreach (var item in Model.Random5Donors)
+                {
+                    <div class="flex justify-between items-center p-4 shadow-md shadow-green-500/30  rounded-3xl mb-4">
+                        <div class="flex justify-start items-center mx-0 my-0">
+                            <div>
+                                <img class="rounded-full w-14 h-14 mx-4"
+                                     src="@item.User.UserAvatar"
+                                     alt="avatar">
+                            </div>
+                            <div class="flex flex-col ">
+                                <p class="text-black font-bold">@item.User.UserFullName</p>
+                                <p class="text-gray-400 font-normal text-base ">Donate on @item.Time</p>
+                            </div>
+                        </div>
+                        <p class="text-green-700 font-semibold ">@item.Amount @item.ProjectResource?.ResourceName</p>
+                    </div>
+                }
+                <a asp-action="ManageProjectDonor" asp-route-projectID="@currentProjectID" class="text-gray-400 flex justify-center font-normal">See more donors...</a>
+            </div>
+        }       
     </div>
 
 
@@ -180,7 +186,7 @@
     <div class=" flex flex-col text-4xl justify-start shadow-2xl p-6 my-10 mx-2 rounded-3xl bg-white">
         <span class=" font-bold text-green-500 p-2 tex-6xl">Raised @Model.CurrentAmountOfMoneyDonate VND</span>
         <div class="w-full bg-gray-200 rounded-full h-3 dark:bg-gray-700 ">
-            <div class="bg-green-500 h-3 rounded-full" style="width: @Model.ProgressDonate%"></div>
+            <div class="bg-green-500 h-3 rounded-full" style="width: @(Model.ProgressDonate >=100?100:Model.ProgressDonate)%"></div>       
         </div>
         <span class=" font-normal text-gray-500 p-2 text-2xl">
             pledged of <span class="font-bold text-black text-4xl">@Model.ExpectedAmountOfMoneyDonate</span> VND goal
@@ -278,37 +284,7 @@
         </div>
     </dialog>
 
-    @* report form *@
-    <div id="Overlay" class="fixed inset-0 bg-black opacity-60 z-40 hidden"></div>
 
-    <div id="ReportForm" class="fixed hidden bg-white bg-opacity-70 w-1/4 mx-auto flex-col shadow-md shadow-gray-500/30 p-6 rounded-md my-10 z-50" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <h2 class="font-serif text-black font-bold text-3xl text-center mb-4">Report project</h2>
-
-        <!-- form report -->
-        <form method="post" asp-action="SendReportProjectRequest" asp-controller="Project">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="@report.ObjectID" value="@currentProjectID" />
-            <div class="grid grid-cols-1 gap-y-3">
-                <div>
-                    <label asp-for="@report.Reason" class="block mb-2 text-md font-medium text-gray-900">Enter reason to report project</label>
-                    <textarea asp-for="@report.Reason" id="Reason" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-white bg-opacity-70 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Write reason here..."></textarea>
-                    <span asp-validation-for="@report.Reason" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="flex justify-center items-center gap-x-6">
-                <button type="submit"
-                        class="mt-4 text-md text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
-                    Report
-                </button>
-                <button onclick="cancelReportForm()" type="reset"
-                        class="mt-4 text-md text-white bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
-                    Cancel
-                </button>
-            </div>
-
-        </form>
-        <!-- end form report -->
-    </div>
 </div>
 
 <script>
@@ -378,28 +354,4 @@
     // Initialize the carousel
     updateCarousel();
 
-   @*  hide/show report form *@
-        function showReportForm() {
-            console.log("Trying to show form for: report form");
-            var Overlay = document.getElementById('Overlay');
-            var reportForm = document.getElementById('ReportForm');
-            if (reportForm && Overlay) {
-                document.getElementById('Overlay').classList.remove('hidden');
-                Overlay.style.display = 'block';  // Show the form
-                reportForm.style.display = 'block';  // Show the form
-            } else {
-                console.error("Element not found for itemID:", itemID);
-            }
-        }
-
-    function cancelReportForm() {
-        var Overlay = document.getElementById('Overlay');
-        var reportForm = document.getElementById('ReportForm');
-        if (reportForm && Overlay) {
-            Overlay.style.display = 'none';  // Hide the form
-            reportForm.style.display = 'none';  // Hide the form
-        } else {
-            console.error("Element not found for itemID:", itemID);
-        }
-    }
 </script>

@@ -56,7 +56,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("Homepage/Home");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -67,7 +67,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("Homepage/Home");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -79,14 +79,13 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    
-                    // Check if verified first before sign in
-                    //var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
-                    //if (!isEmailConfirmedAsync)
-                    //{
-                    //    ModelState.AddModelError(string.Empty, "User account is not confirmed!");
-                    //    return Page();
-                    //}
+                    //Check if verified first before sign in
+                    var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
+                    if (!isEmailConfirmedAsync)
+                    {
+                        ModelState.AddModelError(string.Empty, "User account is not confirmed!");
+                        return Page();
+                    }
 
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,
                         lockoutOnFailure: false);
@@ -99,7 +98,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("User logged in.");
                         // TODO: Redirect to home page
-                        return RedirectToAction("Homepage", "Home", returnUrl);
+                        return Redirect(returnUrl);
+                        // return RedirectToAction("Homepage", "Home", returnUrl);
                     }
                     // TODO: Ban user in da future
                     if (result.IsLockedOut)

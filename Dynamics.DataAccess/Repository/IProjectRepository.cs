@@ -43,10 +43,10 @@ namespace Dynamics.DataAccess.Repository
         Task<List<UserToProjectTransactionHistory>> GetRandom5Donors(Guid projectID);
 
         Task<List<UserToProjectTransactionHistory>> GetAllUserDonateAsync(
-            Expression<Func<UserToProjectTransactionHistory, bool>> filter, string? includeObjects = null);
+            Expression<Func<UserToProjectTransactionHistory, bool>> filter);
 
         Task<List<OrganizationToProjectHistory>> GetAllOrganizationDonateAsync(
-            Expression<Func<OrganizationToProjectHistory, bool>> filter, string? includeObjects = null);
+            Expression<Func<OrganizationToProjectHistory, bool>> filter);
 
         Task<bool> AcceptedUserDonateRequestAsync(Guid transactionID);
         Task<bool> DenyUserDonateRequestAsync(Guid transactionID);
@@ -86,5 +86,19 @@ namespace Dynamics.DataAccess.Repository
         Task<bool> AddUserDonateRequestAsync(UserToProjectTransactionHistory? userDonate);
         Task<bool> AddOrgDonateRequestAsync(OrganizationToProjectHistory? orgDonate);
         Task<int> CountMembersOfProjectByIdAsync(Guid projectId);
+
+        //Repose ò tuan
+        Task<List<Project>> GetAllProjectsByOrganizationIDAsync(Expression<Func<Project, bool>> filter);
+
+        Task<bool> AddProjectAsync(Project entity);
+
+        Task<bool> AddProjectMemberAsync(ProjectMember entity);
+
+        Task<bool> AddProjectResourceAsync(ProjectResource entity);
+        Task<Project> GetProjectByProjectIDAsync(Expression<Func<Project, bool>> filter);
+
+        Task<List<ProjectResource>> GetAllResourceByProjectIDAsync(Expression<Func<ProjectResource, bool>> filter);
+
+        Task<bool> UpdateProjectResource(ProjectResource entity);
     }
 }

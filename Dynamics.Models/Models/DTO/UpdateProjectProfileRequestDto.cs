@@ -34,12 +34,12 @@ namespace Dynamics.Models.Models.DTO
         public Guid OldLeaderID { get; set; }
         [DataType(DataType.PhoneNumber)]
         [ValidateNever]
-        public string? PhoneNumber { get; set; }
+        public string? ProjectPhoneNumber { get; set; }
         [ValidateNever]
-        public string? Address { get; set; }
+        public string? ProjectAddress { get; set; }
+        [ValidateNever]
         [DataType(DataType.EmailAddress)]
-        [ValidateNever]
-        public string? Email { get; set; }
+        public string ProjectEmail { get; set; }
         [ValidateNever]
         public string? ReportFile { get; set; }
     }

@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
-    [Authorize(Roles = RoleConstants.User)]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;

@@ -94,6 +94,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 // Sign in using that user instead of Google
                 var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
                     info.Principal.Identity.Name, info.LoginProvider);
                 await _signInManager.SignInAsync(existingUser, isPersistent: false, authenticationMethod: null);

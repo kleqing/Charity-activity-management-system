@@ -67,16 +67,22 @@ namespace Dynamics
                 });
             // Repos here
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IOrganizationVMService, OrganizationVMService>();
+            builder.Services.AddScoped<IUserToOragnizationTransactionHistoryVMService, UserToOragnizationTransactionHistoryVMService>();
+            builder.Services.AddScoped<IProjectVMService, ProjectVMService>();
+            builder.Services.AddScoped<IOrganizationToProjectHistoryVMService, OrganizationToProjectHistoryVMService>();
+
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
             // Project repos
-            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
             builder.Services
                 .AddScoped<IUserToProjectTransactionHistoryRepository,
                     UserToProjectTransactionHistoryRepository>();
             // Organization repos
-            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             builder.Services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             builder.Services.AddScoped<IOrganizationResourceRepository, OrganizationResourceRepository>();
             builder.Services

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace Dynamics.Models.Models
         public string Type { get; set; }
         public string Reason { get; set; }
         public DateTime ReportDate { get; set; }
-        public virtual User? Reporter { get; set; }  
+        public virtual User? Reporter { get; set; }
 
     }
 }
