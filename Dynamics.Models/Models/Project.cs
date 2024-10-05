@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,7 +12,8 @@ namespace Dynamics.Models.Models
     {
 		public Guid ProjectID { get; set; }
 		public Guid OrganizationID { get; set; }
-		public Guid? RequestID { get; set; }
+        [Required]
+        public Guid? RequestID { get; set; }
 
         [Required(ErrorMessage = "The Project Name field is required *")]
         [MaxLength(100, ErrorMessage = "Project Name length cannot be longer than 100 characters.")]
@@ -21,8 +23,11 @@ namespace Dynamics.Models.Models
         [DataType(DataType.PhoneNumber)]
         public string? ProjectPhoneNumber { get; set; }
         public string? ProjectAddress { get; set; }
+        [Required]
         public int ProjectStatus { get; set; }
+        [ValidateNever]
         public string? Attachment { get; set; }
+        public string? ReportFile { get; set; }
 
         [Required(ErrorMessage = "The Organization Name field is required *")]
         public string ProjectDescription { get; set; }

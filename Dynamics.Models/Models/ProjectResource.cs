@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dynamics.Models.Models
 {
@@ -14,13 +15,19 @@ namespace Dynamics.Models.Models
 
         [Required(ErrorMessage = "The Resource Name field is required *")]
         public string ResourceName { get; set; }
-		public int? Quantity { get; set; }
-		public int? ExpectedQuantity { get; set; }
+        [ValidateNever]
+        public int? Quantity { get; set; }
+        [Required]
+        public int ExpectedQuantity { get; set; }
 
         [Required(ErrorMessage = "The Unit field is required *")]
+        
         public string Unit { get; set; }
-		public virtual Project Project { get; set; }
+        [ValidateNever]
+        public virtual Project Project { get; set; }
+        [ValidateNever]
         public virtual ICollection<OrganizationToProjectHistory> OrganizationToProjectHistory { get; set; }
+        [ValidateNever]
         public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactionHistory { get; set; }
 
 

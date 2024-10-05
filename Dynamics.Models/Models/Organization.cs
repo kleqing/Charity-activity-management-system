@@ -9,7 +9,8 @@ namespace Dynamics.Models.Models
 {
     public class Organization
     {
-		public Guid OrganizationID { get; set; }
+        [Required]
+        public Guid OrganizationID { get; set; }
 
         [Required(ErrorMessage = "The Organization Name field is required *")]
         [MaxLength(100, ErrorMessage = "Organization Name length cannot be longer than 100 characters.")]

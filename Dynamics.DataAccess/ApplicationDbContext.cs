@@ -157,7 +157,7 @@ namespace Dynamics.DataAccess
             modelBuilder.Entity<UserToProjectTransactionHistory>()
                 .HasOne(ut => ut.ProjectResource)
                 .WithMany(p => p.UserToProjectTransactionHistory)
-                .HasForeignKey(ut => ut.ResourceID);
+                .HasForeignKey(ut => ut.ProjectResourceID);
 
             // History to Project
             modelBuilder.Entity<History>()
