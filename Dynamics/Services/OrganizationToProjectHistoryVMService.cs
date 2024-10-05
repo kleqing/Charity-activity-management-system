@@ -27,7 +27,6 @@ namespace Dynamics.Services
                                        OrganizationResourceID = otp.OrganizationResourceID,
                                        ProjectResourceID = otp.ProjectResourceID,
                                        Status = otp.Status,
-                                       Unit = otp.Unit,
                                        Time = otp.Time,
                                        Amount = otp.Amount,
                                        OrganizationResource = otp.OrganizationResource,

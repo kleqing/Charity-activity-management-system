@@ -19,6 +19,7 @@ using Dynamics.Helps;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static System.Net.Mime.MediaTypeNames;
+using Util = Dynamics.Utility.Util;
 
 namespace Dynamics.Controllers
 {
@@ -1235,7 +1236,7 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    projectVM.Attachment = Utility.Util.UploadImage(image, @"images\Project", projectVM.ProjectID.ToString());
+                    projectVM.Attachment = Util.UploadImage(image, @"images\Project");
                 }
 
                 if (projectVM.ProjectEmail == null)
@@ -1250,7 +1251,7 @@ namespace Dynamics.Controllers
                 {
                     projectVM.ProjectAddress = Leader.UserAddress;
                 }
-                var project = new Project()
+                var project = new Models.Models.Project()
                 {
                     ProjectID = projectVM.ProjectID,
                     OrganizationID = projectVM.OrganizationID,
@@ -1265,7 +1266,7 @@ namespace Dynamics.Controllers
                     StartTime = projectVM.StartTime,
                     EndTime = projectVM.EndTime,
                 };
-                if(await _projectRepository.AddProjectAsync(project))
+                if(await projectRepository.AddProjectAsync(project))
                 {
                     return RedirectToAction(nameof(AutoJoinProject), new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
                 }       
@@ -1293,7 +1294,7 @@ namespace Dynamics.Controllers
                 ProjectID = projectId,
                 Status = 2,
             };
-            await _projectRepository.AddProjectMemberAsync(projectMember);
+            await projectRepository.AddProjectMemberAsync(projectMember);
             if (!currentUser.UserID.Equals(leaderId))
             {
                 var projectMember1 = new ProjectMember()
@@ -1302,7 +1303,7 @@ namespace Dynamics.Controllers
                     ProjectID = projectId,
                     Status = 2,
                 };
-                await _projectRepository.AddProjectMemberAsync(projectMember1);
+                await projectRepository.AddProjectMemberAsync(projectMember1);
             }
             var projectResource = new ProjectResource()
             {
@@ -1312,24 +1313,24 @@ namespace Dynamics.Controllers
                 ExpectedQuantity = 0,
                 Unit = "VND",
             };
-            await _projectRepository.AddProjectResourceAsync(projectResource);
+            await projectRepository.AddProjectResourceAsync(projectResource);
 
-            var currentProject = await _projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
-            HttpContext.Session.Set<Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
+            var currentProject = await projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
+            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }
         [HttpGet]
 
         public async Task<IActionResult> DetailProject(Guid projectId)
         {
-            var currentProject = await _projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
-            HttpContext.Session.Set<Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
+            var currentProject = await projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
+            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }
 
         public async Task<IActionResult> AddProjectResource()
         {
-            var currentProject = HttpContext.Session.Get<Project>(MySettingSession.SESSION_Current_Project_KEY);
+            var currentProject = HttpContext.Session.Get<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY);
 
             var projectResource = new ProjectResource()
             {
@@ -1337,7 +1338,7 @@ namespace Dynamics.Controllers
                 Quantity = 0,
             };
 
-            var projectResources =await _projectRepository.GetAllResourceByProjectIDAsync(pr => pr.ProjectID .Equals(currentProject.ProjectID));
+            var projectResources =await projectRepository.GetAllResourceByProjectIDAsync(pr => pr.ProjectID .Equals(currentProject.ProjectID));
             HttpContext.Session.Set<List<ProjectResource>>(MySettingSession.SESSION_Resources_In_A_PRoject_KEY, projectResources);
 
             return View(projectResource);
@@ -1346,7 +1347,7 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProjectResource(ProjectResource projectResource)
         {
-            await _projectRepository.AddProjectResourceAsync(projectResource);
+            await projectRepository.AddProjectResourceAsync(projectResource);
             return RedirectToAction(nameof(AddProjectResource));
         }
     }

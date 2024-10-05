@@ -81,7 +81,7 @@ namespace Dynamics.Controllers
             //set picture for Organization
             if (image != null)
             {
-                organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization", organization.OrganizationID.ToString());
+                organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization");
             }
 
             //get current user
@@ -160,7 +160,7 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization", organization.OrganizationID.ToString());
+                    organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization");
                     
                 }
                 await _organizationRepository.UpdateOrganizationAsync(organization);
@@ -389,7 +389,6 @@ namespace Dynamics.Controllers
             {
                 OrganizationResourceID = currentResource.ResourceID,
                 Status = 0,
-                Unit = currentResource.Unit,
                 Time = DateOnly.FromDateTime(DateTime.UtcNow),
             };
 

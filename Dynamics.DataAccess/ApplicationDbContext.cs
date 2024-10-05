@@ -138,7 +138,7 @@ namespace Dynamics.DataAccess
             // UserToProjectTransactionHistory to User
             modelBuilder.Entity<UserToProjectTransactionHistory>()
                 .HasOne(ut => ut.User)
-                .WithMany(u => u.UserToProjectTransactions)
+                .WithMany(u => u.UserToProjectTransactionHistories)
                 .HasForeignKey(ut => ut.UserID);
 
             // UserToProjectTransactionHistory to ProjectResource 

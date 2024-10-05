@@ -14,7 +14,7 @@ namespace Dynamics.Models.Models
 		public string Content { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? CreationDate { get; set; }
-        public string requestTitle {  get; set; }
+        public string RequestTitle {  get; set; }
 
         [DataType(DataType.EmailAddress)]
         public string? RequestEmail { get; set; }

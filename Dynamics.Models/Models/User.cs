@@ -16,7 +16,6 @@ namespace Dynamics.Models.Models
         public DateOnly? UserDOB { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
-        [Required]
         [Display(Name = "Email Address")]
         public string UserEmail { get; set; }
         [DataType(DataType.PhoneNumber)]

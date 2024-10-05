@@ -24,7 +24,6 @@
         <form asp-action="SendResoueceOrganizationToProject" asp-controller="Organization" class="bg-white p-8 rounded-lg shadow-md w-80">
             <div>
                 <input asp-for="Status" name="0" class="hidden">
-                <input asp-for="Unit" name="Unit" class="hidden">
                 <input type="date" asp-for="Time" name="Time" class="hidden">
             </div>
            
@@ -38,6 +37,11 @@
             <div class="mb-4">
                 <label asp-for="Amount" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
                 <input asp-for="Amount" name="Amount" type="number" id="quantity" placeholder="Enter quantity" class="w-full p-2 border border-gray-300 rounded-md">
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="OrganizationResourceID" class="block text-sm font-medium text-gray-700 mb-1">Resource Unit</label>
+                <input id="resource-type" class="w-full p-2 border border-gray-300 rounded-md appearance-none bg-white" value="@currentResource.Unit" readonly>
             </div>
 
             <div class="mb-6">

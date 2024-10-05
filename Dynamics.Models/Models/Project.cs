@@ -35,7 +35,7 @@ namespace Dynamics.Models.Models
         public DateOnly? StartTime { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? EndTime { get; set; }
-        public string? shutdownReanson { get; set; }
+        public string? ShutdownReason { get; set; }
 		public virtual Organization Organization { get; set; }
 		public virtual Request Request { get; set; }
 		public virtual ICollection<ProjectMember> ProjectMember { get; set; }
