@@ -79,10 +79,12 @@ namespace Dynamics.Controllers
         {
             try
             {
-                var existingUser = await _userRepository.GetAsync(u => u.UserFullName.Equals(user.UserFullName));
-                existingUser = await _userRepository.GetAsync(u => u.UserEmail.Equals(user.UserEmail));
-                if (existingUser != null && (existingUser.UserFullName != user.UserFullName ||
-                                             existingUser.UserEmail != user.UserEmail))
+                var currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("user"));
+                // Try to get existing user (If we might have) that is in the system
+                var existingUserFullName = await _userRepository.GetAsync(u => u.UserFullName.Equals(user.UserFullName) && u.UserFullName != currentUser.UserFullName);
+                var existingUserEmail = await _userRepository.GetAsync(u => u.UserEmail.Equals(user.UserEmail) && u.UserEmail != currentUser.UserEmail);
+                // If one of these 2 exists, it means that another user is already has the same name or email
+                if (existingUserEmail != null || existingUserFullName != null)
                 {
                     ModelState.AddModelError("", "Username or email is already taken.");
                     return View(user);

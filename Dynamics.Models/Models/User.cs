@@ -26,10 +26,10 @@ namespace Dynamics.Models.Models
         [ValidateNever]
         public string? UserAvatar { get; set; }
         public string? UserDescription { get; set; }
+        
         [ValidateNever]
         // Self-referencing relationships for reports
         public virtual ICollection<Report> ReportsMade { get; set; }  // Reports this user submitted
-
         public virtual ICollection<Award> Award { get; set; }
         public virtual ICollection<Request> Request { get; set; }
         public virtual ICollection<ProjectMember> ProjectMember { get; set; }

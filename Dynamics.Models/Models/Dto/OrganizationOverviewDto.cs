@@ -1,11 +1,13 @@
-﻿namespace Dynamics.Models.Models.Dto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Dynamics.Models.Models.Dto;
 
 public class OrganizationOverviewDto
 {
-    public Guid OrganizationId { get; set; }
+    public User OrganizationLeader { get; set; }
     public string OrganizationName { get; set; }
-    public string OrganizationLeader { get; set; }
-    public string OrganizationLocation { get; set; }
-    public string OrganizationDesc { get; set; }
-    public int OrganizationMembers { get; set; }
+    public string? OrganizationAddress { get; set; }
+    public string? OrganizationDescription { get; set; }
+    public string? OrganizationPictures { get; set; }
+    public int OrganizationMemberCount { get; set; }
 }

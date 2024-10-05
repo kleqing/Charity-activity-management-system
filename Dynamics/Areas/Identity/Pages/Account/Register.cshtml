@@ -52,7 +52,7 @@
                         <br>
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
-                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger list-disc" role="alert"></div>
                     <!-- Submit button -->
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init
                             class="btn btn-primary w-full loading-btn"
@@ -73,7 +73,7 @@
                         <p>
                             @foreach (var provider in Model.ExternalLogins!)
                             {
-                                <button type="submit" class="login-with-google-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">Login with @provider.DisplayName</button>
+                                <button type="submit" class="login-with-google-btn" name="provider" value="@provider.Name" title="Register using your @provider.DisplayName account">Register with @provider.DisplayName</button>
                             }
                         </p>
                     </div>

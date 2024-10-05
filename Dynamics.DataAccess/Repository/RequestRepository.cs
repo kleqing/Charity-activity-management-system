@@ -57,9 +57,13 @@ namespace Dynamics.DataAccess.Repository
 			return await organizations.ToListAsync();
 		}
 
-		public IQueryable<Request> GetAll()
+		public async Task<List<Request>> GetAllAsync(Expression<Func<Request, bool>>? filter = null)
         {
-            return _db.Requests;
+	        if (filter != null)
+	        {
+		        return await _db.Requests.Where(filter).Include(r => r.User).ToListAsync();
+	        }
+	        return await _db.Requests.ToListAsync();
         }
 
 		public async Task<List<Request>> SearchIndexFilterAsync(string searchQuery)

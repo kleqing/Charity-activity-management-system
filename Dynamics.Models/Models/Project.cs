@@ -41,7 +41,5 @@ namespace Dynamics.Models.Models
 		public virtual ICollection<ProjectMember> ProjectMember { get; set; }
 		public virtual ICollection<ProjectResource> ProjectResource { get; set; }
 		public virtual ICollection<History> History { get; set; }
-        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactions { get; set; }
-		public virtual ICollection<OrganizationToProjectHistory> OrganizationToProjectTransactions { get; set; }
 	}
 }

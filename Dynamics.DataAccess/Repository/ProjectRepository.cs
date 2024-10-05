@@ -124,8 +124,16 @@ namespace Dynamics.DataAccess.Repository
             return null;
         }
 
-        public async Task<List<Project>> GetAllAsync()
+        public async Task<List<Project>> GetAllAsync(Expression<Func<Project, bool>>? filter = null)
         {
+            // We include these just in case we want to display all stuff
+            if (filter != null)
+            {
+                return await _db.Projects.Include(pr => pr.ProjectResource)
+                    .Where(filter)
+                    .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
+                    .ToListAsync();
+            }
             return await _db.Projects.Include(pr => pr.ProjectResource)
                 .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
                 .ToListAsync();

@@ -38,8 +38,20 @@ namespace Dynamics.DataAccess.Repository
         }
         public IQueryable<Organization> GetAll()
         {
-            return _db.Organizations;
+            return _db.Organizations.Include(o => o.OrganizationMember).ThenInclude(om => om.User);
         }
+
+        public async Task<List<Organization>> GetAllOrganizationsWithExpressionAsync(Expression<Func<Organization, bool>>? filter = null)
+        {
+            if (filter != null)
+            {
+                return await _db.Organizations
+                    .Where(filter)
+                    .Include(o => o.OrganizationMember).ThenInclude(om => om.User).ToListAsync();
+            }
+            return await _db.Organizations.Include(o => o.OrganizationMember).ThenInclude(om => om.User).ToListAsync();
+        }
+
         public async Task<Organization> GetOrganizationOfAUser(Guid userId)
         {
             var OrganizationObj = _db.OrganizationMember.Where(x=>x.UserID.Equals(userId)&&x.Status==2).Include("Organization").FirstOrDefaultAsync().Result;

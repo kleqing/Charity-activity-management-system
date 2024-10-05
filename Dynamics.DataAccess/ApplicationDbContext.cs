@@ -170,7 +170,7 @@ namespace Dynamics.DataAccess
         .HasOne(h => h.Project)
         .WithMany(p => p.History)
         .HasForeignKey(h => h.ProjectID);
-           
+    
         }
     }
 }

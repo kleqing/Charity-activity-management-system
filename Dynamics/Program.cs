@@ -46,6 +46,7 @@ namespace Dynamics
             builder.Services
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
+                    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
                     options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireDigit = false;
@@ -86,15 +87,15 @@ namespace Dynamics
             // Add custom services
             builder.Services.AddScoped<ITransactionViewService, TransactionViewService>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IRequestService, RequestService>();
+            builder.Services.AddScoped<IOrganizationService, OrganizationService>();
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 
             builder.Services.AddControllersWithViews()
-            .AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
-
-
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
             // Configure default routes (This should be after configured the Identity)
             builder.Services.ConfigureApplicationCookie(options =>
             {

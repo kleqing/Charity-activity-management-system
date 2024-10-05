@@ -45,25 +45,30 @@ public class ProjectService : IProjectService
         return tempProjectOverviewDto;
     }
 
-    /**
-     * Note the param projects has to include the project resource for calculation
-     * (Decrypted)
-     */
-    // public List<Project> GetCompletedProjectsFromProjects(List<Project> projects)
-    // {
-    //     var result = new List<Project>();
-    //     foreach (var project in projects)
-    //     {
-    //         // Make sure that the money resource is not null
-    //         var moneyResource = project.ProjectResource.Where(pr => pr.ResourceName.Equals("Money", StringComparison.CurrentCultureIgnoreCase));
-    //         if (!moneyResource.Any()) continue;
-    //         var isFull = moneyResource.FirstOrDefault().ExpectedQuantity >= moneyResource.FirstOrDefault().Quantity;
-    //         result.Add(project);
-    //     }
-    //     return result;
-    // }
-    
-    // Use for display purpose (Multiple database trips)
+    public List<ProjectOverviewDto> MapToListProjectOverviewDto(List<Project> projects)
+    {
+        var resultDtos = new List<ProjectOverviewDto>();  
+        foreach (var p in projects)
+        {
+            if (p.ProjectMember.IsNullOrEmpty()) throw new Exception("WARNING PROJECT MEMBER IS EMPTY");
+            var tempProjectOverviewDto = _mapper.Map<ProjectOverviewDto>(p);
+            // Get leader project
+            var leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 2).FirstOrDefault();
+            if (leader == null) throw new Exception("No leader for project found");
+            tempProjectOverviewDto.ProjectLeader = leader.User;
+            tempProjectOverviewDto.ProjectMembers = p.ProjectMember.Count(pm => pm.ProjectID == p.ProjectID);
+            tempProjectOverviewDto.ProjectProgress = GetProjectProgress(p);
+            var moneyRaised = p.ProjectResource.FirstOrDefault(pr => pr.ResourceName.Equals("Money", StringComparison.CurrentCultureIgnoreCase) && pr.ProjectID == p.ProjectID);
+            if (moneyRaised != null)
+            {
+                tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
+            }
+            resultDtos.Add(tempProjectOverviewDto);
+        }
+        return resultDtos;
+    }
+
+    // Use for display purpose (Multiple database trips) please include it instead
     public int? GetProjectProgressId(Guid projectId)
     {
         var resourceNumbers = _context.ProjectResources
@@ -83,6 +88,7 @@ public class ProjectService : IProjectService
      */
     public int? GetProjectProgress(Project p)
     {
+        if (p.ProjectResource == null) throw new Exception("PLEASE INCLUDE THE PROJECT RESOURCE IN PROJECT ENTITY BEFORE USING THIS FUNCTION");
         var resourceNumbers = p.ProjectResource.Where(pr => pr.ResourceName.ToLower().Equals("money"))
             .Select(resource => new
             {
@@ -91,6 +97,7 @@ public class ProjectService : IProjectService
             }).FirstOrDefault();
         if (resourceNumbers == null) return -1;
         if (resourceNumbers.expectedQuantity == 0) return 0;
-        return resourceNumbers.quantity * 100 / resourceNumbers.expectedQuantity;
+        var progress = resourceNumbers.quantity * 100 / resourceNumbers.expectedQuantity;
+        return progress <= 100 ? progress : 100; // If project donation exceeded the expected, only display 100
     }
 }

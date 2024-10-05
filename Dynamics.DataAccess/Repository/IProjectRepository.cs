@@ -13,8 +13,10 @@ namespace Dynamics.DataAccess.Repository
 {
     public interface IProjectRepository
     {
-        // Use for display purposes - Kiet
-        Task<List<Project>> GetAllAsync();
+        /**
+         * Can put in a filter.
+         */
+        Task<List<Project>> GetAllAsync(Expression<Func<Project, bool>>? filter = null);
         Task<List<Project>> GetAllProjectsAsync(string? includeObjects = null);
 
         //using this to get project member of leader
