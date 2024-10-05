@@ -31,19 +31,17 @@
 
 <!-- The body of the home page -->
 <div class="-mt-12 z-10 relative bg-white rounded-3xl px-8 py-16 flex flex-col gap-20">
-<h1 class="text-center text-3xl text-rose-500">DEBUGGING: Is authenticated: @isAuthenticated</h1>
+<h1 class="text-center text-3xl text-primary font-bold align-with-navbar-center">
+    Help requests
+</h1>
 <!-- Help request section -->
+@if (Model.Requests.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">Nobody is here to help.</h3>
+}
 <section class="flex flex-col justify-center items-center splide"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Help
-        requests
-    </h1>
-    @if (Model.Requests.IsNullOrEmpty())
-    {
-        <h3 class="text-center text-neutral italic text-xl">Nobody is here to help.</h3>
-    }
-    else
+    @if (!Model.Requests.IsNullOrEmpty())
     {
         <!-- TODO: Replace this with link to view requests -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
@@ -131,20 +129,20 @@
 </section>
 <!-- End help request section -->
 <div class="divider"></div>
+<h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
+    Ongoing charity projects
+</h1>
 <!-- View charity projects section -->
+@if (Model.OnGoingProjects.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">
+        No projects available, maybe the world is already a better
+        place ?
+    </h3>
+}
 <section class="flex flex-col justify-center items-center splide section"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Ongoing charity projects
-    </h1>
-    @if (Model.OnGoingProjects.IsNullOrEmpty())
-    {
-        <h3 class="text-center text-neutral italic text-xl">
-            No projects available, maybe the world is already a better
-            place ;)
-        </h3>
-    }
-    else
+    @if (!Model.OnGoingProjects.IsNullOrEmpty())
     {
         <!-- TODO: Replace this with link to view requests -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
@@ -262,21 +260,19 @@
 </section>
 <!-- End view charity projects section -->
 <div class="divider"></div>
-
+<h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
+    Active organizations
+</h1>
 <!-- View ORGANIZATION section -->
+@if (Model.Organizations.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">No organizations present. Lonely isn't it</h3>
+}
 <section class="flex flex-col justify-center items-center splide section"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Active organizations
-    </h1>
-    @* TODO: Replace this with organization view *@
-    @if (Model.Organizations.IsNullOrEmpty())
+    @if (!Model.Organizations.IsNullOrEmpty())
     {
-        <h3 class="text-center text-neutral italic text-xl">No organizations present. Lonely isn't it</h3>
-    }
-    else
-    {
-        <!-- TODO: Replace this with link to view requests -->
+        <!-- TODO: Replace this with link to view org -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
             View more organization &rarr;
         </a>
@@ -285,7 +281,7 @@
             <ul class="splide__list w-full">
                 <!-- Card -->
                 @{
-                    if (!Model.SuccessfulProjects.IsNullOrEmpty())
+                    if (!Model.Organizations.IsNullOrEmpty())
                     {
                         foreach (var modelOrganization in Model.Organizations)
                         {
@@ -355,7 +351,6 @@
                         }
                     }
                 }
-
             </ul>
             <!-- End cards -->
         </div>
@@ -367,19 +362,19 @@
 
 
 <!-- View SUCCESSES CHARITY section -->
+<h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
+    Succeed charities
+</h1>
+@if (Model.SuccessfulProjects.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">
+        No successful projects presents, one day your project could
+        be here.
+    </h3>
+}
 <section class="flex flex-col justify-center items-center splide section"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Succeed charities
-    </h1>
-    @if (Model.SuccessfulProjects.IsNullOrEmpty())
-    {
-        <h3 class="text-center text-neutral italic text-xl">
-            No successful projects presents, one day your project could
-            be here.
-        </h3>
-    }
-    else
+    @if (!Model.SuccessfulProjects.IsNullOrEmpty())
     {
         <!-- TODO: Replace this with link to view requests -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">

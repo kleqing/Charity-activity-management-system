@@ -62,27 +62,27 @@ namespace Dynamics.Controllers
             var orgsOverview = _organizationService.MapToOrganizationOverviewDtoList(orgs);
 
             List<Project> projects = await _projectRepo.GetAllAsync();
-            var unfinishedProjects = new List<ProjectOverviewDto>();
-            var finishedProjects = new List<ProjectOverviewDto>();
+            var onGoingProjects = new List<ProjectOverviewDto>();
+            var successfulProjects = new List<ProjectOverviewDto>();
             // Map to project overview dto
             foreach (var p in projects)
             {
                 var dto = _projectService.MapToProjectOverviewDto(p);
                 if (dto.ProjectStatus <= 1)
                 {
-                    unfinishedProjects.Add(dto);
+                    onGoingProjects.Add(dto);
                 }
                 else
                 {
-                    finishedProjects.Add(dto);
+                    successfulProjects.Add(dto);
                 }
             }
 
             var result = new HomepageViewModel
             {
                 Requests = requestOverview,
-                OnGoingProjects = unfinishedProjects,
-                SuccessfulProjects = finishedProjects,
+                OnGoingProjects = onGoingProjects,
+                SuccessfulProjects = successfulProjects,
                 Organizations = orgsOverview,
             };
             return View(result);
