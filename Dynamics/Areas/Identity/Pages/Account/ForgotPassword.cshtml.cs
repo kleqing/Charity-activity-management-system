@@ -41,16 +41,11 @@ namespace Dynamics.Areas.Identity.Pages.Account
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 // This mean that if user is not verified, don't send email
-                // For testing purpose, we would want to send anyway
-                // if (user == null || !(await _userManager.IsEmailConfirmedAsync(user))) 
-                if (user == null)
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user))) 
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return RedirectToPage("./ForgotPasswordConfirmation");
                 }
-
-                // For more information on how to enable account confirmation and password reset please
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(

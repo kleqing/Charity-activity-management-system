@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,6 @@ namespace Dynamics.Models.Models
     {
 		public Guid ProjectID { get; set; }
 		public Guid OrganizationID { get; set; }
-        [Required]
         public Guid? RequestID { get; set; }
 
         [Required(ErrorMessage = "The Project Name field is required *")]
@@ -29,7 +29,7 @@ namespace Dynamics.Models.Models
         public string? Attachment { get; set; }
         public string? ReportFile { get; set; }
 
-        [Required(ErrorMessage = "The Organization Name field is required *")]
+        [Required(ErrorMessage = "The Project Description field is required *")]
         public string ProjectDescription { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? StartTime { get; set; }

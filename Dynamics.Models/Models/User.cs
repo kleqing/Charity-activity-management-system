@@ -14,6 +14,7 @@ namespace Dynamics.Models.Models
         [Display(Name = "Date of Birth")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateOnly? UserDOB { get; set; }
+        [Required]
         [DataType(DataType.EmailAddress)]
         [Required]
         [Display(Name = "Email Address")]
@@ -32,7 +33,7 @@ namespace Dynamics.Models.Models
         public virtual ICollection<Request> Request { get; set; }
         public virtual ICollection<ProjectMember> ProjectMember { get; set; }
         public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
-        public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactions { get; set; }
-        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactions { get; set; }
+        public virtual ICollection<UserToOrganizationTransactionHistory> UserToOrganizationTransactionHistories { get; set; }
+        public virtual ICollection<UserToProjectTransactionHistory> UserToProjectTransactionHistories { get; set; }
     }
 }

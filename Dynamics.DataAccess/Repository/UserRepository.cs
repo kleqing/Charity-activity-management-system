@@ -1,24 +1,27 @@
 ﻿using Dynamics.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Microsoft.AspNetCore.Identity;
 
 namespace Dynamics.DataAccess.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _db;
-        public UserRepository(ApplicationDbContext db, AuthDbContext authDbContext)
+        private readonly UserManager<IdentityUser> userManager;
+
+        public UserRepository(ApplicationDbContext db, AuthDbContext authDbContext, UserManager<IdentityUser> userManager)
         {
             _db = db;
+            this.userManager = userManager;
         }
-        
+
         // TODO: Decide whether we use one database or 2 database for managing the user
-        public async Task<bool> Add(User entity)
+        public async Task<bool> AddAsync(User entity)
         {
             try
             {
-                _db.Users.Add(entity);
+                await _db.Users.AddAsync(entity);
                 await _db.SaveChangesAsync();
                 return true;
             }
@@ -30,20 +33,20 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<User> DeleteById(Guid id)
         {
-            var user = _db.Users.Find(id);
+            var user = await _db.Users.FirstOrDefaultAsync(x=>x.UserID.Equals(id));
             if (user != null)
             {
                 // TODO NO NO DON'T Delete, BAN HIM INSTEAD
                 // _db.Users.Remove(user);
                 throw new Exception("TODO: BAN THIS USER INSTEAD");
-                await _db.SaveChangesAsync();  
+                await _db.SaveChangesAsync();
             }
             return user;
         }
 
-        public async Task<User?> Get(Expression<Func<User, bool>> filter)
+        public async Task<User?> GetAsync(Expression<Func<User, bool>> filter)
         {
-            var user =  await _db.Users.Where(filter).FirstOrDefaultAsync();
+            var user = await _db.Users.Where(filter).FirstOrDefaultAsync();
             return user;
         }
 
@@ -53,14 +56,15 @@ namespace Dynamics.DataAccess.Repository
             return users;
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             var users = await _db.Users.ToListAsync();
             return users;
         }
-        public async Task<bool> Update(User user)
+        //
+        public async Task<bool> UpdateAsync(User user)
         {
-            var existingItem = await Get(u => user.UserID == u.UserID);
+            var existingItem = await GetAsync(u => user.UserID == u.UserID);
             if (existingItem == null)
             {
                 return false;

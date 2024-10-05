@@ -1,4 +1,4 @@
-﻿using Dynamics.Models.Models;
+using Dynamics.Models.Models;
 using Dynamics.Models.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -263,5 +263,63 @@ namespace Dynamics.DataAccess.Repository
 
 
 
+
+        
+        //Repo of huyen
+        
+        public async Task<List<Organization>> GetAllOrganizationsAsync(string? includeObjects = null)
+        {
+            IQueryable<Organization> organizations = _db.Organizations;
+            if (!string.IsNullOrEmpty(includeObjects))
+            {
+                foreach (var includeObj in includeObjects.Split(
+                    new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    organizations = organizations.Include(includeObj);
+                }
+            }
+            return await organizations.ToListAsync();
+        }
+        public IQueryable<Organization> GetAll()
+        {
+            return _db.Organizations;
+        }
+
+        public async Task<Organization> GetOrganizationUserLead(Guid userId)
+        {
+            var organizationMemberOfUser = _db.OrganizationMember.Where(x=>x.UserID.Equals(userId)&&x.Status==2);
+            if (organizationMemberOfUser == null)
+            {
+                return null;
+            }
+            var organizationUserLead = await organizationMemberOfUser.Include("Organization").FirstOrDefaultAsync();
+            if (organizationUserLead == null)
+            {
+                return null;
+            }
+            return organizationUserLead.Organization;
+        }
+        public async Task<Guid> GetOrgResourceIDCorresponding(Guid projectResourceID, Guid organizationUserLeadID)
+        {
+            var projectResourceObj = await _db.ProjectResources.FirstOrDefaultAsync(x=>x.ResourceID.Equals(projectResourceID));
+            if (projectResourceObj == null)
+            {
+                return Guid.Empty;
+            }
+            var orgResourceObjCorresponding = await _db.OrganizationResources.FirstOrDefaultAsync(
+                x => x.OrganizationID.Equals(organizationUserLeadID) 
+                && x.ResourceName.ToLower().Trim().Equals(projectResourceObj.ResourceName.ToLower().Trim()) 
+                && x.Unit.ToLower().Trim().Equals(projectResourceObj.Unit.ToLower().Trim()));
+            if (orgResourceObjCorresponding == null)
+            {
+                return Guid.Empty;
+
+            }
+            return orgResourceObjCorresponding.ResourceID;
+        }
+
+
+
     }
+
 }

@@ -1,4 +1,4 @@
-﻿using Dynamics.Models.Models;
+using Dynamics.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,5 +45,17 @@ namespace Dynamics.DataAccess.Repository
         Task<OrganizationToProjectHistory> GetOrganizationToProjectHistoryAsync(Expression<Func<OrganizationToProjectHistory, bool>> filter);
 
         Task<bool> DeleteOrganizationToProjectHistoryAsync(Guid transactionId);
+    
+        // Task<IEnumerable<Organization>> GetAllAsync();
+        // Task<Organization> GetAsync(Expression<Func<Organization, bool>> predicate);
+        // Task<bool> CreateAsync(Organization project);
+        // Task<bool> UpdateAsync(Organization project);
+        // Task<Organization> DeleteAsync(Expression<Func<Organization, bool>> predicate);
+        
+        //Repo of huyen
+        Task<List<Organization>> GetAllOrganizationsAsync(string? includeObjects = null);
+        IQueryable<Organization> GetAll();
+        Task<Organization> GetOrganizationUserLead(Guid userId);
+        Task<Guid> GetOrgResourceIDCorresponding(Guid projectResourceID,Guid organizationUserLeadID);
     }
 }
