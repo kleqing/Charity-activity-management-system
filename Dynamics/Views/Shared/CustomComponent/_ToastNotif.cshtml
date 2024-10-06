@@ -9,10 +9,10 @@
         <script>
             toastr.success('@TempData[MyConstants.Success]');
         </script>
-    } else if (TempData[MyConstants.Failed] != null)
+    } else if (TempData[MyConstants.Error] != null)
     {
         <script>
-            toastr.error('@TempData[MyConstants.Failed]');
+            toastr.error('@TempData[MyConstants.Error]');
         </script>
     } else if (TempData[MyConstants.Info] != null)
     {

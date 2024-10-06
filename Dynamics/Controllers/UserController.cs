@@ -90,13 +90,13 @@ namespace Dynamics.Controllers
 
                 if (user.UserFullName == null || user.UserEmail == null)
                 {
-                    TempData[MyConstants.Failed] = "Update failed...";
+                    TempData[MyConstants.Error] = "Update failed...";
                     return View(user);
                 }
 
                 if (image != null)
                 {
-                    user.UserAvatar = Util.UploadImage(image, @"images\User", user.UserID.ToString());
+                    user.UserAvatar = Util.UploadImage(image, @"images\User");
                 }
 
                 await _userRepository.UpdateAsync(user);
@@ -140,13 +140,13 @@ namespace Dynamics.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData[MyConstants.Failed] = "Change password failed...";
+                TempData[MyConstants.Error] = "Change password failed...";
                 return RedirectToAction("Account", "User");
             }
 
             if (changePassword.NewPassword != changePassword.ConfirmPassword)
             {
-                TempData[MyConstants.Failed] = "The password and confirmation password do not match.";
+                TempData[MyConstants.Error] = "The password and confirmation password do not match.";
                 return RedirectToAction("Account", "User");
             }
 
@@ -164,7 +164,7 @@ namespace Dynamics.Controllers
                 foreach (var error in changePasswordResult.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
-                    TempData[MyConstants.Failed] = error.Description;
+                    TempData[MyConstants.Error] = error.Description;
                 }
 
                 return RedirectToAction("Account", "User");
@@ -260,7 +260,7 @@ namespace Dynamics.Controllers
             }
             catch (Exception e)
             {
-                TempData[MyConstants.Failed] = "Something went wrong, please try again later.";
+                TempData[MyConstants.Error] = "Something went wrong, please try again later.";
             }
 
             return RedirectToAction("RequestsStatus", "User");
@@ -302,7 +302,7 @@ namespace Dynamics.Controllers
             }
             catch (Exception e)
             {
-                TempData[MyConstants.Failed] = msg;
+                TempData[MyConstants.Error] = msg;
             }
 
             return RedirectToAction("RequestsStatus", "User");

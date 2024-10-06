@@ -12,6 +12,7 @@
     {
         currentUser = JsonConvert.DeserializeObject<User>(userString);
     }
+    Accessor.HttpContext.Session.SetString("currentUserID", currentUser?.UserID.ToString());
 }
 @{
     if (currentUser != null)
@@ -58,10 +59,13 @@
                             <a asp-action="MyRequest" asp-controller="Request">My request</a>
                         </li>
                         <li>
-                            <a>My organization</a>
+                            <a asp-action="MyOrganization" asp-controller="Organization" asp-route-userId="@currentUser.UserID">My organization</a>
                         </li>
                         <li>
-                            <a>My projects</a>
+                            <a asp-action="Index" asp-controller="Organization">All organization</a>
+                        </li>
+                        <li>
+                            <a asp-action="Index" asp-controller="Project" asp-route-id="@currentUser?.UserID">My projects</a>
                         </li>
                         <li class="text-rose-500">
                             <a class="flex justify-between" asp-action="Logout" asp-controller="Auth">

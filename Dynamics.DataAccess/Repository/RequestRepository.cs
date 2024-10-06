@@ -155,5 +155,19 @@ namespace Dynamics.DataAccess.Repository
 			}
 			return null;
 		}
-	}
+		
+        public Task<Request?> GetRequestAsync(Expression<Func<Request,bool>> filter, string? includeObjects = null)
+        {
+            var request = _db.Requests.Where(filter);
+            if (!string.IsNullOrEmpty(includeObjects))
+            {
+                foreach (var includeObj in includeObjects.Split(
+                    new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    request = request.Include(includeObj);
+                }
+            }
+            return request.FirstOrDefaultAsync();
+        }
+    }
 }

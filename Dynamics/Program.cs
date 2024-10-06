@@ -47,7 +47,7 @@ namespace Dynamics
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -66,9 +66,16 @@ namespace Dynamics
                 });
             // Repos here
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IOrganizationVMService, OrganizationVMService>();
+            builder.Services.AddScoped<IUserToOragnizationTransactionHistoryVMService, UserToOragnizationTransactionHistoryVMService>();
+            builder.Services.AddScoped<IProjectVMService, ProjectVMService>();
+            builder.Services.AddScoped<IOrganizationToProjectHistoryVMService, OrganizationToProjectHistoryVMService>();
+
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
             // Project repos
-            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
             builder.Services
@@ -87,6 +94,12 @@ namespace Dynamics
             builder.Services.AddScoped<IProjectService, ProjectService>();
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+            builder.Services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
 
             // Configure default routes (This should be after configured the Identity)
             builder.Services.ConfigureApplicationCookie(options =>
