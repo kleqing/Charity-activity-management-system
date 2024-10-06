@@ -2,6 +2,7 @@
 using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models.Dto;
+using Dynamics.Models.Models.DTO;
 using Microsoft.Build.Evaluation;
 using Microsoft.IdentityModel.Tokens;
 using Project = Dynamics.Models.Models.Project;
@@ -32,7 +33,11 @@ public class ProjectService : IProjectService
         if (p.ProjectMember.IsNullOrEmpty()) throw new Exception("WARNING PROJECT MEMBER IS EMPTY");
         var tempProjectOverviewDto = _mapper.Map<ProjectOverviewDto>(p);
         // Get leader project
-        var leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 2).FirstOrDefault();
+        var leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 3).FirstOrDefault();
+        if (leader == null)
+        {
+            leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 2).FirstOrDefault();
+        }
         if (leader == null) throw new Exception("No leader for project found");
         tempProjectOverviewDto.ProjectLeader = leader.User;
         tempProjectOverviewDto.ProjectMembers = p.ProjectMember.Count(pm => pm.ProjectID == p.ProjectID);

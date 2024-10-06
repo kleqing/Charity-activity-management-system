@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Http
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
+@inject IProjectRepository ProjectRepository
 
 <link rel="stylesheet" href="~/css/output.css">
 <!-- Navbar -->
@@ -9,8 +10,9 @@
     ViewData["Title"] = "Get All Resources";
     Layout = "~/Views/Shared/_LayoutProject.cshtml";
     var currentUserID = Accessor.HttpContext.Session.GetString("currentUserID");
-    var currentProjectLeaderID = Accessor.HttpContext.Session.GetString("currentProjectLeaderID");
     var currentProjectID = Accessor.HttpContext.Session.GetString("currentProjectID");
+    var ProjectMemberOfUser = ProjectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(new Guid(currentUserID)));
+    var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
     ProjectResource projectResource = new ProjectResource();
     projectResource.ProjectID = new Guid(currentProjectID);
 }
@@ -56,7 +58,7 @@
                             Completed
                         </button>
                     }
-                    @if (currentProjectLeaderID.Equals(currentUserID))
+                    @if (statusProjectMemberOfUser >= 2)
                     {
                         <button onclick="showEditForm('@item.ResourceID')" type="button" class="absolute w-fit h-fit mx-2 my-2 p-2" style="top:-18px; right:0px;">
                             <i class="fa-regular fa-pen-to-square text-xl text-gray-900"></i>
@@ -174,7 +176,7 @@
         </ul>
     </nav>
 </div>
- @if (currentProjectLeaderID.Equals(currentUserID)){
+@if (statusProjectMemberOfUser >= 2){
 <div class="flex relative justify-center my-6 w-3/4 mx-auto">
     <!-- add button -->
 
@@ -302,10 +304,10 @@
             if (duplicateFound) {
                 // Show error and clear input
                
-                unitError.innerText = "Resource with the same unit already exists!";
+                unitError.innerText = "A resource with the same unit already exists!";
                 unitInput.value = '';
                 return false;
-            } else {
+        } else {
                 // If validation passes, submit the form
             
                 document.getElementById('formAdd').submit();

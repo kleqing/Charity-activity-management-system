@@ -1,5 +1,6 @@
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.DTO;
 using Dynamics.Models.Models.ViewModel;
 using Dynamics.Services;
 using Dynamics.Utility;

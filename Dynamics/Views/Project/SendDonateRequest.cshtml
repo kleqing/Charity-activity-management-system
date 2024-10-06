@@ -3,27 +3,24 @@
 @inject IHttpContextAccessor Accessor
 @inject IProjectRepository ProjectRepository
 @inject IOrganizationRepository OrganizationRepository
+@inject IUserRepository UserRepository
 @model Dynamics.Models.Models.ViewModel.SendDonateRequestVM
 
 @{
     ViewData["Title"] = "Donation Page";
     Layout = "~/Views/Shared/_LayoutProject.cshtml";
     var currentProjectID = Accessor.HttpContext.Session.GetString("currentProjectID");
+    var currentProjectLeaderID = Accessor.HttpContext.Session.GetString("currentProjectLeaderID");
     var userString = Accessor.HttpContext.Session.GetString("user");
     User currentUser = null;
     if (userString != null)
     {
         currentUser = JsonConvert.DeserializeObject<User>(userString);
-    }
-    var currentProjectLeaderID = Accessor.HttpContext.Session.GetString("currentProjectLeaderID");
-    var leader= new User();
-    if (currentProjectLeaderID != null)
-    {
-        leader = ProjectRepository.GetProjectLeaderAsync(new Guid(currentProjectID), "User").Result;
-    }
+    } 
     var organizationUserLead = await OrganizationRepository.GetOrganizationUserLead(currentUser.UserID);
-
-
+    var ProjectMemberOfUser = ProjectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(currentUser.UserID));
+    var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
+var leader = await UserRepository.GetAsync(x=>x.UserID==new Guid(currentProjectLeaderID));
 }
 <!-- Donate by money -->
 <section class="md:px-32 my-16">
@@ -83,7 +80,7 @@
         <div class="flex-1 flex flex-col gap-4 justify-center">
             <!-- Button for CEO -->
             <!--if userid is ceoid of a organization[check status of userid in organmember ==2], if yes show the button-->
-            @if (organizationUserLead != null)
+            @if (statusProjectMemberOfUser >= 2)
             {
                 <div>
                     <a asp-action="SendDonateRequest" asp-route-projectid="@currentProjectID" asp-route-donor="Organization">

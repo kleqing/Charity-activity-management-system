@@ -43,18 +43,10 @@ namespace Dynamics.DataAccess.Repository
 			return requests;
 		}
 
-		public async Task<List<Request>> GetAllRequestsAsync(string? includeObjects = null)
+		public async Task<List<Request>> GetAllRequestsAsync()
 		{
-			IQueryable<Request> organizations = _db.Requests;
-			if (!string.IsNullOrEmpty(includeObjects))
-			{
-				foreach (var includeObj in includeObjects.Split(
-					         new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					organizations = organizations.Include(includeObj);
-				}
-			}
-			return await organizations.ToListAsync();
+			IQueryable<Request> requestHelps = _db.Requests.Include(x => x.User).Include(x=>x.Project);
+			return await requestHelps.ToListAsync();
 		}
 
 		public IQueryable<Request> GetAll()
@@ -72,7 +64,7 @@ namespace Dynamics.DataAccess.Repository
 
 		public async Task<Request> GetAsync(Expression<Func<Request, bool>> filter)
 		{
-			var query = await _db.Requests.Include(r => r.User).Where(filter).FirstOrDefaultAsync();
+			var query = await _db.Requests.Include(x => x.User).Include(x => x.Project).Where(filter).FirstOrDefaultAsync();
 			return query;
 		}
 
@@ -134,18 +126,5 @@ namespace Dynamics.DataAccess.Repository
 			return null;
 		}
 		
-        public Task<Request?> GetRequestAsync(Expression<Func<Request,bool>> filter, string? includeObjects = null)
-        {
-            var request = _db.Requests.Where(filter);
-            if (!string.IsNullOrEmpty(includeObjects))
-            {
-                foreach (var includeObj in includeObjects.Split(
-                    new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    request = request.Include(includeObj);
-                }
-            }
-            return request.FirstOrDefaultAsync();
-        }
     }
 }

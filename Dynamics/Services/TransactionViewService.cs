@@ -4,6 +4,7 @@ using Dynamics.Models.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Dynamics.DataAccess.Repository;
+using Dynamics.Models.Models.DTO;
 
 namespace Dynamics.Services;
 

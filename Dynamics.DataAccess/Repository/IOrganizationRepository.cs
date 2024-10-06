@@ -17,7 +17,7 @@ public interface IOrganizationRepository
     // Task<bool> UpdateAsync(Organization project);
     // Task<Organization> DeleteAsync(Expression<Func<Organization, bool>> predicate);
     
-    Task<List<Organization>> GetAllOrganizationsAsync(string? includeObjects = null);
+    Task<List<Organization>> GetAllOrganizationsAsync();
     IQueryable<Organization> GetAll();
     Task<Organization> GetOrganizationUserLead(Guid userId);
     Task<Guid> GetOrgResourceIDCorresponding(Guid projectResourceID,Guid organizationUserLeadID);

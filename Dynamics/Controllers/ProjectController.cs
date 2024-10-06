@@ -3,6 +3,7 @@ using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
 using Dynamics.Models.Models.DTO;
 using Dynamics.Models.Models.ViewModel;
+using Dynamics.Services;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,40 +26,44 @@ namespace Dynamics.Controllers
         private readonly IRequestRepository requestRepository;
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IMapper mapper;
+        private readonly IProjectService projectService;
 
         public ProjectController(IProjectRepository projectRepository,
             IOrganizationRepository organizationRepository,
             IRequestRepository requestRepository,
             IWebHostEnvironment hostEnvironment,
-            IMapper mapper)
+            IMapper mapper,
+             IProjectService projectService )
         {
             this.projectRepository = projectRepository;
             this.organizationRepository = organizationRepository;
             this.requestRepository = requestRepository;
             this.hostEnvironment = hostEnvironment;
             this.mapper = mapper;
+            this.projectService = projectService;
         }
 
         [Route("Project/Index/{userID}")]
         public async Task<IActionResult> Index(Guid userID)
         {
             //get all project
-            var allProjects = await projectRepository.GetAllProjectsAsync("Organization,Request");
+            var allProjects = await projectRepository.GetAllProjectsAsync();
             //get project that user has joined
             var projectMemberList =
                 projectRepository.FilterProjectMember(
-                    x => x.UserID.Equals(userID) && x.Status >= 1 && x.Project.ProjectStatus >= 1, "Project");
+                    x => x.UserID.Equals(userID) && x.Status >= 1 && x.Project.ProjectStatus >= 1);
             List<Models.Models.Project> projectsIAmMember = new List<Models.Models.Project>();
             List<Models.Models.Project> projectsILead = new List<Models.Models.Project>();
             List<Models.Models.Project> otherProjects = new List<Models.Models.Project>();
             foreach (var projectMember in projectMemberList)
             {
-                var project = await projectRepository.GetProjectAsync(x => x.ProjectID.Equals(projectMember.ProjectID),
-                    "Organization,Request");
+                  var project = await projectRepository.GetProjectAsync(x => x.ProjectID.Equals(projectMember.ProjectID));
                 if (project != null)
                 {
-                    var leaderOfProject = await projectRepository.GetProjectLeaderAsync(project.ProjectID, "User");
-                    if (leaderOfProject.UserID.Equals(userID))
+                    var ProjectMemberOfUser = projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectMember.ProjectID) && p.UserID.Equals(userID));
+                    var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
+
+                    if (statusProjectMemberOfUser>=2)
                     {
                         //get project that user join as a leader
                         projectsILead.Add(project);
@@ -86,6 +91,26 @@ namespace Dynamics.Controllers
             });
         }
 
+        public async Task<IActionResult> ViewAllProjects()
+        {
+            var allProjects = await projectRepository.GetAllProjectsAsync();
+            var allActiveProjectsDto = new List<ProjectOverviewDto>();
+            foreach (var p in allProjects)
+            {
+                var dto = projectService.MapToProjectOverviewDto(p);
+                if (dto.ProjectStatus >=0)
+                {
+                    allActiveProjectsDto.Add(dto);
+                }
+            }
+
+            // TODO: For organization, wait for Tuan
+            var result = new AllProjectsVM
+            {
+                allActiveProjects = allActiveProjectsDto
+            };
+            return View(result);
+        }
         //update project profile
         public async Task<IActionResult> DeleteImage(string imgPath, Guid phaseID)
         {
@@ -94,7 +119,7 @@ namespace Dynamics.Controllers
             {
                 var allImagesOfPhase = await projectRepository.GetAllImagesAsync(phaseID, "Phase");
                 var historyObj =
-                    await projectRepository.GetAllPhaseReportsAsync(x => x.HistoryID.Equals(phaseID), "Project");
+                    await projectRepository.GetAllPhaseReportsAsync(x => x.HistoryID.Equals(phaseID));
                 if (historyObj != null && allImagesOfPhase != null)
                 {
                     if (allImagesOfPhase.Length > 0)
@@ -128,8 +153,7 @@ namespace Dynamics.Controllers
                 var allImagesOfProject =
                     await projectRepository.GetAllImagesAsync(new Guid(currentProjectID), "Project");
                 var projectObj =
-                    await projectRepository.GetProjectAsync(x => x.ProjectID.Equals(new Guid(currentProjectID)),
-                        "Request,Organization");
+                    await projectRepository.GetProjectAsync(x => x.ProjectID.Equals(new Guid(currentProjectID)));
                 if (projectObj != null && allImagesOfProject != null)
                 {
                     if (allImagesOfProject.Length > 0)
@@ -167,7 +191,7 @@ namespace Dynamics.Controllers
         {
             var projectID = finishProjectVM.ProjectID;
             var projectObj =
-                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID), "Organization,Request");
+                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID));
             if (projectObj != null)
             {
                 if (reportFile != null)
@@ -245,7 +269,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> UpdateProjectProfile(Guid id)
         {
             var projectObj =
-                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(id), "Organization,Request");
+                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(id));
             if (projectObj == null)
             {
                 return NotFound();
@@ -254,9 +278,9 @@ namespace Dynamics.Controllers
             var projectDto = mapper.Map<UpdateProjectProfileRequestDto>(projectObj);
             IEnumerable<SelectListItem> StatusList = new List<SelectListItem>()
             {
-                new SelectListItem { Text = "Pending", Value = "1" },
-                new SelectListItem { Text = "In Progress", Value = "2" },
-                new SelectListItem { Text = "Completed", Value = "3" }
+                new SelectListItem { Text = "Pending", Value = "0" },
+                new SelectListItem { Text = "In Progress", Value = "1" },
+                new SelectListItem { Text = "Completed", Value = "2" }
             };
             ViewData["StatusList"] = StatusList;
 
@@ -271,7 +295,7 @@ namespace Dynamics.Controllers
             ViewData["MemberList"] = MemberList;
 
             //get leader id from project member to updateProjectDto
-            projectDto.LeaderID = new Guid(HttpContext.Session.GetString("currentProjectLeaderID"));
+            projectDto.NewLeaderID = new Guid(HttpContext.Session.GetString("currentProjectLeaderID"));
             return View(projectDto);
         }
 
@@ -280,8 +304,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> UpdateProjectProfile(UpdateProjectProfileRequestDto updateProject,
             List<IFormFile> images)
         {
-            var existingObj = await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(updateProject.ProjectID),
-                "Organization,Request");
+            var existingObj = await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(updateProject.ProjectID));
             var projectObj = mapper.Map<Dynamics.Models.Models.Project>(updateProject);
             if (projectObj != null && existingObj != null)
             {
@@ -303,11 +326,11 @@ namespace Dynamics.Controllers
                     projectObj.Attachment = resAttachment;
                 }
 
-                var res = await projectRepository.UpdateAsync(projectObj, updateProject.LeaderID);
-                if (!updateProject.OldLeaderID.Equals(updateProject.LeaderID) && res)
+                var res = await projectRepository.UpdateAsync(projectObj, updateProject.NewLeaderID);
+                if (!updateProject.OldLeaderID.Equals(updateProject.NewLeaderID) && res)
                 {
                     TempData[MyConstants.Success] = "Update project successfully!";
-                    TempData[MyConstants.Info] = "You are no longer a leader for this project!";
+                    //TempData[MyConstants.Info] = "You are no longer a leader for this project!";
                     return RedirectToAction(nameof(ManageProject), new { id = projectObj.ProjectID.ToString() });
                 }
                 TempData[MyConstants.Success] = "Update project successfully!";
@@ -357,18 +380,21 @@ namespace Dynamics.Controllers
             }
 
             var projectObj =
-                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(new Guid(id)), "Organization,Request");
+                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(new Guid(id)));
             if (projectObj != null)
             {
                 // TODO
-                var request = await requestRepository.GetRequestAsync(r => r.RequestID.Equals(projectObj.RequestID), "User");
+                var request = await requestRepository.GetAsync(r => r.RequestID.Equals(projectObj.RequestID));
                 if (request != null)
                 {
                     projectObj.Request = request;
                 }                 
                 HttpContext.Session.SetString("currentProjectID", projectObj.ProjectID.ToString());
-                var leaderOfProject = await projectRepository.GetProjectLeaderAsync(projectObj.ProjectID, "User");
+                var leaderOfProject = await projectRepository.GetProjectLeaderAsync(projectObj.ProjectID);
                 HttpContext.Session.SetString("currentProjectLeaderID", leaderOfProject.UserID.ToString());
+                var ceoOfProject = projectRepository.FilterMemberOfProject(x => x.Status == 2 && x.ProjectID==projectObj.ProjectID);
+                HttpContext.Session.SetString("currentProjectCEOID", ceoOfProject[0].UserID.ToString());
+
                 List<string> statistic = await projectRepository.GetStatisticOfProject(projectObj.ProjectID);
                 DetailProjectVM detailProjectVM = new DetailProjectVM()
                 {
@@ -396,7 +422,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ManageProjectMember([FromRoute] Guid projectID)
         {
             var allProjectMember =
-                projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status >= 1, "User");
+                projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status >= 1);
 
             if (allProjectMember == null)
             {
@@ -404,7 +430,7 @@ namespace Dynamics.Controllers
             }
 
             var joinRequests =
-                projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0, "User") ??
+                projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0) ??
                 Enumerable.Empty<ProjectMember>();
             var nums = joinRequests.Count();
             ViewData["hasJoinRequest"] = nums > 0;
@@ -429,7 +455,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> JoinProjectRequest(Guid memberID, Guid projectID)
         {
             var projectObj =
-                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID), "Organization,Request");
+                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID));
             if (projectObj?.ProjectStatus == 0)
             {
                 TempData[MyConstants.Warning] = "This project is not in progress!";
@@ -437,8 +463,8 @@ namespace Dynamics.Controllers
             }
 
             var existingJoinRequest = projectRepository
-                .FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.UserID.Equals(memberID) && p.Status == 0,
-                    "User").FirstOrDefault();
+                .FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.UserID.Equals(memberID) && p.Status == 0
+                 ).FirstOrDefault();
 
             if (existingJoinRequest == null)
             {
@@ -490,7 +516,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ReviewJoinRequest([FromRoute] Guid projectID)
         {
             var allJoinRequest =
-                projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0, "User");
+                projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0);
 
             if (allJoinRequest == null)
             {
@@ -535,7 +561,7 @@ namespace Dynamics.Controllers
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
             var allJoinRequest =
                 projectRepository.FilterProjectMember(
-                    p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.Status == 0, "User");
+                    p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.Status == 0);
             if (allJoinRequest == null)
             {
                 return NotFound();
@@ -561,7 +587,7 @@ namespace Dynamics.Controllers
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
             var allJoinRequest =
                 projectRepository.FilterProjectMember(
-                    p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.Status == 0, "User");
+                    p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.Status == 0);
             if (allJoinRequest == null)
             {
                 return NotFound();
@@ -586,7 +612,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> SendDonateRequest(Guid projectID, string donor)
         {
             var projectObj =
-                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID), "Organization,Request");
+                await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID));
             if (projectObj?.ProjectStatus == 0)
             {
                 TempData[MyConstants.Warning] = "This project is not in progress!";
@@ -962,7 +988,7 @@ namespace Dynamics.Controllers
         //---------------------------manage ProjectResource--------------------------
         public async Task<IActionResult> CreateProjectDonateRequestAsync(Guid projectID)
         {
-            IEnumerable<SelectListItem> ResourceTypeList = projectRepository.GetAllProjectResourceQuery().Select(x =>
+            IEnumerable<SelectListItem> ResourceTypeList =  projectRepository.GetAllProjectResourceQuery().Select(x =>
                 new SelectListItem
                 {
                     Text = x.ResourceName,
@@ -991,8 +1017,7 @@ namespace Dynamics.Controllers
             if (ModelState.IsValid)
             {
                 var projectObj =
-                    await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectResource.ProjectID),
-                        "Organization,Request");
+                    await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectResource.ProjectID));
                 if (projectObj != null)
                 {
                     //check whether the ProjectResource has same name and same unit is existed
@@ -1029,7 +1054,8 @@ namespace Dynamics.Controllers
             {
                 //check whether the resource has same name and same unit is existed
                 var existingResource = await projectRepository.FilterProjectResourceAsync(p =>
-                    !p.ResourceID.Equals(projectResource.ResourceID) &&
+                p.ResourceID!=projectResource.ResourceID &&
+                    p.ProjectID.Equals(projectResource.ProjectID) &&
                     p.ResourceName.Equals(projectResource.ResourceName) && p.Unit.Equals(projectResource.Unit));
                 if (existingResource.FirstOrDefault() != null)
                 {
@@ -1069,7 +1095,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ManageProjectPhaseReport(Guid projectID)
         {
             var allUpdate =
-                await projectRepository.GetAllPhaseReportsAsync(u => u.ProjectID.Equals(projectID), "Project");
+                await projectRepository.GetAllPhaseReportsAsync(u => u.ProjectID.Equals(projectID));
             if (allUpdate == null)
             {
                 return NotFound();
@@ -1127,7 +1153,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> EditProjectPhaseReport(Guid historyID, Guid projectID)
         {
             var projectUpdates =
-                await projectRepository.GetAllPhaseReportsAsync(u => u.HistoryID.Equals(historyID), "Project");
+                await projectRepository.GetAllPhaseReportsAsync(u => u.HistoryID.Equals(historyID));
             if (projectUpdates == null)
             {
                 return NotFound();

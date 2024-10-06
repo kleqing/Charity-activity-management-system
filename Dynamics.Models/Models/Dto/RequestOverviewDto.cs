@@ -1,4 +1,4 @@
-﻿namespace Dynamics.Models.Models.Dto;
+﻿namespace Dynamics.Models.Models.DTO;
 
 public class RequestOverviewDto
 {

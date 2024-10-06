@@ -2,7 +2,6 @@ using AutoMapper;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models;
 using Dynamics.Models.Models;
-using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +9,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Security.Claims;
 using Dynamics.Services;
+using Dynamics.Models.Models.DTO;
 
 namespace Dynamics.Controllers
 {

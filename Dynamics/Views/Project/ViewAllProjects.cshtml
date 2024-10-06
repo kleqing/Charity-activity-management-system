@@ -1,0 +1,167 @@
+﻿@model Dynamics.Models.Models.ViewModel.AllProjectsVM
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="flex justify-center text-3xl font-bold text-red-500 w-full py-24 bg-gray-100" style="height: 200px;"> Discorver all active charities project</div>
+
+<!-- container -->
+<div class="flex flex-col mx-auto relative w-3/4  my-10">
+    <!-- search bar -->
+    <div class="flex relative justify-end mb-6 w-full">
+        <div class="flex gap-x-6">
+            <!-- choose filer/search & button review donate request -->
+            <form class="max-w-md  flex items-center">
+                <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only ">Search</label>
+                <div class="relative ">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </div>
+                    <input type="search" id="default-search"
+                           class="block w-full px-14 py-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500  "
+                           placeholder="Search for something..." required />
+                </div>
+            </form>
+            <!-- filter dropdown -->
+            <div class="relative inline-block text-left py-2">
+                <div>
+                    <button type="button"
+                            class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                            id="menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
+                        Filter
+                        <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
+                             aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                  clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Dropdown menu -->
+                <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none
+                    transition ease-out duration-100 transform opacity-0 scale-95" role="menu"
+                     aria-orientation="vertical" aria-labelledby="menu-button">
+                    <div class="py-1" role="none">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                           role="menuitem">Name</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                           role="menuitem">Date</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                           role="menuitem">Type resource</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- list project -->
+    <div class="w-full flex justify-start gap-x-0 gap-y-4 flex-wrap">
+        @foreach(var item in Model.allActiveProjects)
+        {
+            <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+            <div href="#" class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
+                <figure>
+                    <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                        <img class="w-full object-cover h-48" src="@(item.Attachment!=null?item.Attachment:"1.png")" alt="Shoes" />
+                        </a>
+                </figure>
+                <div class="card-body p-4 gap-3 w-full">
+                    <!-- badge left -->
+                    <div class="badge badge-success absolute top-0 left-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                        Project
+                    </div>
+                    <!-- TODO: Look at the status and determine which one is preparing and ongoing -->
+                    <!-- badge right -->
+                    <div class="badge badge-secondary absolute top-0 right-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                        Project
+                    </div>
+                        @if (item.ProjectStatus == -1)
+                        {
+                            <div class="badge badge-secondary absolute top-0 right-0 bg-gray-200 font-bold text-black px-4 py-3 outline-none border-none">
+                                Inactive
+                            </div>
+                        }
+                        else if (item.ProjectStatus == 0)
+                        {
+                            <div class="badge badge-secondary absolute top-0 right-0 bg-pink-500 font-bold text-white px-4 py-3 outline-none border-none">
+                                Preparing
+                            </div>
+                        }
+                        else if (item.ProjectStatus == 1)
+                        {
+                            <div class="badge badge-error absolute top-0 right-0 bg-error font-bold text-white px-4 py-3 outline-none border-none">
+                                On-going
+                            </div>
+                        }
+                        else if (item.ProjectStatus == 2)
+                        {
+                            <div class="badge badge-success absolute top-0 right-0 bg-success font-bold text-white px-4 py-3 outline-none border-none">
+                                Completed
+                            </div>
+                        }
+
+
+                        <div class="flex flex-col  w-full">
+                        <h2 class="card-title text-primary font-bold h-14" style="
+                          display: -webkit-box;
+                          line-clamp: 2;
+                          -webkit-line-clamp: 2; /* Limit to 2 lines */
+                          -webkit-box-orient: vertical;
+                          overflow: hidden;
+                                    ">
+                            @item.ProjectName
+                        </h2>
+                            <div class="flex justify-between  w-full">
+                            <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                               asp-controller="User"
+                               asp-route-username="@item.ProjectLeader.UserFullName" style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                @item.ProjectLeader.UserFullName
+                            </a>
+                            <span style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                @item.ProjectAddress
+                            </span>
+                        </div>
+                    </div>
+                    <p style="
+                    display: -webkit-box;
+                    line-clamp: 3;
+                    -webkit-line-clamp: 3; /* Limit to 3 lines */
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    margin-bottom: 16px;
+              ">
+                        @item.ProjectDescription
+                    </p>
+                    <div class="card-actions justify-center flex-col items-center">
+                        <p class="w-full text-base-content">444 volunteers</p>
+                        <progress class="progress progress-success w-full" value="28"
+                                  max="100">
+                        </progress>
+                        <p class="w-full text-success">Raised 344200 VND</p>
+                        <button class="btn btn-neutral h-8 min-h-0 outline-none border-none bg-green-500 text-white">
+                            View project
+                        </button>
+                    </div>
+                </div>
+            </div>
+                </a>
+        }
+      
+    </div>
+
+</div>
+<!-- end container -->

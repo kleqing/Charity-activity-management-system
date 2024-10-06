@@ -9,7 +9,7 @@
     <!-- PART 1 -->
     <div class="flex flex-col mx-auto relative w-3/4  mb-10">
         <!-- title -->
-        <h2 class="font-serif text-black font-bold text-3xl text-center my-6"> Projects that I lead</h2>
+        <h2 class="font-serif text-black font-bold text-3xl text-center my-6"> Projects that you are in charge of</h2>
         <!-- search bar -->
         <div class="flex relative justify-end mb-6 w-full">
             <div class="flex gap-x-6">
@@ -63,35 +63,106 @@
         <!-- list project -->
         <div class="w-full flex justify-between gap-x-6 gap-y-4">
             @foreach (var item in Model.ProjectsILead) {
-            <div class="bg-white text-black shadow-lg rounded-2xl overflow-hidden w-full max-w-sm">
-                <div class="relative">
-                        <a asp-action="ManageProject" asp-route-id="@item.ProjectID">
-                        <img class="w-full h-48 object-cover"
-                         src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                                 alt="Project Image" />
-                        </a>
-                    <div class="absolute top-0 right-0 bg-green-500 text-white px-6 py-2 rounded-bl-lg">Active</div>
-                    <!-- Optional Status Badge -->
-                </div>
-                <div class="p-6">
-                    <a asp-action="ManageProject" asp-route-id="@item.ProjectID" class="font-bold text-xl text-gray-800 mb-2">@item.ProjectName</a>
-                    <p class="text-gray-600 mb-4">
-                        Does this project have potential? Let’s discover more about it.
-                    </p>
-                    <div class="flex justify-between items-center">
-                        @{
-                                var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID, "User");
-                        }
-                            <span class="text-gray-500 text-sm">Created by @projectleader.UserFullName</span>
-                        <!-- Optional Creator Name -->
-                            <a asp-action="ManageProject" asp-route-id="@item.ProjectID"
-                           class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-                            Discover
-                            Now
-                        </a>
+                var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID);
+                <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                    <div href="#" class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
+                        <figure>
+                            <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                                <img class="w-full object-cover h-48" src="@(item.Attachment!=null?item.Attachment:"1.png")" alt="Shoes" />
+                            </a>
+                        </figure>
+                        <div class="card-body p-4 gap-3 w-full">
+                            <!-- badge left -->
+                            <div class="badge badge-success absolute top-0 left-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                                Project
+                            </div>
+                            <!-- TODO: Look at the status and determine which one is preparing and ongoing -->
+                            <!-- badge right -->
+                            <div class="badge badge-secondary absolute top-0 right-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                                Project
+                            </div>
+                            @if (item.ProjectStatus == -1)
+                            {
+                                <div class="badge badge-secondary absolute top-0 right-0 bg-gray-200 font-bold text-black px-4 py-3 outline-none border-none">
+                                    Inactive
+                                </div>
+                            }
+                            else if (item.ProjectStatus == 0)
+                            {
+                                <div class="badge badge-secondary absolute top-0 right-0 bg-pink-500 font-bold text-white px-4 py-3 outline-none border-none">
+                                    Preparing
+                                </div>
+                            }
+                            else if (item.ProjectStatus == 1)
+                            {
+                                <div class="badge badge-error absolute top-0 right-0 bg-error font-bold text-white px-4 py-3 outline-none border-none">
+                                    On-going
+                                </div>
+                            }
+                            else if (item.ProjectStatus == 2)
+                            {
+                                <div class="badge badge-success absolute top-0 right-0 bg-success font-bold text-white px-4 py-3 outline-none border-none">
+                                    Completed
+                                </div>
+                            }
+
+
+                            <div class="flex flex-col  w-full">
+                                <h2 class="card-title text-primary font-bold h-14" style="
+                          display: -webkit-box;
+                          line-clamp: 2;
+                          -webkit-line-clamp: 2; /* Limit to 2 lines */
+                          -webkit-box-orient: vertical;
+                          overflow: hidden;
+                                            ">
+                                    @item.ProjectName
+                                </h2>
+                                <div class="flex justify-between  w-full">
+                                    <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                                       asp-controller="User"
+                                       asp-route-username="@projectleader.UserFullName" style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                        @projectleader.UserFullName
+                                    </a>
+                                    <span style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                        @item.ProjectAddress
+                                    </span>
+                                </div>
+                            </div>
+                            <p style="
+                    display: -webkit-box;
+                    line-clamp: 3;
+                    -webkit-line-clamp: 3; /* Limit to 3 lines */
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    margin-bottom: 16px;
+                      ">
+                                @item.ProjectDescription
+                            </p>
+                            <div class="card-actions justify-center flex-col items-center">
+                                <p class="w-full text-base-content">444 volunteers</p>
+                                <progress class="progress progress-success w-full" value="28"
+                                          max="100">
+                                </progress>
+                                <p class="w-full text-success">Raised 344200 VND</p>
+                                <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                                    <button class="btn btn-neutral h-8 min-h-0 outline-none border-none bg-green-500 text-white">
+                                        View project
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </a>
          
             }
 
@@ -145,7 +216,7 @@
     <!-- PART 2 -->
     <div class="flex flex-col mx-auto relative w-3/4  mb-10">
         <!-- title -->
-        <h2 class="font-serif text-black font-bold text-3xl text-center my-6">Joined projects</h2>
+        <h2 class="font-serif text-black font-bold text-3xl text-center my-6">Project that you are in part of</h2>
         <!-- search bar -->
         <div class="flex relative justify-end mb-6 w-full">
             <div class="flex gap-x-6">
@@ -212,35 +283,106 @@
 
              <div class="w-full flex justify-between gap-x-6 gap-y-4">
             @foreach (var item in Model.ProjectsIAmMember) {
-            <div class="bg-white text-black shadow-lg rounded-2xl overflow-hidden w-full max-w-sm">
-                <div class="relative">
-                        <a asp-action="ManageProject" asp-route-id="@item.ProjectID">
-                        <img class="w-full h-48 object-cover"
-                         src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                                 alt="Project Image" />
-                        </a>
-                    <div class="absolute top-0 right-0 bg-green-500 text-white px-6 py-2 rounded-bl-lg">Active</div>
-                    <!-- Optional Status Badge -->
-                </div>
-                <div class="p-6">
-                    <a asp-action="ManageProject" asp-route-id="@item.ProjectID" class="font-bold text-xl text-gray-800 mb-2">@item.ProjectName</a>
-                    <p class="text-gray-600 mb-4">
-                        Does this project have potential? Let’s discover more about it.
-                    </p>
-                    <div class="flex justify-between items-center">
-                                @{
-                                    var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID, "User");
+                    var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID);
+                    <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                        <div href="#" class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
+                            <figure>
+                                <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                                    <img class="w-full object-cover h-48" src="@(item.Attachment!=null?item.Attachment:"1.png")" alt="Shoes" />
+                                </a>
+                            </figure>
+                            <div class="card-body p-4 gap-3 w-full">
+                                <!-- badge left -->
+                                <div class="badge badge-success absolute top-0 left-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                                    Project
+                                </div>
+                                <!-- TODO: Look at the status and determine which one is preparing and ongoing -->
+                                <!-- badge right -->
+                                <div class="badge badge-secondary absolute top-0 right-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                                    Project
+                                </div>
+                                @if (item.ProjectStatus == -1)
+                                {
+                                    <div class="badge badge-secondary absolute top-0 right-0 bg-gray-200 font-bold text-black px-4 py-3 outline-none border-none">
+                                        Inactive
+                                    </div>
                                 }
-                                <span class="text-gray-500 text-sm">Created by @projectleader.UserFullName</span>
-                        <!-- Optional Creator Name -->
-                            <a asp-action="ManageProject" asp-route-id="@item.ProjectID"
-                           class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-                            Discover
-                            Now
-                        </a>
-                    </div>
-                </div>
-            </div>
+                                else if (item.ProjectStatus == 0)
+                                {
+                                    <div class="badge badge-secondary absolute top-0 right-0 bg-pink-500 font-bold text-white px-4 py-3 outline-none border-none">
+                                        Preparing
+                                    </div>
+                                }
+                                else if (item.ProjectStatus == 1)
+                                {
+                                    <div class="badge badge-error absolute top-0 right-0 bg-error font-bold text-white px-4 py-3 outline-none border-none">
+                                        On-going
+                                    </div>
+                                }
+                                else if (item.ProjectStatus == 2)
+                                {
+                                    <div class="badge badge-success absolute top-0 right-0 bg-success font-bold text-white px-4 py-3 outline-none border-none">
+                                        Completed
+                                    </div>
+                                }
+
+
+                                <div class="flex flex-col  w-full">
+                                    <h2 class="card-title text-primary font-bold h-14" style="
+                          display: -webkit-box;
+                          line-clamp: 2;
+                          -webkit-line-clamp: 2; /* Limit to 2 lines */
+                          -webkit-box-orient: vertical;
+                          overflow: hidden;
+                                            ">
+                                        @item.ProjectName
+                                    </h2>
+                                    <div class="flex justify-between  w-full">
+                                        <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                                           asp-controller="User"
+                                           asp-route-username="@projectleader.UserFullName" style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                            @projectleader.UserFullName
+                                        </a>
+                                        <span style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                            @item.ProjectAddress
+                                        </span>
+                                    </div>
+                                </div>
+                                <p style="
+                    display: -webkit-box;
+                    line-clamp: 3;
+                    -webkit-line-clamp: 3; /* Limit to 3 lines */
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    margin-bottom: 16px;
+                      ">
+                                    @item.ProjectDescription
+                                </p>
+                                <div class="card-actions justify-center flex-col items-center">
+                                    <p class="w-full text-base-content">444 volunteers</p>
+                                    <progress class="progress progress-success w-full" value="28"
+                                              max="100">
+                                    </progress>
+                                    <p class="w-full text-success">Raised 344200 VND</p>
+                                    <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                                    <button class="btn btn-neutral h-8 min-h-0 outline-none border-none bg-green-500 text-white">
+                                        View project
+                                    </button>
+                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
          
             }
 
@@ -364,43 +506,106 @@
            
    <div class="w-full flex justify-between gap-x-6 gap-y-4">
             @foreach (var item in Model.OtherProjects) {
-            <div class="bg-white text-black shadow-lg rounded-2xl overflow-hidden w-full max-w-sm">
-                <div class="relative">
-                        <a asp-action="ManageProject" asp-route-id="@item.ProjectID">
-                        <img class="w-full h-48 object-cover"
-                         src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-                                 alt="Project Image" />
-                        </a>
-                            @if (item.ProjectStatus >= 1)
-                            {
-                                <div class="absolute top-0 right-0 bg-green-500 font-bold text-white px-6 py-2 rounded-bl-lg">Active</div>
-                            }else if (item.ProjectStatus == 0)
-                            {
-                                <div class="absolute top-0 right-0 bg-gray-400 font-bold text-white px-6 py-2 rounded-bl-lg">Inactive</div>
-
-                            }
-
-                    <!-- Optional Status Badge -->
-                </div>
-                <div class="p-6">
-                    <a asp-action="ManageProject" asp-route-id="@item.ProjectID" class="font-bold text-xl text-gray-800 mb-2">@item.ProjectName</a>
-                    <p class="text-gray-600 mb-4">
-                        Does this project have potential? Let’s discover more about it.
-                    </p>
-                    <div class="flex justify-between items-center">
-                                @{
-                                    var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID, "User");
+                    var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID);
+                    <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                        <div href="#" class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
+                            <figure>
+                                <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                                    <img class="w-full object-cover h-48" src="@(item.Attachment!=null?item.Attachment:"1.png")" alt="Shoes" />
+                                </a>
+                            </figure>
+                            <div class="card-body p-4 gap-3 w-full">
+                                <!-- badge left -->
+                                <div class="badge badge-success absolute top-0 left-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                                    Project
+                                </div>
+                                <!-- TODO: Look at the status and determine which one is preparing and ongoing -->
+                                <!-- badge right -->
+                                <div class="badge badge-secondary absolute top-0 right-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                                    Project
+                                </div>
+                                @if (item.ProjectStatus == -1)
+                                {
+                                    <div class="badge badge-secondary absolute top-0 right-0 bg-gray-200 font-bold text-black px-4 py-3 outline-none border-none">
+                                        Inactive
+                                    </div>
                                 }
-                                <span class="text-gray-500 text-sm">Created by @projectleader.UserFullName</span>
-                        <!-- Optional Creator Name -->
-                            <a asp-action="ManageProject" asp-route-id="@item.ProjectID"
-                           class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-                            Discover
-                            Now
-                        </a>
-                    </div>
-                </div>
-            </div>
+                                else if (item.ProjectStatus == 0)
+                                {
+                                    <div class="badge badge-secondary absolute top-0 right-0 bg-pink-500 font-bold text-white px-4 py-3 outline-none border-none">
+                                        Preparing
+                                    </div>
+                                }
+                                else if (item.ProjectStatus == 1)
+                                {
+                                    <div class="badge badge-error absolute top-0 right-0 bg-error font-bold text-white px-4 py-3 outline-none border-none">
+                                        On-going
+                                    </div>
+                                }
+                                else if (item.ProjectStatus == 2)
+                                {
+                                    <div class="badge badge-success absolute top-0 right-0 bg-success font-bold text-white px-4 py-3 outline-none border-none">
+                                        Completed
+                                    </div>
+                                }
+
+
+                                <div class="flex flex-col  w-full">
+                                    <h2 class="card-title text-primary font-bold h-14" style="
+                          display: -webkit-box;
+                          line-clamp: 2;
+                          -webkit-line-clamp: 2; /* Limit to 2 lines */
+                          -webkit-box-orient: vertical;
+                          overflow: hidden;
+                                        ">
+                                        @item.ProjectName
+                                    </h2>
+                                    <div class="flex justify-between  w-full">
+                                        <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                                           asp-controller="User"
+                                           asp-route-username="@projectleader.UserFullName" style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                            @projectleader.UserFullName
+                                        </a>
+                                        <span style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                            @item.ProjectAddress
+                                        </span>
+                                    </div>
+                                </div>
+                                <p style="
+                    display: -webkit-box;
+                    line-clamp: 3;
+                    -webkit-line-clamp: 3; /* Limit to 3 lines */
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    margin-bottom: 16px;
+                  ">
+                                    @item.ProjectDescription
+                                </p>
+                                <div class="card-actions justify-center flex-col items-center">
+                                    <p class="w-full text-base-content">444 volunteers</p>
+                                    <progress class="progress progress-success w-full" value="28"
+                                              max="100">
+                                    </progress>
+                                    <p class="w-full text-success">Raised 344200 VND</p>
+                                    <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
+                                        <button class="btn btn-neutral h-8 min-h-0 outline-none border-none bg-green-500 text-white">
+                                            View project
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
          
             }
 

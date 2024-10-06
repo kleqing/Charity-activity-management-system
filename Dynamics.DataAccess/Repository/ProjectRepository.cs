@@ -9,18 +9,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Dynamics.DataAccess.Repository
 {
     public class ProjectRepository : IProjectRepository
     {
         private readonly ApplicationDbContext _db;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public ProjectRepository(ApplicationDbContext dbContext)
+        public ProjectRepository(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             this._db = dbContext;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         //manage project profile
@@ -54,7 +58,7 @@ namespace Dynamics.DataAccess.Repository
             var projectObj = _db.Projects.FirstOrDefault(x => x.ProjectID.Equals(entity.ProjectID));
             if (projectObj != null)
             {
-                projectObj.ProjectStatus = 0;
+                projectObj.ProjectStatus = -1;
                 projectObj.ShutdownReason = entity.Reason;
                 _db.Projects.Update(projectObj);
                 await _db.SaveChangesAsync();
@@ -91,11 +95,10 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<List<string>> GetStatisticOfProject(Guid projectID)
         {
-            var projectObj = _db.Projects.FirstOrDefaultAsync(x => x.ProjectID.Equals(projectID)).Result;
+            var projectObj = GetProjectAsync(x => x.ProjectID.Equals(projectID)).Result;
             if (projectObj != null)
             {
-                var projectResouceMoney = _db.ProjectResources.FirstOrDefaultAsync(x =>
-                    x.ProjectID.Equals(projectID) && x.ResourceName.ToString().Equals("Money") && x.Unit.Equals("VND")).Result;
+                var projectResouceMoney = projectObj.ProjectResource.FirstOrDefault(x => x.ResourceName.ToString().Equals("Money") && x.Unit.Equals("VND"));
                 if (projectResouceMoney != null)
                 {
                     var progressValue = (double)projectResouceMoney.Quantity / projectResouceMoney.ExpectedQuantity *
@@ -135,64 +138,48 @@ namespace Dynamics.DataAccess.Repository
                 .ToListAsync();
         }
 
-        public async Task<List<Project>> GetAllProjectsAsync(string? includeObjects = null)
+        public async Task<List<Project>> GetAllProjectsAsync()
         {
-            IQueryable<Project> projects = _db.Projects;
-            if (!string.IsNullOrEmpty(includeObjects))
-            {
-                foreach (var includeObj in includeObjects.Split(
-                             new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    projects = projects.Include(includeObj);
-                }
-            }
+            IQueryable<Project> projects = _db.Projects.Include(x => x.ProjectMember).ThenInclude(x => x.User)
+                .Include(x => x.ProjectResource)
+                .Include(x => x.Organization)
+                .Include(x => x.Request).ThenInclude(x => x.User)
+                .Include(x => x.History);
             return await projects.ToListAsync();
         }
 
         //get leader of project
-        public async Task<User> GetProjectLeaderAsync(Guid projectID, string? includeObjects = null)
+        public async Task<User> GetProjectLeaderAsync(Guid projectID)
         {
-            IQueryable<ProjectMember> leaderProjectMembers =
-                _db.ProjectMembers.Where(x => x.ProjectID.Equals(projectID) && x.Status == 2);
+            var projectObj = await GetProjectAsync(x=>x.ProjectID.Equals(projectID));
+            ProjectMember leaderProjectMembers =  projectObj?.ProjectMember.Where(x=> x.Status == 3).FirstOrDefault();
+            //if no leader then leader is the ceo of organization
             if (leaderProjectMembers == null)
             {
-                return null;
+                leaderProjectMembers = projectObj?.ProjectMember.Where(x => x.Status == 2).FirstOrDefault();
             }
-
-            if (!string.IsNullOrEmpty(includeObjects))
+            if (leaderProjectMembers!=null)
             {
-                foreach (var includeObj in includeObjects.Split(
-                             new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    leaderProjectMembers = leaderProjectMembers.Include(includeObj);
-                }
-
-                var resMember = await leaderProjectMembers.FirstOrDefaultAsync();
-                return resMember?.User;
+                return leaderProjectMembers?.User;
             }
 
             return null;
         }
 
 
-        public Task<Project?> GetProjectAsync(Expression<Func<Project, bool>> filter, string? includeObjects = null)
+        public Task<Project?> GetProjectAsync(Expression<Func<Project, bool>> filter)
         {
-            var project = _db.Projects.Where(filter);
-            if (!string.IsNullOrEmpty(includeObjects))
-            {
-                foreach (var includeObj in includeObjects.Split(
-                             new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    project = project.Include(includeObj);
-                }
-            }
-
+            var project = _db.Projects.Include(x => x.ProjectMember).ThenInclude(x => x.User)
+                .Include(x => x.ProjectResource)
+                .Include(x => x.Organization)
+                .Include(x => x.Request).ThenInclude(x => x.User)
+                .Include(x => x.History).Where(filter);
             return project.FirstOrDefaultAsync();
         }
 
         public async Task<bool> UpdateAsync(Project entity, Guid newProjectLeaderID)
         {
-            var existingItem = await GetProjectAsync(u => entity.ProjectID.Equals(u.ProjectID), "Organization,Request");
+            var existingItem = await GetProjectAsync(u => entity.ProjectID.Equals(u.ProjectID));
             if (existingItem == null)
             {
                 return false;
@@ -207,19 +194,31 @@ namespace Dynamics.DataAccess.Repository
             existingItem.StartTime = entity.StartTime;
             existingItem.EndTime = entity.EndTime;
             _db.Projects.Update(existingItem);
-
             //updating 2 member who is new and old leader of project
-            var oldProjectLeader =
-                await _db.ProjectMembers.FirstOrDefaultAsync(x =>
-                    x.Status == 2 && x.ProjectID.Equals(entity.ProjectID));
+            var oldProjectLeaderUser = GetProjectLeaderAsync(entity.ProjectID).Result;
+            var oldProjectLeader = FilterProjectMember(x => x.UserID.Equals(oldProjectLeaderUser.UserID) && x.ProjectID.Equals(entity.ProjectID)).FirstOrDefault();
             var newProjectLeader = await _db.ProjectMembers.FirstOrDefaultAsync(x =>
                 x.UserID.Equals(newProjectLeaderID) && x.ProjectID.Equals(entity.ProjectID));
+            var ceoOfProjectID = httpContextAccessor.HttpContext.Session.GetString("currentProjectCEOID");
             if (oldProjectLeader != null && newProjectLeader != null &&
                 !oldProjectLeader.UserID.Equals(newProjectLeader.UserID))
             {
-                oldProjectLeader.Status = 1;
+                if (oldProjectLeader.UserID.ToString().Equals(ceoOfProjectID)){
+                    oldProjectLeader.Status = 2;
+                }
+                else
+                {
+                    oldProjectLeader.Status = 1;
+                }                
                 _db.ProjectMembers.Update(oldProjectLeader);
-                newProjectLeader.Status = 2;
+                if (newProjectLeader.UserID.ToString().Equals(ceoOfProjectID))
+                {
+                    newProjectLeader.Status = 2;
+                }
+                else
+                {
+                    newProjectLeader.Status = 3;
+                }              
                 _db.ProjectMembers.Update(newProjectLeader);
             }
 
@@ -228,18 +227,11 @@ namespace Dynamics.DataAccess.Repository
         }
 
         //----manage project's member---------------
-        public List<ProjectMember> FilterProjectMember(Expression<Func<ProjectMember, bool>> filter,
-            string? includeObjects = null)
+        public List<ProjectMember> FilterProjectMember(Expression<Func<ProjectMember, bool>> filter)
         {
-            IQueryable<ProjectMember> listProjectMember = _db.ProjectMembers.Where(filter);
-            if (!string.IsNullOrEmpty(includeObjects))
+            IQueryable<ProjectMember> listProjectMember = _db.ProjectMembers.Include(x=>x.User).Where(filter);
+            if (listProjectMember!=null)
             {
-                foreach (var includeObj in includeObjects.Split(
-                             new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    listProjectMember = listProjectMember.Include(includeObj);
-                }
-
                 return listProjectMember.ToList();
             }
 
@@ -248,11 +240,10 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<List<User>> GetAllMemberOfProjectIDAsync(Guid projectID)
         {
-            Project project = await _db.Projects.FirstOrDefaultAsync(x => x.ProjectID.Equals(projectID));
+            Project project = await GetProjectAsync(x => x.ProjectID.Equals(projectID));
             if (project != null)
             {
-                project.ProjectMember = _db.ProjectMembers.Where(x => x.ProjectID.Equals(projectID) && x.Status == 1)
-                    .Include("User").ToList();
+                project.ProjectMember = _db.ProjectMembers.Where(x => x.ProjectID.Equals(projectID) && x.Status == 1).ToList();
                 List<User> members = new List<User>();
                 if (project != null)
                 {
@@ -261,7 +252,6 @@ namespace Dynamics.DataAccess.Repository
                         members.Add(u.User);
                     }
                 }
-
                 return members;
             }
 
@@ -292,7 +282,7 @@ namespace Dynamics.DataAccess.Repository
         //------manage member request------------------
         public List<User> FilterMemberOfProject(Expression<Func<ProjectMember, bool>> filter)
         {
-            IQueryable<ProjectMember> projectMemberList = _db.ProjectMembers.Where(filter).Include("User");
+            IQueryable<ProjectMember> projectMemberList = _db.ProjectMembers.Include(x=>x.User).Include(x=>x.Project).Where(filter);
             List<User> members = new List<User>();
             if (members != null)
             {
@@ -347,7 +337,10 @@ namespace Dynamics.DataAccess.Repository
             return false;
         }
         //-----manage resource's statistic----------------
-
+        public IQueryable<ProjectResource> GetAllProjectResourceQuery()
+        {
+            return  _db.ProjectResources;
+        }
         public async Task<bool> HandleResourceAutomatic(Guid transactionID, string donor)
         {
             //take list of resource type in ProjectResource table
@@ -355,7 +348,7 @@ namespace Dynamics.DataAccess.Repository
             //get transaction obj to take the resource name of transaction
             if (!string.IsNullOrEmpty(donor) && donor.Equals("User"))
             {
-                var transactionObj = await _db.UserToProjectTransactionHistories.Include("ProjectResource")
+                var transactionObj = await _db.UserToProjectTransactionHistories.Include(x=>x.ProjectResource).ThenInclude(x=>x.Project)
                     .Where(x => x.TransactionID.Equals(transactionID)).FirstOrDefaultAsync();
 
                 if (transactionObj != null)
@@ -364,9 +357,7 @@ namespace Dynamics.DataAccess.Repository
                     if (transactionObj.ProjectResourceID != null && resourceTypes.Contains(transactionObj.ProjectResourceID))
                     {
                         //find the obj resource in ProjectResource table
-                        var resourceObj =
-                            await _db.ProjectResources.FirstOrDefaultAsync(x =>
-                                x.ResourceID.Equals(transactionObj.ProjectResourceID));
+                        var resourceObj = transactionObj.ProjectResource;
                         if (resourceObj != null)
                         {
                             //update quantity of obj resource
@@ -381,7 +372,9 @@ namespace Dynamics.DataAccess.Repository
             else if (!string.IsNullOrEmpty(donor) && donor.Equals("Organization"))
             {
                 var transactionObj =
-                    await _db.OrganizationToProjectTransactionHistory.FirstOrDefaultAsync(x =>
+                    await _db.OrganizationToProjectTransactionHistory.Include(x=>x.ProjectResource).ThenInclude(x=>x.Project)
+                    .Include(x=>x.OrganizationResource).ThenInclude(x=>x.Organization)
+                    .FirstOrDefaultAsync(x =>
                         x.TransactionID.Equals(transactionID));
                 if (transactionObj != null)
                 {
@@ -389,9 +382,7 @@ namespace Dynamics.DataAccess.Repository
                     if (transactionObj.ProjectResourceID.HasValue && resourceTypes.Contains(transactionObj.ProjectResourceID.Value))
                     {
                         //find the obj resource in ProjectResource table
-                        var resourceObj =
-                            await _db.ProjectResources.FirstOrDefaultAsync(x =>
-                                x.ResourceID.Equals(transactionObj.ProjectResourceID));
+                        var resourceObj = transactionObj.ProjectResource;
                         if (resourceObj != null)
                         {
                             //update quantity of obj resource
@@ -412,11 +403,6 @@ namespace Dynamics.DataAccess.Repository
         {
             IQueryable<ProjectResource?> projectResourceList = _db.ProjectResources.Where(filter);
             return await projectResourceList.ToListAsync();
-        }
-
-        public IQueryable<ProjectResource> GetAllProjectResourceQuery()
-        {
-            return _db.ProjectResources;
         }
 
         public async Task<bool> AddResourceTypeAsync(ProjectResource entity)
@@ -519,6 +505,13 @@ namespace Dynamics.DataAccess.Repository
                 orgDonate.Status = 0;
                 orgDonate.Time = DateOnly.FromDateTime(DateTime.Now);
                 await _db.OrganizationToProjectTransactionHistory.AddAsync(orgDonate);
+                //find orgresource
+                var orgResource = await _db.OrganizationResources.FirstOrDefaultAsync(x =>x.ResourceID==orgDonate.OrganizationResourceID);
+                //update value orgresource
+                if (orgResource != null) {
+                    orgResource.Quantity -= orgDonate.Amount;
+                    _db.OrganizationResources.Update(orgResource);
+                }
                 await _db.SaveChangesAsync();
                 return true;
             }
@@ -615,32 +608,37 @@ namespace Dynamics.DataAccess.Repository
         {
             var transactionObj =
                 await _db.OrganizationToProjectTransactionHistory.FirstOrDefaultAsync(x =>
-                    x.TransactionID.Equals(transactionID));
+                    x.TransactionID.Equals(transactionID));        
             if (transactionObj != null)
             {
-                _db.OrganizationToProjectTransactionHistory.Remove(transactionObj);
-                await _db.SaveChangesAsync();
-                return true;
+                //find orgresource
+                var orgResource = await _db.OrganizationResources.FirstOrDefaultAsync(x => x.ResourceID == transactionObj.OrganizationResourceID);
+                ;
+                //update value orgresource
+                if (orgResource != null)
+                {
+                    orgResource.Quantity += transactionObj.Amount;
+                    _db.OrganizationResources.Update(orgResource);
+                    _db.OrganizationToProjectTransactionHistory.Remove(transactionObj);
+                    await _db.SaveChangesAsync();
+                    return true;
+
+                }
             }
 
             return false;
         }
 
         //-----------------manage project update----------------------------
-        public async Task<List<History>?> GetAllPhaseReportsAsync(Expression<Func<History, bool>> filter,
-            string? includeObjects = null)
+        public async Task<List<History>?> GetAllPhaseReportsAsync(Expression<Func<History, bool>> filter)
         {
-            IQueryable<History> updates = _db.Histories.Where(filter);
-            if (!string.IsNullOrEmpty(includeObjects))
+            IQueryable<History> updates = _db.Histories.Include(x=>x.Project).Where(filter);
+            if (updates!=null)
             {
-                foreach (var includeObj in includeObjects.Split(
-                             new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    updates = updates.Include(includeObj);
-                }
-            }
+                return await updates.ToListAsync();
 
-            return await updates.ToListAsync();
+            }
+            return null;
         }
 
         public async Task<bool> AddPhaseReportAsync(History entity)

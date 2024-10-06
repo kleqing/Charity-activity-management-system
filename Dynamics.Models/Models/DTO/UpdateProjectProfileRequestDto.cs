@@ -29,7 +29,7 @@ namespace Dynamics.Models.Models.DTO
         [ValidateNever]
         public DateOnly? EndTime { get; set; }
         [ValidateNever]
-        public Guid LeaderID { get; set; }
+        public Guid NewLeaderID { get; set; }
         [ValidateNever]
         public Guid OldLeaderID { get; set; }
         [DataType(DataType.PhoneNumber)]

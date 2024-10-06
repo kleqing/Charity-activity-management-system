@@ -63,6 +63,9 @@
                         </li>
                         <li>
                             <a asp-action="Index" asp-controller="Project" asp-route-id="@currentUser?.UserID">My projects</a>
+                        </li> 
+                        <li>
+                            <a asp-action="ViewAllProjects" asp-controller="Project" >All projects</a>
                         </li>
                         <li class="text-rose-500">
                             <a class="flex justify-between" asp-action="Logout" asp-controller="Auth">

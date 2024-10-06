@@ -9,7 +9,7 @@
     // take current user
     var userIDString = Accessor.HttpContext.Session.GetString("currentUserID");
     var currentProjectID = Accessor.HttpContext.Session.GetString("currentProjectID");
-    var allProjectMember = projectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)), "User");
+    var allProjectMember = projectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)));
     Report report = new Report();
     var beMember = 0;
     if (allProjectMember != null&& !string.IsNullOrEmpty(userIDString))
@@ -32,12 +32,14 @@
     {
         projectImages = Model.CurrentProject.Attachment.TrimEnd(',', ' ').Split(",");
     }
+    var ProjectMemberOfUser =  projectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(new Guid(userIDString)));
+    var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
     
 }
 
 <!-- container start -->
 <div class="m-w-screen-2xl flex  justify-start relative">
-    @if (Model.CurrentLeaderProject.UserID.Equals(new Guid(userIDString)))
+    @if (statusProjectMemberOfUser>=2)
     {
         <!-- edit button -->
         <a asp-action="UpdateProjectProfile" asp-route-id="@Model.CurrentProject.ProjectID" title="Edit project profile">
@@ -96,15 +98,20 @@
                 <h2 class="font-semibold mb-2 text-black text-3xl">Timeline</h2>
                 <p class="text-gray-600">Start Date: @Model.CurrentProject.StartTime</p>
                 <p class="text-gray-600">End Date: @Model.CurrentProject.EndTime</p>
-                @if(Model.CurrentProject.ProjectStatus== 1)
+            @if (Model.CurrentProject.ProjectStatus == -1)
+                    {
+                    <p class="text-gray-600">Status: <span class="text-red-700 font-semibold">Inactive</span></p>
+                    }else if
+                
+                (Model.CurrentProject.ProjectStatus== 0)
                 {
                 <p class="text-gray-600">Status: <span class="text-red-700 font-semibold">Pending</span></p>
             }
-            else if(Model.CurrentProject.ProjectStatus==2)
+            else if(Model.CurrentProject.ProjectStatus==1)
             {
                 <p class="text-gray-600">Status: <span class="text-red-700 font-semibold">In progress</span></p>
             }
-            else
+            else if (Model.CurrentProject.ProjectStatus == 2)
             {
                 <p class="text-gray-600">Status: <span class="text-red-700 font-semibold">Completed</span></p>
                 }

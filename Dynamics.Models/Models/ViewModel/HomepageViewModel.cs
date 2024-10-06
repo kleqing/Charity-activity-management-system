@@ -1,4 +1,4 @@
-﻿using Dynamics.Models.Models.Dto;
+﻿using Dynamics.Models.Models.DTO;
 using System.ComponentModel.DataAnnotations;
 
 namespace Dynamics.Models.Models.ViewModel;
