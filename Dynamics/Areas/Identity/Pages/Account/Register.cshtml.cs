@@ -152,7 +152,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    // TODO: Return to the home page
                     return RedirectToAction("HomePage", "Home");
                 }
 

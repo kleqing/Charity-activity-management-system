@@ -17,9 +17,9 @@ namespace Dynamics.DataAccess.Repository
         Task<bool> IsUserInRole(Guid id, string roleName);
         
         /**
-         * Get all roles from a user in auth db
+         * Get role from a user in auth db
          */
-        Task<List<string>> GetRolesFromUserAsync(Guid userId);
+        Task<string> GetRoleFromUserAsync(Guid userId);
         /**
          * Add a role to a user in BOTH Auth database and Main database
          */

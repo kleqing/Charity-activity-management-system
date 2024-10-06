@@ -18,8 +18,7 @@ namespace Dynamics.DataAccess.Repository
             _authDbContext = authDbContext;
             this._userManager = userManager;
         }
-
-        // TODO: Decide whether we use one database or 2 database for managing the user
+        
         public async Task<bool> AddAsync(User entity)
         {
             try
@@ -48,6 +47,7 @@ namespace Dynamics.DataAccess.Repository
             return user;
         }
 
+        // Same stuff only get one
         public async Task<bool> IsUserInRole(Guid id, string roleName)
         {
             var authUser = await _userManager.FindByIdAsync(id.ToString());
@@ -56,16 +56,20 @@ namespace Dynamics.DataAccess.Repository
             return result;
         }
 
-        public async Task<List<string>> GetRolesFromUserAsync(Guid userId)
+        // Only get one
+        public async Task<string> GetRoleFromUserAsync(Guid userId)
         {
             var authUser = await _userManager.FindByIdAsync(userId.ToString());
             if (authUser == null) throw new Exception("GET ROLE FAILED: USER NOT FOUND");
-            return _userManager.GetRolesAsync(authUser).GetAwaiter().GetResult().ToList();
+            return _userManager.GetRolesAsync(authUser).GetAwaiter().GetResult().FirstOrDefault();
         }
 
+        // Add to both user side
         public async Task AddToRoleAsync(Guid userId, string roleName)
         {
             var authUser = await _userManager.FindByIdAsync(userId.ToString());
+            var businessUser = await GetAsync(u => u.UserID == userId);
+            // TODO: businessUser.role = ...
             if (authUser == null) throw new Exception("ADD ROLE FAILED: USER NOT FOUND");
             await _userManager.AddToRoleAsync(authUser, roleName);
         }
@@ -73,6 +77,8 @@ namespace Dynamics.DataAccess.Repository
         public async Task DeleteRoleFromUserAsync(Guid userId, string roleName)
         {
             var authUser = await _userManager.FindByIdAsync(userId.ToString());
+            var businessUser = await GetAsync(u => u.UserID == userId);
+            // TODO: businessUser.role = ...
             if (authUser == null) throw new Exception("DELETE ROLE FAILED: USER NOT FOUND");
             await _userManager.RemoveFromRoleAsync(authUser, roleName);
         }

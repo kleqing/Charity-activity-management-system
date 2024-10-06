@@ -56,7 +56,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            returnUrl ??= Url.Content("Homepage/Home");
+            returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -67,7 +67,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("Homepage/Home");
+            returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
@@ -97,7 +97,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
-                        // TODO: Redirect to home page
                         return Redirect(returnUrl);
                         // return RedirectToAction("Homepage", "Home", returnUrl);
                     }
