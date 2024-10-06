@@ -82,5 +82,19 @@ namespace Dynamics.DataAccess.Repository
         Task<bool> AddUserDonateRequestAsync(UserToProjectTransactionHistory? userDonate);
         Task<bool> AddOrgDonateRequestAsync(OrganizationToProjectHistory? orgDonate);
         Task<int> CountMembersOfProjectByIdAsync(Guid projectId);
+
+        //Repose ò tuan
+        Task<List<Project>> GetAllProjectsByOrganizationIDAsync(Expression<Func<Project, bool>> filter);
+
+        Task<bool> AddProjectAsync(Project entity);
+
+        Task<bool> AddProjectMemberAsync(ProjectMember entity);
+
+        Task<bool> AddProjectResourceAsync(ProjectResource entity);
+        Task<Project> GetProjectByProjectIDAsync(Expression<Func<Project, bool>> filter);
+
+        Task<List<ProjectResource>> GetAllResourceByProjectIDAsync(Expression<Func<ProjectResource, bool>> filter);
+
+        Task<bool> UpdateProjectResource(ProjectResource entity);
     }
 }

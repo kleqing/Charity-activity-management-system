@@ -79,14 +79,13 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    
-                    // Check if verified first before sign in
-                    //var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
-                    //if (!isEmailConfirmedAsync)
-                    //{
-                    //    ModelState.AddModelError(string.Empty, "User account is not confirmed!");
-                    //    return Page();
-                    //}
+                    //Check if verified first before sign in
+                    var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
+                    if (!isEmailConfirmedAsync)
+                    {
+                        ModelState.AddModelError(string.Empty, "User account is not confirmed!");
+                        return Page();
+                    }
 
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,
                         lockoutOnFailure: false);
