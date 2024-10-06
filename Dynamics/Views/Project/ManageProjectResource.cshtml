@@ -75,8 +75,8 @@
 
             <!-- Hidden form to edit resource -->
             <div id="editForm-@item.ResourceID"
-                 class="bg-white hidden grid grid-cols-2 gap-x-6 py-2 px-6 shadow-md shadow-blue-500/30 rounded-xl items-center">
-                <form id="formUpdate"  asp-action="UpdateResourceType" method="post">
+                 class="bg-white hidden grid grid-cols-2 gap-x-6 py-2 px-6 shadow-md shadow-blue-500/30 rounded-xl items-center" style=" background-color: rgba(0, 0, 0, 0);">
+                <form asp-action="UpdateResourceType" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                     <!-- Explicitly referencing ProjectResource model -->
@@ -94,10 +94,10 @@
                             <span asp-validation-for="@item.ResourceName" class="text-danger"></span>
                         </div>
                         <div>
-                            <label for="ExpectedQuantity" class="block mb-2 text-md font-medium text-gray-900">
+                            <label asp-for="@item.ExpectedQuantity" class="block mb-2 text-md font-medium text-gray-900">
                                 Enter expected quantity
                             </label>
-                            <input min="0" name="ExpectedQuantity" type="number" value="@item.ExpectedQuantity"
+                            <input min="0" name="ExpectedQuantity" type="number" asp-for="@item.ExpectedQuantity" 
                                    class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                    required />
                             <span asp-validation-for="@item.ExpectedQuantity" class="text-error"></span>
@@ -108,16 +108,15 @@
                             <label asp-for="@item.Unit" class="block mb-2 text-md font-medium text-gray-900">
                                 Enter resource unit
                             </label>
-                            <input id="UnitUpdateInput" name="Unit" type="text" asp-for="@item.Unit" 
+                            <input name="Unit" type="text" asp-for="@item.Unit" 
                                    class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                    required />
                             <span asp-validation-for="@item.Unit" class="text-error"></span>
-                            <span id="unitUpdateError" class="text-error text-red-500 text-sm font-semibold "></span>
                         </div>
                     </div>
 
                     <div class="flex justify-center gap-x-6">
-                        <button type="submit" id="updateResourceBtn" onclick="validateUpdateResource('@item.ResourceID')"
+                        <button type="submit" 
                                 class="mt-4 text-md text-white bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
                             Update
                         </button>
@@ -180,13 +179,13 @@
 <div class="flex relative justify-center my-6 w-3/4 mx-auto">
     <!-- add button -->
 
-        <button type="button"              
+        <button type="button" onclick="add_form.showModal()"
                 class="h-14 text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-xl px-4 py-2">
             Add resource
         </button>   
 </div>
 <!-- hide/show -->
-<div  class="w-3/4 mx-auto flex-col shadow-lg shadow-blue-500/30 p-6 rounded-3xl my-10">
+@* <div  class="w-3/4 mx-auto flex-col shadow-lg shadow-blue-500/30 p-6 rounded-3xl my-10">
     <h2 class="font-serif text-black font-bold text-3xl text-center ">Add new resource</h2>
     <!-- form 1 -->
         <form id="formAdd"method="post" asp-action="AddProjectResourceType" asp-controller="Project" enctype="multipart/form-data">
@@ -232,7 +231,63 @@
             </button>
         </div>
     </form>
-</div>
+</div> *@
+    <!-- You can open the modal using ID.showModal() method -->
+    <dialog id="add_form" class="modal ">
+        <div class="modal-box  w-[50vw] max-w-[800px] h-fit p-0 m-0" style=" background-color: rgba(0, 0, 0, 0,1);">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <div class="w-full mx-auto flex-col shadow-lg shadow-blue-500/30 p-6 rounded-3xl">
+                <h2 class="font-serif text-black font-bold text-3xl text-center ">Add new resource</h2>
+                <!-- form 1 -->
+                <form id="formAdd" method="post" asp-action="AddProjectResourceType" asp-controller="Project" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="@projectResource.ProjectID" />
+                    <div class="grid grid-cols-3 gap-x-6 gap-y-3">
+                        <div>
+                            <label asp-for="@projectResource.ResourceName" class="block mb-2 text-md font-medium text-gray-900">
+                                Enter resource
+                                name
+                            </label>
+                            <input id="ResourceNameInput" asp-for="@projectResource.ResourceName" type="text"
+                                   class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   placeholder="Blanket" required />
+                            <span asp-validation-for="@projectResource.ResourceName" class="text-error text-red-500 text-sm font-semibold"></span>
+                        </div>
+                        <div>
+                            <label asp-for="@projectResource.ExpectedQuantity" class="block mb-2 text-md font-medium text-gray-900">
+                                Enter
+                                expected quantity
+                            </label>
+                            <input min="0" asp-for="@projectResource.ExpectedQuantity" type="number"
+                                   class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   placeholder="164" required />
+                            <span asp-validation-for="@projectResource.ExpectedQuantity" class="text-error text-red-500 text-sm font-semibold"></span>
+                        </div>
+                        <div>
+                            <label asp-for="@projectResource.Unit" class="block mb-2 text-md font-medium text-gray-900">
+                                Enter expected
+                                unit
+                            </label>
+                            <input id="UnitInput" asp-for="@projectResource.Unit" type="text"
+                                   class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   placeholder="..." required />
+                            <span asp-validation-for="@projectResource.Unit" class="text-error text-red-500 text-sm font-semibold"></span>
+                            <span id="unitError" class="text-error text-red-500 text-sm font-semibold "></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <button type="button" id="addResourceBtn"
+                                class="mt-4 text-md text-white bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
  }
 <!-- end container -->
 <script>
@@ -314,65 +369,6 @@
                 return true;
             }
         }
-        @* //validate update resource *@
-      
-    function validateUpdateResource(resourceIDvalue) {
-        preventDefault();
-        console.log("validateUpdateResource function called"); // Debug log
-
-        // Get values from inputs
-    
-        var resourceNameUpdateInput = document.getElementById('ResourceNameUpdateInput');
-        var unitUpdateInput = document.getElementById('UnitUpdateInput');
-        
-        // Check if elements exist
-        if (!resourceNameUpdateInput || !unitUpdateInput) {
-            console.error("Required input elements not found");
-            return false;
-        }
-
-        var resourceName = resourceNameUpdateInput.value.trim();
-        var unit = unitUpdateInput.value.trim();
-     
-         var existingUpdateResources = existingResources.filter(function (resource) {
-        return resource.ResourceID != resourceIDvalue;
-    });
-        console.log("Resource ID:", resourceIDvalue); // Debug log
-        console.log("Resource Name:", resourceName); // Debug log
-        console.log("Unit:", unit); // Debug log
-          console.log("existingUpdateResources", existingUpdateResources);
-        
-          // Error span elements
-        var unitUpdateError = document.getElementById('unitUpdateError');
-        if (!unitUpdateError) {
-            console.error("Error span elements not found");
-            return false;
-        }
-        unitUpdateError.innerText = '';
-      
-         debugger;
-        // Check for duplicates
-        var duplicateFound = existingUpdateResources.some(function (resource) {
-                console.log(`Comparing: ${resource.ResourceName} with ${resourceName} and ${resource.Unit} with ${unit}`);
-                return resource.ResourceName.trim().toLowerCase() === resourceName.toLowerCase() &&
-                    resource.Unit.trim().toLowerCase() === unit.toLowerCase();
-        });
-            console.log("duplicateFound", duplicateFound);
-
-         debugger;
-        if (duplicateFound) {
-            // Show error and clear input
-             console.log( "YES! DUPLICATED!");
-            unitUpdateError.innerText = "Resource with the same unit already exists!";
-            unitInput.value = '';
-            return false;
-        } else {
-            // If validation passes, submit the form
-                console.log( "NO. NO DUPLICATE");
-             document.getElementById('formUpdate').submit();
-            return true;
-        }
-    }
 
     // Add event listener to the button
     document.addEventListener('DOMContentLoaded', function () {
@@ -386,17 +382,6 @@
             console.error("Add Resource button not found");
         }
 
-     @*     var updateResourceBtn = document.getElementById('updateResourceBtn');
-         if (updateResourceBtn) {
-             updateResourceBtn.addEventListener('click', function (event) {
-                 event.preventDefault(); // Prevent default form submission
-                    var currentResourceID = document.getElementById('currentResourceID');
-                 var resourceIDvalue = currentResourceID.value.trim();
-                 validateUpdateResource(resourceIDvalue);
-             });
-         } else {
-             console.error("Update Resource button not found");
-         } *@
     });
 </script>
 

@@ -47,6 +47,7 @@ public class ProjectService : IProjectService
         {
             tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
         }
+        tempProjectOverviewDto.Organization = p.Organization;   
         return tempProjectOverviewDto;
     }
 

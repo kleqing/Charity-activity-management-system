@@ -56,10 +56,12 @@ namespace Dynamics.Controllers
             //get project that user has joined
             var projectMemberList =
                 projectRepository.FilterProjectMember(
-                    x => x.UserID.Equals(userID) && x.Status >= 1 && x.Project.ProjectStatus >= 1);
-            List<Models.Models.Project> projectsIAmMember = new List<Models.Models.Project>();
-            List<Models.Models.Project> projectsILead = new List<Models.Models.Project>();
-            List<Models.Models.Project> otherProjects = new List<Models.Models.Project>();
+                    x => x.UserID.Equals(userID) && x.Status >= 1 && x.Project.ProjectStatus >= 0);
+            List<ProjectOverviewDto> projectsIAmMember = new List<ProjectOverviewDto>();
+            List<ProjectOverviewDto> projectsILead = new List<ProjectOverviewDto>();
+            List<ProjectOverviewDto> otherProjects = new List<ProjectOverviewDto>();
+            HashSet<Guid> userProjectIds = new HashSet<Guid>();
+
             foreach (var projectMember in projectMemberList)
             {
                   var project = await projectRepository.GetProjectAsync(x => x.ProjectID.Equals(projectMember.ProjectID));
@@ -67,26 +69,26 @@ namespace Dynamics.Controllers
                 {
                     var ProjectMemberOfUser = projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectMember.ProjectID) && p.UserID.Equals(userID));
                     var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
-
+                    var dto = projectService.MapToProjectOverviewDto(project);
+                    userProjectIds.Add(project.ProjectID); 
                     if (statusProjectMemberOfUser>=2)
                     {
                         //get project that user join as a leader
-                        projectsILead.Add(project);
+                        projectsILead.Add(dto);
                     }
                     else
                     {
                         //get project that user join as a member
-                        projectsIAmMember.Add(project);
+                        projectsIAmMember.Add(dto);
                     }
                 }
             }
-
             foreach (var project in allProjects)
             {
-                if (!projectsIAmMember.Contains(project) && !projectsILead.Contains(project))
+                if (!userProjectIds.Contains(project.ProjectID))
                 {
-                    //get other project
-                    otherProjects.Add(project);
+                    var dto = projectService.MapToProjectOverviewDto(project);
+                    otherProjects.Add(dto); // Add to otherProjects only if not in the user's projects
                 }
             }
 
@@ -449,10 +451,11 @@ namespace Dynamics.Controllers
             var res = await projectRepository.DeleteMemberProjectByIdAsync(memberID, new Guid(currentProjectID));
             if (res)
             {
+                TempData[MyConstants.Success] = "Delete project member successfully!";
                 return RedirectToAction(nameof(ManageProjectMember), new { id = currentProjectID });
             }
-
-            return BadRequest("Remove member fail!");
+            TempData[MyConstants.Error] = "Fail to delete project member!";
+            return RedirectToAction(nameof(ManageProjectMember), new { id = currentProjectID });
         }
 
         //----manage join request-----
@@ -461,7 +464,7 @@ namespace Dynamics.Controllers
         {
             var projectObj =
                 await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID));
-            if (projectObj?.ProjectStatus == 0)
+            if (projectObj?.ProjectStatus == -1)
             {
                 TempData[MyConstants.Warning] = "This project is not in progress!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
@@ -618,7 +621,7 @@ namespace Dynamics.Controllers
         {
             var projectObj =
                 await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID));
-            if (projectObj?.ProjectStatus == 0)
+            if (projectObj?.ProjectStatus == -1)
             {
                 TempData[MyConstants.Warning] = "This project is not in progress!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });

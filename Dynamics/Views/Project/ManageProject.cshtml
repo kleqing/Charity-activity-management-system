@@ -105,7 +105,7 @@
                 
                 (Model.CurrentProject.ProjectStatus== 0)
                 {
-                <p class="text-gray-600">Status: <span class="text-red-700 font-semibold">Pending</span></p>
+                <p class="text-gray-600">Status: <span class="text-red-700 font-semibold">Preparing</span></p>
             }
             else if(Model.CurrentProject.ProjectStatus==1)
             {
@@ -118,10 +118,14 @@
             </div>
         <div class="border-t p-4 mt-0">
             <h2 class="font-semibold mb-2 text-black text-3xl">Description</h2>
-            <p class="text-gray-600 line-clamp-3">
+            <p id="notViewMore" class="text-gray-600 line-clamp-3">
               @Model.CurrentProject.ProjectDescription
             </p>
-            <a href="#" class="text-gray-400 flex justify-center font-normal">View more...</a>
+            <p id="viewMore" class="text-gray-600 hidden">
+                @Model.CurrentProject.ProjectDescription
+            </p>
+            <a onclick="viewMoreDescription()" class="cursor-pointer text-gray-400 flex justify-center font-normal">View more...</a>
+
         </div>
         <div class="border-t p-4 mt-0">
             <h2 class="font-semibold mb-2 text-black text-3xl">Organizer</h2>
@@ -166,19 +170,30 @@
 
                 @foreach (var item in Model.Random5Donors)
                 {
-                    <div class="flex justify-between items-center p-4 shadow-md shadow-green-500/30  rounded-3xl mb-4">
-                        <div class="flex justify-start items-center mx-0 my-0">
-                            <div>
-                                <img class="rounded-full w-14 h-14 mx-4"
+                    <div class="grid grid-cols-2 py-2 px-6 shadow-md shadow-blue-500/30 rounded-xl items-center">
+                        <div class="flex justify-start ">
+                            <div class=" flex items-center">
+                                <img class="rounded-full w-10 h-10 mr-4 "
                                      src="@item.User.UserAvatar"
                                      alt="avatar">
                             </div>
                             <div class="flex flex-col ">
                                 <p class="text-black font-bold">@item.User.UserFullName</p>
-                                <p class="text-gray-400 font-normal text-base ">Donate on @item.Time</p>
+                                <p class="text-gray-400 font-normal text-base ">@item.Time</p>
                             </div>
                         </div>
-                        <p class="text-green-700 font-semibold ">@item.Amount @item.ProjectResource?.ResourceName</p>
+                        <div class="flex flex-col justify-end ml-auto items-end">
+                            <p class="text-green-500 font-bold">+@item.Amount @item.ProjectResource?.Unit</p>
+                            @if (item.ProjectResource.ResourceName.Trim().ToLower().Equals("money"))
+                            {
+                                <p class=" bg-green-500 text-white rounded-3xl w-fit px-8 my-2">Money</p>
+                            }
+                            else
+                            {
+                                <p class=" bg-orange-500 text-white rounded-3xl w-fit px-8 my-2">@item.ProjectResource.ResourceName</p>
+                            }
+                        </div>
+                        <div class="py-2 text-gray-900">@item.Message</div>
                     </div>
                 }
                 <a asp-action="ManageProjectDonor" asp-route-projectID="@currentProjectID" class="text-gray-400 flex justify-center font-normal">See more donors...</a>
@@ -360,5 +375,18 @@
 
     // Initialize the carousel
     updateCarousel();
+    @* view more RTCSessionDescription *@
+        function viewMoreDescription() {
+            const notViewMore = document.getElementById('notViewMore');
+            const viewMore = document.getElementById('viewMore');
+
+            if (viewMore.classList.contains('hidden')) {
+                viewMore.classList.remove('hidden');
+                notViewMore.classList.add('hidden');
+            } else {
+                viewMore.classList.add('hidden');
+                notViewMore.classList.remove('hidden');
+            }
+        }
 
 </script>

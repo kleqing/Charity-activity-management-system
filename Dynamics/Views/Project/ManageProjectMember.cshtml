@@ -45,12 +45,13 @@
     <!-- PART 2 -->
     <!-- list transaction -->
     <div class="flex flex-col relative w-3/4 gap-y-6 mb-10">
-        @foreach (var item in Model)
+        @for(int i=0;i<Model.Count();i++)
         {
+            var item = Model.ElementAt(i);
             <div class="grid grid-cols-3 gap-x-10 py-2 px-6 shadow-md shadow-blue-500/30 rounded-xl items-center">
 
             <div class="flex justify-start items-center ">
-                <div class="text-left p-2 text-semibold text-xl text-gray-900">1.</div>
+                <div class="text-left p-2 text-semibold text-xl text-gray-900">@(i+1).</div>
                 <div class=" flex items-center">
                     <img class="rounded-full w-10 h-10 mx-4 "
                          src="@item.User.UserAvatar"
@@ -67,7 +68,7 @@
                         <p class="text-red-500 font-bold">CEO</p>
                     }else if (item.Status == 3)
                     {
-                        <p class="text-blue-500 font-semibold">Leader</p>
+                        <p class="text-red-500 font-semibold">Leader</p>
                     }
                     else if(item.Status == 1)
                     {
@@ -80,11 +81,11 @@
                     {
                         @if (item.Status ==2)
                         {
-                            <button type="button" class="h-10 text-white  bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">CEO</button>
+                            <button type="button" class="cursor-not-allowed h-10 text-white  bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">CEO</button>
                         }
                         else if (item.Status == 3)
                         {
-                            <button type="button" class="h-10 text-white  bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Leader</button>
+                            <button type="button" class="cursor-not-allowed h-10 text-white  bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Leader</button>
                         }
                         else
                         {

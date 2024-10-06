@@ -193,6 +193,7 @@ namespace Dynamics.DataAccess.Repository
             existingItem.ProjectPhoneNumber = entity.ProjectPhoneNumber;
             existingItem.StartTime = entity.StartTime;
             existingItem.EndTime = entity.EndTime;
+            existingItem.ProjectStatus = entity.ProjectStatus;
             _db.Projects.Update(existingItem);
             //updating 2 member who is new and old leader of project
             var oldProjectLeaderUser = GetProjectLeaderAsync(entity.ProjectID).Result;
@@ -433,7 +434,7 @@ namespace Dynamics.DataAccess.Repository
                 existingItem.ResourceName = entity.ResourceName;
                 existingItem.ExpectedQuantity = entity.ExpectedQuantity;
                 existingItem.Unit = entity.Unit;
-
+                 _db.ProjectResources.Update(existingItem);
                 // No need to set the state or call Update again, since existingItem is already tracked
                 await _db.SaveChangesAsync();
                 return true;
