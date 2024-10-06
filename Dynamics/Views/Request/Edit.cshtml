@@ -202,12 +202,9 @@ function getUserContact(){
         // Change option for visibility
         let address = '@Html.Raw(Model.User.UserAddress)';
         let parts = address.split(',');
-        document.getElementById('pOption').innerHTML = parts[1].trim();
-            document.getElementById('city').setAttribute('disabled', 'disabled');
+        document.getElementById('pOption').innerHTML = parts[3].trim();
         document.getElementById('dOption').innerHTML = parts[2].trim();
-            document.getElementById('district').setAttribute('disabled', 'disabled');
-        document.getElementById('wOption').innerHTML = parts[3].trim();
-            document.getElementById('ward').setAttribute('disabled', 'disabled');
+        document.getElementById('wOption').innerHTML = parts[1].trim();
     }else {
         // Set the input fields to null
         document.getElementById('RequestEmail').value = '';
@@ -224,11 +221,8 @@ function getUserContact(){
 
         // Remove option
         document.getElementById('pOption').innerHTML = 'Choose province';
-            document.getElementById('city').removeAttribute('disabled');
         document.getElementById('dOption').innerHTML = 'Choose district';
-            document.getElementById('district').removeAttribute('disabled');
         document.getElementById('wOption').innerHTML = 'Choose ward/commune';
-            document.getElementById('ward').removeAttribute('disabled');
     }
 }
 

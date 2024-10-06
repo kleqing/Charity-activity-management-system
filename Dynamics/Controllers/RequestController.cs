@@ -11,35 +11,31 @@ namespace Dynamics.Controllers
 	public class RequestController : Controller
 	{
 		private readonly IRequestRepository _requestRepo;
-		private readonly IUserRepository _userRepo;
 		private readonly UserManager<IdentityUser> _userManager;
 
-		public RequestController(IRequestRepository requestRepository, IUserRepository userRepo, UserManager<IdentityUser> userManager)
+		public RequestController(IRequestRepository requestRepository, UserManager<IdentityUser> userManager)
 		{
 			_requestRepo = requestRepository;
-			_userRepo = userRepo;
 			_userManager = userManager;
 		}
-		//TODO: implement filter for each field (search)
-		public async Task<IActionResult> Index(string searchQuery, int pageNumber = 1, int pageSize = 12)
+		public async Task<IActionResult> Index(string searchQuery, string filterQuery, int pageNumber = 1, int pageSize = 12)
 		{
-			var requests = await _requestRepo.GetAllPaginatedAsync(pageNumber, pageSize);
+			var requests = await _requestRepo.GetAllAsync();
+			// search
 			if (!string.IsNullOrEmpty(searchQuery))
 			{
-				requests = await _requestRepo.SearchIndexFilterAsync(searchQuery);
+				requests = await _requestRepo.SearchIndexFilterAsync(searchQuery, filterQuery);
 			}
-			var totalRequest = 0;
-			foreach (var request in requests)
-			{
-				totalRequest++;
-			}
+			// pagination
+			var totalRequest = requests.Count();
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
+			var paginatedRequests = await _requestRepo.PaginateAsync(requests, pageNumber, pageSize);
 			
 			ViewBag.currentPage = pageNumber;
 			ViewBag.totalPages = totalPages;
 			return View(requests);
 		}
-		public async Task<IActionResult> MyRequest(string searchQuery, int pageNumber = 1, int pageSize = 12)
+		public async Task<IActionResult> MyRequest(string searchQuery, string filterQuery, int pageNumber = 1, int pageSize = 12)
 		{
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
@@ -54,20 +50,21 @@ namespace Dynamics.Controllers
 				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
 				userId = userJsonC.UserID;
 			}
-			var requests = await _requestRepo.GetAllByIdPaginatedAsync(role, userId, pageNumber, pageSize);
+			var requests = await _requestRepo.GetAllByIdAsync(role, userId);
 			
 			// search
 			if (!string.IsNullOrEmpty(searchQuery))
 			{
-				requests = await _requestRepo.SearchIdFilterAsync(searchQuery, userId);
+				requests = await _requestRepo.SearchIdFilterAsync(searchQuery, filterQuery, userId);
 			}
 			//pagination
-			var totalRequest = 1 + requests.Count;
+			var totalRequest = requests.Count();
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
+			var paginatedRequests = await _requestRepo.PaginateAsync(requests, pageNumber, pageSize);
 			
 			ViewBag.currentPage = pageNumber;
 			ViewBag.totalPages = totalPages;
-			return View(requests);
+			return View(paginatedRequests);
 		}
 		public async Task<IActionResult> Detail(Guid? id)
 		{
@@ -187,8 +184,10 @@ namespace Dynamics.Controllers
 			}
 			if (role == "User")
 			{
-				// If the user is "user", allow them to update only certain fields
+				existingRequest.RequestTitle = obj.RequestTitle;
 				existingRequest.Content = obj.Content;
+				existingRequest.RequestEmail = obj.RequestEmail;
+				existingRequest.RequestPhoneNumber = obj.RequestPhoneNumber;
 				existingRequest.Location = obj.Location;
 				existingRequest.isEmergency = obj.isEmergency;
 				if (images != null && images.Count > 0)

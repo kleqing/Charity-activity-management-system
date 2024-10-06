@@ -16,35 +16,30 @@ ViewData["Title"] = "My Request";
         </a>
         <h1 class="text-3xl">Manage your requests</h1>
         <div class="flex w-full justify-end items-center gap-2 mb-3">
-            <label class="input input-bordered flex items-center gap-2">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                    class="h-4 w-4 opacity-70 align-middle"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
-                <form asp-action="MyRequest" method="get" class="">
+            <!-- Search form -->
+            <form asp-action="MyRequest" method="get" class="flex gap-2">
+                <label class="input input-bordered flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                         class="h-4 w-4 opacity-70 align-middle">
+                        <path fill-rule="evenodd"
+                              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                              clip-rule="evenodd"/>
+                    </svg>
                     <input type="text" name="searchQuery" class="grow align-middle" placeholder="Search something..." />
-                </form>
-            </label>
-            <!-- TODO: Implement filter dropdown -->
-            @*<div class="dropdown dropdown-end">
-                <div tabindex="0" role="button" class="btn btn-outline m-1">Filter</div>
-                <ul
-                    tabindex="0"
-                    class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md">
-                    <li><a>All</a></li>
-                    <li><a>Title</a></li>
-                    <li><a>Location</a></li>
-                    <li><a>Content</a></li>
-                </ul>
-            </div>*@
+                </label>
+
+                <!-- Filter dropdown -->
+                <input type="hidden" name="filterQuery" id="filterQuery" />
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" id="filterButton" class="btn btn-outline m-1">Filter</div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box border z-[1] w-52 p-2 shadow-md">
+                        <li><a onclick="setFilter('All')">All</a></li>
+                        <li><a onclick="setFilter('Title')">Title</a></li>
+                        <li><a onclick="setFilter('Location')">Location</a></li>
+                        <li><a onclick="setFilter('Content')">Content</a></li>
+                    </ul>
+                </div>
+            </form>
         </div>
         @if (!Model.Any())
         {
@@ -53,19 +48,12 @@ ViewData["Title"] = "My Request";
         else
         {
             <ul class="flex flex-col gap-3 w-full shadow-md">
-                @*TODO: implement indexing*@
-                @{
-                    int? currentPage = ViewBag.currentPage;
-                    int? pageSize = ViewBag.pageSize;
-                    var i = (currentPage - 1) * pageSize;
-                }
                 @foreach (var item in Model)
                 {
-                    i++;
                     <li class="flex justify-between w-full shadow-md p-4 rounded-md">
                         <!-- Left -->
                         <div class="flex gap-8">
-                            <div class="font-bold flex flex-col justify-center h-full text-xl">@i.</div>
+                            <div class="font-bold flex flex-col justify-center h-full text-xl">.</div>
                             <a asp-action="Detail" asp-controller="Request" asp-route-id="@item.RequestID">
                                 <div class="flex flex-col gap-2">
                                     <!-- Check if it's already approved or not -->
@@ -120,4 +108,10 @@ ViewData["Title"] = "My Request";
             }
         </div>
     </main>
+<script>
+        function setFilter(filter) {
+            document.getElementById("filterQuery").value = filter;
+            document.getElementById("filterButton").innerHTML = filter;
+        }
+    </script>
 </body>
