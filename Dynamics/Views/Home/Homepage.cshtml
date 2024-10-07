@@ -32,21 +32,6 @@
     }
 }
 
-<style>
-    .align-with-navbar-center {
-        /*margin-left: 80px;*/
-    }
-
-    .elevate {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .elevate:hover {
-        transform: translateY(-5px); /* Moves the element up */
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Adds a shadow to give a lifted effect */
-    }
-</style>
-
 <!-- The body of the home page -->
 <div class="-mt-12 z-10 relative bg-white rounded-3xl px-8 py-16 flex flex-col gap-20">
 <h1 class="text-center text-3xl text-primary font-bold align-with-navbar-center">
@@ -87,7 +72,7 @@
                                         Request
                                     </div>
                                     <div class="flex flex-col">
-                                        <a class="card-title h-14 text-primary font-bold mb-2 line-clamp-2" asp-action="Index"
+                                        <a class="card-title text-primary font-bold mb-2 line-clamp-2" asp-action="Index"
                                            asp-controller="Request" asp-route-id="@request.RequestID">
                                                 @request.RequestTitle
                                         </a>
@@ -99,7 +84,7 @@
                                             <span class="flex-1 text-end line-clamp-2">@request.Location</span>
                                         </div>
                                     </div>
-                                    <p class="text-neutral text-base line-clamp-3 mb-4">
+                                    <p class="text-base line-clamp-3 mb-4">
                                         @request.Content
                                     </p>
                                     <div class="card-actions justify-center flex-col items-center">
@@ -182,7 +167,7 @@
                                     }
 
                                     <div class="flex flex-col">
-                                        <a class="card-title h-14 text-primary font-bold mb-2 line-clamp-2"
+                                        <a class="card-title text-primary font-bold mb-2 line-clamp-2"
                                            asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID"
                                            asp-controller="Project">
                                             @projectOverviewDto.ProjectName
@@ -272,7 +257,7 @@
                                         Organization
                                     </div>
                                     <div class="flex flex-col">
-                                        <a class="card-title h-14 text-primary font-bold mb-2 line-clamp-2"
+                                        <a class="card-title text-primary font-bold mb-2 line-clamp-2"
                                            asp-action="Detail" asp-controller="Organization"
                                            asp-route-organizationId="@modelOrganization.OrganizationID">
                                             @modelOrganization.OrganizationName
@@ -359,7 +344,7 @@
                                 </div>
                                 @* No badge bc already finished *@
                                 <div class="flex flex-col">
-                                    <h2 class="card-title h-14 text-primary font-bold mb-2 line-clamp-2">
+                                    <h2 class="card-title text-primary font-bold mb-2 line-clamp-2">
                                         @projectOverviewDto.ProjectName
                                     </h2>
                                     <div class="flex justify-between gap-12">

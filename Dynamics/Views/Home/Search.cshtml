@@ -1,9 +1,201 @@
-﻿@model HomepageViewModel
+﻿@using Microsoft.IdentityModel.Tokens
+@model HomepageViewModel
 
 @{
     ViewData["Title"] = "Search result";
     Layout = "CustomLayout/_LayoutWithNavbarOnly";
 }
 
-<h2 class="text-center font-bold text-3xl">Search result</h2>
+<main class="p-16 min-h-screen">
+    <h1 class="text-center font-bold text-3xl">Search result</h1>
+    @if (!Model.OnGoingProjects.IsNullOrEmpty())
+    {
+        <h2 class="font-bold text-3xl mb-4">Found projects: </h2>
+        <section class="w-full flex flex-wrap gap-8 justify-center mb-16">
+            @foreach (var projectOverviewDto in Model.OnGoingProjects)
+            {
+                <div class="card w-full max-w-64 min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
+                    <a asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID" asp-controller="Project">
+                        <img class="w-full object-cover h-48 rounded-md"
+                             src="@projectOverviewDto.Attachment"
+                             alt="Shoes"/>
+                    </a>
+                    <div class="card-body p-2 gap-2 w-full">
+                        <!-- badge left -->
+                        <div
+                            class="badge badge-success absolute top-2 left-2 bg-success font-bold px-4 py-3 outline-none border-none">
+                            Project
+                        </div>
+                        <!-- badge right -->
+                        <div
+                            class="badge badge-secondary absolute top-2 right-2 bg-success font-bold px-4 py-3 outline-none border-none">
+                            Project
+                        </div>
+                        @if (projectOverviewDto.ProjectStatus == 1)
+                        {
+                            <div
+                                class="badge badge-error absolute top-2 right-2 bg-error font-bold text-white px-4 py-3 outline-none border-none">
+                                On-going
+                            </div>
+                        }
+                        else
+                        {
+                            <div
+                                class="badge badge-accent absolute top-2 right-2 font-bold px-4 py-3 outline-none border-none">
+                                Preparing
+                            </div>
+                        }
 
+                        <div class="flex flex-col">
+                            <a class="card-title text-primary font-bold mb-2 line-clamp-2"
+                               asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID"
+                               asp-controller="Project">
+                                @projectOverviewDto.ProjectName
+                            </a>
+                            <div class="flex justify-between gap-4">
+                                <a class="text-neutral hover:text-primary flex-1 line-clamp-2 text-start" asp-action="Index"
+                                   asp-controller="User"
+                                   asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName">
+                                    @projectOverviewDto.ProjectLeader.UserFullName
+                                </a>
+                                <span class="flex-1 text-end line-clamp-2">
+                                    @projectOverviewDto.ProjectAddress
+                                </span>
+                            </div>
+                        </div>
+                        <p class="line-clamp-3 mb-4">
+                            @projectOverviewDto.ProjectDescription
+                        </p>
+                        <div class="card-actions justify-center flex-col items-center">
+                            <div class="flex w-full flex-start items-center gap-2 text-base">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                                <span>@projectOverviewDto.ProjectMembers volunteers</span>
+                            </div>
+                            <progress class="progress progress-success w-full"
+                                      value="@projectOverviewDto.ProjectProgress"
+                                      max="100">
+                            </progress>
+                            <p class="w-full text-success">Raised @projectOverviewDto.ProjectRaisedMoney VND</p>
+                            <a class="btn btn-neutral h-8 min-h-0 outline-none border-none"
+                               asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID"
+                               asp-controller="Project">
+                                View project
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- End card -->
+            }
+        </section>
+    }
+
+    @if (!Model.Requests.IsNullOrEmpty())
+    {
+        <h2 class="font-bold text-3xl mb-4">Found requests: </h2>
+        <section class="w-full flex flex-wrap gap-8 justify-center mb-16">
+            @{
+                if (!Model.Requests.IsNullOrEmpty())
+                {
+                    foreach (var request in Model.Requests)
+                    {
+                        <div class="card w-full max-w-64 min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
+                            <a asp-action="Index" asp-controller="Request" asp-route-id="@request.RequestID">
+                                <img class="w-full object-cover h-48 rounded-md"
+                                     src="@request.FirstImageAttachment"
+                                     alt="Shoes"/>
+                            </a>
+                            <div class="card-body p-2 gap-2 w-full">
+                                <!-- Badge left -->
+                                <div
+                                    class="badge badge-secondary outline-none border-none absolute top-2 left-2 bg-error font-bold text-white px-4 py-3">
+                                    Request
+                                </div>
+                                <div class="flex flex-col">
+                                    <a class="card-title h-14 text-primary font-bold mb-2 line-clamp-2" asp-action="Index"
+                                       asp-controller="Request" asp-route-id="@request.RequestID">
+                                        @request.RequestTitle
+                                    </a>
+                                    <div class="flex justify-between items-start gap-4">
+                                        <a class="text-neutral hover:text-primary flex-1 line-clamp-2" asp-action="Index"
+                                           asp-controller="User" asp-route-username="@request.Username">
+                                            @request.Username
+                                        </a>
+                                        <span class="flex-1 text-end line-clamp-2">@request.Location</span>
+                                    </div>
+                                </div>
+                                <p class="text-neutral text-base line-clamp-3 mb-4">
+                                    @request.Content
+                                </p>
+                                <div class="card-actions justify-center flex-col items-center">
+                                    <a asp-action="Index" asp-controller="Request" asp-route-id="@request.RequestID"
+                                       class="btn btn-neutral h-8 min-h-0 outline-none border-none ">
+                                        Accept
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End card -->
+                    }
+                }
+            }
+        </section>
+    }
+
+    @if (!Model.Organizations.IsNullOrEmpty())
+    {
+        <h2 class="font-bold text-3xl mb-4">Found organizations: </h2>
+        <section class="w-full flex flex-wrap gap-8 justify-center mb-16">
+            @foreach (var modelOrganization in Model.Organizations)
+            {
+                <div class="card w-full max-w-64 min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
+                    <a asp-action="Detail" asp-controller="Organization"
+                       asp-route-organizationId="@modelOrganization.OrganizationID">
+                        <img class="w-full object-cover h-48 rounded-md"
+                             src="@modelOrganization.OrganizationPictures"
+                             alt="@modelOrganization.OrganizationName"/>
+                    </a>
+                    <div class="card-body p-2 gap-2 w-full">
+                        <!-- badge left -->
+                        <div
+                            class="badge badge-secondary absolute top-2 left-2 bg-primary font-bold text-white px-4 py-3 outline-none border-none">
+                            Organization
+                        </div>
+                        <div class="flex flex-col">
+                            <a class="card-title text-primary font-bold mb-2 line-clamp-2"
+                               asp-action="Detail" asp-controller="Organization"
+                               asp-route-organizationId="@modelOrganization.OrganizationID">
+                                @modelOrganization.OrganizationName
+                            </a>
+                            <div class="flex justify-between">
+                                <a class="text-neutral hover:text-primary flex-1 line-clamp-2 text-start" asp-action="Index"
+                                   asp-controller="User"
+                                   asp-route-username="@modelOrganization.OrganizationLeader.UserFullName">
+                                    @modelOrganization.OrganizationLeader.UserFullName
+                                </a>
+                                <span class="flex-1 text-end line-clamp-2">@modelOrganization.OrganizationAddress</span>
+                            </div>
+                        </div>
+                        <p class="line-clamp-3 mb-4">
+                            @modelOrganization.OrganizationDescription
+                        </p>
+                        <div class="card-actions justify-center flex-col items-center">
+                            <div class="flex w-full flex-start items-center gap-2 text-base-content">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                                <span>@modelOrganization.OrganizationMemberCount members</span>
+                            </div>
+                            @* TODO: Add redirect to join button *@
+                            <a class="btn btn-neutral h-8 min-h-0 outline-none border-none">
+                                Request to join
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- End card -->
+            }
+        </section>
+    }
+</main>

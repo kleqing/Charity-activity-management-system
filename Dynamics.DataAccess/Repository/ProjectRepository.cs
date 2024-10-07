@@ -139,6 +139,7 @@ namespace Dynamics.DataAccess.Repository
                 return await _db.Projects.Include(pr => pr.ProjectResource)
                     .Where(filter)
                     .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
+                    .AsSplitQuery()
                     .ToListAsync();
             }
             // Use split query if you are including a collection. tbh it is better to use a projection
@@ -154,7 +155,9 @@ namespace Dynamics.DataAccess.Repository
                 .Include(x => x.ProjectResource)
                 .Include(x => x.Organization)
                 .Include(x => x.Request).ThenInclude(x => x.User)
-                .Include(x => x.History);
+                .Include(x => x.History)
+                .AsSplitQuery();
+                // Don't use split query if we use pagination
             return await projects.ToListAsync();
         }
 

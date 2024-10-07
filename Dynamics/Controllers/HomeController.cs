@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Dynamics.Controllers
 {
     public class HomeController : Controller
-    {  
+    {
         private readonly IUserRepository _userRepo;
         private readonly IRequestRepository _requestRepo;
         private readonly IProjectRepository _projectRepo;
@@ -88,24 +88,29 @@ namespace Dynamics.Controllers
             return View(result);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Search(string query)
+        [HttpPost]
+        public async Task<IActionResult> Search(string? query)
         {
+            if (query == null) return RedirectToAction(nameof(Homepage));
             string[] args = query.Split("-");
             // Args < 2 search all
             if (args.Length < 2)
             {
-                var requests = await _requestRepo.GetAllAsync(request =>
-                    request.RequestTitle.Contains(query, StringComparison.OrdinalIgnoreCase));
-                var projects = await _projectRepo.GetAllAsync(prj =>
-                    prj.ProjectName.Contains(query, StringComparison.OrdinalIgnoreCase));
-                var organizations =
-                    await _organizationRepo.GetAllOrganizationsWithExpressionAsync(organization =>
-                        organization.OrganizationName.Contains(query, StringComparison.OrdinalIgnoreCase));
+                var requests = await _requestRepo.GetAllAsync();
+                dynamic targets = requests
+                    .Where(r => r.RequestTitle.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+                var requestOverviewDtos = _requestService.MapToListRequestOverviewDto(targets);
 
-                var requestOverviewDtos = _requestService.MapToListRequestOverviewDto(requests);
-                var projectOverviewDtos = _projectService.MapToListProjectOverviewDto(projects);
-                var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(organizations);
+                var projects = await _projectRepo.GetAllAsync();
+                targets = projects.Where(r => r.ProjectName.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                var projectOverviewDtos = _projectService.MapToListProjectOverviewDto(targets);
+
+                var organizations =
+                    await _organizationRepo.GetAllOrganizationsWithExpressionAsync();
+                targets = organizations
+                    .Where(r => r.OrganizationName.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+                var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(targets);
 
                 return View(new HomepageViewModel
                 {
@@ -114,11 +119,52 @@ namespace Dynamics.Controllers
                     Organizations = organizationOverviewDtos
                 });
             }
+            else
+            {
+                // Only search by a specific type
+                var type = args[0];
+                var target = args[1];
 
-            // Only search by a specific type
-            var type = args[0];
-            var target = args[1];
-            return View();
+                if (type.Contains("req"))
+                {
+                    var requests = await _requestRepo.GetAllAsync();
+                    var targets = requests
+                        .Where(r => r.RequestTitle.Contains(target, StringComparison.OrdinalIgnoreCase)).ToList();
+                    var requestOverviewDtos = _requestService.MapToListRequestOverviewDto(targets);
+                    return View(new HomepageViewModel
+                    {
+                        Requests = requestOverviewDtos,
+                    });
+                }
+
+                if (type.Contains("prj"))
+                {
+                    var projects = await _projectRepo.GetAllAsync();
+                    var targets = projects.Where(r => r.ProjectName.Contains(target, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                    var projectOverviewDtos = _projectService.MapToListProjectOverviewDto(targets);
+                    return View(new HomepageViewModel
+                    {
+                        OnGoingProjects = projectOverviewDtos,
+                    });
+                }
+
+                if (type.Contains("org"))
+                {
+                    var organizations =
+                        await _organizationRepo.GetAllOrganizationsWithExpressionAsync();
+                    var targets = organizations
+                        .Where(r => r.OrganizationName.Contains(target, StringComparison.OrdinalIgnoreCase)).ToList();
+                    var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(targets);
+                    return View(new HomepageViewModel
+                    {
+                        Organizations = organizationOverviewDtos,
+                    });
+                }
+            }
+
+            // if we get here something went wrong
+            return RedirectToAction(nameof(Homepage));
         }
 
 
