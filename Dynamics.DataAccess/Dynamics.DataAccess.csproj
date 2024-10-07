@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dynamics.Models\Dynamics.Models.csproj" />
+    <ProjectReference Include="..\Dynamics.Utility\Dynamics.Utility.csproj" />
   </ItemGroup>
 
 

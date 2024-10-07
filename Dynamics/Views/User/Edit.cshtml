@@ -17,16 +17,6 @@
 <body class="h-screen flex flex-col">
 <!-- Edit profile -->
 <div class="flex md:p-6 pb-0 flex-1">
-    @*         <!-- Sidebar -->
-        <div class="p-2 pt-12 w-1/5">
-        <ul class="flex flex-col gap-2">
-        <a asp-action="Edit" asp-route-id="@Model.UserID" asp-controller="User" class="btn btn-ghost text-start btn-active"> Change profile </a>
-        <a asp-action="Account" asp-route-id="@Model.UserID" class="btn btn-ghost text-start"> Account </a>
-        <a href="settings/history" class="btn btn-ghost text-start"> History </a>
-        <a href="settings/awards" class="btn btn-ghost text-start"> Awards </a>
-        </ul>
-        </div>
-        <!-- End sidebar --> *@
     @Html.Partial("CustomComponent/_UserSidebar", "Edit")
 
     <!-- Main content -->
@@ -124,16 +114,12 @@
             <!-- This button should send to the update controller, then redirect to this route again -->
             <input type="submit" value="Save" class="btn btn-info rounded-btn min-w-40"/>
             <!-- This button redirect user to this page AGAIN to reset their value -->
-
-            @* <button id="revert" class="btn btn-accent rounded-btn min-w-40">Revert default</button> *@
-
         </div>
     </form>
     <!-- End content -->
 </div>
 <!-- End edit profile -->
 <partial name="CustomComponent/_Footer"/>
-<partial name="CustomComponent/_ToastNotif"/>
 <partial name="_ValidationScriptsPartial"/>
 @* Change picture realtime *@
 <script>

@@ -31,7 +31,7 @@ public class TransactionViewService : ITransactionViewService
                 Message = ut.Message,
                 Status = ut.Status,
                 ResourceName = ut.OrganizationResource.ResourceName,
-                Target = ut.OrganizationResource.Organization.OrganizationName,
+                Target = "Organization - " + ut.OrganizationResource.Organization.OrganizationName,
                 Time = ut.Time,
                 Unit = ut.OrganizationResource.Unit,
                 Type = "organization"
@@ -51,7 +51,7 @@ public class TransactionViewService : ITransactionViewService
                 Message = ut.Message,
                 Status = ut.Status,
                 ResourceName = ut.ProjectResource.ResourceName,
-                Target = ut.ProjectResource.Project.ProjectName,
+                Target = "Project - " + ut.ProjectResource.Project.ProjectName,
                 Time = ut.Time,
                 Unit = ut.ProjectResource.Unit,
                 Type = "project"

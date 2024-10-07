@@ -122,10 +122,12 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     // Add real user to database
                     await _userRepo.AddAsync(new User
                     {
+                        // Note: Identity user id is string while normal user ID is Guid
                         UserID = new Guid(user.Id), // The link between 2 user table should be this id
                         UserFullName = Input.Name,
                         UserEmail = Input.Email,
                         UserAvatar = MyConstants.DefaultAvatarUrl,
+                        UserRole = RoleConstants.User,
                     });
 
                     _logger.LogInformation("User created a new account with password.");
@@ -149,10 +151,9 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             new { email = Input.Email, returnUrl = returnUrl });
                     }
 
-                    var businessUser = _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
+                    var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    // TODO: Return to the home page
                     return RedirectToAction("HomePage", "Home");
                 }
 

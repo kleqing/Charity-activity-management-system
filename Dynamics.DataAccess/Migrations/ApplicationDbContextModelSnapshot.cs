@@ -407,6 +407,10 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<string>("UserPhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserID");
 
                     b.HasIndex("UserEmail")

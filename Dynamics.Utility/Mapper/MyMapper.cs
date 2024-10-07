@@ -15,5 +15,6 @@ public class MyMapper : Profile
                 opt => opt.MapFrom(r => r.User.UserFullName))
             .ReverseMap();
         CreateMap<Project, ProjectOverviewDto>().ReverseMap();
+        CreateMap<Organization, OrganizationOverviewDto>().ReverseMap();
     }
 }

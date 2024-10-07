@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using Dynamics.Services;
 using Dynamics.Models.Models.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dynamics.Controllers
 {
@@ -19,14 +20,21 @@ namespace Dynamics.Controllers
         private readonly IRequestRepository _requestRepo;
         private readonly IProjectRepository _projectRepo;
         private readonly IProjectService _projectService;
+        private readonly IRequestService _requestService;
+        private readonly IOrganizationRepository _organizationRepo;
+        private readonly IOrganizationService _organizationService;
 
         public HomeController(IUserRepository userRepo, IRequestRepository requestRepo,
-            IProjectRepository projectRepo, IProjectService projectService)
+            IProjectRepository projectRepo, IProjectService projectService, IRequestService requestService,
+            IOrganizationRepository organizationRepo, IOrganizationService organizationService)
         {
             _userRepo = userRepo;
             _requestRepo = requestRepo;
             _projectRepo = projectRepo;
             _projectService = projectService;
+            _requestService = requestService;
+            _organizationRepo = organizationRepo;
+            _organizationService = organizationService;
         }
 
         // Landing page
@@ -37,48 +45,80 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> Homepage()
         {
-            ModelState.AddModelError("Not found", "ABCXYZ");
             // Check if there is an authenticated user, set the session of that user
             if (User.Identity.IsAuthenticated)
             {
                 var userEmail = User.FindFirstValue(ClaimTypes.Email);
                 var user = _userRepo.GetAsync(u => u.UserEmail == userEmail).Result;
                 // Bad user
-                if (user == null)
-                {
-                    return RedirectToAction("Logout", "Auth");
-                }
-
+                if (user == null) return RedirectToAction("Logout", "Auth");
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
             }
 
-            List<Request> requests = await _requestRepo.GetRequestsAsync();
+            var requests = await _requestRepo.GetRequestsAsync();
+            var requestOverview = _requestService.MapToListRequestOverviewDto(requests);
+
+            var orgs = await _organizationRepo.GetAll().ToListAsync();
+            var orgsOverview = _organizationService.MapToOrganizationOverviewDtoList(orgs);
+
             List<Project> projects = await _projectRepo.GetAllAsync();
-            
-            // Map to view model for display
-            var unfinishedProjects = new List<ProjectOverviewDto>();
-            var finishedProjects = new List<ProjectOverviewDto>();
+            var onGoingProjects = new List<ProjectOverviewDto>();
+            var successfulProjects = new List<ProjectOverviewDto>();
+            // Map to project overview dto
             foreach (var p in projects)
             {
-                var dto =  _projectService.MapToProjectOverviewDto(p);
+                var dto = _projectService.MapToProjectOverviewDto(p);
                 if (dto.ProjectStatus <= 1)
                 {
-                    unfinishedProjects.Add(dto);
+                    onGoingProjects.Add(dto);
                 }
                 else
                 {
-                    finishedProjects.Add(dto);
+                    successfulProjects.Add(dto);
                 }
             }
 
-            // TODO: For organization, wait for Tuan
             var result = new HomepageViewModel
             {
-                Requests = requests,
-                OnGoingProjects = unfinishedProjects,
-                SuccessfulProjects = finishedProjects,
+                Requests = requestOverview,
+                OnGoingProjects = onGoingProjects,
+                SuccessfulProjects = successfulProjects,
+                Organizations = orgsOverview,
             };
             return View(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string query)
+        {
+            string[] args = query.Split("-");
+            // Args < 2 search all
+            if (args.Length < 2)
+            {
+                var requests = await _requestRepo.GetAllAsync(request =>
+                    request.RequestTitle.Contains(query, StringComparison.OrdinalIgnoreCase));
+                var projects = await _projectRepo.GetAllAsync(prj =>
+                    prj.ProjectName.Contains(query, StringComparison.OrdinalIgnoreCase));
+                var organizations =
+                    await _organizationRepo.GetAllOrganizationsWithExpressionAsync(organization =>
+                        organization.OrganizationName.Contains(query, StringComparison.OrdinalIgnoreCase));
+
+                var requestOverviewDtos = _requestService.MapToListRequestOverviewDto(requests);
+                var projectOverviewDtos = _projectService.MapToListProjectOverviewDto(projects);
+                var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(organizations);
+
+                return View(new HomepageViewModel
+                {
+                    Requests = requestOverviewDtos,
+                    OnGoingProjects = projectOverviewDtos,
+                    Organizations = organizationOverviewDtos
+                });
+            }
+
+            // Only search by a specific type
+            var type = args[0];
+            var target = args[1];
+            return View();
         }
 
 
