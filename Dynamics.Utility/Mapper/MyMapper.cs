@@ -16,5 +16,7 @@ public class MyMapper : Profile
             .ReverseMap();
         CreateMap<Project, ProjectOverviewDto>().ReverseMap();
         CreateMap<Organization, OrganizationOverviewDto>().ReverseMap();
+             CreateMap<Project, UpdateProjectProfileRequestDto>().ReverseMap();
+
     }
 }
