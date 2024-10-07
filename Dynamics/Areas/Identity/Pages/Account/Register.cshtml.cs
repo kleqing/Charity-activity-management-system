@@ -122,10 +122,12 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     // Add real user to database
                     await _userRepo.AddAsync(new User
                     {
+                        // Note: Identity user id is string while normal user ID is Guid
                         UserID = new Guid(user.Id), // The link between 2 user table should be this id
                         UserFullName = Input.Name,
                         UserEmail = Input.Email,
                         UserAvatar = MyConstants.DefaultAvatarUrl,
+                        UserRole = RoleConstants.User,
                     });
 
                     _logger.LogInformation("User created a new account with password.");

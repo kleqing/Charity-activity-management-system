@@ -26,6 +26,7 @@ namespace Dynamics.Models.Models
         [ValidateNever]
         public string? UserAvatar { get; set; }
         public string? UserDescription { get; set; }
+        public string UserRole { get; set; }
         
         [ValidateNever]
         // Self-referencing relationships for reports

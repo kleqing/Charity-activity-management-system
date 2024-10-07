@@ -49,6 +49,21 @@ namespace Dynamics.Controllers
             return View(currentUser);
         }
 
+        // Delete me later, only serves to debug
+        // [HttpPost]
+        // public async Task<IActionResult> TestRoles(string roleName, Guid userId, string action)
+        // {
+        //     if (action == "add")
+        //     {
+        //         await _userRepository.AddToRoleAsync(userId, roleName);
+        //     } else if (action == "delete")
+        //     {
+        //         await _userRepository.DeleteRoleFromUserAsync(userId, roleName);
+        //     }
+        //
+        //     return RedirectToAction("Homepage", "Home");
+        // }
+
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
@@ -68,7 +83,6 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
-
             return View(user);
         }
 
