@@ -47,7 +47,7 @@ namespace Dynamics
                 .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = false;
+                    options.SignIn.RequireConfirmedAccount = true;
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;

@@ -435,7 +435,7 @@ namespace Dynamics.Controllers
         {
             var projectObj =
                 await projectRepository.GetProjectAsync(p => p.ProjectID.Equals(projectID), "Organization,Request");
-            if (projectObj?.ProjectStatus == 0)
+            if (projectObj?.ProjectStatus == -1)
             {
                 TempData[MyConstants.Warning] = "This project is not in progress!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
@@ -1310,7 +1310,7 @@ namespace Dynamics.Controllers
                 ProjectID = projectId,
                 ResourceName = "Money",
                 Quantity = 0,
-                ExpectedQuantity = 0,
+                ExpectedQuantity = 200000,
                 Unit = "VND",
             };
             await projectRepository.AddProjectResourceAsync(projectResource);
