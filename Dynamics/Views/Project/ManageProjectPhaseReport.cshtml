@@ -1,14 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
+@inject IProjectRepository ProjectRepository
 @model IEnumerable<Dynamics.Models.Models.History>
 
 @{
     ViewData["Title"] = "Manage Project Phase Report";
     Layout = "~/Views/Shared/_LayoutProject.cshtml";
     var currentUserID = Accessor.HttpContext.Session.GetString("currentUserID");
-    var currentProjectLeaderID = Accessor.HttpContext.Session.GetString("currentProjectLeaderID");
     var currentProjectID = Accessor.HttpContext.Session.GetString("currentProjectID");
+    var ProjectMemberOfUser = ProjectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(new Guid(currentUserID)));
+    var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
 }
 <!-- container -->
 <div class="m-w-screen-2xl flex flex-col items-center justify-center relative ">
@@ -16,7 +18,7 @@
     <h2 class="font-serif text-black font-bold text-3xl text-center mt-10 mb-2">Project updates</h2>
     <!-- PART 1 -->
     <div class="flex relative justify-end mb-6" style="width:90%;">
-        @if (currentProjectLeaderID.Equals(currentUserID))
+        @if (statusProjectMemberOfUser >= 2)
         {
             <!-- add button -->
             <a asp-action="AddProjectPhaseReport" asp-controller="Project" asp-route-projectid="@currentProjectID">
@@ -41,14 +43,14 @@
                     @if (i == 0)
                     {
                         <button type="button"
-                                class="h-20 w-40 text-white text-2xl bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-4 py-2">
+                                class="h-20 w-40 text-white text-2xl bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md px-4 py-2">
                             @item.Date
                         </button>
                     }
                     else
                     {
-                        <button type="button"
-                                class="h-20 w-40 text-black text-2xl bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-4 py-2">
+                        <button type="button" style=" background-color: rgba(0, 0, 0, 0);"
+                                class="h-20 w-40 text-black text-2xl bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md px-4 py-2">
                             @item.Date
                         </button>
                     }
@@ -57,18 +59,18 @@
                         <hr class="border-t-2 border-gray-400 w-24">
                     </div>
                 </div>
-                <div class="relative w-10/12 ml-2 flex flex-col shadow-md p-8 rounded-2xl" style="background-color:#ffffff;">
-                    @if (currentProjectLeaderID.Equals(currentUserID))
+                <div class="relative w-10/12 ml-2 flex flex-col shadow-md p-8 rounded-md" style=" background-color: rgba(0, 0, 0, 0);">
+                    @if (statusProjectMemberOfUser >= 2)
                     {
                         <!-- edit button -->
                         <a asp-action="EditProjectPhaseReport" asp-route-projectid="@item.ProjectID" asp-route-historyid="@item.HistoryID" title="Edit project phase report">
                             <button type="button" class="absolute top-0 w-fit h-fit mx-2 my-2 p-2 " style="right:45px;">
-                                <i class="fa-solid fa-pen-to-square text-4xl text-gray-900"></i>
+                                <i class="fa-solid fa-pen-to-square text-4xl text-gray-500"></i>
                             </button>
                         </a>
                         <a asp-action="DeleteProjectPhaseReport" asp-route-id="@item.HistoryID" title="Delete project phase report">
                             <button type="button" class="absolute top-0 w-fit h-fit mx-2 my-2 p-2 " style="right:-5px;">
-                                <i class="fa-solid fa-trash text-4xl text-gray-900"></i>
+                                <i class="fa-solid fa-trash text-4xl text-gray-500"></i>
                             </button>
                         </a>
                     }
@@ -89,7 +91,18 @@
 
                         @foreach (var img in imagesPhase)
                         {
-                            <img src="@img" alt="current-phase-img" class="h-36 w-36 rounded-xl shadow-md cursor-pointer"/>
+                            <button onclick="openModal('@img')">
+                                <img src="@img" alt="current-phase-img" class="h-48 w-48 rounded-xl shadow-md cursor-pointer" />
+                            </button>
+                            <dialog id="phase_image" class="modal">
+                                <div class="modal-box w-fit h-fit p-0 m-0" style=" background-color: rgba(0, 0, 0, 0);">
+                                    <img id="modalImage" alt="current-phase-img" class=" h-[80vh] w-auto rounded-xl shadow-md cursor-pointer" />
+                                </div>
+                                <form method="dialog" class="modal-backdrop ">
+                                    <button>close</button>
+                                </form>
+                            </dialog>
+                            
                         }
                     </div>
                 </div>
@@ -97,3 +110,11 @@
         }
     </div>
 </div>
+<script>
+    function openModal(imgSrc) {
+        // Get the modal image element and set its src to the clicked image
+        document.getElementById('modalImage').src = imgSrc;
+        // Show the modal
+        document.getElementById('phase_image').showModal();
+    }
+</script>

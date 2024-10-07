@@ -1,4 +1,7 @@
-﻿@using Microsoft.IdentityModel.Tokens
+﻿@using Dynamics.Utility
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.IdentityModel.Tokens
+@using Newtonsoft.Json
 @model Dynamics.Models.Models.ViewModel.HomepageViewModel
 
 @{
@@ -11,6 +14,21 @@
     else
     {
         Layout = "CustomLayout/_LayoutWithNavbarAndImage";
+    }
+
+    var userString = Accessor.HttpContext.Session.GetString("user");
+    User currentUser = null;
+    if (userString != null)
+    {
+        currentUser = JsonConvert.DeserializeObject<User>(userString);
+    }
+    else
+    {
+        currentUser = new User
+        {
+            UserFullName = "Guest",
+            UserRole = RoleConstants.Guest,
+        };
     }
 }
 
@@ -31,19 +49,33 @@
 
 <!-- The body of the home page -->
 <div class="-mt-12 z-10 relative bg-white rounded-3xl px-8 py-16 flex flex-col gap-20">
-<h1 class="text-center text-3xl text-rose-500">DEBUGGING: Is authenticated: @isAuthenticated</h1>
+@* Use for debug purposes only *@
+@* <h1 class="text-center text-2xl text-error font-bold align-with-navbar-center"> *@
+@*     DEBUG: User role: @currentUser.UserRole *@
+@* </h1> *@
+@* <form asp-action="TestRoles" asp-controller="User"> *@
+@*     <input type="hidden" name="action" value="add"> *@
+@*     <input type="hidden" name="userId" value="@currentUser.UserID"> *@
+@*     <input type="hidden" name="roleName" value="@RoleConstants.Admin"/> *@
+@*     <button class="btn btn-primary">Promote to admin</button> *@
+@* </form> *@
+@*     <form asp-action="TestRoles" asp-controller="User"> *@
+@*         <input type="hidden" name="action" value="delete"> *@
+@*         <input type="hidden" name="userId" value="@currentUser.UserID"> *@
+@*         <input type="hidden" name="roleName" value="@RoleConstants.ProjectLeader"/> *@
+@*         <button class="btn btn-primary">Demote to project leader</button> *@
+@*     </form> *@
+<h1 class="text-center text-3xl text-primary font-bold align-with-navbar-center">
+    Help requests
+</h1>
 <!-- Help request section -->
+@if (Model.Requests.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">Nobody is here to help.</h3>
+}
 <section class="flex flex-col justify-center items-center splide"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Help
-        requests
-    </h1>
-    @if (Model.Requests.IsNullOrEmpty())
-    {
-        <h3 class="text-center text-neutral italic text-xl">Nobody is here to help.</h3>
-    }
-    else
+    @if (!Model.Requests.IsNullOrEmpty())
     {
         <!-- TODO: Replace this with link to view requests -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
@@ -61,7 +93,7 @@
                             <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
                                 <figure>
                                     <img class="w-full object-cover h-48"
-                                         src="@request.Attachment"
+                                         src="@request.FirstImageAttachment"
                                          alt="Shoes"/>
                                 </figure>
                                 <div class="card-body p-4 gap-3 w-full">
@@ -83,14 +115,15 @@
                                         </h2>
                                         <div class="flex justify-between">
                                             <!-- TODO: Set author and location -->
-                                            <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index" asp-controller="User"
-                                               asp-route-username="@request.User.UserFullName" style="
+                                            <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                                               asp-controller="User"
+                                               asp-route-username="@request.Username" style="
                               display: -webkit-box;
                               line-clamp: 2;
                               -webkit-line-clamp: 2; /* Limit to 2 lines */
                               -webkit-box-orient: vertical;
                               overflow: hidden;">
-                                                @request.User.UserFullName
+                                                @request.Username
                                             </a>
                                             <span style="
                               display: -webkit-box;
@@ -118,7 +151,7 @@
                                     </div>
                                 </div>
                             </li>
-                <!-- End card -->
+                            <!-- End card -->
                         }
                     }
                 }
@@ -130,17 +163,20 @@
 </section>
 <!-- End help request section -->
 <div class="divider"></div>
+<h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
+    Ongoing charity projects
+</h1>
 <!-- View charity projects section -->
+@if (Model.OnGoingProjects.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">
+        No projects available, maybe the world is already a better
+        place ?
+    </h3>
+}
 <section class="flex flex-col justify-center items-center splide section"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Ongoing charity projects
-    </h1>
-    @if (Model.OnGoingProjects.IsNullOrEmpty())
-    {
-        <h3 class="text-center text-neutral italic text-xl">No projects available, maybe the world is already a better place ;)</h3>
-    }
-    else
+    @if (!Model.OnGoingProjects.IsNullOrEmpty())
     {
         <!-- TODO: Replace this with link to view requests -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
@@ -177,13 +213,15 @@
                                     </div>
                                     @if (projectOverviewDto.ProjectStatus == 1)
                                     {
-                                        <div class="badge badge-error absolute top-0 right-0 bg-error font-bold text-white px-4 py-3 outline-none border-none">
+                                        <div
+                                            class="badge badge-error absolute top-0 right-0 bg-error font-bold text-white px-4 py-3 outline-none border-none">
                                             On-going
                                         </div>
                                     }
                                     else
                                     {
-                                        <div class="badge badge-accent absolute top-0 right-0 font-bold px-4 py-3 outline-none border-none">
+                                        <div
+                                            class="badge badge-accent absolute top-0 right-0 font-bold px-4 py-3 outline-none border-none">
                                             Preparing
                                         </div>
                                     }
@@ -200,7 +238,8 @@
                                             @projectOverviewDto.ProjectName
                                         </h2>
                                         <div class="flex justify-between gap-12">
-                                            <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index" asp-controller="User"
+                                            <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                                               asp-controller="User"
                                                asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName"
                                                style="
                               display: -webkit-box;
@@ -255,21 +294,19 @@
 </section>
 <!-- End view charity projects section -->
 <div class="divider"></div>
-
+<h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
+    Active organizations
+</h1>
 <!-- View ORGANIZATION section -->
+@if (Model.Organizations.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">No organizations present. Lonely isn't it</h3>
+}
 <section class="flex flex-col justify-center items-center splide section"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Active organizations
-    </h1>
-    @* TODO: Replace this with organization view *@
-    @if (Model.Requests.IsNullOrEmpty())
+    @if (!Model.Organizations.IsNullOrEmpty())
     {
-        <h3 class="text-center text-neutral italic text-xl">No organizations present. Lonely isn't it</h3>
-    }
-    else
-    {
-        <!-- TODO: Replace this with link to view requests -->
+        <!-- TODO: Replace this with link to view org -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
             View more organization &rarr;
         </a>
@@ -278,39 +315,54 @@
             <ul class="splide__list w-full">
                 <!-- Card -->
                 @{
-                    if (!Model.SuccessfulProjects.IsNullOrEmpty())
-                }
-                <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
-                    <figure>
-                        <img class="w-full object-cover h-48"
-                             src="https://m.media-amazon.com/images/M/MV5BNGY0NGM5N2UtNzU5MS00MDAwLWFmMWEtZjE4N2Q0Y2M4YjNjXkEyXkFqcGc@@._V1_.jpg"
-                             alt="Shoes"/>
-                    </figure>
-                    <div class="card-body p-4 gap-3 w-full">
-                        <!-- badge left -->
-                        <div
-                            class="badge badge-secondary absolute top-0 left-0 bg-primary font-bold text-white px-4 py-3 outline-none border-none">
-                            Organization
-                        </div>
-                        <div class="flex flex-col">
-                            <h2 class="card-title text-cyan-950 font-bold h-14"
-                                style="
+                    if (!Model.Organizations.IsNullOrEmpty())
+                    {
+                        foreach (var modelOrganization in Model.Organizations)
+                        {
+                            <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
+                                <figure>
+                                    <img class="w-full object-cover h-48"
+                                         src="@modelOrganization.OrganizationPictures"
+                                         alt="@modelOrganization.OrganizationName"/>
+                                </figure>
+                                <div class="card-body p-4 gap-3 w-full">
+                                    <!-- badge left -->
+                                    <div
+                                        class="badge badge-secondary absolute top-0 left-0 bg-primary font-bold text-white px-4 py-3 outline-none border-none">
+                                        Organization
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <h2 class="card-title text-cyan-950 font-bold h-14"
+                                            style="
                       display: -webkit-box;
                       line-clamp: 2;
                       -webkit-line-clamp: 2; /* Limit to 2 lines */
                       -webkit-box-orient: vertical;
                       overflow: hidden;
                     ">
-                                <!-- TODO: Set title -->
-                                Da Nang united
-                            </h2>
-                            <div class="flex justify-between">
-                                <!-- TODO: Set author and location -->
-                                <span class="text-gray-400">Lead by some user</span>
-                                <span>Đà Nẵng</span>
-                            </div>
-                        </div>
-                        <p style="
+                                            @modelOrganization.OrganizationName
+                                        </h2>
+                                        <div class="flex justify-between">
+                                            <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                                               asp-controller="User"
+                                               asp-route-username="@modelOrganization.OrganizationLeader.UserFullName"
+                                               style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">
+                                                @modelOrganization.OrganizationLeader.UserFullName
+                                            </a>
+                                            <span style="
+                              display: -webkit-box;
+                              line-clamp: 2;
+                              -webkit-line-clamp: 2; /* Limit to 2 lines */
+                              -webkit-box-orient: vertical;
+                              overflow: hidden;">@modelOrganization.OrganizationAddress</span>
+                                        </div>
+                                    </div>
+                                    <p style="
                     display: -webkit-box;
                     line-clamp: 3;
                     -webkit-line-clamp: 3; /* Limit to 3 lines */
@@ -318,21 +370,21 @@
                     overflow: hidden;
                     margin-bottom: 16px;
                   ">
-                            <!-- TODO: Set the contents -->
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis atque est quos
-                            tempora odit qui praesentium magni, ratione saepe velit error ad eum in corporis
-                            explicabo eaque iste blanditiis nemo.
-                        </p>
-                        <!-- TODO: Calculate the progress here -->
-                        <div class="card-actions justify-center flex-col items-center">
-                            <p class="w-full text-base-content">123 member</p>
-                            <button class="btn btn-neutral h-8 min-h-0 outline-none border-none">
-                                Request to join
-                            </button>
-                        </div>
-                    </div>
-                </li>
-                <!-- End card -->
+                                        @modelOrganization.OrganizationDescription
+                                    </p>
+                                    <div class="card-actions justify-center flex-col items-center">
+                                        <p class="w-full text-base-content">@modelOrganization.OrganizationMemberCount members</p>
+                                        @* TODO: Add redirect to join button *@
+                                        <button class="btn btn-neutral h-8 min-h-0 outline-none border-none">
+                                            Request to join
+                                        </button>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- End card -->
+                        }
+                    }
+                }
             </ul>
             <!-- End cards -->
         </div>
@@ -344,16 +396,19 @@
 
 
 <!-- View SUCCESSES CHARITY section -->
+<h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
+    Succeed charities
+</h1>
+@if (Model.SuccessfulProjects.IsNullOrEmpty())
+{
+    <h3 class="text-center text-neutral italic text-2xl">
+        No successful projects presents, one day your project could
+        be here.
+    </h3>
+}
 <section class="flex flex-col justify-center items-center splide section"
          aria-labelledby="carousel-heading">
-    <h1 class="text-center text-3xl text-primary font-bold carousel-heading align-with-navbar-center">
-        Succeed charities
-    </h1>
-    @if (Model.SuccessfulProjects.IsNullOrEmpty())
-    {
-        <h3 class="text-center text-neutral italic text-xl">No successful projects presents, one day your project could be here.</h3>
-    }
-    else
+    @if (!Model.SuccessfulProjects.IsNullOrEmpty())
     {
         <!-- TODO: Replace this with link to view requests -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
@@ -364,56 +419,57 @@
             <ul class="splide__list w-full">
                 <!-- Card -->
                 @{
-                    foreach (var projectOverviewDto in Model.SuccessfulProjects)  
+                    foreach (var projectOverviewDto in Model.SuccessfulProjects)
                     {
                         <li href="#"
-                                class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
-                                <figure>
-                                    @* This might has many attachment, write code to get the first one *@
-                                    <img class="w-full object-cover h-48"
-                                         src="@projectOverviewDto.Attachment"
-                                         alt="Shoes"/>
-                                </figure>
-                                <div class="card-body p-4 gap-3 w-full">
-                                    <!-- badge left -->
-                                    <div
-                                        class="badge badge-success absolute top-0 left-0 bg-success font-bold px-4 py-3 outline-none border-none">
-                                        Project
-                                    </div>
-                                    @* No badge bc already finished *@
-                                    <div class="flex flex-col">
-                                        <h2 class="card-title text-primary font-bold h-14"
-                                            style="
+                            class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
+                            <figure>
+                                @* This might has many attachment, write code to get the first one *@
+                                <img class="w-full object-cover h-48"
+                                     src="@projectOverviewDto.Attachment"
+                                     alt="Shoes"/>
+                            </figure>
+                            <div class="card-body p-4 gap-3 w-full">
+                                <!-- badge left -->
+                                <div
+                                    class="badge badge-success absolute top-0 left-0 bg-success font-bold px-4 py-3 outline-none border-none">
+                                    Project
+                                </div>
+                                @* No badge bc already finished *@
+                                <div class="flex flex-col">
+                                    <h2 class="card-title text-primary font-bold h-14"
+                                        style="
                               display: -webkit-box;
                               line-clamp: 2;
                               -webkit-line-clamp: 2; /* Limit to 2 lines */
                               -webkit-box-orient: vertical;
                               overflow: hidden;
                                     ">
-                                            @projectOverviewDto.ProjectName
-                                        </h2>
-                                        <div class="flex justify-between gap-12">
-                                            <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index" asp-controller="User"
-                                               asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName"
-                                               style="
+                                        @projectOverviewDto.ProjectName
+                                    </h2>
+                                    <div class="flex justify-between gap-12">
+                                        <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
+                                           asp-controller="User"
+                                           asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName"
+                                           style="
                               display: -webkit-box;
                               line-clamp: 2;
                               -webkit-line-clamp: 2; /* Limit to 2 lines */
                               -webkit-box-orient: vertical;
                               overflow: hidden;">
-                                                @projectOverviewDto.ProjectLeader.UserFullName
-                                            </a>
-                                            <span style="
+                                            @projectOverviewDto.ProjectLeader.UserFullName
+                                        </a>
+                                        <span style="
                               display: -webkit-box;
                               line-clamp: 2;
                               -webkit-line-clamp: 2; /* Limit to 2 lines */
                               -webkit-box-orient: vertical;
                               overflow: hidden;">
-                                                @projectOverviewDto.ProjectAddress
-                                            </span>
-                                        </div>
+                                            @projectOverviewDto.ProjectAddress
+                                        </span>
                                     </div>
-                                    <p style="
+                                </div>
+                                <p style="
                             display: -webkit-box;
                             line-clamp: 3;
                             -webkit-line-clamp: 3; /* Limit to 3 lines */
@@ -421,22 +477,22 @@
                             overflow: hidden;
                             margin-bottom: 16px;
                                   ">
-                                        @projectOverviewDto.ProjectDescription
-                                    </p>
-                                    <div class="card-actions justify-center flex-col items-center">
-                                        <p class="w-full text-base-content">@projectOverviewDto.ProjectMembers volunteers</p>
-                                        <progress class="progress progress-success w-full"
-                                                  value="@projectOverviewDto.ProjectProgress"
-                                                  max="100">
-                                        </progress>
-                                        <p class="w-full text-success">Raised @projectOverviewDto.ProjectRaisedMoney VND</p>
-                                        <button class="btn btn-neutral h-8 min-h-0 outline-none border-none">
-                                            View project
-                                        </button>
-                                    </div>
+                                    @projectOverviewDto.ProjectDescription
+                                </p>
+                                <div class="card-actions justify-center flex-col items-center">
+                                    <p class="w-full text-base-content">@projectOverviewDto.ProjectMembers volunteers</p>
+                                    <progress class="progress progress-success w-full"
+                                              value="@projectOverviewDto.ProjectProgress"
+                                              max="100">
+                                    </progress>
+                                    <p class="w-full text-success">Raised @projectOverviewDto.ProjectRaisedMoney VND</p>
+                                    <button class="btn btn-neutral h-8 min-h-0 outline-none border-none">
+                                        View project
+                                    </button>
                                 </div>
-                            </li>
-                            <!-- End card -->
+                            </div>
+                        </li>
+                        <!-- End card -->
                     }
                 }
             </ul>

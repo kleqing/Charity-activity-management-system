@@ -97,8 +97,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
-                        // TODO: Redirect to home page
-                        return RedirectToAction("Homepage", "Home", returnUrl);
+                        return Redirect(returnUrl);
+                        // return RedirectToAction("Homepage", "Home", returnUrl);
                     }
                     // TODO: Ban user in da future
                     if (result.IsLockedOut)

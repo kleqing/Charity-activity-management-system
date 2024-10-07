@@ -165,7 +165,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             UserID = new Guid(user.Id), // This and email is the only thing that connects between 2 tables, the user name IS NOT the same
                             UserFullName = info.Principal.FindFirstValue(ClaimTypes.Name),
                             UserEmail = info.Principal.FindFirstValue(ClaimTypes.Email), // Get user's email from Google
-                            UserAvatar = info.Principal.FindFirstValue("picture")
+                            UserAvatar = info.Principal.FindFirstValue("picture"),
+                            UserRole = RoleConstants.User,
                         });
 
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);

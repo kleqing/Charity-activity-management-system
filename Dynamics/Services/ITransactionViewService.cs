@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.DTO;
 using Dynamics.Models.Models.ViewModel;
 
 namespace Dynamics.Services;

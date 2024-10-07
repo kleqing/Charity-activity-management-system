@@ -11,7 +11,7 @@
     var currentProject = new Project();
     if (!string.IsNullOrEmpty(currentProjectIDString))
     {      
-        currentProject = await projectRepo.GetProjectAsync(p => p.ProjectID.Equals(new Guid(currentProjectIDString)), "Organization,Request");
+        currentProject = await projectRepo.GetProjectAsync(p => p.ProjectID.Equals(new Guid(currentProjectIDString)));
     }
 }
 

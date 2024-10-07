@@ -1,5 +1,6 @@
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.DTO;
 using Dynamics.Models.Models.ViewModel;
 using Dynamics.Services;
 using Dynamics.Utility;
@@ -12,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
-    [Authorize(Roles = RoleConstants.User)]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -49,6 +50,21 @@ namespace Dynamics.Controllers
             return View(currentUser);
         }
 
+        // Delete me later, only serves to debug
+        // [HttpPost]
+        // public async Task<IActionResult> TestRoles(string roleName, Guid userId, string action)
+        // {
+        //     if (action == "add")
+        //     {
+        //         await _userRepository.AddToRoleAsync(userId, roleName);
+        //     } else if (action == "delete")
+        //     {
+        //         await _userRepository.DeleteRoleFromUserAsync(userId, roleName);
+        //     }
+        //
+        //     return RedirectToAction("Homepage", "Home");
+        // }
+
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
@@ -68,7 +84,6 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
-
             return View(user);
         }
 
@@ -79,10 +94,12 @@ namespace Dynamics.Controllers
         {
             try
             {
-                var existingUser = await _userRepository.GetAsync(u => u.UserFullName.Equals(user.UserFullName));
-                existingUser = await _userRepository.GetAsync(u => u.UserEmail.Equals(user.UserEmail));
-                if (existingUser != null && (existingUser.UserFullName != user.UserFullName ||
-                                             existingUser.UserEmail != user.UserEmail))
+                var currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("user"));
+                // Try to get existing user (If we might have) that is in the system
+                var existingUserFullName = await _userRepository.GetAsync(u => u.UserFullName.Equals(user.UserFullName) && u.UserFullName != currentUser.UserFullName);
+                var existingUserEmail = await _userRepository.GetAsync(u => u.UserEmail.Equals(user.UserEmail) && u.UserEmail != currentUser.UserEmail);
+                // If one of these 2 exists, it means that another user is already has the same name or email
+                if (existingUserEmail != null || existingUserFullName != null)
                 {
                     ModelState.AddModelError("", "Username or email is already taken.");
                     return View(user);
@@ -199,7 +216,7 @@ namespace Dynamics.Controllers
             total.AddRange(userToPrjTransaction);
             var final = new UserHistoryViewModel
             {
-                userTransactions = total.OrderByDescending(ut => ut.Time).ToList() // default
+                userTransactions = total.OrderByDescending(ut => ut.Time).ToList() // Display descending by time
             };
             return View(final);
         }
@@ -280,7 +297,7 @@ namespace Dynamics.Controllers
                         if (result == null)
                         {
                             msg = "No request found for this transaction.";
-                            throw new Exception("No request found for cancel");
+                            throw new Exception("Cancel failed.");
                         }
                         break;
                     }
@@ -290,7 +307,7 @@ namespace Dynamics.Controllers
                         if (result == null)
                         {
                             msg = "No request found for this transaction.";
-                            throw new Exception("No request found for cancel");
+                            throw new Exception("Cancel failed.");
                         }
                         break;
                     }

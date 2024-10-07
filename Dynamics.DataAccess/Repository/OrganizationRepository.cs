@@ -275,24 +275,36 @@ namespace Dynamics.DataAccess.Repository
         
         //Repo of huyen
         
-        public async Task<List<Organization>> GetAllOrganizationsAsync(string? includeObjects = null)
+        public async Task<List<Organization>> GetAllOrganizationsAsync()
         {
-            IQueryable<Organization> organizations = _db.Organizations;
-            if (!string.IsNullOrEmpty(includeObjects))
-            {
-                foreach (var includeObj in includeObjects.Split(
-                    new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    organizations = organizations.Include(includeObj);
-                }
-            }
+            IQueryable<Organization> organizations = _db.Organizations.Include(x => x.OrganizationMember).ThenInclude(x => x.User).Include(x => x.OrganizationResource);
             return await organizations.ToListAsync();
         }
         public IQueryable<Organization> GetAll()
         {
-            return _db.Organizations;
+            return _db.Organizations.Include(o => o.OrganizationMember).ThenInclude(om => om.User);
         }
 
+        public async Task<List<Organization>> GetAllOrganizationsWithExpressionAsync(Expression<Func<Organization, bool>>? filter = null)
+        {
+            if (filter != null)
+            {
+                return await _db.Organizations
+                    .Where(filter)
+                    .Include(o => o.OrganizationMember).ThenInclude(om => om.User).ToListAsync();
+            }
+            return await _db.Organizations.Include(o => o.OrganizationMember).ThenInclude(om => om.User).ToListAsync();
+        }
+
+        public async Task<Organization> GetOrganizationOfAUser(Guid userId)
+        {
+            var OrganizationObj = _db.OrganizationMember.Where(x=>x.UserID.Equals(userId)&&x.Status==2).Include("Organization").FirstOrDefaultAsync().Result;
+            if (OrganizationObj != null)
+            {
+                return OrganizationObj.Organization;
+            }
+            return null;
+        }
         public async Task<Organization> GetOrganizationUserLead(Guid userId)
         {
             var organizationMemberOfUser = _db.OrganizationMember.Where(x=>x.UserID.Equals(userId)&&x.Status==2);

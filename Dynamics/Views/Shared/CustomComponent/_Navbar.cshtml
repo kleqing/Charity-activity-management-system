@@ -22,12 +22,15 @@
             class="navbar bg-white shadow-md fixed top-2 right-6 left-8 border z-20 w-full rounded-lg"
             style="width: calc(100% - 4rem)">
             <!-- Search bar -->
-            <div class="form-control">
-                <input
-                    type="text"
-                    placeholder="Search for something..."
-                    class="input input-ghost input-bordered w-full h-10"/>
+            <div class="tooltip tooltip-info tooltip-bottom" data-tip="Ex: req-request name" style="max-width: 300px; width: 100%">
+                <div class="form-control w-full max-w-56" style="width: 100%; max-width: 300px;">
+                    <input
+                        type="text"
+                        placeholder="Search for anything..."
+                        class="input input-ghost input-bordered w-full h-10"/>
+                </div>
             </div>
+
             <!-- Logo, press this should return to home -->
             <div class="flex-1 flex justify-center">
                 <a class="text-3xl text-center font-bold text-primary" asp-action="HomePage" asp-controller="Home">
@@ -35,8 +38,8 @@
                 </a>
             </div>
 
-            <div class="flex gap-4">
-                <span>@(currentUser != null ? currentUser.UserFullName : "Invalid user")</span>
+            <div class="flex gap-4 w-full max-w-56 justify-end" style="max-width: 300px">
+                <span class="text-sm" style="display: -webkit-box;overflow: hidden; -webkit-line-clamp: 1;-webkit-box-orient: vertical;">@(currentUser != null ? currentUser.UserFullName : "Invalid user")</span>
                 <i class="fa-regular fa-bell cursor-pointer"></i>
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar shadow-md">
@@ -66,6 +69,9 @@
                         </li>
                         <li>
                             <a asp-action="Index" asp-controller="Project" asp-route-id="@currentUser?.UserID">My projects</a>
+                        </li> 
+                        <li>
+                            <a asp-action="ViewAllProjects" asp-controller="Project" >All projects</a>
                         </li>
                         <li class="text-rose-500">
                             <a class="flex justify-between" asp-action="Logout" asp-controller="Auth">
