@@ -48,7 +48,7 @@ namespace Dynamics.Controllers
             this.projectService = projectService;
         }
 
-        [Route("Project/Index/{userID}")]
+        [Route("Project/Index/{userID:guid}")]
         public async Task<IActionResult> Index(Guid userID)
         {
             //get all project

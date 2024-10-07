@@ -91,11 +91,11 @@
                         foreach (var request in Model.Requests)
                         {
                             <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
-                                <figure>
+                                <a asp-action="Index" asp-controller="Request" asp-route-id="@request.RequestID">
                                     <img class="w-full object-cover h-48"
                                          src="@request.FirstImageAttachment"
                                          alt="Shoes"/>
-                                </figure>
+                                </a>
                                 <div class="card-body p-4 gap-3 w-full">
                                     <!-- Badge left -->
                                     <div
@@ -103,34 +103,25 @@
                                         Request
                                     </div>
                                     <div class="flex flex-col">
-                                        <h2 class="card-title text-primary font-bold h-14"
-                                            style="
+                                        <a class="card-title text-primary font-bold h-14"
+                                           style="
                                display: -webkit-box;
                                line-clamp: 2;
                                -webkit-line-clamp: 2; /* Limit to 2 lines */
                                -webkit-box-orient: vertical;
                                overflow: hidden;
-                                     ">
+                                     "
+                                           asp-action="Index" asp-controller="Request" asp-route-id="@request.RequestID"
+                                           >
                                             @request.RequestTitle
-                                        </h2>
+                                        </a>
                                         <div class="flex justify-between">
-                                            <!-- TODO: Set author and location -->
                                             <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
                                                asp-controller="User"
-                                               asp-route-username="@request.Username" style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">
+                                               asp-route-username="@request.Username">
                                                 @request.Username
                                             </a>
-                                            <span style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">@request.Location</span>
+                                            <span>@request.Location</span>
                                         </div>
                                     </div>
                                     <p style="
@@ -178,7 +169,6 @@
          aria-labelledby="carousel-heading">
     @if (!Model.OnGoingProjects.IsNullOrEmpty())
     {
-        <!-- TODO: Replace this with link to view requests -->
         <a href="#" class="w-full text-end text underline text-blue-700 font-bold">
             View more projects &rarr;
         </a>
@@ -193,19 +183,17 @@
                         {
                             <li href="#"
                                 class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
-                                <figure>
-                                    @* This might has many attachment, write code to get the first one *@
+                                <a asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID" asp-controller="Project">
                                     <img class="w-full object-cover h-48"
                                          src="@projectOverviewDto.Attachment"
                                          alt="Shoes"/>
-                                </figure>
+                                </a>
                                 <div class="card-body p-4 gap-3 w-full">
                                     <!-- badge left -->
                                     <div
                                         class="badge badge-success absolute top-0 left-0 bg-success font-bold px-4 py-3 outline-none border-none">
                                         Project
                                     </div>
-                                    <!-- TODO: Look at the status and determine which one is preparing and ongoing -->
                                     <!-- badge right -->
                                     <div
                                         class="badge badge-secondary absolute top-0 right-0 bg-success font-bold px-4 py-3 outline-none border-none">
@@ -227,34 +215,25 @@
                                     }
 
                                     <div class="flex flex-col">
-                                        <h2 class="card-title text-primary font-bold h-14"
+                                        <a class="card-title text-primary font-bold h-14"
                                             style="
                               display: -webkit-box;
                               line-clamp: 2;
                               -webkit-line-clamp: 2; /* Limit to 2 lines */
                               -webkit-box-orient: vertical;
                               overflow: hidden;
-                                    ">
+                                    "
+                                            asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID" asp-controller="Project"
+                                            >
                                             @projectOverviewDto.ProjectName
-                                        </h2>
+                                        </a>
                                         <div class="flex justify-between gap-12">
                                             <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
                                                asp-controller="User"
-                                               asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName"
-                                               style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">
+                                               asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName">
                                                 @projectOverviewDto.ProjectLeader.UserFullName
                                             </a>
-                                            <span style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">
+                                            <span>
                                                 @projectOverviewDto.ProjectAddress
                                             </span>
                                         </div>
@@ -276,9 +255,10 @@
                                                   max="100">
                                         </progress>
                                         <p class="w-full text-success">Raised @projectOverviewDto.ProjectRaisedMoney VND</p>
-                                        <button class="btn btn-neutral h-8 min-h-0 outline-none border-none">
+                                        <a class="btn btn-neutral h-8 min-h-0 outline-none border-none" 
+                                           asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID" asp-controller="Project">
                                             View project
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </li>
@@ -320,11 +300,11 @@
                         foreach (var modelOrganization in Model.Organizations)
                         {
                             <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate">
-                                <figure>
+                                <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@modelOrganization.OrganizationID"> 
                                     <img class="w-full object-cover h-48"
                                          src="@modelOrganization.OrganizationPictures"
                                          alt="@modelOrganization.OrganizationName"/>
-                                </figure>
+                                </a>
                                 <div class="card-body p-4 gap-3 w-full">
                                     <!-- badge left -->
                                     <div
@@ -332,34 +312,25 @@
                                         Organization
                                     </div>
                                     <div class="flex flex-col">
-                                        <h2 class="card-title text-cyan-950 font-bold h-14"
-                                            style="
+                                        <a class="card-title text-cyan-950 font-bold h-14"
+                                           style="
                       display: -webkit-box;
                       line-clamp: 2;
                       -webkit-line-clamp: 2; /* Limit to 2 lines */
                       -webkit-box-orient: vertical;
                       overflow: hidden;
-                    ">
+                    "
+                                           asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@modelOrganization.OrganizationID"
+                                           >
                                             @modelOrganization.OrganizationName
-                                        </h2>
+                                        </a>
                                         <div class="flex justify-between">
                                             <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
                                                asp-controller="User"
-                                               asp-route-username="@modelOrganization.OrganizationLeader.UserFullName"
-                                               style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">
+                                               asp-route-username="@modelOrganization.OrganizationLeader.UserFullName">
                                                 @modelOrganization.OrganizationLeader.UserFullName
                                             </a>
-                                            <span style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">@modelOrganization.OrganizationAddress</span>
+                                            <span>@modelOrganization.OrganizationAddress</span>
                                         </div>
                                     </div>
                                     <p style="
@@ -450,21 +421,10 @@
                                     <div class="flex justify-between gap-12">
                                         <a class="text-neutral hover:text-primary max-w-28 w-full" asp-action="Index"
                                            asp-controller="User"
-                                           asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName"
-                                           style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">
+                                           asp-route-username="@projectOverviewDto.ProjectLeader.UserFullName">
                                             @projectOverviewDto.ProjectLeader.UserFullName
                                         </a>
-                                        <span style="
-                              display: -webkit-box;
-                              line-clamp: 2;
-                              -webkit-line-clamp: 2; /* Limit to 2 lines */
-                              -webkit-box-orient: vertical;
-                              overflow: hidden;">
+                                        <span>
                                             @projectOverviewDto.ProjectAddress
                                         </span>
                                     </div>
