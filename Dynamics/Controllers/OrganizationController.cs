@@ -163,7 +163,7 @@ namespace Dynamics.Controllers
                     organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization");
                     
                 }
-                await _organizationRepository.UpdateOrganizationAsync(organization);
+                if(await _organizationRepository.UpdateOrganizationAsync(organization))
                 return RedirectToAction("Detail", new { organizationId = organization.OrganizationID });
 
             }
@@ -509,7 +509,6 @@ namespace Dynamics.Controllers
                 ResourceID = resourceId,
                 UserID = currentUser.UserID,
                 Status = 0,
-                Unit = currentResource.Unit,
                 Time = DateOnly.FromDateTime(DateTime.UtcNow),
             };
             return View(userToOrganizationTransactionHistory);
