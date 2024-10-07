@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
-using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.DTO;
 using Microsoft.Build.Evaluation;
 using Microsoft.IdentityModel.Tokens;

@@ -14,7 +14,6 @@ namespace Dynamics.DataAccess.Repository
     public interface IProjectRepository
     {
         // Use for display purposes - Kiet
-        Task<List<Project>> GetAllAsync();
         Task<List<Project>> GetAllProjectsAsync();
 
         //using this to get project member of leader
@@ -96,5 +95,7 @@ namespace Dynamics.DataAccess.Repository
         Task<List<ProjectResource>> GetAllResourceByProjectIDAsync(Expression<Func<ProjectResource, bool>> filter);
 
         Task<bool> UpdateProjectResource(ProjectResource entity);
+        //repose of kiet
+        Task<List<Project>> GetAllAsync(Expression<Func<Project, bool>>? filter = null);
     }
 }

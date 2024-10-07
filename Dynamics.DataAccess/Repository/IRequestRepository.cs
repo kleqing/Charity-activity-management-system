@@ -21,12 +21,9 @@ namespace Dynamics.DataAccess.Repository
 		// Choose one
 		Task<List<Request>> SearchIdFilterAsync(string searchQuery, Guid userId);
 		Task<List<Request>> SearchIndexFilterAsync(string searchQuery);
-		Task<List<Request>> GetAllRequestsAsync(string? includeObjects = null);
 		/**
 		 * Get all with possible expression
 		 */
 		Task<List<Request>> GetAllAsync(Expression<Func<Request, bool>>? filter = null); 
-		Task<Request> GetRequestAsync(Expression<Func<Request, bool>> filter, string? includeObjects = null);
-			IQueryable<Request> GetAll();
 	}
 }
