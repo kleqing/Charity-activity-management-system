@@ -42,7 +42,6 @@ namespace Dynamics
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("AuthDbContextConnection"));
             });
-
             // Identity and roles
             builder.Services
                 .AddIdentity<IdentityUser, IdentityRole>(options =>

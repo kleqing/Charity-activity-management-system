@@ -34,6 +34,14 @@ public class RequestService : IRequestService
                 var firstImg = request.Attachment.Split(",")[0];
                 requestDto.FirstImageAttachment = firstImg;
             }
+            // Get only the first address (the city)
+            var location = request.Location.Split(",");
+            var city = location[0];
+            if (location.Length == 4)
+            {
+                city = location[3];
+            }
+            requestDto.Location = city;
             resultDtos.Add(requestDto);
         }
 

@@ -46,7 +46,17 @@ public class ProjectService : IProjectService
         {
             tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
         }
-        tempProjectOverviewDto.Organization = p.Organization;   
+        tempProjectOverviewDto.Organization = p.Organization;
+        if (p.ProjectAddress != null)
+        {
+            var location = p.ProjectAddress.Split(",");
+            var city = location[0];
+            if (location.Length == 4)
+            {
+                city = location[3];
+            }
+            tempProjectOverviewDto.ProjectAddress = city;
+        }
         return tempProjectOverviewDto;
     }
 
@@ -68,12 +78,19 @@ public class ProjectService : IProjectService
             {
                 tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
             }
+            var location = p.ProjectAddress.Split(",");
+            var city = location[0];
+            if (location.Length == 4)
+            {
+                city = location[3];
+            }
+            tempProjectOverviewDto.ProjectAddress = city;
             resultDtos.Add(tempProjectOverviewDto);
         }
         return resultDtos;
     }
 
-    // Use for display purpose (Multiple database trips) please include it instead
+    // Use for display purpose (Multiple database trips) please exclude it instead
     public int? GetProjectProgressId(Guid projectId)
     {
         var resourceNumbers = _context.ProjectResources

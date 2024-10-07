@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241006150720_update after merge")]
-    partial class updateaftermerge
+    [Migration("20241007080945_MergeWithHuyen")]
+    partial class MergeWithHuyen
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -408,6 +408,10 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserRole")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserID");

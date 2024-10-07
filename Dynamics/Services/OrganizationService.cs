@@ -33,6 +33,18 @@ public class OrganizationService: IOrganizationService
             // Map the member count as well
             resultDto.OrganizationMemberCount = organization.OrganizationMember.Count(org => org.OrganizationID == organization.OrganizationID);
             resultDto.OrganizationLeader = leaderUser.User;
+            // Get only the first address (the city)
+            if (organization.OrganizationAddress != null)
+            {
+                var location = organization.OrganizationAddress.Split(",");
+                var city = location[0];
+                if (location.Length == 4)
+                {
+                    city = location[3];
+                }
+                resultDto.OrganizationAddress = city;
+            }
+            
             resultDtos.Add(resultDto);
         }
         return resultDtos;

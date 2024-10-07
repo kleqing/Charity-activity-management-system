@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Dynamics.Controllers
 {
     public class HomeController : Controller
-    {
+    {  
         private readonly IUserRepository _userRepo;
         private readonly IRequestRepository _requestRepo;
         private readonly IProjectRepository _projectRepo;
