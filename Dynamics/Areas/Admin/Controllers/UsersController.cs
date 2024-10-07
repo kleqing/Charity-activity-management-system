@@ -37,5 +37,15 @@ namespace Dynamics.Areas.Admin.Controllers
                 isBanned = result
             });
         }
+
+        [HttpPost]
+        public async Task<JsonResult> UserAsAdmin(Guid id)
+        {
+            var result = await _adminRepository.UserAsAdmin(id);
+            return Json(new
+            {
+                isAdmin = result
+            });
+        }
     }
 }

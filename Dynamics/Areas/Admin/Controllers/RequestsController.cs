@@ -27,5 +27,28 @@ namespace Dynamics.Areas.Admin.Controllers
             return View(await _adminRepository.ViewRequest());
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ChangeStatus(Guid id, int status)
+        {
+            var result = await _adminRepository.ChangeRequestStatus(id);
+            return Json(new
+            {
+                status = result
+            });
+        }
+
+        // Delete request
+        [HttpPost]
+        public async Task<JsonResult> Delete(Guid id)
+        {
+            var request = await _adminRepository.DeleteRequest(id);
+            if (request == null)
+            {
+                return Json(new { success = false });
+            }
+
+            return Json(new { success = true });
+        }
+
     }
 }

@@ -27,7 +27,6 @@ namespace Dynamics.Areas.Admin.Controllers
             // Count user
             var userCount = await _adminRepository.CountUser();
 
-
             // Count organization
             var organizationCount = await _adminRepository.CountOrganization();
 
@@ -52,11 +51,10 @@ namespace Dynamics.Areas.Admin.Controllers
 
                 // List of top 5 user and organization
                 TopUser = top5User,
-                TopOrganization = top5Organization
+                TopOrganization = top5Organization,
             };
 
             return View(model);
         }
-
     }
 }

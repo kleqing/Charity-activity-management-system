@@ -13,12 +13,9 @@ namespace Dynamics.DataAccess.Repository
     public class AdminRepository : IAdminRepository
     {
         public readonly ApplicationDbContext _db;
-        public readonly IMemoryCache _memoryCache;
-        private const string UserCountCacheKey = "PreviousUserCount";
-        public AdminRepository(ApplicationDbContext db, IMemoryCache memoryCache)
+        public AdminRepository(ApplicationDbContext db)
         {
             _db = db;
-            _memoryCache = memoryCache;
         }
 
         // ---------------------------------------
@@ -39,7 +36,7 @@ namespace Dynamics.DataAccess.Repository
             if (org != null)
             {
                 org.isBanned = !org.isBanned;
-                _db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
                 return org.isBanned;
             }
             return org.isBanned;
@@ -52,7 +49,7 @@ namespace Dynamics.DataAccess.Repository
                 .Select(g => new
                 {
                     OrganizationID = g.Key,
-                    ProjectCount = g.Count()                   // Count if user is in project or not
+                    ProjectCount = g.Count()                   // Count if organization is in project or not
                 })
                 .OrderBy(x => x.ProjectCount)
                 .Take(5)
@@ -86,9 +83,9 @@ namespace Dynamics.DataAccess.Repository
             return request;
         }
 
-        public async Task<Request> GetRequestByID(Guid id)
+        public async Task<Request?> GetRequest(Expression<Func<Request, bool>> filter)
         {
-            var request = await _db.Requests.FirstOrDefaultAsync(c => c.RequestID == id);
+            var request = await _db.Requests.Where(filter).FirstOrDefaultAsync();
             if (request == null)
             {
                 return null;
@@ -96,19 +93,43 @@ namespace Dynamics.DataAccess.Repository
             return request;
         }
 
-        public async Task UpdateRequest(Request request)
+        public async Task<int> ChangeRequestStatus(Guid id)
         {
-            var existingItem = await GetRequestByID(request.RequestID);
-            if (existingItem == null)
+            var request = await GetRequest(r => r.RequestID == id);
+            if (request != null)
             {
-                return;
+                switch (request.Status)
+                {
+                    case 0:
+                        request.Status = 1;
+                        break;
+                    case 1:
+                        request.Status = 2;
+                        break;
+                    case 2:
+                        request.Status = 1;
+                        break;
+                }
+                _db.Requests.Update(request);
+                await _db.SaveChangesAsync();
+                return request.Status;
             }
-            _db.Requests.Update(request);
-            await _db.SaveChangesAsync();
+            return request.Status;
+        }
+
+        public async Task<Request> DeleteRequest(Guid id)
+        {
+            var request = await GetRequest(r => r.RequestID == id);
+            if (request != null)
+            {
+                _db.Requests.Remove(request);
+                await _db.SaveChangesAsync();
+            }
+            return request;
         }
 
         // ---------------------------------------
-        // User (View, Ban, Top 5)
+        // User (View, Ban, Top 5, allow access as admin)
 
         public async Task<List<User>> ViewUser()
         {
@@ -150,7 +171,12 @@ namespace Dynamics.DataAccess.Repository
             if (user != null)
             {
                 user.isBanned = !user.isBanned;
-                _db.SaveChangesAsync();
+                // If user is banned, remove admin role (change to user)
+                if (user.isBanned)
+                {
+                    user.isAdmin = false;
+                }
+                await _db.SaveChangesAsync();
                 return user.isBanned;  // Return ban value (true/false)
             }
             return user.isBanned;
@@ -166,12 +192,26 @@ namespace Dynamics.DataAccess.Repository
             return user;
         }
 
+        public async Task<bool> UserAsAdmin(Guid id)
+        {
+            var user = await GetUser(u => id == u.UserID);
+            if (user != null)
+            {
+                user.isAdmin = !user.isAdmin;
+                await _db.SaveChangesAsync();
+                return user.isAdmin;
+            }
+            return user.isAdmin;
+        }
+
+        // ---------------------------------------
         // View Recent request (Recent item in dashoard page)
         public async Task<List<Request>> ViewRecentItem()
         {
             return await _db.Requests.Include(r => r.User).OrderByDescending(x => x.CreationDate).Take(7).ToListAsync();
         }
 
+        // ---------------------------------------
         // Count (count number of user, organization, request, project in database)
         public async Task<int> CountUser()
         {
@@ -192,5 +232,46 @@ namespace Dynamics.DataAccess.Repository
         {
             return await _db.Projects.CountAsync();
         }
+
+        // ---------------------------------------
+        // Project
+
+        public async Task<Project?> GetProjects(Expression<Func<Project, bool>> filter)
+        {
+            var project = await _db.Projects.Where(filter).FirstOrDefaultAsync();
+            if (project == null)
+            {
+                return null;
+            }
+            return project;
+        }
+
+        public async Task<List<Project>> ViewProjects()
+        {
+            var project = await _db.Projects.ToListAsync();
+            return project;
+        }
+
+        public async Task<bool> BanProject(Guid id)
+        {
+            var project = await GetProjects(r => r.ProjectID == id);
+            if (project != null)
+            {
+                project.isBanned = !project.isBanned;
+                project.ProjectStatus = project.isBanned ? 2 : 0;
+                await _db.SaveChangesAsync();
+                return project.isBanned;
+            }
+            return project.isBanned;
+        }
+
+        // ---------------------------------------
+        // Report
+        public async Task<List<Report>> ViewReport()
+        {
+            return await _db.Reports.Include(u => u.User).ToListAsync();
+        }
+
+        // ---------------------------------------
     }
 }

@@ -18,7 +18,7 @@ namespace Dynamics
 
             // Add cache to the container, allow admin dashboard get the latest data
             // working with other services as well
-            // builder.Services.AddMemoryCache();
+            builder.Services.AddMemoryCache();
 
             // Add service and scope for Google auth
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
@@ -94,13 +94,17 @@ namespace Dynamics
 
             app.MapRazorPages();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+            // Fix css and js not loading in project/details
+            app.UseStaticFiles();
 
+            // Priority for areas first
             app.MapControllerRoute(
                  name: "areas",
                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

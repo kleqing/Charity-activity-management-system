@@ -1,15 +1,13 @@
 ﻿@model Dynamics.Areas.Admin.Models.Dashboard
 
-<html lang="en">
+@{
+    ViewData["Title"] = "Home";
+}
 
-
-<!-- Mirrored from coderthemes.com/hyper/saas/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Dec 2023 13:28:05 GMT -->
 <head>
     <meta charset="utf-8" />
     <title>Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
-    <meta content="Coderthemes" name="author" />
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico">
@@ -335,7 +333,7 @@
                                     </a>
                                     </div> *@
                                     <div class="col">
-                                        <a class="dropdown-icon-item" href="#">
+                                        <a class="dropdown-icon-item" href="https://github.com/kleqing/Charity-activity-management-system">
                                             <img src="assets/images/brands/github.png" alt="Github">
                                             <span>GitHub</span>
                                         </a>
@@ -445,9 +443,9 @@
         <!-- ========== Topbar End ========== -->
         <!-- ========== Left Sidebar Start ========== -->
         <div class="leftside-menu">
-            <br />
             <!-- Brand Logo Light -->
-            <a href="#" class="logo logo-light">
+            <br />
+            <a href="/Admin/" class="logo logo-light">
                 <span class="logo-lg">
                     <img src="assets/images/logo.png" alt="logo">
                 </span>
@@ -457,7 +455,7 @@
             </a>
 
             <!-- Brand Logo Dark -->
-            <a href="#" class="logo logo-dark">
+            <a href="/Admin/" class="logo logo-dark">
                 <span class="logo-lg">
                     <img src="assets/images/logo-dark.png" alt="dark logo">
                 </span>
@@ -465,7 +463,8 @@
                     <img src="assets/images/logo-dark-sm.png" alt="small logo">
                 </span>
             </a>
-            <br/>
+            <br />
+
             <!-- Sidebar Hover Menu Toggle Button -->
             <div class="button-sm-hover" data-bs-toggle="tooltip" data-bs-placement="right" title="Show Full Sidebar">
                 <i class="ri-checkbox-blank-circle-line align-middle"></i>
@@ -494,7 +493,6 @@
                     <li class="side-nav-item">
                         <a data-bs-toggle="collapse" href="#sidebarDashboards" aria-expanded="true" aria-controls="sidebarDashboards" class="side-nav-link">
                             <i class="uil-home-alt"></i>
-                            <span class="badge bg-success float-end">5</span>
                             <span> Dashboards </span>
                         </a>
                         <div class="collapse show" id="sidebarDashboards">
@@ -506,7 +504,7 @@
                         </div>
                     </li>
 
-                    <li class="side-nav-title">Apps</li>
+                    <li class="side-nav-title">Management</li>
 
                     <li class="side-nav-item">
                         <a href="/Admin/Users" class="side-nav-link">
@@ -523,16 +521,23 @@
                     </li>
 
                     <li class="side-nav-item">
-                        <a href="apps-chat.html" class="side-nav-link">
+                        <a href="/Admin/Requests" class="side-nav-link">
                             <i class="ri-alert-line"></i>
                             <span> Requests </span>
                         </a>
                     </li>
 
                     <li class="side-nav-item">
-                        <a href="apps-chat.html" class="side-nav-link">
+                        <a href="/Admin/Reports" class="side-nav-link">
                             <i class="ri-spam-3-line"></i>
-                            <span> Report </span>
+                            <span> Reports </span>
+                        </a>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a href="/Admin/Projects" class="side-nav-link">
+                            <i class="ri-briefcase-3-line"></i>
+                            <span> Projects </span>
                         </a>
                     </li>
 
@@ -568,7 +573,7 @@
                         </a>
                         <img src="assets/images/svg/help-icon.svg" height="90" alt="Helper Icon Image" />
                         <h5 class="mt-3">Unlimited Access</h5>
-                        <p class="mb-3">Manage infomation and quickly access data with our new Admin web page!</p>
+                        <p class="mb-3">Manage infomation and quickly access data with our Admin web page!</p>
                         @* <a href="javascript: void(0);" class="btn btn-secondary btn-sm">Upgrade</a> *@
                     </div>
                     <!-- end Help Box -->
@@ -595,20 +600,6 @@
                         <div class="col-12">
                             <div class="page-title-box">
                                 <div class="page-title-right">
-                                    @* <form class="d-flex">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control form-control-light" id="dash-daterange">
-                                            <span class="input-group-text bg-primary border-primary text-white">
-                                                <i class="mdi mdi-calendar-range font-13"></i>
-                                            </span>
-                                        </div>
-                                        <a href="javascript: void(0);" class="btn btn-primary ms-2">
-                                            <i class="mdi mdi-autorenew"></i>
-                                        </a>
-                                        <a href="javascript: void(0);" class="btn btn-primary ms-1">
-                                            <i class="mdi mdi-filter-variant"></i>
-                                        </a>
-                                    </form> *@
                                 </div>
                                 <h4 class="page-title">Dashboard</h4>
                             </div>
@@ -625,8 +616,6 @@
                                     <h5 class="text-muted fw-normal mt-0" title="Number of Customers">Total Users</h5>
                                     <h3 class="mt-3 mb-3">@Model.UserCount</h3>
                                     <p class="mb-0 text-muted">
-                                        @* <span class="text-success me-2"><i class="mdi mdi-arrow-up-bold"></i></span>
-                                        <span class="text-nowrap">o</span> *@
                                     </p>
                                 </div> <!-- end card-body-->
                             </div> <!-- end card-->
@@ -641,8 +630,6 @@
                                     <h5 class="text-muted fw-normal mt-0" title="Number of Orders">Total Project</h5>
                                     <h3 class="mt-3 mb-3">@Model.ProjectCount</h3>
                                     <p class="mb-0 text-muted">
-                                        @* <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i></span>
-                                        <span class="text-nowrap">o</span> *@
                                     </p>
                                 </div> <!-- end card-body-->
                             </div> <!-- end card-->
@@ -657,8 +644,6 @@
                                     <h5 class="text-muted fw-normal mt-0" title="Average Revenue">Total Organization</h5>
                                     <h3 class="mt-3 mb-3">@Model.OrganizationCount</h3>
                                     <p class="mb-0 text-muted">
-                                        @* <span class="text-danger me-2"><i class="mdi mdi-arrow-down-bold"></i></span>
-                                        <span class="text-nowrap">o</span> *@
                                     </p>
                                 </div> <!-- end card-body-->
                             </div> <!-- end card-->
@@ -673,8 +658,6 @@
                                     <h5 class="text-muted fw-normal mt-0" title="Growth">Total Request</h5>
                                     <h3 class="mt-3 mb-3">@Model.RequestCount</h3>
                                     <p class="mb-0 text-muted">
-                                        @* <span class="text-success me-2"><i class="mdi mdi-arrow-up-bold"></i></span>
-                                        <span class="text-nowrap">o</span> *@
                                     </p>
                                 </div> <!-- end card-body-->
                             </div> <!-- end card-->
@@ -821,18 +804,17 @@
 
             </div>
             <!-- content -->
-
             <!-- Footer Start -->
             <footer class="footer">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6">
-                            <script>document.write(new Date().getFullYear())</script> © Kleqing - kleqing.github.io
+                            <script>document.write(new Date().getFullYear())</script> © Dynamics
                         </div>
                         <div class="col-md-6">
                             <div class="text-md-end footer-links d-none d-md-block">
-                                <a href="kleqing.github.io">About</a>
-                                <a href="javascript: void(0);">Support</a>
+                                <a href="https://kleqing.github.io">About</a>
+                                <a href="https://facebook.com/kleqing">Support</a>
                                 <a href="mailto:hotaruu24k@gmail.com">Contact Us</a>
                             </div>
                         </div>
@@ -1554,9 +1536,4 @@
     <!-- App js -->
     <script src="assets/js/app.min.js"></script>
     <script src="~/Admin/assets/controller/HomeController.js"></script>
-
-
 </body>
-
-<!-- Mirrored from coderthemes.com/hyper/saas/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 14 Dec 2023 13:29:09 GMT -->
-</html> 
