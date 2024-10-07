@@ -1339,7 +1339,7 @@ namespace Dynamics.Controllers
                 ProjectID = projectId,
                 ResourceName = "Money",
                 Quantity = 0,
-                ExpectedQuantity = 0,
+                ExpectedQuantity = 200000,
                 Unit = "VND",
             };
             await projectRepository.AddProjectResourceAsync(projectResource);

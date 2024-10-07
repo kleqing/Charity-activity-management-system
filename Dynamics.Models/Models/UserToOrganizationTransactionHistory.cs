@@ -12,8 +12,7 @@ namespace Dynamics.Models.Models
 		public Guid TransactionID { get; set; }
         public Guid ResourceID { get; set; }
         public Guid UserID { get; set; }
-        public int Status { get; set; }
-        public string Unit { get; set; }
+        public int Status { get; set; }      
 
         [Required(ErrorMessage = "The Amount field is required *")]
 
