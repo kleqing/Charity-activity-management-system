@@ -509,7 +509,6 @@ namespace Dynamics.Controllers
                 ResourceID = resourceId,
                 UserID = currentUser.UserID,
                 Status = 0,
-                Unit = currentResource.Unit,
                 Time = DateOnly.FromDateTime(DateTime.UtcNow),
             };
             return View(userToOrganizationTransactionHistory);
