@@ -54,9 +54,17 @@ namespace Dynamics.DataAccess.Repository
             {
                 return false;
             }
-            _db.Entry(organizationItem).CurrentValues.SetValues(organization);
-            await _db.SaveChangesAsync();
-            return true;
+            try
+            {
+                _db.Entry(organizationItem).CurrentValues.SetValues(organization);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
 
         }
 
