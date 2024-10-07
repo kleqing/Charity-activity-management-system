@@ -154,7 +154,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("HomePage", "Home");
+                    return RedirectToAction("Homepage", "Home");
                 }
 
                 foreach (var error in result.Errors)
