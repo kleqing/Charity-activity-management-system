@@ -85,7 +85,7 @@ ViewData["Title"] = "My Request";
         }
 
         <div class="pagination mt-4 flex justify-center space-x-1.5">
-            @if (ViewBag.CurrentPage > 1)
+            @if (ViewBag.currentPage > 1)
             {
                 <a href="@Url.Action("MyRequest", new { pageNumber = ViewBag.currentPage - 1, pageSize = 12 })">
                     <button class="btn bg-white text-black rounded-lg border-solid">Previous</button>
@@ -95,12 +95,12 @@ ViewData["Title"] = "My Request";
             @for (int i = 1; i <= ViewBag.totalPages; i++)
             {
                 <a href="@Url.Action("MyRequest", new { pageNumber = i, pageSize = 12 })"
-                   class="@(ViewBag.CurrentPage == i ? "btn-primary" : "")">
+                   class="@(ViewBag.currentPage == i ? "btn-primary" : "")">
                     <button class="btn bg-white text-black rounded-lg border-solid">@i</button>
                 </a>
             }
 
-            @if (ViewBag.CurrentPage < ViewBag.totalPages)
+            @if (ViewBag.currentPage < ViewBag.totalPages)
             {
                 <a href="@Url.Action("MyRequest", new { pageNumber = ViewBag.currentPage + 1, pageSize = 12 })">
                     <button class="btn bg-white text-black rounded-lg border-solid">Next</button>

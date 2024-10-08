@@ -179,17 +179,12 @@ namespace Dynamics.DataAccess
                 .HasForeignKey(k => k.ProjectResourceID)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //    // -----------------
-            //    // OnDelete()
-
-
-            //    // ---------------------
-            //    // Auto increment
-
-            //    // User (Test-only)
-            //    modelBuilder.Entity<User>()
-            //        .Property(u => u.userID)
-            //        .ValueGeneratedOnAdd();  // Auto-increment
+    // History to Project
+    modelBuilder.Entity<History>()
+        .HasOne(h => h.Project)
+        .WithMany(p => p.History)
+        .HasForeignKey(h => h.ProjectID);
+           
         }
     }
 }

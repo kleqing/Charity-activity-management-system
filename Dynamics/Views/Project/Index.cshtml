@@ -61,9 +61,9 @@
             </div>
         </div>
         <!-- list project -->
-        <div class="w-full flex justify-between gap-x-6 gap-y-4">
+        <section class="w-full bg-base-100 flex flex-wrap gap-10 justify-center">
             @foreach (var item in Model.ProjectsILead) {
-            <div class="bg-white text-black shadow-lg rounded-2xl overflow-hidden w-full max-w-sm">
+            <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide mt-4">
                 <div class="relative">
                         <a asp-action="ManageProject" asp-route-id="@item.ProjectID">
                         <img class="w-full h-48 object-cover"
@@ -91,55 +91,39 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </li>
          
             }
 
-        </div>
+        </section>
 
     </div>
-    <!-- pagination -->
-    <nav aria-label="Page navigation example" class="my-6">
-        <ul class="bg-white inline-flex -space-x-px text-md ">
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-100 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 ">
-                    <span class="pr-2"><i class="fa-solid fa-arrow-left"></i></span>Previous
+    <!-- pagination projectILead -->
+        <div class="pagination mt-4 flex justify-center space-x-1.5">
+            @if (ViewBag.currentPagePIL > 1)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPIL = ViewBag.currentPagePIL - 1,  
+                pageNumberPIM = ViewBag.currentPagePIM, pageNumberPOT = ViewBag.currentPagePOT, pageSize = 6 })">
+                <button class="btn bg-white text-black rounded-lg border-solid">Previous</button>
+            </a>
+            }
+            
+            @for (int i = 1; i <= ViewBag.totalPagesPIL; i++)
+            {
+                <a href="@Url.Action("Index", new { pageNumberPIL = i,
+                    pageNumberPIM = ViewBag.currentPagePIM, pageNumberPOT = ViewBag.currentPagePOT, pageSize = 6 })"
+                   class="@(ViewBag.currentPage == i ? "btn-primary" : "")">
+                    <button class="btn bg-white text-black rounded-lg border-solid">@i</button>
                 </a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">1</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">2</a>
-            </li>
-            <li>
-                <a href="#" aria-current="page"
-                   class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-100 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 ">3</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">...</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">56</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">57</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">
-                    Next
-                    <span class="pl-2"><i class="items-center fa-solid fa-arrow-right"></i></span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+            }
+            @if (ViewBag.currentPagePIL < ViewBag.totalPagesPIL)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPIL = ViewBag.currentPagePIL + 1,
+                pageNumberPIM = ViewBag.currentPagePIM, pageNumberPOT = ViewBag.currentPagePOT, pageSize = 6 })">
+                <button class="btn bg-white text-black rounded-lg border-solid">Next</button>
+            </a>
+            }
+        </div>
     <!-- end PART 1 -->
 
     <!-- PART 2 -->
@@ -208,11 +192,9 @@
             </div>
         </div>
         <!-- list project -->
-        <div class="w-full flex justify-between gap-x-6 gap-y-4">
-
-             <div class="w-full flex justify-between gap-x-6 gap-y-4">
+        <section class="w-full bg-base-100 flex flex-wrap gap-10 justify-center">
             @foreach (var item in Model.ProjectsIAmMember) {
-            <div class="bg-white text-black shadow-lg rounded-2xl overflow-hidden w-full max-w-sm">
+            <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide mt-4">
                 <div class="relative">
                         <a asp-action="ManageProject" asp-route-id="@item.ProjectID">
                         <img class="w-full h-48 object-cover"
@@ -240,57 +222,39 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </li>
          
             }
-
-        </div> 
-        </div>
+        </section>
 
     </div>
 
     <!-- pagination -->
-    <nav aria-label="Page navigation example" class="my-6">
-        <ul class="bg-white inline-flex -space-x-px text-md ">
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-100 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 ">
-                    <span class="pr-2"><i class="fa-solid fa-arrow-left"></i></span>Previous
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">1</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">2</a>
-            </li>
-            <li>
-                <a href="#" aria-current="page"
-                   class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-100 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 ">3</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">...</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">56</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">57</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">
-                    Next
-                    <span class="pl-2"><i class="items-center fa-solid fa-arrow-right"></i></span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+        <div class="pagination mt-4 flex justify-center space-x-1.5">
+            @if (ViewBag.currentPagePIM > 1)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPIM = ViewBag.currentPagePIM - 1, 
+                pageNumberPOT = ViewBag.currentPagePOT, pageNumberPIL = ViewBag.currentPagePIL,pageSize = 6 })">
+                <button class="btn bg-white text-black rounded-lg border-solid">Previous</button>
+            </a>
+            }
+
+            @for (int i = 1; i <= ViewBag.totalPagesPIM; i++)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPIM = i, pageNumberPOT = ViewBag.currentPagePOT,
+                pageNumberPIL = ViewBag.currentPagePIL, pageSize = 6 })"
+               class="@(ViewBag.currentPage == i ? "btn-primary" : "")">
+                <button class="btn bg-white text-black rounded-lg border-solid">@i</button>
+            </a>
+            }
+            @if (ViewBag.currentPagePIM < ViewBag.totalPagesPIM)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPOT = ViewBag.currentPagePOT,
+                pageNumberPIL = ViewBag.currentPagePIL, pageNumberPIM = ViewBag.currentPagePIM + 1, pageSize = 6 })">
+                <button class="btn bg-white text-black rounded-lg border-solid">Next</button>
+            </a>
+            }
+        </div>
     <!-- end PART 2 -->
 
     <!-- PART 3: OTHER PROJECTS-->
@@ -362,96 +326,78 @@
         <div class="w-full flex justify-between gap-x-6 gap-y-4">
 
            
-   <div class="w-full flex justify-between gap-x-6 gap-y-4">
+   <section class="w-full bg-base-100 flex flex-wrap gap-10 justify-center">
             @foreach (var item in Model.OtherProjects) {
-            <div class="bg-white text-black shadow-lg rounded-2xl overflow-hidden w-full max-w-sm">
-                <div class="relative">
+                <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide">
+                    <div class="relative">
                         <a asp-action="ManageProject" asp-route-id="@item.ProjectID">
-                        <img class="w-full h-48 object-cover"
-                         src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                            <img class="w-full h-48 object-cover"
+                                 src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
                                  alt="Project Image" />
                         </a>
-                            @if (item.ProjectStatus >= 1)
-                            {
-                                <div class="absolute top-0 right-0 bg-green-500 font-bold text-white px-6 py-2 rounded-bl-lg">Active</div>
-                            }else if (item.ProjectStatus == 0)
-                            {
-                                <div class="absolute top-0 right-0 bg-gray-400 font-bold text-white px-6 py-2 rounded-bl-lg">Inactive</div>
+                        @if (item.ProjectStatus >= 1)
+                        {
+                            <div class="absolute top-0 right-0 bg-green-500 font-bold text-white px-6 py-2 rounded-bl-lg">Active</div>
+                        }else if (item.ProjectStatus == 0)
+                        {
+                            <div class="absolute top-0 right-0 bg-gray-400 font-bold text-white px-6 py-2 rounded-bl-lg">Inactive</div>
 
-                            }
+                        }
 
-                    <!-- Optional Status Badge -->
-                </div>
-                <div class="p-6">
-                    <a asp-action="ManageProject" asp-route-id="@item.ProjectID" class="font-bold text-xl text-gray-800 mb-2">@item.ProjectName</a>
-                    <p class="text-gray-600 mb-4">
-                        Does this project have potential? Let’s discover more about it.
-                    </p>
-                    <div class="flex justify-between items-center">
-                                @{
-                                    var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID, "User");
-                                }
-                                <span class="text-gray-500 text-sm">Created by @projectleader.UserFullName</span>
-                        <!-- Optional Creator Name -->
-                            <a asp-action="ManageProject" asp-route-id="@item.ProjectID"
-                           class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-                            Discover
-                            Now
-                        </a>
+                        <!-- Optional Status Badge -->
                     </div>
-                </div>
-            </div>
-         
+                    <div class="p-6">
+                        <a asp-action="ManageProject" asp-route-id="@item.ProjectID" class="font-bold text-xl text-gray-800 mb-2">@item.ProjectName</a>
+                        <p class="text-gray-600 mb-4">
+                            Does this project have potential? Let’s discover more about it.
+                        </p>
+                        <div class="flex justify-between items-center">
+                            @{
+                                var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID, "User");
+                            }
+                            <span class="text-gray-500 text-sm">Created by @projectleader.UserFullName</span>
+                            <!-- Optional Creator Name -->
+                            <a asp-action="ManageProject" asp-route-id="@item.ProjectID"
+                               class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+                                Discover
+                                Now
+                            </a>
+                        </div>
+                    </div>
+                </li>
             }
-
-        </div>
+        </section>
 
         </div>
 
     </div>
 
     <!-- pagination -->
-    <nav aria-label="Page navigation example" class="my-6">
-        <ul class="bg-white inline-flex -space-x-px text-md ">
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-100 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 ">
-                    <span class="pr-2"><i class="fa-solid fa-arrow-left"></i></span>Previous
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">1</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">2</a>
-            </li>
-            <li>
-                <a href="#" aria-current="page"
-                   class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-100 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 ">3</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">...</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">56</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 hover:bg-gray-100 hover:text-gray-700 ">57</a>
-            </li>
-            <li>
-                <a href="#"
-                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-100 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">
-                    Next
-                    <span class="pl-2"><i class="items-center fa-solid fa-arrow-right"></i></span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+        <div class="pagination mt-4 flex justify-center space-x-1.5">
+            @if (ViewBag.currentPagePOT > 1)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPOT = ViewBag.currentPagePOT - 1,
+                pageNumberPIL = ViewBag.currentPagePIL, pageNumberPIM = ViewBag.currentPagePIM, pageSize = 6 })">
+                <button class="btn bg-white text-black rounded-lg border-solid">Previous</button>
+            </a>
+            }
+
+            @for (int i = 1; i <= ViewBag.totalPagesPOT; i++)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPOT = i, 
+                pageNumberPIL = ViewBag.currentPagePIL, pageNumberPIM = ViewBag.currentPagePIM, pageSize = 6 })"
+               class="@(ViewBag.currentPage == i ? "btn-primary" : "")">
+                <button class="btn bg-white text-black rounded-lg border-solid">@i</button>
+            </a>
+            }
+            @if (ViewBag.currentPagePOT < ViewBag.totalPagesPOT)
+            {
+            <a href="@Url.Action("Index", new { pageNumberPOT = ViewBag.currentPagePOT + 1,
+                pageNumberPIL = ViewBag.currentPagePIL, pageNumberPIM = ViewBag.currentPagePIM, pageSize = 6 })">
+                <button class="btn bg-white text-black rounded-lg border-solid">Next</button>
+            </a>
+            }
+        </div>
     <!-- end PART 3 -->
 </div>
 

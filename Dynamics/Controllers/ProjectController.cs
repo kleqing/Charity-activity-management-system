@@ -16,6 +16,7 @@ using System.Linq.Expressions;
 using System.Net.WebSockets;
 
 using Dynamics.Helps;
+using Dynamics.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static System.Net.Mime.MediaTypeNames;
@@ -30,22 +31,25 @@ namespace Dynamics.Controllers
         private readonly IRequestRepository requestRepository;
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IMapper mapper;
+        private readonly IPagination _pagination;
 
         public ProjectController(IProjectRepository projectRepository,
             IOrganizationRepository organizationRepository,
             IRequestRepository requestRepository,
             IWebHostEnvironment hostEnvironment,
-            IMapper mapper)
+            IMapper mapper, IPagination pagination)
         {
             this.projectRepository = projectRepository;
             this.organizationRepository = organizationRepository;
             this.requestRepository = requestRepository;
             this.hostEnvironment = hostEnvironment;
             this.mapper = mapper;
+            _pagination = pagination;
         }
 
         [Route("Project/Index/{userID}")]
-        public async Task<IActionResult> Index(Guid userID)
+        public async Task<IActionResult> Index(Guid userID, 
+            int pageNumberPIL = 1, int pageNumberPIM = 1, int pageNumberPOT = 1, int pageSize = 6)
         {
             //get all project
             var allProjects = await projectRepository.GetAllProjectsAsync("Organization,Request");
@@ -84,10 +88,32 @@ namespace Dynamics.Controllers
                     otherProjects.Add(project);
                 }
             }
+            
+            //pagination
+            var queryPIL =  _pagination.ToQueryable(projectsILead);
+            var totalProjectsILead = projectsILead.Count();
+            var totalPagesProjectsILead = (int)Math.Ceiling((double)totalProjectsILead / pageSize);
+            var paginatedProjectsILead =  _pagination.PaginationMethod(queryPIL, pageNumberPIL, pageSize);
+            ViewBag.currentPagePIL = pageNumberPIL;
+            ViewBag.totalPagesPIL = totalPagesProjectsILead;
 
+            var queryIAM =  _pagination.ToQueryable(projectsIAmMember);
+            var totalProjectsIAmMember = projectsIAmMember.Count();
+            var totalPagesProjectsIAmMember = (int)Math.Ceiling((double)totalProjectsIAmMember / pageSize);
+            var paginatedProjectsIAmMember =  _pagination.PaginationMethod(queryIAM, pageNumberPIM, pageSize);
+            ViewBag.currentPagePIM = pageNumberPIM;
+            ViewBag.totalPagesPIM = totalPagesProjectsIAmMember;
+            
+            var queryOTP = _pagination.ToQueryable(otherProjects);
+            var totalOtherProjects = otherProjects.Count();
+            var totalPagesOtherProjects = (int)Math.Ceiling((double)totalOtherProjects / pageSize);
+            var paginatedOtherProjects = _pagination.PaginationMethod(queryOTP, pageNumberPOT, pageSize);
+            ViewBag.currentPagePOT = pageNumberPOT;
+            ViewBag.totalPagesPOT = totalPagesOtherProjects;
+           
             return View(new MyProjectVM()
             {
-                ProjectsILead = projectsILead, ProjectsIAmMember = projectsIAmMember, OtherProjects = otherProjects
+                ProjectsILead = paginatedProjectsILead, ProjectsIAmMember = paginatedProjectsIAmMember, OtherProjects = paginatedOtherProjects
             });
         }
 

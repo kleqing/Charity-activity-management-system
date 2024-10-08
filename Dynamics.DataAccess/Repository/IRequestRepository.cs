@@ -21,5 +21,6 @@ namespace Dynamics.DataAccess.Repository
 		Task<IQueryable<Request>> SearchIdFilterAsync(string searchQuery,string filterQuery, Guid userId);
 		Task<IQueryable<Request>> SearchIndexFilterAsync(string searchQuery, string filterQuery);
 		Task<List<Request>> PaginateAsync(IQueryable<Request> requestQuery, int pageNumber, int pageSize);
+		Task<Request?> GetRequestAsync(Expression<Func<Request, bool>> filter, string? includeObjects = null);
 	}
 }

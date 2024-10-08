@@ -5,6 +5,7 @@ using Dynamics.Models.Models.ViewModel;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
 using Dynamics.Utility;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dynamics.Controllers
 {
@@ -27,13 +28,13 @@ namespace Dynamics.Controllers
 				requests = await _requestRepo.SearchIndexFilterAsync(searchQuery, filterQuery);
 			}
 			// pagination
-			var totalRequest = requests.Count();
+			var totalRequest = await requests.CountAsync();
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
 			var paginatedRequests = await _requestRepo.PaginateAsync(requests, pageNumber, pageSize);
 			
 			ViewBag.currentPage = pageNumber;
 			ViewBag.totalPages = totalPages;
-			return View(requests);
+			return View(paginatedRequests);
 		}
 		public async Task<IActionResult> MyRequest(string searchQuery, string filterQuery, int pageNumber = 1, int pageSize = 12)
 		{
@@ -58,7 +59,7 @@ namespace Dynamics.Controllers
 				requests = await _requestRepo.SearchIdFilterAsync(searchQuery, filterQuery, userId);
 			}
 			//pagination
-			var totalRequest = requests.Count();
+			var totalRequest = await requests.CountAsync();
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
 			var paginatedRequests = await _requestRepo.PaginateAsync(requests, pageNumber, pageSize);
 			

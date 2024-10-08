@@ -98,5 +98,8 @@ namespace Dynamics.DataAccess.Repository
         Task<List<ProjectResource>> GetAllResourceByProjectIDAsync(Expression<Func<ProjectResource, bool>> filter);
 
         Task<bool> UpdateProjectResource(ProjectResource entity);
+        
+        //Pagination
+        Task<List<Project>> PaginatedAsync (IQueryable<Project> projectQuery, int pageNumber, int pageSize);
     }
 }

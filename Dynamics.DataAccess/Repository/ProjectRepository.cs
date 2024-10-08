@@ -792,6 +792,14 @@ namespace Dynamics.DataAccess.Repository
             await _db.SaveChangesAsync();
             return true;
         }
-
+        
+        //Pagination
+        public async Task<List<Project>> PaginatedAsync(IQueryable<Project> projectQuery, int pageNumber, int pageSize)
+        {
+            return await projectQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

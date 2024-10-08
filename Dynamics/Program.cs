@@ -92,6 +92,7 @@ namespace Dynamics
             // Add custom services
             builder.Services.AddScoped<ITransactionViewService, TransactionViewService>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IPagination, Pagination>();
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 

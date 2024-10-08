@@ -114,11 +114,11 @@
             }
         </section>
     }
-    <div class="pagination join flex gap-2 mt-6">
+    <div class="pagination mt-4 flex justify-center space-x-1.5">
         @if (ViewBag.CurrentPage > 1)
         {
             <a href="@Url.Action("Index", new { pageNumber = ViewBag.currentPage - 1, pageSize = 12 })">
-                <button class="join-item btn btn-ghost">Previous</button>
+                <button class="btn bg-white text-black rounded-lg border-solid">Previous</button>
             </a>
         }
 
@@ -126,14 +126,14 @@
         {
             <a href="@Url.Action("Index", new { pageNumber = i, pageSize = 12 })"
                class="@(ViewBag.CurrentPage == i ? "btn-primary" : "")">
-                <button class="join-item btn btn-ghost">@i</button>
+                <button class="btn bg-white text-black rounded-lg border-solid">@i</button>
             </a>
         }
 
         @if (ViewBag.CurrentPage < ViewBag.totalPages)
         {
             <a href="@Url.Action("Index", new { pageNumber = ViewBag.currentPage + 1, pageSize = 12 })">
-                <button class="join-item btn btn-ghost">Next</button>
+                <button class="btn bg-white text-black rounded-lg border-solid">Next</button>
             </a>
         }
     </div>
