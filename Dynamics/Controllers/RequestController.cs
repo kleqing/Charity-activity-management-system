@@ -67,7 +67,7 @@ namespace Dynamics.Controllers
 			ViewBag.totalPages = totalPages;
 			return View(paginatedRequests);
 		}
-		public async Task<IActionResult> Detail(Guid? id)
+		public async Task<IActionResult> Detail(Guid id)
 		{
 			var request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); }

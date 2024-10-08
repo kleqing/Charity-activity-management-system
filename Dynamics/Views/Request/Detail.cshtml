@@ -1,8 +1,7 @@
-﻿@model Dynamics.Models.Models.Request
-@inject IHttpContextAccessor Accessor
+﻿@inject IHttpContextAccessor Accessor
+@model Dynamics.Models.Models.Request
 @{
-    ViewData["Title"] = "Manage Project";
-    Layout = "~/Views/Shared/_LayoutProject.cshtml";
+    ViewData["Title"] = "Detail request";
     // take current user
     var userIDString = Accessor.HttpContext.Session.GetString("currentUserID");
 
@@ -68,8 +67,8 @@
         <div class="border-t p-6 ">
             <h2 class="font-semibold mb-2 text-black text-3xl">Contact Information:</h2>
             <p class="text-gray-600">✉ @Model.RequestEmail</p>
-            <p class="text-gray-600">📞 @Model.RequestEmail</p>
-            <p class="text-gray-600">🏠 @Model.RequestEmail</p>
+            <p class="text-gray-600">📞 @Model.RequestPhoneNumber</p>
+            <p class="text-gray-600">🏠 @Model.Location</p>
         </div>
         <div class="border-t p-4 mt-0">
             <h2 class="font-semibold mb-2 text-black text-3xl">Description</h2>
@@ -88,7 +87,7 @@
                 </div>
                 <div class="flex flex-col ">
                     <p class="text-gray-600 font-normal">
-                        Project leader: <span class="text-black font-bold">
+                        Requester: <span class="text-black font-bold">
                            @Model.User.UserFullName
                         </span>
                     </p>
