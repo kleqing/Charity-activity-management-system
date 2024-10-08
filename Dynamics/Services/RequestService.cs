@@ -21,7 +21,7 @@ public class RequestService : IRequestService
         requestDto.FirstImageAttachment = firstImg;
         return requestDto;
     }
-
+    
     public List<RequestOverviewDto> MapToListRequestOverviewDto(List<Request> requests)
     {
         var resultDtos = new List<RequestOverviewDto>();

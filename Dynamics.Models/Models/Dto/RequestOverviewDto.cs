@@ -12,4 +12,6 @@ public class RequestOverviewDto
     public string Location { get; set; }
     public string? FirstImageAttachment { get; set; }
     public int? isEmergency { get; set; }
+    public int Status { get; set; }
+
 }

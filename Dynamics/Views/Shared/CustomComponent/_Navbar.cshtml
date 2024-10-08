@@ -22,13 +22,13 @@
             class="navbar bg-white shadow-md fixed top-2 right-6 left-8 border z-20 w-full rounded-lg"
             style="width: calc(100% - 4rem)">
             <!-- Search bar -->
-            <div class="tooltip tooltip-info tooltip-bottom" data-tip="Ex: req-request name" style="max-width: 300px; width: 100%">
+            <div class="tooltip tooltip-info tooltip-bottom" data-tip="Prefix: req/prj/org-name" style="max-width: 300px; width: 100%">
                 <form class="max-w-56 flex flex-row gap-2 items-center" style="width: 100%; max-width: 300px;"
                       asp-action="Search" asp-controller="Home" method="post">
                     <input
                         type="text"
                         name="query"
-                        placeholder="Search for anything..."
+                        placeholder="Ex: req-my request name"
                         class="input input-ghost input-bordered w-full h-10"/>
                     <button class="btn btn-sm btn-ghost" type="submit">
                         <svg class="w-6 h-6 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

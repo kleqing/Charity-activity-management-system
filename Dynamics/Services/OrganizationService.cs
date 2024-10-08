@@ -38,7 +38,7 @@ public class OrganizationService: IOrganizationService
             {
                 var location = organization.OrganizationAddress.Split(",");
                 var city = location[0];
-                if (location.Length == 4)
+                if (location.Length >= 4)
                 {
                     city = location[3];
                 }

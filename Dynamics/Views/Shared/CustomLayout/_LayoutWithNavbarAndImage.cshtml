@@ -20,8 +20,9 @@
             class="object-cover w-full h-80"
             src="https://wallpapers.com/images/featured/anime-scenery-ahd1eqpvwq8aoofp.jpg"
             alt=""/>
-        @* TODO: Create a request *@
-        <button class="btn btn-primary absolute top-100px align-with-navbar-center mx-6">Create a request</button>
+        <a class="btn btn-primary absolute top-100px align-with-navbar-center mx-6"
+            asp-action="Create" asp-controller="Request"
+           >Create a request</a>
     </div>
     <!-- End background image -->
 </header>

@@ -8,13 +8,13 @@
 
 <main class="p-16 min-h-screen">
     <h1 class="text-center font-bold text-3xl">Search result</h1>
-    @if (!Model.OnGoingProjects.IsNullOrEmpty())
+    @if (!Model.Projects.IsNullOrEmpty())
     {
         <h2 class="font-bold text-3xl mb-4">Found projects: </h2>
-        <section class="w-full flex flex-wrap gap-8 justify-center mb-16">
-            @foreach (var projectOverviewDto in Model.OnGoingProjects)
+        <section class="w-full flex flex-wrap gap-8 justify-start mb-16">
+            @foreach (var projectOverviewDto in Model.Projects)
             {
-                <div class="card w-full max-w-64 min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
+                <div class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
                     <a asp-action="ManageProject" asp-route-id="@projectOverviewDto.ProjectID" asp-controller="Project">
                         <img class="w-full object-cover h-48 rounded-md"
                              src="@projectOverviewDto.Attachment"
@@ -100,7 +100,7 @@
                 {
                     foreach (var request in Model.Requests)
                     {
-                        <div class="card w-full max-w-64 min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
+                        <div class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
                             <a asp-action="Index" asp-controller="Request" asp-route-id="@request.RequestID">
                                 <img class="w-full object-cover h-48 rounded-md"
                                      src="@request.FirstImageAttachment"
@@ -149,7 +149,7 @@
         <section class="w-full flex flex-wrap gap-8 justify-center mb-16">
             @foreach (var modelOrganization in Model.Organizations)
             {
-                <div class="card w-full max-w-64 min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
+                <div class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
                     <a asp-action="Detail" asp-controller="Organization"
                        asp-route-organizationId="@modelOrganization.OrganizationID">
                         <img class="w-full object-cover h-48 rounded-md"

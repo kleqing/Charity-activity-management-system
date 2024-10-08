@@ -180,7 +180,14 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> sendRequestJoinOrganization(Guid organizationId, Guid userId)
         {
-            return RedirectToAction(nameof(JoinOrganization), new { organizationId = organizationId, status = 0, userId = userId});
+            // Get the id from session here, no need to pass it from the view - Kiet
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
+            {
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
+            }
+            return RedirectToAction(nameof(JoinOrganization), new { organizationId = organizationId, status = 0, userId = currentUser.UserID});
         }
 
         public async Task<IActionResult> ManageRequestJoinOrganization(Guid organizationId)
@@ -214,8 +221,6 @@ namespace Dynamics.Controllers
             {
                 await _organizationRepository.UpdateOrganizationMemberAsync(organizationMember);
             }
-
-
 
             var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(organizationId));
             HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
