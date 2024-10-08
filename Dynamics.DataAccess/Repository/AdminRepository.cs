@@ -1,4 +1,6 @@
 ﻿using Dynamics.Models.Models;
+using Dynamics.Utility;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -12,10 +14,15 @@ namespace Dynamics.DataAccess.Repository
 {
     public class AdminRepository : IAdminRepository
     {
-        public readonly ApplicationDbContext _db;
-        public AdminRepository(ApplicationDbContext db)
+        private readonly ApplicationDbContext _db;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly AuthDbContext _authDbContext;
+
+        public AdminRepository(ApplicationDbContext db, AuthDbContext authDbContext, UserManager<IdentityUser> userManager)
         {
             _db = db;
+            _authDbContext = authDbContext;
+            this._userManager = userManager;
         }
 
         // ---------------------------------------
@@ -100,14 +107,14 @@ namespace Dynamics.DataAccess.Repository
             {
                 switch (request.Status)
                 {
+                    case -1:
+                        request.Status = 1;
+                        break;
                     case 0:
                         request.Status = 1;
                         break;
                     case 1:
-                        request.Status = 2;
-                        break;
-                    case 2:
-                        request.Status = 1;
+                        request.Status = -1;
                         break;
                 }
                 _db.Requests.Update(request);
@@ -174,7 +181,7 @@ namespace Dynamics.DataAccess.Repository
                 // If user is banned, remove admin role (change to user)
                 if (user.isBanned)
                 {
-                    user.isAdmin = false;
+                    user.UserRole = "user";
                 }
                 await _db.SaveChangesAsync();
                 return user.isBanned;  // Return ban value (true/false)
@@ -192,17 +199,39 @@ namespace Dynamics.DataAccess.Repository
             return user;
         }
 
-        public async Task<bool> UserAsAdmin(Guid id)
+        public async Task<string> GetUserRole(Guid id)
         {
-            var user = await GetUser(u => id == u.UserID);
-            if (user != null)
-            {
-                user.isAdmin = !user.isAdmin;
-                await _db.SaveChangesAsync();
-                return user.isAdmin;
-            }
-            return user.isAdmin;
+            var authUser = await _userManager.FindByIdAsync(id.ToString());
+            if (authUser == null) throw new Exception("GET ROLE FAILED: USER NOT FOUND");
+            return _userManager.GetRolesAsync(authUser).GetAwaiter().GetResult().FirstOrDefault();
         }
+
+        public async Task ChangeUserRole(Guid id)
+        {
+            var authUser = await _userManager.FindByIdAsync(id.ToString());
+            var businessUser = await GetUser(u => u.UserID == id);
+
+            var currentRoles = await _userManager.GetRolesAsync(authUser);
+            string newRole = currentRoles.Contains(RoleConstants.Admin) ? RoleConstants.User : RoleConstants.Admin;
+
+            // Remove current role and add the new one
+            if (newRole == RoleConstants.Admin)
+            {
+                await _userManager.RemoveFromRoleAsync(authUser, RoleConstants.User);
+                await _userManager.AddToRoleAsync(authUser, RoleConstants.Admin);
+                businessUser.UserRole = RoleConstants.Admin;
+            }
+            else
+            {
+                await _userManager.RemoveFromRoleAsync(authUser, RoleConstants.Admin);
+                await _userManager.AddToRoleAsync(authUser, RoleConstants.User);
+                businessUser.UserRole = RoleConstants.User;
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+
 
         // ---------------------------------------
         // View Recent request (Recent item in dashoard page)
@@ -258,7 +287,7 @@ namespace Dynamics.DataAccess.Repository
             if (project != null)
             {
                 project.isBanned = !project.isBanned;
-                project.ProjectStatus = project.isBanned ? 2 : 0;
+                project.ProjectStatus = project.isBanned ? -1 : 1;
                 await _db.SaveChangesAsync();
                 return project.isBanned;
             }
@@ -269,7 +298,7 @@ namespace Dynamics.DataAccess.Repository
         // Report
         public async Task<List<Report>> ViewReport()
         {
-            return await _db.Reports.Include(u => u.User).ToListAsync();
+            return await _db.Reports.Include(u => u.Reporter).ToListAsync();
         }
 
         // ---------------------------------------

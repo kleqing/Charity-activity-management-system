@@ -14,6 +14,7 @@ namespace Dynamics.Models.Models
         public string Type { get; set; }
         public string Reason { get; set; }
         public DateTime ReportDate { get; set; }
-        public virtual User? User { get; set; }
+        public virtual User? Reporter { get; set; }
+
     }
 }

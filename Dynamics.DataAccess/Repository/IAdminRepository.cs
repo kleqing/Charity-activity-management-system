@@ -22,7 +22,9 @@ namespace Dynamics.DataAccess.Repository
         Task<bool> BanUserById(Guid id);
         Task<List<User>> GetTop5User();
         Task<User?> GetUser(Expression<Func<User, bool>> filter);
-        Task<bool> UserAsAdmin(Guid id);
+        public Task ChangeUserRole(Guid id);
+        public Task<string> GetUserRole(Guid id);
+
 
         // Organization
         Task<List<Organization>> ViewOrganization();
