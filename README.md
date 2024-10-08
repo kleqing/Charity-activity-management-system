@@ -1,13 +1,16 @@
-# FIRST TIME installation only
-1. Install node js (if you don't have)
-2. Change directory into `Dynamics` and then type `npm install`
-3. Build the solution to discover if any error is present
-4. Drop your main (Not the Auth one) database
-5. Run update-database in Nuget Package Console (in Visual Studio only)
-- Side note: Package Console and Powershell have different commands
-6. Run your application
-
-# SECOND TIME AND AFTER:
-1. Run `dotnet restore` and `dotnet build`
-2. If there is any new migrations, run `update-database -context dbname`
-
+# For first time installation:
+0. Install node js first (Because of tailwind) (If you already have, don't install)
+1. Run `dotnet restore` and `dotnet build` to check for errors
+2. Run the migrations:  
+**Before running make sure you are at the parrent folder (The folder that contains all the projects)**  
+2.1. Powershell:  
+  Add migration: `dotnet ef migrations add "Initial" --project Dynamics.DataAccess --startup-project Dynamics --context ApplicationDbContext  `  
+  Update database: `dotnet ef database update --project Dynamics.DataAccess --startup-project Dynamics --context ApplicationDbContext  `  
+2.2. Nuget:
+  Select the default projects to Dynamics.DataAccess  
+   Add migration: `Add-Migration initial -context ApplicationDbContext`  
+   Update database: `Update-Database -context ApplicationDbContext`
+3. Run the project
+# For second time installation:
+1. Run `dotnet restore` and `dotnet build` to check for errors
+2. Run the project

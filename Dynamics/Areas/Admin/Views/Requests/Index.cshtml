@@ -656,7 +656,7 @@
                                                         </div>
                                                     </td>
                                                     <td class="table-user">
-                                                        <a href="javascript:void(0);" class="text-body fw-semibold">@Html.DisplayFor(modelItem => item.Title)</a>
+                                                        <a href="javascript:void(0);" class="text-body fw-semibold">@Html.DisplayFor(modelItem => item.RequestTitle)</a>
                                                     </td>
                                                     <td>
                                                         @Html.DisplayFor(modelItem => item.Content)
@@ -669,8 +669,8 @@
                                                         <span class="fw-semibold">128</span>
                                                     </td> *@
                                                     <td>
-                                                        <a href="#" class="btn @(item.Status == 0 ? "badge badge-warning-lighten" : item.Status == 1 ? "badge badge-success-lighten" : "badge badge-danger-lighten") btn-status" data-id="@item.RequestID" data-status="@item.Status">
-                                                            @(item.Status == 0 ? "Pending" : item.Status == 1 ? "Accepted" : "Canceled")
+                                                        <a href="#" class="btn @(item.Status == 0 ? "badge badge-warning-lighten" : item.Status == -1 ? "badge badge-danger-lighten" : "badge badge-success-lighten") btn-status" data-id="@item.RequestID" data-status="@item.Status">
+                                                            @(item.Status == 0 ? "Pending" : item.Status == -1 ? "Canceled" :  "Accepted")
                                                         </a>
                                                     </td>
                                                     <td>

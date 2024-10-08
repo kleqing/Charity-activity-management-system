@@ -13,10 +13,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using Newtonsoft.Json;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -120,12 +120,14 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     // Add real user to database
-                    await _userRepo.Add(new User
+                    await _userRepo.AddAsync(new User
                     {
+                        // Note: Identity user id is string while normal user ID is Guid
                         UserID = new Guid(user.Id), // The link between 2 user table should be this id
                         UserFullName = Input.Name,
                         UserEmail = Input.Email,
                         UserAvatar = MyConstants.DefaultAvatarUrl,
+                        UserRole = RoleConstants.User,
                     });
 
                     _logger.LogInformation("User created a new account with password.");
@@ -149,11 +151,10 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             new { email = Input.Email, returnUrl = returnUrl });
                     }
 
-                    var businessUser = _userRepo.Get(u => u.UserID == new Guid(user.Id));
+                    var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    // TODO: Return to the home page
-                    return RedirectToAction("Index", "EditUser");
+                    return RedirectToAction("HomePage", "Home");
                 }
 
                 foreach (var error in result.Errors)

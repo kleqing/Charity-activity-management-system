@@ -6,9 +6,10 @@
         {
             return status switch
             {
-                0 => "bg-warning", // Ongoing
-                1 => "bg-success", // Finished
-                2 => "bg-danger",  // Canceled
+                -1 => "bg-danger", // Shutdown
+                0 => "bg-warning", // Preparing
+                1 => "bg-primary", // On going
+                2 => "bg-success",  // Finished
                 _ => "bg-secondary" // Default
             };
         }
@@ -17,9 +18,10 @@
         {
             return status switch
             {
-                0 => "Ongoing",
-                1 => "Finished",
-                2 => "Canceled",
+                -1 => "Canceled",
+                0 => "Preparing",
+                1 => "On-going",
+                2 => "Finished",
                 _ => "Unknown"
             };
         }

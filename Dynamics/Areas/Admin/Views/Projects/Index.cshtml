@@ -327,7 +327,7 @@
                                     </div> *@
                                     <div class="col">
                                         <a class="dropdown-icon-item" href="https://github.com/kleqing/Charity-activity-management-system">
-                                            <img src="assets/images/brands/github.png" alt="Github">
+                                            <img src="~/Admin/assets/images/brands/github.png" alt="Github">
                                             <span>GitHub</span>
                                         </a>
                                     </div>
@@ -683,10 +683,10 @@
                                             <span class="pe-2 text-nowrap mb-2 d-inline-block">
                                                 <i class="mdi mdi-calendar-clock text-muted"></i>
                                                 Create Date:
-                                                <b>@project.StartTime?.ToString("yyyy-MM-dd")</b>
+                                                <b>@project.StartTime.ToString("yyyy-MM-dd")</b>
                                             </span>
 
-                                            @if (project.ProjectStatus == 1)
+                                            @if (project.ProjectStatus == 2 && project.isBanned == false)
                                             {
                                                 <span class="text-nowrap mb-2 d-inline-block">
                                                     <i class="mdi mdi-calendar-check-outline text-muted"></i>
@@ -698,18 +698,35 @@
                                             {
                                                 <span class="text-nowrap mb-2 d-inline-block">
 													<i class="mdi mdi-calendar-remove text-muted"></i>
+                  
                                                     End Date:
 													<b class="text-danger">Banned</b>
 												</span>
                                             }
-                                            else if (project.ProjectStatus == 0)
+                                            else if (project.ProjectStatus == -1 && project.isBanned == false)
 											{
 												<span class="text-nowrap mb-2 d-inline-block">
 													<i class="mdi mdi-calendar-remove text-muted"></i>
 													End Date:
-													<b class="text-warning">Not Finished</b>
+													<b class="text-danger">Canceled</b>
 												</span>
 											}
+                                            else if (project.ProjectStatus == 0)
+                                            {
+                                                <span class="text-nowrap mb-2 d-inline-block">
+                                                    <i class="mdi mdi-calendar-remove text-muted"></i>
+                                                    End Date:
+                                                    <b class="text-warning">Preparing</b>
+                                                </span>
+                                            }
+                                            else if (project.ProjectStatus == 1)
+                                            {
+                                                <span class="text-nowrap mb-2 d-inline-block">
+                                                    <i class="mdi mdi-calendar-remove text-muted"></i>
+                                                    End Date:
+                                                    <b class="text-primary">On going</b>
+                                                </span>
+                                            }
                                         </p>
                                         @* <div id="tooltip-container">
                                     <a href="javascript:void(0);" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Mat Helme" class="d-inline-block">

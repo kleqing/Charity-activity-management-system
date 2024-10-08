@@ -25,6 +25,7 @@ namespace Dynamics.Utility
                 mail.Subject = subject;
                 //mail.Subject = "Confirmation Email from Dynamics.com";
                 mail.Body = GenerateEmailTemplate(email, subject, htmlMessage);
+
                 //Setting From , To and CC
                 mail.From = new MailAddress(fromMail);
                 mail.To.Add(new MailAddress(email));
@@ -39,6 +40,7 @@ namespace Dynamics.Utility
 
             return Task.CompletedTask;
         }
+
         private string GenerateEmailTemplate(string email, string subject, string htmlMsg)
         {
             var result = string.Format(

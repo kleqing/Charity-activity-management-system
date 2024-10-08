@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Dynamics.DataAccess;
 using Dynamics.Models.Models;
 using Dynamics.DataAccess.Repository;
+using Dynamics.Utility;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dynamics.Areas.Admin.Controllers
 {
@@ -41,11 +43,17 @@ namespace Dynamics.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> UserAsAdmin(Guid id)
         {
-            var result = await _adminRepository.UserAsAdmin(id);
+            await _adminRepository.ChangeUserRole(id);
+
+            var userRole = await _adminRepository.GetUserRole(id);
+
             return Json(new
             {
-                isAdmin = result
+                isAdmin = userRole == RoleConstants.Admin
             });
         }
+
+
+
     }
 }

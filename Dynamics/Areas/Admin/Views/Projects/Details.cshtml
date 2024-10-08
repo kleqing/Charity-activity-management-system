@@ -643,6 +643,18 @@
                                                     {
                                                         <span class="text-danger">Banned</span>
                                                     }
+                                                    else if (Model.isBanned == false && Model.ProjectStatus == -1)
+                                                    {
+                                                        <span class="text-danger">Canceled</span>
+                                                    }
+                                                    else if (Model.isBanned == false && Model.ProjectStatus == 0)
+                                                    {
+                                                        
+													}
+                                                    else if (Model.isBanned == false && Model.ProjectStatus == 1)
+													{
+														
+													}
                                                     else
                                                     {
                                                         @Html.DisplayFor(model => model.EndTime)
@@ -654,9 +666,17 @@
                                         <div class="col-md-4">
                                             <div class="mb-4">
                                                 <h5>Status</h5>
-                                                @if (Model.ProjectStatus != 1)
+                                                @if (Model.ProjectStatus == -1 && !Model.isBanned)
                                                 {
-                                                    <a href="#" class="btn @(Model.isBanned ? "badge badge-danger-lighten":"badge badge-success-lighten") btn-ban" data-id="@Model.ProjectID">
+                                                    <span class="badge badge-danger-lighten">Canceled</span>
+                                                }
+                                                else if (Model.ProjectStatus == 0 && !Model.isBanned)
+                                                {
+                                                    <span class="badge badge-warning-lighten">Preparing</span>
+                                                }
+                                                else if (Model.ProjectStatus != 2)
+                                                {
+                                                    <a href="#" class="btn @(Model.isBanned ? "badge badge-danger-lighten" : "badge badge-success-lighten") btn-ban" data-id="@Model.ProjectID">
                                                         @(Model.isBanned ? "Banned" : "Active")
                                                     </a>
                                                 }

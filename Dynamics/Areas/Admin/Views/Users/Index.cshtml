@@ -683,9 +683,9 @@ Layout = null;
                                                     }
                                                     else
                                                     {
-                                                        <a href="#" class="btn @(item.isAdmin ? "badge badge-warning-lighten":"badge badge-primary-lighten") btn-admin" data-id="@item.UserID">
-                                                            @(item.isAdmin ? "Admin" : "User")
-                                                        </a>
+                                                       <a href="#" class="btn @(item.UserRole == Dynamics.Utility.RoleConstants.Admin ? "badge badge-warning-lighten" : "badge badge-primary-lighten") btn-admin" data-id="@item.UserID">
+                                                                    @(item.UserRole == Dynamics.Utility.RoleConstants.Admin ? "Admin" : "User")
+                                                    </a>
                                                     }
                                                 </td>
 

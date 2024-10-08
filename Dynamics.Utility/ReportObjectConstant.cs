@@ -10,6 +10,6 @@ namespace Dynamics.Utility
     {
         public static string User = "User";
         public static string Project = "Project";
-        public static string Organization = "Organization";
+        public static string Organization= "Organization";
     }
 }

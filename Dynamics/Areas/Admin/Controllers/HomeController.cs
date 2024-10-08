@@ -1,6 +1,8 @@
 ﻿using Dynamics.Areas.Admin.Models;
 using Dynamics.Areas.Admin.Ultility;
 using Dynamics.DataAccess.Repository;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dynamics.Areas.Admin.Controllers
@@ -9,10 +11,20 @@ namespace Dynamics.Areas.Admin.Controllers
     public class HomeController : Controller
     {
         public readonly IAdminRepository _adminRepository;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public HomeController(IAdminRepository adminRepository)
+        public HomeController(IAdminRepository adminRepository, SignInManager<IdentityUser> signInManager)
         {
+            _signInManager = signInManager;
             _adminRepository = adminRepository;
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("HomePage", "Home");
         }
 
         public async Task<IActionResult> Index()
