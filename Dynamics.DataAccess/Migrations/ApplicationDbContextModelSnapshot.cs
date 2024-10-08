@@ -49,7 +49,6 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Attachment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
@@ -79,11 +78,7 @@ namespace Dynamics.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CEOID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("OrganizationAddress")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationDescription")
@@ -91,31 +86,36 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("OrganizationName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("OrganizationPhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationPictures")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ShutdownDay")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("ShutdownDay")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("StartTime")
+                        .HasColumnType("date");
 
                     b.Property<bool>("isBanned")
                         .HasColumnType("bit");
 
                     b.HasKey("OrganizationID");
+
+                    b.HasIndex("OrganizationEmail")
+                        .IsUnique()
+                        .HasFilter("[OrganizationEmail] IS NOT NULL");
+
+                    b.HasIndex("OrganizationName")
+                        .IsUnique();
 
                     b.ToTable("Organizations");
                 });
@@ -127,6 +127,9 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("OrganizationID", "UserID");
 
@@ -141,17 +144,10 @@ namespace Dynamics.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ContentTransaction")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ExpectedQuantity")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("OrganizationID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Quantity")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("ResourceName")
@@ -175,23 +171,17 @@ namespace Dynamics.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Amount")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationID")
+                    b.Property<Guid>("OrganizationResourceID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProjectID")
+                    b.Property<Guid?>("ProjectResourceID")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ResourceName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -199,15 +189,11 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("TransactionID");
 
-                    b.HasIndex("OrganizationID");
+                    b.HasIndex("OrganizationResourceID");
 
-                    b.HasIndex("ProjectID");
+                    b.HasIndex("ProjectResourceID");
 
                     b.ToTable("OrganizationToProjectTransactionHistory");
                 });
@@ -219,34 +205,46 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Attachment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly?>("EndTime")
                         .HasColumnType("date");
 
-                    b.Property<Guid?>("LeaderID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("OrganizationID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProjectAddress")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProjectDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProjectEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProjectName")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ProjectPhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProjectStatus")
                         .HasColumnType("int");
 
+                    b.Property<string>("ReportFile")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("RequestID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ShutdownReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("StartTime")
+                        .HasColumnType("date");
 
                     b.Property<bool>("isBanned")
                         .HasColumnType("bit");
@@ -270,6 +268,9 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("ProjectID", "UserID");
 
                     b.HasIndex("UserID");
@@ -283,7 +284,7 @@ namespace Dynamics.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("ExpectedQuantity")
+                    b.Property<int>("ExpectedQuantity")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ProjectID")
@@ -344,7 +345,6 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Attachment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
@@ -358,17 +358,23 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("RequestEmail")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("RequestPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("isEmergency")
+                    b.Property<int?>("isEmergency")
                         .HasColumnType("int");
 
                     b.HasKey("RequestID");
@@ -401,59 +407,34 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<string>("UserEmail")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserFullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserPhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("isAdmin")
-                        .HasColumnType("bit");
+                    b.Property<string>("UserRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isBanned")
                         .HasColumnType("bit");
 
                     b.HasKey("UserID");
 
+                    b.HasIndex("UserEmail")
+                        .IsUnique();
+
+                    b.HasIndex("UserFullName")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Dynamics.Models.Models.UserToOrganizationHistory", b =>
-                {
-                    b.Property<Guid>("TransactionID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoneyTransactionAmout")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OrganizationID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("TransactionID");
-
-                    b.HasIndex("OrganizationID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UserToOrganizationTransactionHistories");
-                });
-
-            modelBuilder.Entity("Dynamics.Models.Models.UserToProjectHistory", b =>
+            modelBuilder.Entity("Dynamics.Models.Models.UserToOrganizationTransactionHistory", b =>
                 {
                     b.Property<Guid>("TransactionID")
                         .ValueGeneratedOnAdd()
@@ -463,22 +444,16 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MoneyTransactionAmout")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ProjectID")
+                    b.Property<Guid>("ResourceID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Time")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly>("Time")
+                        .HasColumnType("date");
 
                     b.Property<string>("Unit")
                         .IsRequired()
@@ -489,7 +464,40 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.HasKey("TransactionID");
 
-                    b.HasIndex("ProjectID");
+                    b.HasIndex("ResourceID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserToOrganizationTransactionHistories");
+                });
+
+            modelBuilder.Entity("Dynamics.Models.Models.UserToProjectTransactionHistory", b =>
+                {
+                    b.Property<Guid>("TransactionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectResourceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Time")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("TransactionID");
+
+                    b.HasIndex("ProjectResourceID");
 
                     b.HasIndex("UserID");
 
@@ -550,21 +558,20 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.OrganizationToProjectHistory", b =>
                 {
-                    b.HasOne("Dynamics.Models.Models.Organization", "Organization")
-                        .WithMany("OrganizationToProjectTransactions")
-                        .HasForeignKey("OrganizationID")
+                    b.HasOne("Dynamics.Models.Models.OrganizationResource", "OrganizationResource")
+                        .WithMany("OrganizationToProjectHistory")
+                        .HasForeignKey("OrganizationResourceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Dynamics.Models.Models.Project", "Project")
-                        .WithMany("OrganizationToProjectTransactions")
-                        .HasForeignKey("ProjectID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.HasOne("Dynamics.Models.Models.ProjectResource", "ProjectResource")
+                        .WithMany("OrganizationToProjectHistory")
+                        .HasForeignKey("ProjectResourceID")
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Organization");
+                    b.Navigation("OrganizationResource");
 
-                    b.Navigation("Project");
+                    b.Navigation("ProjectResource");
                 });
 
             modelBuilder.Entity("Dynamics.Models.Models.Project", b =>
@@ -616,11 +623,12 @@ namespace Dynamics.DataAccess.Migrations
 
             modelBuilder.Entity("Dynamics.Models.Models.Report", b =>
                 {
-                    b.HasOne("Dynamics.Models.Models.User", "User")
-                        .WithMany("Report")
-                        .HasForeignKey("ReporterID");
+                    b.HasOne("Dynamics.Models.Models.User", "Reporter")
+                        .WithMany("ReportsMade")
+                        .HasForeignKey("ReporterID")
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("User");
+                    b.Navigation("Reporter");
                 });
 
             modelBuilder.Entity("Dynamics.Models.Models.Request", b =>
@@ -634,40 +642,40 @@ namespace Dynamics.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Dynamics.Models.Models.UserToOrganizationHistory", b =>
+            modelBuilder.Entity("Dynamics.Models.Models.UserToOrganizationTransactionHistory", b =>
                 {
-                    b.HasOne("Dynamics.Models.Models.Organization", "Organization")
-                        .WithMany("UserToOrganizationTransactions")
-                        .HasForeignKey("OrganizationID")
+                    b.HasOne("Dynamics.Models.Models.OrganizationResource", "OrganizationResource")
+                        .WithMany("UserToOrganizationTransactionHistory")
+                        .HasForeignKey("ResourceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Dynamics.Models.Models.User", "User")
-                        .WithMany("UserToOrganizationTransactions")
+                        .WithMany("UserToOrganizationTransactionHistories")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Organization");
+                    b.Navigation("OrganizationResource");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Dynamics.Models.Models.UserToProjectHistory", b =>
+            modelBuilder.Entity("Dynamics.Models.Models.UserToProjectTransactionHistory", b =>
                 {
-                    b.HasOne("Dynamics.Models.Models.Project", "Project")
-                        .WithMany("UserToProjectTransactions")
-                        .HasForeignKey("ProjectID")
+                    b.HasOne("Dynamics.Models.Models.ProjectResource", "ProjectResource")
+                        .WithMany("UserToProjectTransactionHistory")
+                        .HasForeignKey("ProjectResourceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Dynamics.Models.Models.User", "User")
-                        .WithMany("UserToProjectTransactions")
+                        .WithMany("UserToProjectTransactionHistories")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Project");
+                    b.Navigation("ProjectResource");
 
                     b.Navigation("User");
                 });
@@ -678,24 +686,30 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Navigation("OrganizationResource");
 
-                    b.Navigation("OrganizationToProjectTransactions");
-
                     b.Navigation("Project");
+                });
 
-                    b.Navigation("UserToOrganizationTransactions");
+            modelBuilder.Entity("Dynamics.Models.Models.OrganizationResource", b =>
+                {
+                    b.Navigation("OrganizationToProjectHistory");
+
+                    b.Navigation("UserToOrganizationTransactionHistory");
                 });
 
             modelBuilder.Entity("Dynamics.Models.Models.Project", b =>
                 {
                     b.Navigation("History");
 
-                    b.Navigation("OrganizationToProjectTransactions");
-
                     b.Navigation("ProjectMember");
 
                     b.Navigation("ProjectResource");
+                });
 
-                    b.Navigation("UserToProjectTransactions");
+            modelBuilder.Entity("Dynamics.Models.Models.ProjectResource", b =>
+                {
+                    b.Navigation("OrganizationToProjectHistory");
+
+                    b.Navigation("UserToProjectTransactionHistory");
                 });
 
             modelBuilder.Entity("Dynamics.Models.Models.Request", b =>
@@ -712,13 +726,13 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Navigation("ProjectMember");
 
-                    b.Navigation("Report");
+                    b.Navigation("ReportsMade");
 
                     b.Navigation("Request");
 
-                    b.Navigation("UserToOrganizationTransactions");
+                    b.Navigation("UserToOrganizationTransactionHistories");
 
-                    b.Navigation("UserToProjectTransactions");
+                    b.Navigation("UserToProjectTransactionHistories");
                 });
 #pragma warning restore 612, 618
         }
