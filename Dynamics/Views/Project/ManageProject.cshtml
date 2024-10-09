@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
-@inject IProjectRepository projectRepository
+@inject IProjectMemberRepository ProjectMemberRepository
 @model Dynamics.Models.Models.ViewModel.DetailProjectVM
 @{
     ViewData["Title"] = "Manage Project";
@@ -9,7 +9,7 @@
     // take current user
     var userIDString = Accessor.HttpContext.Session.GetString("currentUserID");
     var currentProjectID = Accessor.HttpContext.Session.GetString("currentProjectID");
-    var allProjectMember = projectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)));
+    var allProjectMember = ProjectMemberRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)));
     Report report = new Report();
     var beMember = 0;
     if (allProjectMember != null&& !string.IsNullOrEmpty(userIDString))
@@ -32,7 +32,7 @@
     {
         projectImages = Model.CurrentProject.Attachment.TrimEnd(',', ' ').Split(",");
     }
-    var ProjectMemberOfUser =  projectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(new Guid(userIDString)));
+    var ProjectMemberOfUser = ProjectMemberRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(new Guid(userIDString)));
     var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
     
 }

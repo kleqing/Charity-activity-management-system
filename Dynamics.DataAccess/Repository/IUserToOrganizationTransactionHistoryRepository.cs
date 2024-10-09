@@ -12,4 +12,5 @@ public interface IUserToOrganizationTransactionHistoryRepository
     Task<bool> Add(UserToOrganizationTransactionHistory entity);
     Task<bool> Update(UserToOrganizationTransactionHistory entity);
     Task<UserToOrganizationTransactionHistory> DeleteTransactionByIdAsync(Guid id);
+
 }

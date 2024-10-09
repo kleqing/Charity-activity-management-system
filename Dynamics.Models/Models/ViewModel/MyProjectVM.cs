@@ -11,6 +11,5 @@ namespace Dynamics.Models.Models.ViewModel
     {
         public List<ProjectOverviewDto> ProjectsILead { get; set; }
         public List<ProjectOverviewDto> ProjectsIAmMember { get; set; }
-        public List<ProjectOverviewDto> OtherProjects { get; set; }
     }
 }

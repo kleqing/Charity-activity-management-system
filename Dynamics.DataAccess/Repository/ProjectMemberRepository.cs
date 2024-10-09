@@ -49,4 +49,56 @@ public class ProjectMemberRepository : IProjectMemberRepository
         await _context.SaveChangesAsync();
         return final.Entity;
     }
+    public List<ProjectMember> FilterProjectMember(Expression<Func<ProjectMember, bool>> filter)
+    {
+        IQueryable<ProjectMember> listProjectMember = _context.ProjectMembers.Include(x => x.User).Where(filter);
+        if (listProjectMember != null)
+        {
+            return listProjectMember.ToList();
+        }
+
+        return null;
+    }
+
+    //------manage member request------------------
+
+    public async Task<bool> AddJoinRequest(Guid memberID, Guid projectID)
+    {
+        var res = await _context.ProjectMembers.AddAsync(new ProjectMember
+        { UserID = memberID, ProjectID = projectID, Status = 0 });
+        await _context.SaveChangesAsync();
+        return res != null;
+    }
+
+    public async Task<bool> AcceptedJoinRequestAsync(Guid memberID, Guid projectID)
+    {
+        var memberObj =
+            await _context.ProjectMembers.FirstOrDefaultAsync(x =>
+                x.UserID.Equals(memberID) && x.ProjectID.Equals(projectID));
+        if (memberObj != null)
+        {
+            memberObj.Status = 1;
+            _context.ProjectMembers.Update(memberObj);
+            _context.Entry(memberObj).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> DenyJoinRequestAsync(Guid memberID, Guid projectID)
+    {
+        var memberObj =
+            await _context.ProjectMembers.FirstOrDefaultAsync(x =>
+                x.UserID.Equals(memberID) && x.ProjectID.Equals(projectID));
+        if (memberObj != null)
+        {
+            _context.ProjectMembers.Remove(memberObj);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
 }

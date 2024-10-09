@@ -79,10 +79,10 @@ namespace Dynamics
             // Project repos
             
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
+            builder.Services.AddScoped<IProjectHistoryRepository, ProjectHistoryRepository>();
+            builder.Services.AddScoped<IOrganizationToProjectTransactionHistoryRepository, OrganizationToProjectTransactionHistoryRepository>();
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
-            builder.Services
-                .AddScoped<IUserToProjectTransactionHistoryRepository,
-                    UserToProjectTransactionHistoryRepository>();
+            builder.Services.AddScoped<IUserToProjectTransactionHistoryRepository,UserToProjectTransactionHistoryRepository>();
             // Organization repos
             builder.Services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             builder.Services.AddScoped<IOrganizationResourceRepository, OrganizationResourceRepository>();
