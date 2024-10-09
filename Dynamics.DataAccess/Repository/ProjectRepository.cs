@@ -155,7 +155,7 @@ namespace Dynamics.DataAccess.Repository
                 .Include(x => x.ProjectResource)
                 .Include(x => x.Organization)
                 .Include(x => x.Request).ThenInclude(x => x.User)
-                .Include(x => x.History)
+                // .Include(x => x.History)
                 .AsSplitQuery();
                 // Don't use split query if we use pagination
             return await projects.ToListAsync();

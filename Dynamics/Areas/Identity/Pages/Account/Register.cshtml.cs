@@ -167,11 +167,11 @@ namespace Dynamics.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private AuthUser CreateUser()
+        private IdentityUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<AuthUser>(); // Change this so that our custom user will be used
+                return Activator.CreateInstance<IdentityUser>();
             }
             catch
             {

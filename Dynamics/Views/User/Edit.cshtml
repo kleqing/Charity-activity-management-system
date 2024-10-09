@@ -93,22 +93,22 @@
                 <label class="form-control w-full">
                     <span class="label label-text font-bold text-lg">Request address</span>
                     <div>
-                        <select class="select select-bordered w-full mb-4 bg-white" id="city" aria-label=".form-select-sm">
+                        <select class="select select-bordered w-full mb-4 bg-white select-primary" id="city" aria-label=".form-select-sm">
                             <option id="pOption" value="@province" selected>@(province == "" ? "Choose province" : province)</option>
                         </select>
 
-                        <select class="select select-bordered w-full mb-4 bg-white" id="district" aria-label=".form-select-sm">
+                        <select class="select select-bordered w-full mb-4 bg-white select-primary" id="district" aria-label=".form-select-sm">
                             <option id="dOption" value="@district" selected>@(district == "" ? "Choose district" : district)</option>
                         </select>
 
-                        <select class="select select-bordered w-full mb-4 bg-white" id="ward" aria-label=".form-select-sm">
+                        <select class="select select-bordered w-full mb-4 bg-white select-primary" id="ward" aria-label=".form-select-sm">
                             <option id="wOption" value="@ward" selected>@(ward == "" ? "Choose ward/commune" : ward)</option>
                         </select>
                     </div>
                     <input
                         type="text"
                         placeholder="Enter street and house number"
-                        class="input input-bordered w-full"
+                        class="input input-bordered w-full bg-white"
                         value="@homeAddr"
                         id="HomeAddress"/>
                     @* the original one should be located here: *@
@@ -120,7 +120,7 @@
                         <span class="label-text">Date of birth (Month/Day/Year)</span>
                     </div>
                     <input type="date" asp-for="UserDOB"
-                           class="input input-bordered w-full bg-white input-info"
+                           class="input input-bordered w-full bg-white input-info" value="@ViewBag.UserDOB"
                            name="UserDOB"/>
                 </label>
                 <input type="hidden" asp-for="UserRole" name="UserRole"/>

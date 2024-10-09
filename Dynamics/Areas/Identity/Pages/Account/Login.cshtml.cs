@@ -11,6 +11,8 @@ using System.ComponentModel.DataAnnotations;
 using Dynamics.DataAccess.Repository;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Dynamics.Utility;
+using Dynamics.Models.Models;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -94,12 +96,25 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
                     
-                    if (result.Succeeded)
+                    //var isBan = _userRepository.GetBanAsync(businessUser.UserID);
+
+                    //if (isBan.Result)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, "User account is banned!");
+                    //    return Page();
+                    //}
+                    // Login as administrator
+                    if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
+                    {
+                        return Redirect("~/Admin/");
+                    }
+                    else if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
                         return Redirect(returnUrl);
                         // return RedirectToAction("Homepage", "Home", returnUrl);
                     }
+                    
                     // TODO: Ban user in da future
                     if (result.IsLockedOut)
                     {

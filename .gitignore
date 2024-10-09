@@ -10,10 +10,10 @@ css/app.min.css
 js/app.min.js
 
 # Remove this one from the commit because everyone has their own db and should not mess with this
-Dynamics.DataAccess/Migrations/ApplicationDbContextModelSnapshot.cs
+/Dynamics.DataAccess/Migrations/ApplicationDbContextModelSnapshot.cs
 
 # Remove css also, we build it later anyways
-Dynamics/wwwroot/css/output.css
+/Dynamics/wwwroot/css/output.css
 
 # User-specific files
 *.suo

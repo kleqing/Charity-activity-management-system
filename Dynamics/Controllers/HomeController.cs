@@ -2,6 +2,7 @@ using AutoMapper;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -78,6 +79,7 @@ namespace Dynamics.Controllers
         {
             if (query == null) return RedirectToAction(nameof(Homepage));
             string[] args = query.Split("-");
+            TempData["query"] = query;
             // Args < 2 search all
             if (args.Length < 2)
             {
@@ -96,7 +98,7 @@ namespace Dynamics.Controllers
                 targets = organizations
                     .Where(r => r.OrganizationName.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
                 var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(targets);
-
+                
                 return View(new HomepageViewModel
                 {
                     Requests = requestOverviewDtos,
@@ -148,7 +150,7 @@ namespace Dynamics.Controllers
                 }
             }
 
-            // if we get here something went wrong
+            // if we get here invalid search so just back to home
             return RedirectToAction(nameof(Homepage));
         }
 

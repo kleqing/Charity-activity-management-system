@@ -17,9 +17,12 @@ namespace Dynamics.Models.Models
         [Required(ErrorMessage = "The Amount field is required *")]
 
         public int Amount { get; set; }
+
         public string? Message { get; set; }
 		[DataType(DataType.Date)]
 		public DateOnly Time { get; set; }
+		// Can be null bc money don't need attachments
+		public string? Attachments { get; set; } 
         public virtual User User { get; set; }
 		public virtual OrganizationResource OrganizationResource { get; set; }
 	}

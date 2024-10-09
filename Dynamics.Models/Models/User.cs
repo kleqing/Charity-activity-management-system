@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dynamics.Models.Models
 {
@@ -27,7 +28,10 @@ namespace Dynamics.Models.Models
         public string? UserAvatar { get; set; }
         public string? UserDescription { get; set; }
         public string UserRole { get; set; }
-        
+        public bool isBanned { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
+        [NotMapped]
+        public int ProjectCount { get; set; }
         [ValidateNever]
         // Self-referencing relationships for reports
         public virtual ICollection<Report> ReportsMade { get; set; }

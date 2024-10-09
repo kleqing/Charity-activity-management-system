@@ -1,9 +1,10 @@
-﻿using Dynamics.Models.Models.DTO;
+using Dynamics.Models.Models.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamics.Models.Models.Dto;
 
 namespace Dynamics.Models.Models.ViewModel
 {

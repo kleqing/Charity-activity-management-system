@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Dynamics.Models.Models.DTO;
+namespace Dynamics.Models.Models.Dto;
 
 public class ProjectOverviewDto
 {
@@ -19,5 +19,6 @@ public class ProjectOverviewDto
     public DateOnly? StartTime { get; set; }
     [DataType(DataType.Date)]
     public DateOnly? EndTime { get; set; }
+
     public Organization Organization { get; set; }
 }

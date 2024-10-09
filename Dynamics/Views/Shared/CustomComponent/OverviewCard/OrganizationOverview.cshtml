@@ -1,4 +1,5 @@
-﻿@model OrganizationOverviewDto
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Dynamics.Models.Models.Dto.OrganizationOverviewDto
 <li class="card w-full max-w-[300px] min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
     <a asp-action="Detail" asp-controller="Organization"
        asp-route-organizationId="@Model.OrganizationID">

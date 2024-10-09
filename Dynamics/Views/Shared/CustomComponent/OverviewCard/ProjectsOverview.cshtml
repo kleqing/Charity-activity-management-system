@@ -1,4 +1,5 @@
-﻿@model ProjectOverviewDto
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Dynamics.Models.Models.Dto.ProjectOverviewDto
 <li class="card w-full max-w-[300px] max-w-64 min-h-[432px] shadow-xl mr-4 relative splide__slide elevate rounded-md">
     <a asp-action="ManageProject" asp-route-id="@Model.ProjectID" asp-controller="Project">
         <img class="w-full object-cover h-48 rounded-md"

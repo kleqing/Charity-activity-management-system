@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Dynamics.Models.Models.DTO;
+namespace Dynamics.Models.Models.Dto;
 
 public class OrganizationOverviewDto
 {

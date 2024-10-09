@@ -43,7 +43,7 @@
                     {
                         foreach (var request in Model.Requests)
                         {
-                            if(request.Status == 1) continue; // Skip the one that has been accepted
+                            if(request.Status != 0) continue; // Skip the one that has been accepted || pending || banned
                             <partial name="CustomComponent/OverviewCard/RequestOverview" model="request"/>
                         }
                     }
