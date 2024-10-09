@@ -96,6 +96,13 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
 
+                    //var isBan = _userRepository.GetBanAsync(businessUser.UserID);
+
+                    //if (isBan.Result)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, "User account is banned!");
+                    //    return Page();
+                    //}
                     // Login as administrator
                     if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
                     {
