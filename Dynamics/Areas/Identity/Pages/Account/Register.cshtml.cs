@@ -102,6 +102,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     _roleManager.CreateAsync(new IdentityRole(RoleConstants.HeadOfOrganization)).GetAwaiter()
                         .GetResult();
                     _roleManager.CreateAsync(new IdentityRole(RoleConstants.ProjectLeader)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new IdentityRole(RoleConstants.Banned)).GetAwaiter().GetResult();
                 }
 
                 // Since all user is default to user role, we add it for them
