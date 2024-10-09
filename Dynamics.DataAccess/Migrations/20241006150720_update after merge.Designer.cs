@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241009131614_MergeWithNhanAndAddedAttachmentColumn")]
-    partial class MergeWithNhanAndAddedAttachmentColumn
+    [Migration("20241006150720_update after merge")]
+    partial class updateaftermerge
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,9 +108,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("StartTime")
                         .HasColumnType("date");
 
-                    b.Property<bool>("isBanned")
-                        .HasColumnType("bit");
-
                     b.HasKey("OrganizationID");
 
                     b.HasIndex("OrganizationEmail")
@@ -176,9 +173,6 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Attachments")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
@@ -251,9 +245,6 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<DateOnly?>("StartTime")
                         .HasColumnType("date");
-
-                    b.Property<bool>("isBanned")
-                        .HasColumnType("bit");
 
                     b.HasKey("ProjectID");
 
@@ -357,8 +348,8 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly?>("CreationDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -396,9 +387,6 @@ namespace Dynamics.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserAddress")
                         .HasColumnType("nvarchar(max)");
 
@@ -422,13 +410,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<string>("UserPhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserRole")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isBanned")
-                        .HasColumnType("bit");
-
                     b.HasKey("UserID");
 
                     b.HasIndex("UserEmail")
@@ -449,9 +430,6 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Attachments")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
@@ -463,6 +441,10 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
@@ -484,9 +466,6 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Attachments")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");

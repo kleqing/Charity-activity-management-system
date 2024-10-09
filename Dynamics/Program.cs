@@ -89,6 +89,7 @@ namespace Dynamics
             builder.Services.AddScoped<IOrganizationToProjectHistoryVMService, OrganizationToProjectHistoryVMService>();
 
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            builder.Services.AddScoped<IReportRepository, ReportRepository>();
             // Project repos
             
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();

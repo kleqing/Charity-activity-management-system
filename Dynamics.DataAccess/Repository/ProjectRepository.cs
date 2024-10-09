@@ -27,29 +27,7 @@ namespace Dynamics.DataAccess.Repository
         }
 
         //manage project profile
-        //get images
-        public async Task<string> GetAllImagesAsync(Guid id, string owner)
-        {
-            var resImgPath = "";
-            if (!string.IsNullOrEmpty(owner) && owner.Equals("Project"))
-            {
-                var projectObj = await _db.Projects.FirstOrDefaultAsync(x => x.ProjectID.Equals(id));
-                if (projectObj != null)
-                {
-                    resImgPath = projectObj.Attachment;
-                }
-            }
-            else if (!string.IsNullOrEmpty(owner) && owner.Equals("Phase"))
-            {
-                var historyObj = await _db.Histories.FirstOrDefaultAsync(x => x.HistoryID.Equals(id));
-                if (historyObj != null)
-                {
-                    resImgPath = historyObj.Attachment;
-                }
-            }
 
-            return resImgPath;
-        }
 
         //shut down
         public async Task<bool> ShutdownProjectAsync(ShutdownProjectVM entity)
@@ -82,54 +60,6 @@ namespace Dynamics.DataAccess.Repository
             return false;
         }
 
-        public async Task<bool> SendReportProjectRequestAsync(Report entity)
-        {
-            if (entity == null) return false;
-            entity.ReportID = Guid.NewGuid();
-            entity.ReportDate = DateTime.Now;
-            await _db.Reports.AddAsync(entity);
-            await _db.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<List<string>> GetStatisticOfProject(Guid projectID)
-        {
-            var projectObj = GetProjectAsync(x => x.ProjectID.Equals(projectID)).Result;
-            if (projectObj != null)
-            {
-                var projectResouceMoney = projectObj.ProjectResource.FirstOrDefault(x => x.ResourceName.ToString().Equals("Money") && x.Unit.Equals("VND"));
-                if (projectResouceMoney != null)
-                {
-                    var progressValue = (double)projectResouceMoney.Quantity / projectResouceMoney.ExpectedQuantity *
-                                        100;
-                    //cal nums contributor
-                    var numberOfProjectContributor = _db.UserToProjectTransactionHistories.Include(x=>x.ProjectResource)
-                        .Where(x => x.ProjectResource.ProjectID.Equals(projectID) && x.Status == 1)
-                        .Select(x => x.UserID)
-                        .Distinct().Count();
-                    numberOfProjectContributor += _db.OrganizationToProjectTransactionHistory.Include(x=> x.ProjectResource).Include(x => x.OrganizationResource)
-                        .Where(x => x.ProjectResource.ProjectID.Equals(projectID) && x.Status == 1)
-                        .Select(x => x.OrganizationResource.OrganizationID)
-                        .Distinct().Count();
-                    var timeLeft = projectObj.EndTime.HasValue
-                        ? projectObj.EndTime.Value.ToDateTime(TimeOnly.MinValue) - DateTime.Now
-                        : TimeSpan.Zero;
-                    if(progressValue.ToString()==null|| numberOfProjectContributor.ToString() == null|| timeLeft.ToString() == null|| projectResouceMoney.ToString() == null)
-                    {
-                        return null;
-                    }
-                    List<string> statistic = new List<string>()
-                    {
-                        projectResouceMoney?.Quantity.ToString(), projectResouceMoney?.ExpectedQuantity.ToString(),
-                        progressValue.ToString(), numberOfProjectContributor.ToString(), timeLeft.ToString()
-                    };
-                    return statistic;
-                }
-            }
-
-            return null;
-        }
-
         public async Task<List<Project>> GetAllAsync(Expression<Func<Project, bool>>? filter = null)
         {
             // We include these just in case we want to display all stuff
@@ -156,23 +86,6 @@ namespace Dynamics.DataAccess.Repository
             return await projects.ToListAsync();
         }
 
-        //get leader of project
-        public async Task<User> GetProjectLeaderAsync(Guid projectID)
-        {
-            var projectObj = await GetProjectAsync(x=>x.ProjectID.Equals(projectID));
-            ProjectMember leaderProjectMembers =  projectObj?.ProjectMember.Where(x=> x.Status == 3).FirstOrDefault();
-            //if no leader then leader is the ceo of organization
-            if (leaderProjectMembers == null)
-            {
-                leaderProjectMembers = projectObj?.ProjectMember.Where(x => x.Status == 2).FirstOrDefault();
-            }
-            if (leaderProjectMembers!=null)
-            {
-                return leaderProjectMembers?.User;
-            }
-
-            return null;
-        }
 
 
         public Task<Project?> GetProjectAsync(Expression<Func<Project, bool>> filter)
@@ -184,7 +97,7 @@ namespace Dynamics.DataAccess.Repository
                 .Include(x => x.History).Where(filter);
             return project.FirstOrDefaultAsync();
         }
-        public async Task<bool> UpdateAsync(Project entity, Guid newProjectLeaderID)
+        public async Task<bool> UpdateAsync(Project entity)
         {
             var existingItem = await GetProjectAsync(u => entity.ProjectID.Equals(u.ProjectID));
             if (existingItem == null)
@@ -192,34 +105,6 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
             _db.Entry(existingItem).CurrentValues.SetValues(entity);
-            //updating 2 member who is new and old leader of project
-            var oldProjectLeaderUser = GetProjectLeaderAsync(entity.ProjectID).Result;
-            var oldProjectLeader = _projectMemberRepo.FilterProjectMember(x => x.UserID.Equals(oldProjectLeaderUser.UserID) && x.ProjectID.Equals(entity.ProjectID)).FirstOrDefault();
-            var newProjectLeader = await _db.ProjectMembers.FirstOrDefaultAsync(x =>
-                x.UserID.Equals(newProjectLeaderID) && x.ProjectID.Equals(entity.ProjectID));
-            var ceoOfProjectID = _accessor.HttpContext.Session.GetString("currentProjectCEOID");
-            if (oldProjectLeader != null && newProjectLeader != null &&
-                !oldProjectLeader.UserID.Equals(newProjectLeader.UserID))
-            {
-                if (oldProjectLeader.UserID.ToString().Equals(ceoOfProjectID)){
-                    oldProjectLeader.Status = 2;
-                }
-                else
-                {
-                    oldProjectLeader.Status = 1;
-                }                
-                _db.ProjectMembers.Update(oldProjectLeader);
-                if (newProjectLeader.UserID.ToString().Equals(ceoOfProjectID))
-                {
-                    newProjectLeader.Status = 2;
-                }
-                else
-                {
-                    newProjectLeader.Status = 3;
-                }              
-                _db.ProjectMembers.Update(newProjectLeader);
-            }
-
             await _db.SaveChangesAsync();
             return true;
         }

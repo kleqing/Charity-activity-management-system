@@ -15,26 +15,33 @@ public interface IProjectService
     public ProjectOverviewDto MapToProjectOverviewDto(Project p);
     List<ProjectOverviewDto> MapToListProjectOverviewDto(List<Project> projects);
     //manage project overview-----------
-    public Task<MyProjectVM> ReturnMyProjectVM(Guid userID);
-    public Task<AllProjectsVM> ReturnAllProjectsVMs();
-    public Task<bool>DeleteImage(string imgPath,Guid phaseID);
-    public Task<string> UploadImages(List<IFormFile> images,string folder);
-    public Task<DetailProjectVM> ReturnDetailProjectVM(Guid projectID);
+    Task<List<string>> GetStatisticOfProjectAsync(Guid projectID);
+    public Task<MyProjectVM> ReturnMyProjectVMAsync(Guid userID);
+    public Task<AllProjectsVM> ReturnAllProjectsVMsAsync();
+    Task<bool> UpdateProjectAlongWithUpdateLeaderAsync(Project entity, Guid newProjectLeaderID);
+    //manage images of project/phase
+    Task<string> GetAllImagesAsync(Guid id, string owner);
+    public Task<bool> DeleteImageAsync(string imgPath,Guid phaseID);
+    public Task<string> UploadImagesAsync(List<IFormFile> images,string folder);
+    public Task<DetailProjectVM> ReturnDetailProjectVMAsync(Guid projectID);
     public Task<string> UpdateProjectProfileAsync(UpdateProjectProfileRequestDto updateProject, List<IFormFile> images);
+
     //manage member of project------------
+    //using this to get leader type User
+    Task<User> GetProjectLeaderAsync(Guid projectID);
     public List<User> FilterMemberOfProject(Expression<Func<ProjectMember, bool>> filter);
-    public Task<string> SendJoinProjectRequest(Guid projectID, Guid memberID);
-    public Task<bool>AcceptJoinProjectRequestAll(Guid projectID);
-    public Task<bool>DenyJoinProjectRequestAll(Guid projectID);
+    public Task<string> SendJoinProjectRequestAsync(Guid projectID, Guid memberID);
+    public Task<bool> AcceptJoinProjectRequestAllAsync(Guid projectID);
+    public Task<bool>DenyJoinProjectRequestAllAsync(Guid projectID);
     //manage transaction history of project--------
-    public Task<List<UserToProjectTransactionHistory>> GetRandom5Donors(Guid projectID);
-    public Task<SendDonateRequestVM> ReturnSendDonateRequestVM(Guid projectID, string donor);
-    Task<bool> SendDonateRequest(SendDonateRequestVM sendDonateRequestVM);
-    public Task<ProjectTransactionHistoryVM> ReturnProjectTransactionHistoryVM(Guid projectID);
-    Task<bool>AcceptDonateProjectRequestAll(Guid projectID,string donor);
-    Task<bool>DenyDonateProjectRequestAll(Guid projectID,string donor);
+    public Task<List<UserToProjectTransactionHistory>> GetRandom5DonorsAsync(Guid projectID);
+    public Task<SendDonateRequestVM> ReturnSendDonateRequestVMAsync(Guid projectID, string donor);
+    Task<bool> SendDonateRequestAsync(SendDonateRequestVM sendDonateRequestVM);
+    public Task<ProjectTransactionHistoryVM> ReturnProjectTransactionHistoryVMAsync(Guid projectID);
+    Task<bool> AcceptDonateProjectRequestAllAsync(Guid projectID,string donor);
+    Task<bool>DenyDonateProjectRequestAllAsync(Guid projectID,string donor);
     //manage project resource--------------
-    Task<string> UpdateProjectResourceType(ProjectResource projectResource);
+    Task<string> UpdateProjectResourceTypeAsync(ProjectResource projectResource);
     //manage project phase report---------
     //constraint project phase report
     Task<List<DateTime>> GetExistingReportDatesAsync(Guid projectID);
@@ -42,5 +49,7 @@ public interface IProjectService
     //add and edit project phase report
     Task<string> AddProjectPhaseReportAsync(History history, List<IFormFile> images);
     Task<string> EditProjectPhaseReportAsync(History history, List<IFormFile> images);
+    
+
 
 }

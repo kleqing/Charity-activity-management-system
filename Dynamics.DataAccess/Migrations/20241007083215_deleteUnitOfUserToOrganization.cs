@@ -5,14 +5,14 @@
 namespace Dynamics.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class removeUnit : Migration
+    public partial class deleteUnitOfUserToOrganization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
                 name: "Unit",
-                table: "OrganizationToProjectTransactionHistory");
+                table: "UserToOrganizationTransactionHistories");
         }
 
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Dynamics.DataAccess.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "Unit",
-                table: "OrganizationToProjectTransactionHistory",
+                table: "UserToOrganizationTransactionHistories",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");

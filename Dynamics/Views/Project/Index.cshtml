@@ -1,5 +1,5 @@
 ﻿@model Dynamics.Models.Models.ViewModel.MyProjectVM
-@inject IProjectRepository ProjectRepository
+@inject IProjectService ProjectService
 @{
     ViewData["Title"] = "Index";
 }
@@ -64,7 +64,7 @@
         <!-- list project -->
         <div class="w-full flex justify-between gap-x-0 gap-y-4 flex-wrap">
             @foreach (var item in Model.ProjectsILead) {
-                var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID);
+                var projectleader = await ProjectService.GetProjectLeaderAsync(item.ProjectID);
                 <div class=" card bg-base-100 w-96 shadow-xl mx-5 my-2 rounded-xl">
                     <div class="relative">
                         @if (item.Attachment != null)
@@ -249,7 +249,7 @@
 
             <div class="w-full flex justify-between gap-x-6 gap-y-4 flex-wrap">
             @foreach (var item in Model.ProjectsIAmMember) {
-                    var projectleader = await ProjectRepository.GetProjectLeaderAsync(item.ProjectID);
+                    var projectleader = await ProjectService.GetProjectLeaderAsync(item.ProjectID);
                     <div class=" card bg-base-100 w-96 shadow-xl mx-5 my-2">
                         <div class="relative">
                             @if (item.Attachment != null)

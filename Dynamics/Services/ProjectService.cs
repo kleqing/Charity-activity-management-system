@@ -157,8 +157,46 @@ public class ProjectService : IProjectService
     }
 
     //code convert controller to service-----------------------------------------------------------------------------------------
+    //get statistic of a project
+    public async Task<List<string>> GetStatisticOfProjectAsync(Guid projectID)
+    {
+        var projectObj = _projectRepo.GetProjectAsync(x => x.ProjectID.Equals(projectID)).Result;
+        if (projectObj != null)
+        {
+            var projectResouceMoney = projectObj.ProjectResource.FirstOrDefault(x => x.ResourceName.ToString().Equals("Money") && x.Unit.Equals("VND"));
+            if (projectResouceMoney != null)
+            {
+                var progressValue = (double)projectResouceMoney.Quantity / projectResouceMoney.ExpectedQuantity *
+                                    100;
+                //cal nums contributor
+                var numberOfProjectContributor = _context.UserToProjectTransactionHistories.Include(x => x.ProjectResource)
+                    .Where(x => x.ProjectResource.ProjectID.Equals(projectID) && x.Status == 1)
+                    .Select(x => x.UserID)
+                    .Distinct().Count();
+                numberOfProjectContributor += _context.OrganizationToProjectTransactionHistory.Include(x => x.ProjectResource).Include(x => x.OrganizationResource)
+                    .Where(x => x.ProjectResource.ProjectID.Equals(projectID) && x.Status == 1)
+                    .Select(x => x.OrganizationResource.OrganizationID)
+                    .Distinct().Count();
+                var timeLeft = projectObj.EndTime.HasValue
+                    ? projectObj.EndTime.Value.ToDateTime(TimeOnly.MinValue) - DateTime.Now
+                    : TimeSpan.Zero;
+                if (progressValue.ToString() == null || numberOfProjectContributor.ToString() == null || timeLeft.ToString() == null || projectResouceMoney.ToString() == null)
+                {
+                    return null;
+                }
+                List<string> statistic = new List<string>()
+                    {
+                        projectResouceMoney?.Quantity.ToString(), projectResouceMoney?.ExpectedQuantity.ToString(),
+                        progressValue.ToString(), numberOfProjectContributor.ToString(), timeLeft.ToString()
+                    };
+                return statistic;
+            }
+        }
+
+        return null;
+    }
     //return list my project
-    public async Task<MyProjectVM> ReturnMyProjectVM(Guid userID)
+    public async Task<MyProjectVM> ReturnMyProjectVMAsync(Guid userID)
     {
         //get all project
         var allProjects = await _projectRepo.GetAllProjectsAsync();
@@ -197,7 +235,7 @@ public class ProjectService : IProjectService
             ProjectsIAmMember = projectsIAmMember
         };
     }
-    public async Task<AllProjectsVM> ReturnAllProjectsVMs()
+    public async Task<AllProjectsVM> ReturnAllProjectsVMsAsync()
     {
         var allProjects = await _projectRepo.GetAllProjectsAsync();
         var allActiveProjectsDto = new List<ProjectOverviewDto>();
@@ -215,7 +253,7 @@ public class ProjectService : IProjectService
         };
         return result;
     }
-    public async Task<DetailProjectVM> ReturnDetailProjectVM(Guid projectID)
+    public async Task<DetailProjectVM> ReturnDetailProjectVMAsync(Guid projectID)
     {
         var projectObj =
                  await _projectRepo.GetProjectAsync(p => p.ProjectID.Equals(projectID));
@@ -228,12 +266,12 @@ public class ProjectService : IProjectService
                 projectObj.Request = request;
             }
             _accessor.HttpContext.Session.SetString("currentProjectID", projectObj.ProjectID.ToString());
-            var leaderOfProject = await _projectRepo.GetProjectLeaderAsync(projectObj.ProjectID);
+            var leaderOfProject = await GetProjectLeaderAsync(projectObj.ProjectID);
             _accessor.HttpContext.Session.SetString("currentProjectLeaderID", leaderOfProject.UserID.ToString());
             var ceoOfProject = FilterMemberOfProject(x => x.Status == 2 && x.ProjectID == projectObj.ProjectID);
             _accessor.HttpContext.Session.SetString("currentProjectCEOID", ceoOfProject[0].UserID.ToString());
 
-            List<string> statistic = await _projectRepo.GetStatisticOfProject(projectObj.ProjectID);
+            List<string> statistic = await GetStatisticOfProjectAsync(projectObj.ProjectID);
             DetailProjectVM detailProjectVM = new DetailProjectVM()
             {
                 CurrentProject = projectObj,
@@ -243,7 +281,7 @@ public class ProjectService : IProjectService
                 ProgressDonate = Convert.ToDouble(statistic[2]),
                 NumberOfProjectContributor = Convert.ToInt32(statistic[3]),
                 TimeLeftEndDay = Convert.ToInt32(statistic[3]),
-                Random5Donors = await GetRandom5Donors(projectObj.ProjectID)
+                Random5Donors = await GetRandom5DonorsAsync(projectObj.ProjectID)
             };
             if (detailProjectVM != null)
             {
@@ -252,13 +290,70 @@ public class ProjectService : IProjectService
         }
         return null;
     }
+    public async Task<bool> UpdateProjectAlongWithUpdateLeaderAsync(Project entity, Guid newProjectLeaderID)
+    {
+        var res = await _projectRepo.UpdateAsync(entity);
+        if (!res) return false;
+        //updating 2 member who is new and old leader of project
+        var oldProjectLeaderUser = await GetProjectLeaderAsync(entity.ProjectID);
+        var oldProjectLeader = _projectMemberRepo.FilterProjectMember(x => x.UserID.Equals(oldProjectLeaderUser.UserID) && x.ProjectID.Equals(entity.ProjectID)).FirstOrDefault();
+        var newProjectLeader = await _context.ProjectMembers.FirstOrDefaultAsync(x =>
+            x.UserID.Equals(newProjectLeaderID) && x.ProjectID.Equals(entity.ProjectID));
+        var ceoOfProjectID = _accessor.HttpContext.Session.GetString("currentProjectCEOID");
+        if (oldProjectLeader != null && newProjectLeader != null &&
+            !oldProjectLeader.UserID.Equals(newProjectLeader.UserID))
+        {
+            if (oldProjectLeader.UserID.ToString().Equals(ceoOfProjectID))
+            {
+                oldProjectLeader.Status = 2;
+            }
+            else
+            {
+                oldProjectLeader.Status = 1;
+            }
+            await _projectMemberRepo.UpdateAsync(oldProjectLeader);
+            if (newProjectLeader.UserID.ToString().Equals(ceoOfProjectID))
+            {
+                newProjectLeader.Status = 2;
+            }
+            else
+            {
+                newProjectLeader.Status = 3;
+            }
+            await _projectMemberRepo.UpdateAsync(newProjectLeader);
+        }
+        return true;
+    }
+    //get images
+    public async Task<string> GetAllImagesAsync(Guid id, string owner)
+    {
+        var resImgPath = "";
+        if (!string.IsNullOrEmpty(owner) && owner.Equals("Project"))
+        {
+            var projectObj = await _context.Projects.FirstOrDefaultAsync(x => x.ProjectID.Equals(id));
+            if (projectObj != null)
+            {
+                resImgPath = projectObj.Attachment;
+            }
+        }
+        else if (!string.IsNullOrEmpty(owner) && owner.Equals("Phase"))
+        {
+            var historyObj = await _context.Histories.FirstOrDefaultAsync(x => x.HistoryID.Equals(id));
+            if (historyObj != null)
+            {
+                resImgPath = historyObj.Attachment;
+            }
+        }
 
-    public async Task<bool> DeleteImage(string imgPath, Guid phaseID)
+        return resImgPath;
+    }
+
+    public async Task<bool> DeleteImageAsync(string imgPath, Guid phaseID)
     {
         if(string.IsNullOrEmpty(imgPath) || phaseID == Guid.Empty) return false;
         if (phaseID != Guid.Empty)
         {
-            var allImagesOfPhase = await _projectRepo.GetAllImagesAsync(phaseID, "Phase");
+            var allImagesOfPhase = await GetAllImagesAsync(phaseID, "Phase");
             var historyObj =
                 await _projectHistoryRepo.GetAllPhaseReportsAsync(x => x.HistoryID.Equals(phaseID));
             if (historyObj != null && allImagesOfPhase != null)
@@ -284,7 +379,7 @@ public class ProjectService : IProjectService
         {
             var currentProjectID = _accessor.HttpContext.Session.GetString("currentProjectID");
             var allImagesOfProject =
-                    await _projectRepo.GetAllImagesAsync(new Guid(currentProjectID), "Project");
+                    await GetAllImagesAsync(new Guid(currentProjectID), "Project");
             var projectObj =
                 await _projectRepo.GetProjectAsync(x => x.ProjectID.Equals(new Guid(currentProjectID)));
             if (projectObj != null && allImagesOfProject != null)
@@ -301,15 +396,13 @@ public class ProjectService : IProjectService
 
                     projectObj.Attachment = allImagesOfProject;
                 }
-
-                var currentProjectLeaderID = new Guid(_accessor.HttpContext.Session.GetString("currentProjectLeaderID"));
-                var res = await _projectRepo.UpdateAsync(projectObj, currentProjectLeaderID);
+                var res = await _projectRepo.UpdateAsync(projectObj);
                 if (res) return true;
             }
         }
         return false;
     }
-    public async Task<string> UploadImages(List<IFormFile> images,string folder)
+    public async Task<string> UploadImagesAsync(List<IFormFile> images,string folder)
     {
         if (images != null && images.Count() > 0)
         {
@@ -324,13 +417,14 @@ public class ProjectService : IProjectService
         var projectObj = _mapper.Map<Dynamics.Models.Models.Project>(updateProject);
         if (projectObj != null && existingObj != null)
         {
-            var resImage = await UploadImages(images, @"images\Project");
+            var resImage = await UploadImagesAsync(images, @"images\Project");
             if (resImage.Equals("No file") || resImage.Equals("Wrong extension"))
             {
                 return resImage;
             }
             projectObj.Attachment = resImage;
-            var res = await _projectRepo.UpdateAsync(projectObj, updateProject.NewLeaderID);
+            var res = await UpdateProjectAlongWithUpdateLeaderAsync(projectObj, updateProject.NewLeaderID);
+            if(!res) return MyConstants.Error;
             return MyConstants.Success;
         }
         return MyConstants.Error;
@@ -338,6 +432,23 @@ public class ProjectService : IProjectService
 
 
     //working with member of project-----------------------------------------------------------------------------------------
+    //get leader of project
+    public async Task<User> GetProjectLeaderAsync(Guid projectID)
+    {
+        var projectObj = await _projectRepo.GetProjectAsync(x => x.ProjectID.Equals(projectID));
+        ProjectMember leaderProjectMembers = projectObj?.ProjectMember.Where(x => x.Status == 3).FirstOrDefault();
+        //if no leader then leader is the ceo of organization
+        if (leaderProjectMembers == null)
+        {
+            leaderProjectMembers = projectObj?.ProjectMember.Where(x => x.Status == 2).FirstOrDefault();
+        }
+        if (leaderProjectMembers != null)
+        {
+            return leaderProjectMembers?.User;
+        }
+
+        return null;
+    }
     //filter users of ProjectMember table
     public List<User> FilterMemberOfProject(Expression<Func<ProjectMember, bool>> filter)
     {
@@ -355,7 +466,7 @@ public class ProjectService : IProjectService
 
         return null;
     }
-    public async Task<string> SendJoinProjectRequest(Guid projectID,Guid memberID)
+    public async Task<string> SendJoinProjectRequestAsync(Guid projectID,Guid memberID)
     {
         var existingJoinRequest = _projectMemberRepo
                .FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.UserID.Equals(memberID) && p.Status == 0
@@ -375,7 +486,7 @@ public class ProjectService : IProjectService
             return MyConstants.Warning;
         }
     }
-    public async Task<bool> AcceptJoinProjectRequestAll(Guid projectID)
+    public async Task<bool> AcceptJoinProjectRequestAllAsync(Guid projectID)
     {
         var allJoinRequest =
                _projectMemberRepo.FilterProjectMember(
@@ -396,7 +507,7 @@ public class ProjectService : IProjectService
         }
         return true;
     }
-    public async Task<bool>DenyJoinProjectRequestAll(Guid projectID)
+    public async Task<bool>DenyJoinProjectRequestAllAsync(Guid projectID)
     {
         var allJoinRequest =
              _projectMemberRepo.FilterProjectMember(
@@ -421,7 +532,7 @@ public class ProjectService : IProjectService
 
 
     //get transaction information of project
-    public async Task<List<UserToProjectTransactionHistory>> GetRandom5Donors(Guid projectID)
+    public async Task<List<UserToProjectTransactionHistory>> GetRandom5DonorsAsync(Guid projectID)
     {
         var userDonate = _context.UserToProjectTransactionHistories
             .Include(x => x.User).Include(x => x.ProjectResource).ThenInclude(x => x.Project)
@@ -431,7 +542,7 @@ public class ProjectService : IProjectService
             .ToList();
         return userDonate;
     }
-    public async Task<SendDonateRequestVM> ReturnSendDonateRequestVM(Guid projectID, string donor)
+    public async Task<SendDonateRequestVM> ReturnSendDonateRequestVMAsync(Guid projectID, string donor)
     {
         if (!string.IsNullOrEmpty(donor) && donor.Equals("User"))
         {
@@ -473,7 +584,7 @@ public class ProjectService : IProjectService
         }
         return null;
     }
-    public async Task<bool> SendDonateRequest(SendDonateRequestVM sendDonateRequestVM)
+    public async Task<bool> SendDonateRequestAsync(SendDonateRequestVM sendDonateRequestVM)
     {
         if (sendDonateRequestVM != null)
         {
@@ -517,7 +628,7 @@ public class ProjectService : IProjectService
         }
         return false;
     }
-    public async Task<ProjectTransactionHistoryVM> ReturnProjectTransactionHistoryVM(Guid projectID)
+    public async Task<ProjectTransactionHistoryVM> ReturnProjectTransactionHistoryVMAsync(Guid projectID)
     {
         var allUserDonate =
                await _userToProjectTransactionHistoryRepo.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
@@ -539,7 +650,7 @@ public class ProjectService : IProjectService
             OrganizationDonate = allOrganizationDonate
         };
     }
-    public async Task<bool> AcceptDonateProjectRequestAll(Guid projectID, string donor)
+    public async Task<bool> AcceptDonateProjectRequestAllAsync(Guid projectID, string donor)
     {
         switch (donor)
         {
@@ -583,7 +694,7 @@ public class ProjectService : IProjectService
         }
         return true;
     }
-    public async Task<bool> DenyDonateProjectRequestAll(Guid projectID, string donor)
+    public async Task<bool> DenyDonateProjectRequestAllAsync(Guid projectID, string donor)
     {
         switch (donor)
         {
@@ -628,7 +739,7 @@ public class ProjectService : IProjectService
         return true;
     }
     //manage resource of project-----------------------------------------------------------------------------------------
-    public async Task<string> UpdateProjectResourceType(ProjectResource projectResource)
+    public async Task<string> UpdateProjectResourceTypeAsync(ProjectResource projectResource)
     {
         var projectResourceObj =
               await _projectResourceRepo.FilterProjectResourceAsync(p =>
@@ -683,7 +794,7 @@ public class ProjectService : IProjectService
 
         if (images != null && images.Count() > 0)
         {
-            var resImage = await UploadImages(images, @"images\Project");
+            var resImage = await UploadImagesAsync(images, @"images\Project");
             if (resImage.Equals("No file") || resImage.Equals("Wrong extension"))
             {
                 return resImage;
@@ -700,7 +811,7 @@ public class ProjectService : IProjectService
         if (history == null) return MyConstants.Error;
         if (images != null && images.Count() > 0)
         {
-            var resImage = await UploadImages(images, @"images\Project");
+            var resImage = await UploadImagesAsync(images, @"images\Project");
             if (resImage.Equals("No file") || resImage.Equals("Wrong extension"))
             {
                 return resImage;

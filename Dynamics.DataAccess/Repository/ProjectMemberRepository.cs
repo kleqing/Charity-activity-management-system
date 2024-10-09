@@ -36,9 +36,11 @@ public class ProjectMemberRepository : IProjectMemberRepository
         throw new NotImplementedException();
     }
 
-    public Task<bool> UpdateAsync(ProjectMember project)
+    public async Task<bool> UpdateAsync(ProjectMember project)
     {
-        throw new NotImplementedException();
+        _context.ProjectMembers.Update(project);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<ProjectMember> DeleteAsync(Expression<Func<ProjectMember, bool>> predicate)

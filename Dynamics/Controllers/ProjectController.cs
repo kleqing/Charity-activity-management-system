@@ -26,6 +26,7 @@ namespace Dynamics.Controllers
         private readonly IUserToProjectTransactionHistoryRepository _userToProjectTransactionHistoryRepo;
         private readonly IOrganizationToProjectTransactionHistoryRepository _organizationToProjectTransactionHistoryRepo;
         private readonly IProjectHistoryRepository _projectHistoryRepo;
+        private readonly IReportRepository _reportRepo;
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IMapper _mapper;
         private readonly IProjectService _projectService;
@@ -38,6 +39,7 @@ namespace Dynamics.Controllers
             IUserToProjectTransactionHistoryRepository _userToProjectTransactionHistoryRepo,
             IOrganizationToProjectTransactionHistoryRepository _organizationToProjectTransactionHistoryRepo,
             IProjectHistoryRepository projectHistoryRepository,
+            IReportRepository reportRepository,
             IWebHostEnvironment hostEnvironment,
             IMapper _mapper,
              IProjectService _projectService )
@@ -53,18 +55,19 @@ namespace Dynamics.Controllers
             this.hostEnvironment = hostEnvironment;
             this._mapper = _mapper;
             this._projectService = _projectService;
+            _reportRepo = reportRepository;
         }
 
         [Route("Project/Index/{userID:guid}")]
         public async Task<IActionResult> Index(Guid userID)
         {
-            return View(await _projectService.ReturnMyProjectVM(userID));
+            return View(await _projectService.ReturnMyProjectVMAsync(userID));
         }
 
         public async Task<IActionResult> ViewAllProjects()
         {
           
-            return View(await _projectService.ReturnAllProjectsVMs());
+            return View(await _projectService.ReturnAllProjectsVMsAsync());
         }
         //update project profile
         public async Task<IActionResult> DeleteImage(string imgPath, Guid phaseID)
@@ -72,7 +75,7 @@ namespace Dynamics.Controllers
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
             if (phaseID != Guid.Empty)
             {
-                var res = await _projectService.DeleteImage(imgPath, phaseID);
+                var res = await _projectService.DeleteImageAsync(imgPath, phaseID);
                 if (!res)
                 {
                     TempData[MyConstants.Error] = $"Fail to delete image {imgPath}!";
@@ -86,7 +89,7 @@ namespace Dynamics.Controllers
             }
             else
             {
-                    var res = await _projectService.DeleteImage(imgPath, phaseID);
+                    var res = await _projectService.DeleteImageAsync(imgPath, phaseID);
                     if (!res)
                     {
                         TempData[MyConstants.Error] = $"Fail to delete image {imgPath}!";
@@ -241,7 +244,7 @@ namespace Dynamics.Controllers
         {
             report.ReporterID = new Guid(HttpContext.Session.GetString("currentUserID"));
             report.Type = ReportObjectConstant.Project;
-            var res = await _projectRepo.SendReportProjectRequestAsync(report);
+            var res = await _reportRepo.SendReportProjectRequestAsync(report);
             if (res)
             {
                 TempData[MyConstants.Success] = "Send report project request successfully!";
@@ -259,7 +262,7 @@ namespace Dynamics.Controllers
             {
                 return NotFound("id is empty!");
             }
-           var detailProject = await _projectService.ReturnDetailProjectVM(new Guid(id));
+           var detailProject = await _projectService.ReturnDetailProjectVMAsync(new Guid(id));
             if(detailProject != null)
             {
                 return View(detailProject);
@@ -310,7 +313,7 @@ namespace Dynamics.Controllers
                 TempData[MyConstants.Warning] = "This project is not in progress!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
             }
-            var res = _projectService.SendJoinProjectRequest(projectID, memberID);
+            var res = _projectService.SendJoinProjectRequestAsync(projectID, memberID);
             if(res != null)
             {
                 if (res.Equals(MyConstants.Success))
@@ -400,7 +403,7 @@ namespace Dynamics.Controllers
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
            
-            var res = await _projectService.AcceptJoinProjectRequestAll(new Guid(currentProjectID));
+            var res = await _projectService.AcceptJoinProjectRequestAllAsync(new Guid(currentProjectID));
             if (!res)
                 {
                     TempData[MyConstants.Error] = "Failed to accept the join request!";
@@ -414,7 +417,7 @@ namespace Dynamics.Controllers
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
            
-                var res = await _projectService.DenyJoinProjectRequestAll(new Guid(currentProjectID));
+                var res = await _projectService.DenyJoinProjectRequestAllAsync(new Guid(currentProjectID));
             if (!res)
                 {
                     TempData[MyConstants.Error] = "Failed to deny the join request!";
@@ -455,7 +458,7 @@ namespace Dynamics.Controllers
             }).ToList();
             ViewData["ResourceTypeList"] = ResourceTypeList;
             //set value for View Model
-            SendDonateRequestVM sendDonateRequestVM = await _projectService.ReturnSendDonateRequestVM(projectID,donor);          
+            SendDonateRequestVM sendDonateRequestVM = await _projectService.ReturnSendDonateRequestVMAsync(projectID,donor);          
             if(sendDonateRequestVM == null)
             {
                 TempData[MyConstants.Error] = "Fail to get history donate of user/organization!";
@@ -467,7 +470,7 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> SendDonateRequest(SendDonateRequestVM sendDonateRequestVM)
         {
-           var res = await _projectService.SendDonateRequest(sendDonateRequestVM);
+           var res = await _projectService.SendDonateRequestAsync(sendDonateRequestVM);
             if (!res)
             {
                 // Return JSON response with failure message
@@ -481,7 +484,7 @@ namespace Dynamics.Controllers
         [Route("Project/ManageProjectDonor/{projectID}")]
         public async Task<IActionResult> ManageProjectDonor(Guid projectID)
         {
-            ProjectTransactionHistoryVM projectTransactionHistoryVM = await _projectService.ReturnProjectTransactionHistoryVM(projectID);
+            ProjectTransactionHistoryVM projectTransactionHistoryVM = await _projectService.ReturnProjectTransactionHistoryVMAsync(projectID);
            if(projectTransactionHistoryVM == null)
             {
                 TempData[MyConstants.Error] = "Fail to get history donate of user/organization!";
@@ -568,7 +571,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> AcceptedDonateRequestAll(string donor)
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
-            var res = await _projectService.AcceptDonateProjectRequestAll(new Guid(currentProjectID),donor);
+            var res = await _projectService.AcceptDonateProjectRequestAllAsync(new Guid(currentProjectID),donor);
             if (!res)
             {
                 TempData[MyConstants.Error] = "Failed to accept all the donation request!";
@@ -619,7 +622,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> DenyDonateRequestAll(string donor)
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
-            var res = await _projectService.DenyDonateProjectRequestAll(new Guid(currentProjectID), donor);
+            var res = await _projectService.DenyDonateProjectRequestAllAsync(new Guid(currentProjectID), donor);
             if (!res)
             {
                 TempData[MyConstants.Error] = "Failed to deny all the donation request!";
@@ -690,7 +693,7 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateResourceType(ProjectResource projectResource)
         {
-         var res = await _projectService.UpdateProjectResourceType(projectResource);
+         var res = await _projectService.UpdateProjectResourceTypeAsync(projectResource);
             if (string.IsNullOrEmpty(res))
             {
                 if ("Existed".Equals(res))

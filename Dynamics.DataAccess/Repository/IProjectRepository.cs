@@ -16,26 +16,12 @@ namespace Dynamics.DataAccess.Repository
         // Use for display purposes - Kiet
         Task<List<Project>> GetAllProjectsAsync();
 
-        //using this to get project member of leader
-        Task<User> GetProjectLeaderAsync(Guid projectID);
-
         //using this to view detail project
-        Task<List<string>> GetStatisticOfProject(Guid projectID);
+ 
         Task<Project?> GetProjectAsync(Expression<Func<Project, bool>> filter);
-        Task<bool> UpdateAsync(Project entity, Guid newProjectLeaderID);
+        Task<bool> UpdateAsync(Project entity);
         Task<bool> ShutdownProjectAsync(ShutdownProjectVM entity);
         Task<bool> FinishProjectAsync(FinishProjectVM entity);
-
-        Task<bool> SendReportProjectRequestAsync(Report entity);
-
-        //manage images of project/phase
-
-        Task<string> GetAllImagesAsync(Guid id, string owner);
-
-      
-
-   
-
 
         //Repose ò tuan
         Task<List<Project>> GetAllProjectsByOrganizationIDAsync(Expression<Func<Project, bool>> filter);
