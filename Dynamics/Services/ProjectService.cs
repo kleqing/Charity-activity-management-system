@@ -30,6 +30,7 @@ public class ProjectService : IProjectService
     private readonly IUserToProjectTransactionHistoryRepository _userToProjectTransactionHistoryRepo;
     private readonly IOrganizationToProjectTransactionHistoryRepository _organizationToProjectTransactionHistoryRepo;
     private readonly IProjectHistoryRepository _projectHistoryRepo;
+    private readonly CloudinaryUploader _cloudinaryUploader;
     private readonly ApplicationDbContext _context;
     private readonly IHttpContextAccessor _accessor;
     private readonly IRequestRepository _requestRepo;
@@ -41,7 +42,8 @@ public class ProjectService : IProjectService
         IOrganizationRepository organizationRepository,
            IUserToProjectTransactionHistoryRepository userToProjectTransactionHistoryRepository,
             IOrganizationToProjectTransactionHistoryRepository organizationToProjectTransactionHistoryRepository,
-            IProjectHistoryRepository projectHistoryRepository)
+            IProjectHistoryRepository projectHistoryRepository,
+             CloudinaryUploader cloudinaryUploader)
     {
         _mapper = mapper;
         _projectRepo = projectRepo;
@@ -54,6 +56,7 @@ public class ProjectService : IProjectService
         _userToProjectTransactionHistoryRepo = userToProjectTransactionHistoryRepository;
         _organizationToProjectTransactionHistoryRepo = organizationToProjectTransactionHistoryRepository;
         _projectHistoryRepo = projectHistoryRepository;
+        _cloudinaryUploader = cloudinaryUploader;
     }
     
     
@@ -163,7 +166,7 @@ public class ProjectService : IProjectService
         var projectObj = _projectRepo.GetProjectAsync(x => x.ProjectID.Equals(projectID)).Result;
         if (projectObj != null)
         {
-            var projectResouceMoney = projectObj.ProjectResource.FirstOrDefault(x => x.ResourceName.ToString().Equals("Money") && x.Unit.Equals("VND"));
+            var projectResouceMoney = projectObj.ProjectResource.FirstOrDefault(x => x.ResourceName.ToString().ToLower().Trim().Equals("money") && x.Unit.ToLower().Trim().Equals("vnd"));
             if (projectResouceMoney != null)
             {
                 var progressValue = (double)projectResouceMoney.Quantity / projectResouceMoney.ExpectedQuantity *
@@ -417,7 +420,8 @@ public class ProjectService : IProjectService
         var projectObj = _mapper.Map<Dynamics.Models.Models.Project>(updateProject);
         if (projectObj != null && existingObj != null)
         {
-            var resImage = await UploadImagesAsync(images, @"images\Project");
+            //var resImage = await UploadImagesAsync(images, @"images\Project");
+            var resImage = await _cloudinaryUploader.UploadMultiImagesAsync(images);
             if (resImage.Equals("No file") || resImage.Equals("Wrong extension"))
             {
                 return resImage;
@@ -794,7 +798,8 @@ public class ProjectService : IProjectService
 
         if (images != null && images.Count() > 0)
         {
-            var resImage = await UploadImagesAsync(images, @"images\Project");
+            //var resImage = await UploadImagesAsync(images, @"images\Project");
+            var resImage = await _cloudinaryUploader.UploadMultiImagesAsync(images);
             if (resImage.Equals("No file") || resImage.Equals("Wrong extension"))
             {
                 return resImage;
@@ -811,7 +816,8 @@ public class ProjectService : IProjectService
         if (history == null) return MyConstants.Error;
         if (images != null && images.Count() > 0)
         {
-            var resImage = await UploadImagesAsync(images, @"images\Project");
+            //var resImage = await UploadImagesAsync(images, @"images\Project");
+            var resImage = await _cloudinaryUploader.UploadMultiImagesAsync(images);
             if (resImage.Equals("No file") || resImage.Equals("Wrong extension"))
             {
                 return resImage;

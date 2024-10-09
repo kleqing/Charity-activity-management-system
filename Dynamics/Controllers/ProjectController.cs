@@ -28,8 +28,8 @@ namespace Dynamics.Controllers
         private readonly IProjectHistoryRepository _projectHistoryRepo;
         private readonly IReportRepository _reportRepo;
         private readonly IWebHostEnvironment hostEnvironment;
-        private readonly IMapper mapper;
-        private readonly IProjectService projectService;
+        private readonly IMapper _mapper;
+        private readonly IProjectService _projectService;
         private readonly CloudinaryUploader _cloudinaryUploader;
 
         public ProjectController(IProjectRepository _projectRepo,
@@ -55,8 +55,8 @@ namespace Dynamics.Controllers
             this._organizationToProjectTransactionHistoryRepo = _organizationToProjectTransactionHistoryRepo;
             this._projectHistoryRepo = projectHistoryRepository;
             this.hostEnvironment = hostEnvironment;
-            this._mapper = _mapper;
-            this._projectService = _projectService;
+            this._mapper = mapper;
+            this._projectService = projectService;
             _reportRepo = reportRepository;
             _cloudinaryUploader = cloudinaryUploader;
         }
@@ -136,7 +136,7 @@ namespace Dynamics.Controllers
             return RedirectToAction(nameof(ManageProject), new { id = projectID });
         }
 
-        public async Task<IActionResult> DownloadFile(string fileWebPath)
+        public IActionResult DownloadFile(string fileWebPath)
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
             if (!string.IsNullOrEmpty(fileWebPath))
@@ -280,7 +280,7 @@ namespace Dynamics.Controllers
 
         //----------------------manage project member -------------
         [Route("Project/ManageProjectMember/{projectID}")]
-        public async Task<IActionResult> ManageProjectMember([FromRoute] Guid projectID)
+        public IActionResult ManageProjectMember([FromRoute] Guid projectID)
         {
             var allProjectMember = _projectMemberRepo.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status >= 1);
             if (allProjectMember == null)
@@ -365,7 +365,7 @@ namespace Dynamics.Controllers
 
         //review request
         [Route("Project/ReviewJoinRequest/{projectID}")]
-        public async Task<IActionResult> ReviewJoinRequest([FromRoute] Guid projectID)
+        public IActionResult ReviewJoinRequest([FromRoute] Guid projectID)
         {
             var allJoinRequest = _projectMemberRepo.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0);
 
@@ -648,7 +648,7 @@ namespace Dynamics.Controllers
         }
 
         //---------------------------manage ProjectResource--------------------------
-        public async Task<IActionResult> CreateProjectDonateRequestAsync(Guid projectID)
+        public IActionResult CreateProjectDonateRequestAsync(Guid projectID)
         {
             IEnumerable<SelectListItem> ResourceTypeList =  _projectResourceRepo.GetAllProjectResourceQuery().Select(x =>
                 new SelectListItem
@@ -702,7 +702,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> UpdateResourceType(ProjectResource projectResource)
         {
          var res = await _projectService.UpdateProjectResourceTypeAsync(projectResource);
-            if (string.IsNullOrEmpty(res))
+            if (!string.IsNullOrEmpty(res))
             {
                 if ("Existed".Equals(res))
                 {
@@ -764,26 +764,11 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProjectPhaseReport(History history, List<IFormFile> images)
         {
-            if (history == null) return NotFound();
-            history.HistoryID = new Guid();
-
-            if (images != null && images.Count() > 0)
+            var resAdd = await _projectService.AddProjectPhaseReportAsync(history, images);
+            if (resAdd.Equals("No file") || resAdd.Equals("Wrong extension"))
             {
-                var resAttachment = await _cloudinaryUploader.UploadMultiImagesAsync(images);
-                if (resAttachment.Equals("No file"))
-                {
-                    TempData[MyConstants.Error] = "No file to upload!";
-                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = history.ProjectID });
-                }
-
-                if (resAttachment.Equals("Wrong extension"))
-                {
-                    TempData[MyConstants.Error] = "Extension of some files is wrong!";
-                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = history.ProjectID });
-                }
-
-                history.Attachment = resAttachment;
-            }
+                TempData[MyConstants.Error] = resAdd.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
+            }          
             else if (resAdd.Equals(MyConstants.Success))
             {
                 TempData[MyConstants.Success] = "Add project update successfully!";
@@ -815,23 +800,10 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProjectPhaseReport(History history, List<IFormFile> images)
         {
-            if (history == null) return NotFound();
-            if (images != null && images.Count() > 0)
+            var resEdit = await _projectService.EditProjectPhaseReportAsync(history, images);
+            if (resEdit.Equals("No file") || resEdit.Equals("Wrong extension"))
             {
-                var resAttachment = await _cloudinaryUploader.UploadMultiImagesAsync(images);
-                if (resAttachment.Equals("No file"))
-                {
-                    TempData[MyConstants.Error] = "No file to upload!";
-                    return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
-                }
-
-                if (resAttachment.Equals("Wrong extension"))
-                {
-                    TempData[MyConstants.Error] = "Extension of some files is wrong!";
-                    return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
-                }
-
-                history.Attachment = resAttachment;
+                TempData[MyConstants.Error] = resEdit.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
             }
             else if (resEdit.Equals(MyConstants.Success))
             {

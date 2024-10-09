@@ -91,8 +91,6 @@ namespace Dynamics.DataAccess.Repository
             return await projects.ToListAsync();
         }
 
-
-
         public Task<Project?> GetProjectAsync(Expression<Func<Project, bool>> filter)
         {
             var project = _db.Projects.Include(x => x.ProjectMember).ThenInclude(x => x.User)
@@ -109,7 +107,16 @@ namespace Dynamics.DataAccess.Repository
             {
                 return false;
             }
-            _db.Entry(existingItem).CurrentValues.SetValues(entity);
+            existingItem.ProjectName = entity.ProjectName;
+            existingItem.ProjectDescription = entity.ProjectDescription;
+            existingItem.Attachment = entity.Attachment;
+            existingItem.ProjectAddress = entity.ProjectAddress;
+            existingItem.ProjectEmail = entity.ProjectEmail;
+            existingItem.ProjectPhoneNumber = entity.ProjectPhoneNumber;
+            existingItem.StartTime = entity.StartTime;
+            existingItem.EndTime = entity.EndTime;
+            existingItem.ProjectStatus = entity.ProjectStatus;
+            _db.Projects.Update(existingItem);
             await _db.SaveChangesAsync();
             return true;
         }
