@@ -68,6 +68,7 @@
             @{
                 foreach (var modelOrganizationJoinRequest in Model.OrganizationJoinRequests)
                 {
+                    if (modelOrganizationJoinRequest.Status == 2) continue;
                     orgCount += 1;
                     <li class="p-4 shadow-lg flex justify-between items-center rounded-md">
                         <!-- Left side -->
@@ -117,7 +118,7 @@
                                     <p class="badge badge-success min-w-24">Accepted</p>
                                     break;
                                 default:
-                                    <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p>
+                                    @* <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p> *@
                                     break;
                             }
                         </div>

@@ -31,5 +31,7 @@ namespace Dynamics.DataAccess.Repository
          * The default role after deletion is User
          */
         Task DeleteRoleFromUserAsync(Guid userId, string roleName = RoleConstants.User);
+
+        //Task<bool> GetBanAsync(Guid userId);
     }
 }

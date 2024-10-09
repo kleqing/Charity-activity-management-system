@@ -12,10 +12,8 @@ namespace Dynamics.Models.Models
 		public Guid RequestID { get; set; }
 		public Guid UserID { get; set; }
 		public string Content { get; set; }
-        [DataType(DataType.Date)]
-        public DateOnly? CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
         public string RequestTitle {  get; set; }
-
         [DataType(DataType.EmailAddress)]
         public string? RequestEmail { get; set; }
         [DataType(DataType.PhoneNumber)]

@@ -55,7 +55,7 @@ namespace Dynamics.Controllers
             this._projectService = _projectService;
         }
 
-        [Route("Project/Index/{userID}")]
+        [Route("Project/Index/{userID:guid}")]
         public async Task<IActionResult> Index(Guid userID)
         {
             return View(await _projectService.ReturnMyProjectVM(userID));

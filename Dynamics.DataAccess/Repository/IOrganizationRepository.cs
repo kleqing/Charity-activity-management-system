@@ -58,6 +58,5 @@ namespace Dynamics.DataAccess.Repository
         Task<Organization> GetOrganizationUserLead(Guid userId);
         Task<Guid> GetOrgResourceIDCorresponding(Guid projectResourceID, Guid organizationUserLeadID);
         Task<List<Organization>> GetAllOrganizationsWithExpressionAsync(Expression<Func<Organization, bool>>? filter = null);
-
     }
 }

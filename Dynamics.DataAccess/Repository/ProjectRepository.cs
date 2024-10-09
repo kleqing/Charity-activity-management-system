@@ -138,10 +138,13 @@ namespace Dynamics.DataAccess.Repository
                 return await _db.Projects.Include(pr => pr.ProjectResource)
                     .Where(filter)
                     .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
+                    .AsSplitQuery()
                     .ToListAsync();
             }
+            // Use split query if you are including a collection. tbh it is better to use a projection
             return await _db.Projects.Include(pr => pr.ProjectResource)
                 .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
+                .AsSplitQuery()
                 .ToListAsync();
         }
 

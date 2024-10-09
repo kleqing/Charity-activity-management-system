@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Dynamics.Models.Models.DTO;
+namespace Dynamics.Models.Models.Dto;
 
 public class RequestOverviewDto
 {
@@ -11,5 +11,6 @@ public class RequestOverviewDto
     public string Content { get; set; }
     public string Location { get; set; }
     public string? FirstImageAttachment { get; set; }
+    public int Status { get; set; }
     public int? isEmergency { get; set; }
 }
