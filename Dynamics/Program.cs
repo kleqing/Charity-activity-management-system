@@ -174,7 +174,7 @@ namespace Dynamics
             
             app.MapControllerRoute(
                  name: "areas",
-                 pattern: "{area:exists}/{controller=Home}/{action=Homepage}/{id?}");
+                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",

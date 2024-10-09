@@ -10,22 +10,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="~/assets/images/favicon.ico">
+    <link rel="shortcut icon" href="~/Admin/assets/images/favicon.ico">
 
     <!-- Daterangepicker css -->
-    <link rel="stylesheet" href="~/assets/vendor/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="~/Admin/assets/vendor/daterangepicker/daterangepicker.css">
 
     <!-- Vector Map css -->
-    <link rel="stylesheet" href="assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css">
+    <link rel="stylesheet" href="~/Admin/assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css">
 
     <!-- Theme Config Js -->
-    <script src="assets/js/hyper-config.js"></script>
+    <script src="~/Admin/assets/js/hyper-config.js"></script>
 
     <!-- App css -->
-    <link href="assets/css/app-saas.min.css" rel="stylesheet" type="text/css" id="app-style" />
+    <link href="~/Admin/assets/css/app-saas.min.css" rel="stylesheet" type="text/css" id="app-style" />
 
     <!-- Icons css -->
-    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Admin/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -412,7 +412,7 @@
                                     <h6 class="text-overflow m-0">Welcome!</h6>
                                 </div>
 
-                                <form asp-action="Logout" method="post" asp-controller="Auth">
+                                <form action="@Url.Action("Logout", "Auth", new { area = "" })" method="get">
                                     <!-- item-->
                                     <button class="dropdown-item">
                                         <i class="mdi mdi-logout me-1"></i>
@@ -1502,23 +1502,23 @@
     </div>
 
     <!-- Vendor js -->
-    <script src="assets/js/vendor.min.js"></script>
+    <script src="~/Admin/assets/js/vendor.min.js"></script>
 
     <!-- Daterangepicker js -->
-    <script src="assets/vendor/daterangepicker/moment.min.js"></script>
-    <script src="assets/vendor/daterangepicker/daterangepicker.js"></script>
+    <script src="~/Admin/assets/vendor/daterangepicker/moment.min.js"></script>
+    <script src="~/Admin/assets/vendor/daterangepicker/daterangepicker.js"></script>
 
     <!-- Apex Charts js -->
-    <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/Admin/assets/vendor/apexcharts/apexcharts.min.js"></script>
 
     <!-- Vector Map js -->
-    <script src="assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="assets/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="~/Admin/assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="~/Admin/assets/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js"></script>
 
     <!-- Dashboard App js -->
-    <script src="assets/js/pages/demo.dashboard.js"></script>
+    <script src="~/Admin/assets/js/pages/demo.dashboard.js"></script>
 
     <!-- App js -->
-    <script src="assets/js/app.min.js"></script>
+    <script src="~/Admin/assets/js/app.min.js"></script>
     <script src="~/Admin/assets/controller/HomeController.js"></script>
 </body>

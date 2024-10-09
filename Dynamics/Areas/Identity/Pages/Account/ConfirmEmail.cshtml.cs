@@ -54,7 +54,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
                 {
-                    return Redirect("~/Admin/");
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
                 return Redirect(returnUrl);
             }

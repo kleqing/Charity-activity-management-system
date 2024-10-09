@@ -100,7 +100,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 await _signInManager.SignInAsync(existingUser, isPersistent: false, authenticationMethod: null);
                 if (User.IsInRole(RoleConstants.Admin))
                 {
-                    return Redirect("~/Admin/");
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
                 return Redirect(returnUrl);
             }
@@ -120,7 +120,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
                 {
-                    return Redirect("~/Admin/");
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
                 return Redirect(returnUrl);
             }
