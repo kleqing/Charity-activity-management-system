@@ -69,6 +69,14 @@ namespace Dynamics
                     options.SlidingExpiration = true; // Auto re-new authentication cookie when almost ended
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Cookie expires after 60 minutes
                 });
+
+            // Add authorization policy
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole(RoleConstants.Admin));
+            });
+
+
             // Repos here
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
