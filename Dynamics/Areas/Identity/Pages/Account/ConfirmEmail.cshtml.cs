@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System.Text;
+using Dynamics.Utility;
 
 
 namespace Dynamics.Areas.Identity.Pages.Account
@@ -51,7 +52,11 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 // Session
                 var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
-                return RedirectToAction("Homepage", "Home", returnUrl);
+                if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
+                {
+                    return Redirect("~/Admin/");
+                }
+                return Redirect(returnUrl);
             }
             else
             {

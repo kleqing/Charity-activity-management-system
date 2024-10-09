@@ -151,13 +151,13 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<List<Project>> GetAllProjectsAsync()
         {
-            IQueryable<Project> projects = _db.Projects.Include(x => x.ProjectMember).ThenInclude(x => x.User)
+            IQueryable<Project> projects = _db.Projects
+                .Include(x => x.ProjectMember).ThenInclude(x => x.User)
                 .Include(x => x.ProjectResource)
                 .Include(x => x.Organization)
-                .Include(x => x.Request).ThenInclude(x => x.User)
-                // .Include(x => x.History)
                 .AsSplitQuery();
-                // Don't use split query if we use pagination
+            
+                // .AsSplitQuery();
             return await projects.ToListAsync();
         }
 

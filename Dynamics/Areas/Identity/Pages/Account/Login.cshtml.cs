@@ -106,7 +106,8 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     // Login as administrator
                     if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
                     {
-                        return Redirect("~/Admin/");
+                        // return Redirect("~/Admin/");
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
                     }
                     else if (result.Succeeded)
                     {

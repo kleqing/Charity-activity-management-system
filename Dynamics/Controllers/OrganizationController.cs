@@ -22,6 +22,7 @@ namespace Dynamics.Controllers
         IUserToOragnizationTransactionHistoryVMService _userToOragnizationTransactionHistoryVMService;
         IProjectVMService _projectVMService;
         IOrganizationToProjectHistoryVMService _organizationToProjectHistoryVMService;
+        private readonly CloudinaryUploader _cloudinaryUploader;
 
         public OrganizationController(IOrganizationRepository organizationRepository, 
             IUserRepository userRepository, 
@@ -29,7 +30,8 @@ namespace Dynamics.Controllers
             IOrganizationVMService organizationService, 
             IUserToOragnizationTransactionHistoryVMService userToOragnizationTransactionHistoryVMService, 
             IProjectVMService projectVMService,
-            IOrganizationToProjectHistoryVMService organizationToProjectHistoryVMService)
+            IOrganizationToProjectHistoryVMService organizationToProjectHistoryVMService,
+            CloudinaryUploader cloudinaryUploader)
         {
             
             _organizationRepository = organizationRepository;
@@ -39,6 +41,7 @@ namespace Dynamics.Controllers
             _userToOragnizationTransactionHistoryVMService = userToOragnizationTransactionHistoryVMService ;
             _projectVMService = projectVMService;
             _organizationToProjectHistoryVMService = organizationToProjectHistoryVMService ;
+            _cloudinaryUploader = cloudinaryUploader;
         }
 
         //GET: /Organization
@@ -81,7 +84,8 @@ namespace Dynamics.Controllers
             //set picture for Organization
             if (image != null)
             {
-                organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization");
+                // organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization");
+                organization.OrganizationPictures = await _cloudinaryUploader.UploadImageAsync(image);
             }
 
             //get current user
@@ -160,8 +164,8 @@ namespace Dynamics.Controllers
             {
                 if (image != null)
                 {
-                    organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization");
-                    
+                    // organization.OrganizationPictures = Util.UploadImage(image, @"images\Organization");
+                    organization.OrganizationPictures = await _cloudinaryUploader.UploadImageAsync(image);
                 }
                 if(await _organizationRepository.UpdateOrganizationAsync(organization))
                 return RedirectToAction("Detail", new { organizationId = organization.OrganizationID });

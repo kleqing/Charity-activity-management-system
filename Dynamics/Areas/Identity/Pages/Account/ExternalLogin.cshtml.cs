@@ -98,19 +98,31 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
                     info.Principal.Identity.Name, info.LoginProvider);
                 await _signInManager.SignInAsync(existingUser, isPersistent: false, authenticationMethod: null);
-                return RedirectToAction("Homepage", "Home");
+                if (User.IsInRole(RoleConstants.Admin))
+                {
+                    return Redirect("~/Admin/");
+                }
+                return Redirect(returnUrl);
             }
 
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
+                if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
+                {
+                    return Redirect("~/Admin/");
+                }
                 // Set the session
                 var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                return RedirectToAction("Homepage", "Home");
+                if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
+                {
+                    return Redirect("~/Admin/");
+                }
+                return Redirect(returnUrl);
             }
 
             if (result.IsLockedOut)
@@ -187,19 +199,9 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         if (result.Succeeded)
                         {
                             await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                            // TODO: Redirect to homepage instead
-                            return RedirectToAction("HomePage", "Home");
+                            return Redirect(returnUrl);
                         }
-                        // else
-                        // {
-                        //     return RedirectToAction("Index", "Home");
-                        // }
                     }
-                    // else
-                    // {
-                    //     // TODO: Bind the google account with current account
-                    //     ModelState.AddModelError("Email", "Email already exists in the system.");
-                    // }
                 }
 
                 foreach (var error in result.Errors)
@@ -227,7 +229,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                                                     $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
             }
         }
-
         private IUserEmailStore<IdentityUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Cloudinary = CloudinaryDotNet.Cloudinary;
 
 
 namespace Dynamics
@@ -53,7 +54,7 @@ namespace Dynamics
                 {
                     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedAccount = false; // No confirm account required
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -112,6 +113,9 @@ namespace Dynamics
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+            // Cloudinary
+            builder.Services.AddSingleton<CloudinaryUploader>();
+            
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

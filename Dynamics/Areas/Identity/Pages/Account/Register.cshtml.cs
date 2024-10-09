@@ -92,10 +92,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                // Changed this one so that it will use our custom identity user
-                // Click on it to see the implementation
-                // Also because we are using custom user,
-                // we need to update the implementation for email sender as well (Implemented in Utility)
                 var user = CreateUser();
                 // If role not exist, create all of our possible role
                 // also, getAwaiter is the same as writing await keyword
@@ -106,7 +102,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     _roleManager.CreateAsync(new IdentityRole(RoleConstants.HeadOfOrganization)).GetAwaiter()
                         .GetResult();
                     _roleManager.CreateAsync(new IdentityRole(RoleConstants.ProjectLeader)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(RoleConstants.Guest)).GetAwaiter().GetResult();
                 }
 
                 // Since all user is default to user role, we add it for them
@@ -154,7 +149,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Homepage", "Home");
+                    return Redirect(returnUrl);
                 }
 
                 foreach (var error in result.Errors)

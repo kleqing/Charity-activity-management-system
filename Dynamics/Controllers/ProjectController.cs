@@ -7,20 +7,8 @@ using Dynamics.Services;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Build.Evaluation;
-using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Newtonsoft.Json;
-using System;
-using System.Drawing;
-using System.Linq.Expressions;
-using System.Net.WebSockets;
-
-using Dynamics.Helps;
 using Dynamics.Models.Models.Dto;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using static System.Net.Mime.MediaTypeNames;
 using Util = Dynamics.Utility.Util;
 
 namespace Dynamics.Controllers
@@ -33,13 +21,15 @@ namespace Dynamics.Controllers
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IMapper mapper;
         private readonly IProjectService projectService;
+        private readonly CloudinaryUploader _cloudinaryUploader;
 
         public ProjectController(IProjectRepository projectRepository,
             IOrganizationRepository organizationRepository,
             IRequestRepository requestRepository,
             IWebHostEnvironment hostEnvironment,
             IMapper mapper,
-             IProjectService projectService )
+            IProjectService projectService,
+            CloudinaryUploader cloudinaryUploader)
         {
             this.projectRepository = projectRepository;
             this.organizationRepository = organizationRepository;
@@ -47,6 +37,7 @@ namespace Dynamics.Controllers
             this.hostEnvironment = hostEnvironment;
             this.mapper = mapper;
             this.projectService = projectService;
+            _cloudinaryUploader = cloudinaryUploader;
         }
 
         [Route("Project/Index/{userID:guid}")]
@@ -65,14 +56,15 @@ namespace Dynamics.Controllers
 
             foreach (var projectMember in projectMemberList)
             {
-                  var project = await projectRepository.GetProjectAsync(x => x.ProjectID.Equals(projectMember.ProjectID));
+                var project = await projectRepository.GetProjectAsync(x => x.ProjectID.Equals(projectMember.ProjectID));
                 if (project != null)
                 {
-                    var ProjectMemberOfUser = projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectMember.ProjectID) && p.UserID.Equals(userID));
+                    var ProjectMemberOfUser = projectRepository.FilterProjectMember(p =>
+                        p.ProjectID.Equals(projectMember.ProjectID) && p.UserID.Equals(userID));
                     var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
                     var dto = projectService.MapToProjectOverviewDto(project);
-                    userProjectIds.Add(project.ProjectID); 
-                    if (statusProjectMemberOfUser>=2)
+                    userProjectIds.Add(project.ProjectID);
+                    if (statusProjectMemberOfUser >= 2)
                     {
                         //get project that user join as a leader
                         projectsILead.Add(dto);
@@ -84,6 +76,7 @@ namespace Dynamics.Controllers
                     }
                 }
             }
+
             foreach (var project in allProjects)
             {
                 if (!userProjectIds.Contains(project.ProjectID))
@@ -106,7 +99,7 @@ namespace Dynamics.Controllers
             foreach (var p in allProjects)
             {
                 var dto = projectService.MapToProjectOverviewDto(p);
-                if (dto.ProjectStatus >=0)
+                if (dto.ProjectStatus >= 0)
                 {
                     allActiveProjectsDto.Add(dto);
                 }
@@ -119,6 +112,7 @@ namespace Dynamics.Controllers
             };
             return View(result);
         }
+
         //update project profile
         public async Task<IActionResult> DeleteImage(string imgPath, Guid phaseID)
         {
@@ -318,7 +312,8 @@ namespace Dynamics.Controllers
             {
                 if (images != null && images.Count() > 0)
                 {
-                    var resAttachment = await Util.UploadImages(images, @"images\Project");
+                    // var resAttachment = await Util.UploadImages(images, @"images\Project");
+                    var resAttachment = await _cloudinaryUploader.UploadMultiImagesAsync(images);
                     if (resAttachment.Equals("No file"))
                     {
                         TempData[MyConstants.Error] = "No file to upload!";
@@ -341,6 +336,7 @@ namespace Dynamics.Controllers
                     //TempData[MyConstants.Info] = "You are no longer a leader for this project!";
                     return RedirectToAction(nameof(ManageProject), new { id = projectObj.ProjectID.ToString() });
                 }
+
                 TempData[MyConstants.Success] = "Update project successfully!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectObj.ProjectID.ToString() });
             }
@@ -354,13 +350,16 @@ namespace Dynamics.Controllers
         {
             var userIDString = HttpContext.Session.GetString("currentUserID");
             var res = await projectRepository.ShutdownProjectAsync(shutdownProjectVM);
-            if (res&&!string.IsNullOrEmpty(userIDString))
+            if (res && !string.IsNullOrEmpty(userIDString))
             {
-                return Json(new { success = true, message = "Shutdown project successful!",
-                    remind = "You just have shut down a project for \"" + shutdownProjectVM.Reason+"\"",
+                return Json(new
+                {
+                    success = true, message = "Shutdown project successful!",
+                    remind = "You just have shut down a project for \"" + shutdownProjectVM.Reason + "\"",
                     userIDString = userIDString
                 });
             }
+
             return Json(new { success = false, message = "Fail to shutdown project!" });
         }
 
@@ -396,11 +395,13 @@ namespace Dynamics.Controllers
                 if (request != null)
                 {
                     projectObj.Request = request;
-                }                 
+                }
+
                 HttpContext.Session.SetString("currentProjectID", projectObj.ProjectID.ToString());
                 var leaderOfProject = await projectRepository.GetProjectLeaderAsync(projectObj.ProjectID);
                 HttpContext.Session.SetString("currentProjectLeaderID", leaderOfProject.UserID.ToString());
-                var ceoOfProject = projectRepository.FilterMemberOfProject(x => x.Status == 2 && x.ProjectID==projectObj.ProjectID);
+                var ceoOfProject =
+                    projectRepository.FilterMemberOfProject(x => x.Status == 2 && x.ProjectID == projectObj.ProjectID);
                 HttpContext.Session.SetString("currentProjectCEOID", ceoOfProject[0].UserID.ToString());
 
                 List<string> statistic = await projectRepository.GetStatisticOfProject(projectObj.ProjectID);
@@ -455,6 +456,7 @@ namespace Dynamics.Controllers
                 TempData[MyConstants.Success] = "Delete project member successfully!";
                 return RedirectToAction(nameof(ManageProjectMember), new { id = currentProjectID });
             }
+
             TempData[MyConstants.Error] = "Fail to delete project member!";
             return RedirectToAction(nameof(ManageProjectMember), new { id = currentProjectID });
         }
@@ -473,7 +475,7 @@ namespace Dynamics.Controllers
 
             var existingJoinRequest = projectRepository
                 .FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.UserID.Equals(memberID) && p.Status == 0
-                 ).FirstOrDefault();
+                ).FirstOrDefault();
 
             if (existingJoinRequest == null)
             {
@@ -654,6 +656,7 @@ namespace Dynamics.Controllers
             {
                 currentUser = JsonConvert.DeserializeObject<User>(userString);
             }
+
             var organizationUserLead = await organizationRepository.GetOrganizationUserLead(currentUser.UserID);
 
             //set value for View Model
@@ -666,7 +669,7 @@ namespace Dynamics.Controllers
                 {
                     donateHistoryOfUser = await projectRepository.GetAllUserDonateAsync(
                         u => u.UserID.Equals(new Guid(currentUserID)) && u.ProjectResource.ProjectID.Equals(projectID)
-                   );
+                    );
                     sendDonateRequestVM = new SendDonateRequestVM()
                     {
                         ProjectID = projectID,
@@ -679,19 +682,19 @@ namespace Dynamics.Controllers
             {
                 var currentUserID = HttpContext.Session.GetString("currentUserID");
                 List<OrganizationToProjectHistory> donateHistoryOfOrg;
-                if (currentUserID != null&& organizationUserLead!=null)
+                if (currentUserID != null && organizationUserLead != null)
                 {
-
-                     donateHistoryOfOrg = await projectRepository.GetAllOrganizationDonateAsync(
-                        u => u.OrganizationResource.OrganizationID.Equals(organizationUserLead.OrganizationID) && u.ProjectResource.ProjectID.Equals(projectID)
-                     );
+                    donateHistoryOfOrg = await projectRepository.GetAllOrganizationDonateAsync(
+                        u => u.OrganizationResource.OrganizationID.Equals(organizationUserLead.OrganizationID) &&
+                             u.ProjectResource.ProjectID.Equals(projectID)
+                    );
                     sendDonateRequestVM = new SendDonateRequestVM()
                     {
                         ProjectID = projectID,
                         TypeDonor = donor,
                         OrgTransactionHistory = donateHistoryOfOrg,
                         OrganizationUserLeadID = organizationUserLead.OrganizationID
-                    };                             
+                    };
                 }
             }
 
@@ -720,10 +723,11 @@ namespace Dynamics.Controllers
                 else if (!string.IsNullOrEmpty(sendDonateRequestVM.TypeDonor) &&
                          sendDonateRequestVM.TypeDonor.Equals("Organization"))
                 {
-                    var organizationResourceIDCoressponding = await organizationRepository.GetOrgResourceIDCorresponding(
-                        sendDonateRequestVM.OrgDonate.ProjectResourceID.Value,
-                        sendDonateRequestVM.OrganizationUserLeadID
-                    );
+                    var organizationResourceIDCoressponding =
+                        await organizationRepository.GetOrgResourceIDCorresponding(
+                            sendDonateRequestVM.OrgDonate.ProjectResourceID.Value,
+                            sendDonateRequestVM.OrganizationUserLeadID
+                        );
 
                     if (!organizationResourceIDCoressponding.Equals(Guid.Empty))
                     {
@@ -754,14 +758,16 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ManageProjectDonor(Guid projectID)
         {
             var allUserDonate =
-                await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
+                await projectRepository.GetAllUserDonateAsync(u =>
+                    u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
             if (allUserDonate == null)
             {
                 return NotFound();
             }
 
             var allOrganizationDonate =
-                await projectRepository.GetAllOrganizationDonateAsync(  u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
+                await projectRepository.GetAllOrganizationDonateAsync(u =>
+                    u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
             if (allOrganizationDonate == null)
             {
                 return NotFound();
@@ -773,7 +779,9 @@ namespace Dynamics.Controllers
                 OrganizationDonate = allOrganizationDonate
             };
             int nums =
-                (await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0) ?? new List<UserToProjectTransactionHistory>()).Count();
+                (await projectRepository.GetAllUserDonateAsync(u =>
+                     u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0) ??
+                 new List<UserToProjectTransactionHistory>()).Count();
             var hasUserDonateRequest = nums > 0;
 
             int nums2 =
@@ -792,7 +800,8 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ReviewUserDonateRequest(Guid projectID)
         {
             var allUserDonate =
-                await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0);
+                await projectRepository.GetAllUserDonateAsync(u =>
+                    u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0);
             if (allUserDonate == null)
             {
                 return NotFound();
@@ -997,7 +1006,7 @@ namespace Dynamics.Controllers
         //---------------------------manage ProjectResource--------------------------
         public async Task<IActionResult> CreateProjectDonateRequestAsync(Guid projectID)
         {
-            IEnumerable<SelectListItem> ResourceTypeList =  projectRepository.GetAllProjectResourceQuery().Select(x =>
+            IEnumerable<SelectListItem> ResourceTypeList = projectRepository.GetAllProjectResourceQuery().Select(x =>
                 new SelectListItem
                 {
                     Text = x.ResourceName,
@@ -1063,7 +1072,7 @@ namespace Dynamics.Controllers
             {
                 //check whether the resource has same name and same unit is existed
                 var existingResource = await projectRepository.FilterProjectResourceAsync(p =>
-                p.ResourceID!=projectResource.ResourceID &&
+                    p.ResourceID != projectResource.ResourceID &&
                     p.ProjectID.Equals(projectResource.ProjectID) &&
                     p.ResourceName.Equals(projectResource.ResourceName) && p.Unit.Equals(projectResource.Unit));
                 if (existingResource.FirstOrDefault() != null)
@@ -1132,7 +1141,7 @@ namespace Dynamics.Controllers
 
             if (images != null && images.Count() > 0)
             {
-                var resAttachment = await Util.UploadImages(images, @"images\Project\Phase");
+                var resAttachment = await _cloudinaryUploader.UploadMultiImagesAsync(images);
                 if (resAttachment.Equals("No file"))
                 {
                     TempData[MyConstants.Error] = "No file to upload!";
@@ -1183,7 +1192,7 @@ namespace Dynamics.Controllers
             if (history == null) return NotFound();
             if (images != null && images.Count() > 0)
             {
-                var resAttachment = await Util.UploadImages(images, @"images\Project\Phase");
+                var resAttachment = await _cloudinaryUploader.UploadMultiImagesAsync(images);
                 if (resAttachment.Equals("No file"))
                 {
                     TempData[MyConstants.Error] = "No file to upload!";
@@ -1228,12 +1237,12 @@ namespace Dynamics.Controllers
         }
 
 
-
         //Repo of tuan
         [HttpGet]
         public async Task<IActionResult> CreateProject()
         {
-            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            var currentOrganization =
+                HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
 
             var projectVM = new ProjectVM()
@@ -1250,37 +1259,42 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProject(ProjectVM projectVM, IFormFile image)
         {
-            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            var currentOrganization =
+                HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
             projectVM.OrganizationVM = currentOrganization;
 
             var Leader = new User();
-            foreach(var item in currentOrganization.OrganizationMember)
+            foreach (var item in currentOrganization.OrganizationMember)
             {
                 if (item.UserID.Equals(projectVM.LeaderID))
                 {
                     Leader = item.User;
                 }
             }
+
             if (projectVM != null)
             {
                 if (image != null)
                 {
-                    projectVM.Attachment = Util.UploadImage(image, @"images\Project");
+                    projectVM.Attachment = await _cloudinaryUploader.UploadImageAsync(image);
                 }
 
                 if (projectVM.ProjectEmail == null)
                 {
                     projectVM.ProjectEmail = Leader.UserEmail;
                 }
-                if (projectVM.ProjectPhoneNumber == null) 
+
+                if (projectVM.ProjectPhoneNumber == null)
                 {
                     projectVM.ProjectPhoneNumber = Leader.UserPhoneNumber;
                 }
+
                 if (projectVM.ProjectAddress == null)
                 {
                     projectVM.ProjectAddress = Leader.UserAddress;
                 }
+
                 var project = new Models.Models.Project()
                 {
                     ProjectID = projectVM.ProjectID,
@@ -1296,15 +1310,14 @@ namespace Dynamics.Controllers
                     StartTime = projectVM.StartTime,
                     EndTime = projectVM.EndTime,
                 };
-                if(await projectRepository.AddProjectAsync(project))
+                if (await projectRepository.AddProjectAsync(project))
                 {
-                    return RedirectToAction(nameof(AutoJoinProject), new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
-                }       
+                    return RedirectToAction(nameof(AutoJoinProject),
+                        new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
+                }
             }
-            
-            return View(projectVM);
 
-           
+            return View(projectVM);
         }
 
         public async Task<IActionResult> AutoJoinProject(Guid projectId, Guid leaderId)
@@ -1335,6 +1348,7 @@ namespace Dynamics.Controllers
                 };
                 await projectRepository.AddProjectMemberAsync(projectMember1);
             }
+
             var projectResource = new ProjectResource()
             {
                 ProjectID = projectId,
@@ -1346,21 +1360,24 @@ namespace Dynamics.Controllers
             await projectRepository.AddProjectResourceAsync(projectResource);
 
             var currentProject = await projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
-            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
+            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY,
+                currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }
-        [HttpGet]
 
+        [HttpGet]
         public async Task<IActionResult> DetailProject(Guid projectId)
         {
             var currentProject = await projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
-            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
+            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY,
+                currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }
 
         public async Task<IActionResult> AddProjectResource()
         {
-            var currentProject = HttpContext.Session.Get<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY);
+            var currentProject =
+                HttpContext.Session.Get<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY);
 
             var projectResource = new ProjectResource()
             {
@@ -1368,8 +1385,11 @@ namespace Dynamics.Controllers
                 Quantity = 0,
             };
 
-            var projectResources =await projectRepository.GetAllResourceByProjectIDAsync(pr => pr.ProjectID .Equals(currentProject.ProjectID));
-            HttpContext.Session.Set<List<ProjectResource>>(MySettingSession.SESSION_Resources_In_A_PRoject_KEY, projectResources);
+            var projectResources =
+                await projectRepository.GetAllResourceByProjectIDAsync(pr =>
+                    pr.ProjectID.Equals(currentProject.ProjectID));
+            HttpContext.Session.Set<List<ProjectResource>>(MySettingSession.SESSION_Resources_In_A_PRoject_KEY,
+                projectResources);
 
             return View(projectResource);
         }
