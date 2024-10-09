@@ -19,6 +19,8 @@ namespace Dynamics.Models.Models
         public string? Message { get; set; }
         [DataType(DataType.Date)]
         public DateOnly Time { get; set; }
+        // Can be null bc money don't need attachments
+        public string? Attachments { get; set; } 
         public virtual User User { get; set; }
 		public virtual ProjectResource ProjectResource { get; set; }
 	}

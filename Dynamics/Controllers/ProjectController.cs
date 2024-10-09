@@ -17,6 +17,7 @@ using System.Linq.Expressions;
 using System.Net.WebSockets;
 
 using Dynamics.Helps;
+using Dynamics.Models.Models.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static System.Net.Mime.MediaTypeNames;
@@ -48,7 +49,7 @@ namespace Dynamics.Controllers
             this.projectService = projectService;
         }
 
-        [Route("Project/Index/{userID}")]
+        [Route("Project/Index/{userID:guid}")]
         public async Task<IActionResult> Index(Guid userID)
         {
             //get all project

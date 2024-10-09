@@ -105,6 +105,9 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<DateOnly>("StartTime")
                         .HasColumnType("date");
 
+                    b.Property<bool>("isBanned")
+                        .HasColumnType("bit");
+
                     b.HasKey("OrganizationID");
 
                     b.HasIndex("OrganizationEmail")
@@ -170,6 +173,9 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Attachments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
@@ -242,6 +248,9 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<DateOnly?>("StartTime")
                         .HasColumnType("date");
+
+                    b.Property<bool>("isBanned")
+                        .HasColumnType("bit");
 
                     b.HasKey("ProjectID");
 
@@ -345,8 +354,8 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("CreationDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -384,6 +393,9 @@ namespace Dynamics.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UserAddress")
                         .HasColumnType("nvarchar(max)");
 
@@ -411,6 +423,9 @@ namespace Dynamics.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("isBanned")
+                        .HasColumnType("bit");
+
                     b.HasKey("UserID");
 
                     b.HasIndex("UserEmail")
@@ -430,6 +445,9 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Attachments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
@@ -463,6 +481,9 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Attachments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
