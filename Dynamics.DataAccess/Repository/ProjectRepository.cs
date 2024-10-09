@@ -69,20 +69,25 @@ namespace Dynamics.DataAccess.Repository
                     .Where(filter)
                     .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
                     .AsSplitQuery()
+                    .AsSplitQuery()
                     .ToListAsync();
             }
             // Use split query if you are including a collection. tbh it is better to use a projection
+            // Use split query if you are including a collection. tbh it is better to use a projection
             return await _db.Projects.Include(pr => pr.ProjectResource)
                 .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
+                .AsSplitQuery()
                 .AsSplitQuery()
                 .ToListAsync();
         }
 
         public async Task<List<Project>> GetAllProjectsAsync()
         {
-            IQueryable<Project> projects = _db.Projects.Include(x => x.ProjectMember).ThenInclude(x => x.User)
+            IQueryable<Project> projects = _db.Projects
+                .Include(x => x.ProjectMember).ThenInclude(x => x.User)
                 .Include(x => x.ProjectResource)
-                .Include(x => x.Organization);
+                .Include(x => x.Organization)
+                .AsSplitQuery();
             return await projects.ToListAsync();
         }
 

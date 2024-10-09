@@ -1,15 +1,20 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace Dynamics.Utility
 {
+    // Account use for cloudinary only
+    internal class AccountCloudinary
+    {
+            
+    }
     public static class Util
     {
-        //
-
-        // TODO: UploadMultiple ?
+        
+        // TODO: Upload images to CDN
         /**
          * Save an image to local file <br />
          * Follow this path: wwwroot/folderpath/id.ext

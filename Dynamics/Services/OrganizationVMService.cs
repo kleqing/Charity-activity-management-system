@@ -43,8 +43,6 @@ namespace Dynamics.Services
                                         Members = o.OrganizationMember.Where(om => om.Status > 0).Count(),
                                         Projects = o.Project.Count(),
                                     }).FirstOrDefaultAsync();
-
-
             return result;
         }
 

@@ -91,7 +91,7 @@
                     }
                 }
                 <label class="form-control w-full">
-                    <span class="label label-text font-bold text-lg">Request address</span>
+                    <span class="label label-text">Request address</span>
                     <div>
                         <select class="select select-bordered w-full mb-4 bg-white select-primary" id="city" aria-label=".form-select-sm">
                             <option id="pOption" value="@province" selected>@(province == "" ? "Choose province" : province)</option>
@@ -108,7 +108,7 @@
                     <input
                         type="text"
                         placeholder="Enter street and house number"
-                        class="input input-bordered w-full bg-white"
+                        class="input input-bordered w-full bg-white input-primary"
                         value="@homeAddr"
                         id="HomeAddress"/>
                     @* the original one should be located here: *@

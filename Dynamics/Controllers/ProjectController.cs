@@ -28,8 +28,9 @@ namespace Dynamics.Controllers
         private readonly IProjectHistoryRepository _projectHistoryRepo;
         private readonly IReportRepository _reportRepo;
         private readonly IWebHostEnvironment hostEnvironment;
-        private readonly IMapper _mapper;
-        private readonly IProjectService _projectService;
+        private readonly IMapper mapper;
+        private readonly IProjectService projectService;
+        private readonly CloudinaryUploader _cloudinaryUploader;
 
         public ProjectController(IProjectRepository _projectRepo,
             IOrganizationRepository _organizationRepo,
@@ -41,8 +42,9 @@ namespace Dynamics.Controllers
             IProjectHistoryRepository projectHistoryRepository,
             IReportRepository reportRepository,
             IWebHostEnvironment hostEnvironment,
-            IMapper _mapper,
-             IProjectService _projectService )
+            IMapper mapper,
+            IProjectService projectService,
+            CloudinaryUploader cloudinaryUploader)
         {
             this._projectRepo = _projectRepo;
             this._organizationRepo = _organizationRepo;
@@ -56,6 +58,7 @@ namespace Dynamics.Controllers
             this._mapper = _mapper;
             this._projectService = _projectService;
             _reportRepo = reportRepository;
+            _cloudinaryUploader = cloudinaryUploader;
         }
 
         [Route("Project/Index/{userID:guid}")]
@@ -69,6 +72,7 @@ namespace Dynamics.Controllers
           
             return View(await _projectService.ReturnAllProjectsVMsAsync());
         }
+
         //update project profile
         public async Task<IActionResult> DeleteImage(string imgPath, Guid phaseID)
         {
@@ -232,11 +236,14 @@ namespace Dynamics.Controllers
             var res = await _projectRepo.ShutdownProjectAsync(shutdownProjectVM);
             if (res&&!string.IsNullOrEmpty(userIDString))
             {
-                return Json(new { success = true, message = "Shutdown project successful!",
-                    remind = "You just have shut down a project for \"" + shutdownProjectVM.Reason+"\"",
+                return Json(new
+                {
+                    success = true, message = "Shutdown project successful!",
+                    remind = "You just have shut down a project for \"" + shutdownProjectVM.Reason + "\"",
                     userIDString = userIDString
                 });
             }
+
             return Json(new { success = false, message = "Fail to shutdown project!" });
         }
 
@@ -298,6 +305,7 @@ namespace Dynamics.Controllers
                 TempData[MyConstants.Success] = "Delete project member successfully!";
                 return RedirectToAction(nameof(ManageProjectMember), new { id = currentProjectID });
             }
+
             TempData[MyConstants.Error] = "Fail to delete project member!";
             return RedirectToAction(nameof(ManageProjectMember), new { id = currentProjectID });
         }
@@ -756,10 +764,25 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProjectPhaseReport(History history, List<IFormFile> images)
         {
-         var resAdd = await _projectService.AddProjectPhaseReportAsync(history, images);
-            if (resAdd.Equals("No file") || resAdd.Equals("Wrong extension"))
+            if (history == null) return NotFound();
+            history.HistoryID = new Guid();
+
+            if (images != null && images.Count() > 0)
             {
-                TempData[MyConstants.Error] = resAdd.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
+                var resAttachment = await _cloudinaryUploader.UploadMultiImagesAsync(images);
+                if (resAttachment.Equals("No file"))
+                {
+                    TempData[MyConstants.Error] = "No file to upload!";
+                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = history.ProjectID });
+                }
+
+                if (resAttachment.Equals("Wrong extension"))
+                {
+                    TempData[MyConstants.Error] = "Extension of some files is wrong!";
+                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = history.ProjectID });
+                }
+
+                history.Attachment = resAttachment;
             }
             else if (resAdd.Equals(MyConstants.Success))
             {
@@ -792,11 +815,23 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProjectPhaseReport(History history, List<IFormFile> images)
         {
-           var resEdit = await _projectService.EditProjectPhaseReportAsync(history, images);
-           
-            if (resEdit.Equals("No file") || resEdit.Equals("Wrong extension"))
+            if (history == null) return NotFound();
+            if (images != null && images.Count() > 0)
             {
-                TempData[MyConstants.Error] = resEdit.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
+                var resAttachment = await _cloudinaryUploader.UploadMultiImagesAsync(images);
+                if (resAttachment.Equals("No file"))
+                {
+                    TempData[MyConstants.Error] = "No file to upload!";
+                    return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
+                }
+
+                if (resAttachment.Equals("Wrong extension"))
+                {
+                    TempData[MyConstants.Error] = "Extension of some files is wrong!";
+                    return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
+                }
+
+                history.Attachment = resAttachment;
             }
             else if (resEdit.Equals(MyConstants.Success))
             {
@@ -827,12 +862,12 @@ namespace Dynamics.Controllers
         }
 
 
-
         //Repo of tuan
         [HttpGet]
         public async Task<IActionResult> CreateProject()
         {
-            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            var currentOrganization =
+                HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
 
             var projectVM = new ProjectVM()
@@ -849,37 +884,42 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProject(ProjectVM projectVM, IFormFile image)
         {
-            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            var currentOrganization =
+                HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
             projectVM.OrganizationVM = currentOrganization;
 
             var Leader = new User();
-            foreach(var item in currentOrganization.OrganizationMember)
+            foreach (var item in currentOrganization.OrganizationMember)
             {
                 if (item.UserID.Equals(projectVM.LeaderID))
                 {
                     Leader = item.User;
                 }
             }
+
             if (projectVM != null)
             {
                 if (image != null)
                 {
-                    projectVM.Attachment = Util.UploadImage(image, @"images\Project");
+                    projectVM.Attachment = await _cloudinaryUploader.UploadImageAsync(image);
                 }
 
                 if (projectVM.ProjectEmail == null)
                 {
                     projectVM.ProjectEmail = Leader.UserEmail;
                 }
-                if (projectVM.ProjectPhoneNumber == null) 
+
+                if (projectVM.ProjectPhoneNumber == null)
                 {
                     projectVM.ProjectPhoneNumber = Leader.UserPhoneNumber;
                 }
+
                 if (projectVM.ProjectAddress == null)
                 {
                     projectVM.ProjectAddress = Leader.UserAddress;
                 }
+
                 var project = new Models.Models.Project()
                 {
                     ProjectID = projectVM.ProjectID,
@@ -897,13 +937,12 @@ namespace Dynamics.Controllers
                 };
                 if(await _projectRepo.AddProjectAsync(project))
                 {
-                    return RedirectToAction(nameof(AutoJoinProject), new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
-                }       
+                    return RedirectToAction(nameof(AutoJoinProject),
+                        new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
+                }
             }
-            
-            return View(projectVM);
 
-           
+            return View(projectVM);
         }
 
         public async Task<IActionResult> AutoJoinProject(Guid projectId, Guid leaderId)
@@ -934,6 +973,7 @@ namespace Dynamics.Controllers
                 };
                 await _projectRepo.AddProjectMemberAsync(projectMember1);
             }
+
             var projectResource = new ProjectResource()
             {
                 ProjectID = projectId,
@@ -948,8 +988,8 @@ namespace Dynamics.Controllers
             HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }
-        [HttpGet]
 
+        [HttpGet]
         public async Task<IActionResult> DetailProject(Guid projectId)
         {
             var currentProject = await _projectRepo.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
@@ -959,7 +999,8 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> AddProjectResource()
         {
-            var currentProject = HttpContext.Session.Get<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY);
+            var currentProject =
+                HttpContext.Session.Get<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY);
 
             var projectResource = new ProjectResource()
             {

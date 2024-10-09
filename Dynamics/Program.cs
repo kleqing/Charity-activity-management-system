@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Cloudinary = CloudinaryDotNet.Cloudinary;
 
 
 namespace Dynamics
@@ -18,6 +19,10 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
+
+            // Add cache to the container, allow admin dashboard get the latest data
+            // working with other services as well
+            builder.Services.AddMemoryCache();
 
             // Add cache to the container, allow admin dashboard get the latest data
             // working with other services as well
@@ -41,6 +46,7 @@ namespace Dynamics
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
                 // options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+                // options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
             });
             builder.Services.AddDbContext<AuthDbContext>(options =>
             {
@@ -53,7 +59,7 @@ namespace Dynamics
                 {
                     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedAccount = false; // No confirm account required
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -78,7 +84,16 @@ namespace Dynamics
             });
 
 
+
+            // Add authorization policy
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole(RoleConstants.Admin));
+            });
+
+
             // Repos here
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
@@ -113,6 +128,9 @@ namespace Dynamics
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+            // Cloudinary
+            builder.Services.AddSingleton<CloudinaryUploader>();
+            
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -171,7 +189,7 @@ namespace Dynamics
             
             app.MapControllerRoute(
                  name: "areas",
-                 pattern: "{area:exists}/{controller=Home}/{action=Homepage}/{id?}");
+                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",

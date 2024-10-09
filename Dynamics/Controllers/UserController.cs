@@ -24,13 +24,14 @@ namespace Dynamics.Controllers
         private readonly IOrganizationMemberRepository _organizationMemberRepository;
         private readonly IUserToOrganizationTransactionHistoryRepository _userToOrgRepo;
         private readonly IUserToProjectTransactionHistoryRepository _userToPrjRepo;
+        private readonly CloudinaryUploader _cloudinaryUploader;
 
         public UserController(IUserRepository userRepo, UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager, ITransactionViewService transactionViewService,
             IProjectMemberRepository projectMemberRepository,
             IOrganizationMemberRepository organizationMemberRepository,
             IUserToOrganizationTransactionHistoryRepository userToOrgRepo,
-            IUserToProjectTransactionHistoryRepository userToPrjRepo)
+            IUserToProjectTransactionHistoryRepository userToPrjRepo, CloudinaryUploader cloudinaryUploader)
         {
             _userRepository = userRepo;
             _userManager = userManager;
@@ -40,6 +41,7 @@ namespace Dynamics.Controllers
             _organizationMemberRepository = organizationMemberRepository;
             _userToOrgRepo = userToOrgRepo;
             _userToPrjRepo = userToPrjRepo;
+            _cloudinaryUploader = cloudinaryUploader;
         }
 
         // User/username
@@ -49,21 +51,6 @@ namespace Dynamics.Controllers
             if (currentUser == null) return RedirectToAction("Index", "Home");
             return View(currentUser);
         }
-
-        // Delete me later, only serves to debug
-        // [HttpPost]
-        // public async Task<IActionResult> TestRoles(string roleName, Guid userId, string action)
-        // {
-        //     if (action == "add")
-        //     {
-        //         await _userRepository.AddToRoleAsync(userId, roleName);
-        //     } else if (action == "delete")
-        //     {
-        //         await _userRepository.DeleteRoleFromUserAsync(userId, roleName);
-        //     }
-        //
-        //     return RedirectToAction("Homepage", "Home");
-        // }
 
         [HttpGet]
         public async Task<IActionResult> Edit()
@@ -118,7 +105,9 @@ namespace Dynamics.Controllers
 
                 if (image != null)
                 {
-                    user.UserAvatar = Util.UploadImage(image, @"images\User");
+                    // user.UserAvatar = Util.UploadImage(image, @"images\User");
+                    var imgUrl = await _cloudinaryUploader.UploadImageAsync(image);
+                    if (imgUrl != null) user.UserAvatar = imgUrl;
                 }
 
                 await _userRepository.UpdateAsync(user);
