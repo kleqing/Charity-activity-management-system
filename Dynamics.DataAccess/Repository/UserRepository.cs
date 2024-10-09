@@ -114,5 +114,12 @@ namespace Dynamics.DataAccess.Repository
             await _db.SaveChangesAsync();
             return true;
         }
+
+        //public async Task<bool> GetBanAsync(Guid userId)
+        //{
+        //    var user = await GetAsync(u => u.UserID == userId);
+        //    if (user == null) throw new Exception("BAN FAILED: USER NOT FOUND");
+        //    return user.isBanned;
+        //}
     }
 }

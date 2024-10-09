@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Dynamics.DataAccess;
 using Dynamics.Models.Models;
 using Dynamics.DataAccess.Repository;
+using Dynamics.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dynamics.Areas.Admin.Controllers
 {
+    [Authorize(Roles = RoleConstants.Admin)]
     [Area("Admin")]
     public class ReportsController : Controller
     {
@@ -24,7 +27,14 @@ namespace Dynamics.Areas.Admin.Controllers
         // GET: Admin/Reports
         public async Task<IActionResult> Index()
         {
-            return View(await _adminRepository.ViewReport());
+            if (User.IsInRole(RoleConstants.Admin))
+            {
+                return View(await _adminRepository.ViewReport());
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
     }
 }

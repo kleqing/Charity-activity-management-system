@@ -10,9 +10,11 @@ using Dynamics.Models.Models;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dynamics.Areas.Admin.Controllers
 {
+    [Authorize(Roles = RoleConstants.Admin)]
     [Area("Admin")]
     public class UsersController : Controller
     {
@@ -26,8 +28,15 @@ namespace Dynamics.Areas.Admin.Controllers
         // GET: Admin/Users
         public async Task<IActionResult> Index()
         {
-            var users = await _adminRepository.ViewUser();
-            return View(users);
+            if (User.IsInRole(RoleConstants.Admin))
+            {
+                var users = await _adminRepository.ViewUser();
+                return View(users);
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpPost]
