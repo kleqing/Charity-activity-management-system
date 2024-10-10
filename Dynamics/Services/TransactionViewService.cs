@@ -39,7 +39,7 @@ public class TransactionViewService : ITransactionViewService
         return await result.ToListAsync();
     }
 
-    public Task<List<UserTransactionDto>> GetUserToProjectTransactionDTOsAsync(Expression<Func<UserToProjectTransactionHistory, bool>> predicate)
+    public async Task<List<UserTransactionDto>> GetUserToProjectTransactionDTOsAsync(Expression<Func<UserToProjectTransactionHistory, bool>> predicate)
     {
         var result = _context.UserToProjectTransactionHistories
             .Where(predicate)
@@ -56,6 +56,6 @@ public class TransactionViewService : ITransactionViewService
                 Unit = ut.ProjectResource.Unit,
                 Type = "project"
             });
-        return result.ToListAsync();
+        return await result.ToListAsync();
     }
 }

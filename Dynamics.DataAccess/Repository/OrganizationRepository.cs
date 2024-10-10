@@ -268,11 +268,6 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
         }
-
-
-
-
-        
         //Repo of huyen
         
         public async Task<List<Organization>> GetAllOrganizationsAsync()

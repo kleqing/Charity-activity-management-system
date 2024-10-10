@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
+using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.DTO;
 using Microsoft.Build.Evaluation;
 using Microsoft.IdentityModel.Tokens;
@@ -32,10 +33,10 @@ public class ProjectService : IProjectService
         if (p.ProjectMember.IsNullOrEmpty()) throw new Exception("WARNING PROJECT MEMBER IS EMPTY");
         var tempProjectOverviewDto = _mapper.Map<ProjectOverviewDto>(p);
         // Get leader project
-        var leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 3).FirstOrDefault();
+        var leader = p.ProjectMember.FirstOrDefault(pm => pm.ProjectID == p.ProjectID && pm.Status == 3);
         if (leader == null)
         {
-            leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 2).FirstOrDefault();
+            leader = p.ProjectMember.FirstOrDefault(pm => pm.ProjectID == p.ProjectID && pm.Status == 2);
         }
         if (leader == null) throw new Exception("No leader for project found");
         tempProjectOverviewDto.ProjectLeader = leader.User;
@@ -46,7 +47,17 @@ public class ProjectService : IProjectService
         {
             tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
         }
-        tempProjectOverviewDto.Organization = p.Organization;   
+        tempProjectOverviewDto.Organization = p.Organization;
+        if (p.ProjectAddress != null)
+        {
+            var location = p.ProjectAddress.Split(",");
+            var city = location[0];
+            if (location.Length == 4)
+            {
+                city = location[3];
+            }
+            tempProjectOverviewDto.ProjectAddress = city;
+        }
         return tempProjectOverviewDto;
     }
 
@@ -58,7 +69,7 @@ public class ProjectService : IProjectService
             if (p.ProjectMember.IsNullOrEmpty()) throw new Exception("WARNING PROJECT MEMBER IS EMPTY");
             var tempProjectOverviewDto = _mapper.Map<ProjectOverviewDto>(p);
             // Get leader project
-            var leader = p.ProjectMember.Where(pm => pm.ProjectID == p.ProjectID && pm.Status == 2).FirstOrDefault();
+            var leader = p.ProjectMember.FirstOrDefault(pm => pm.ProjectID == p.ProjectID && pm.Status == 2);
             if (leader == null) throw new Exception("No leader for project found");
             tempProjectOverviewDto.ProjectLeader = leader.User;
             tempProjectOverviewDto.ProjectMembers = p.ProjectMember.Count(pm => pm.ProjectID == p.ProjectID);
@@ -68,12 +79,22 @@ public class ProjectService : IProjectService
             {
                 tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
             }
+            // Get project province address
+            var location = p.ProjectAddress.Split(",");
+            var city = location[0];
+            if (location.Length == 4)
+            {
+                city = location[3];
+            }
+            tempProjectOverviewDto.ProjectAddress = city;
+            // Get project first attachment
+            if (p.Attachment != null) tempProjectOverviewDto.Attachment = p.Attachment.Split(",").FirstOrDefault();
             resultDtos.Add(tempProjectOverviewDto);
         }
         return resultDtos;
     }
 
-    // Use for display purpose (Multiple database trips) please include it instead
+    // Use for display purpose (Multiple database trips) please exclude it instead
     public int? GetProjectProgressId(Guid projectId)
     {
         var resourceNumbers = _context.ProjectResources

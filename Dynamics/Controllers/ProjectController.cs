@@ -17,6 +17,7 @@ using System.Linq.Expressions;
 using System.Net.WebSockets;
 
 using Dynamics.Helps;
+using Dynamics.Models.Models.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static System.Net.Mime.MediaTypeNames;
@@ -32,13 +33,16 @@ namespace Dynamics.Controllers
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IMapper mapper;
         private readonly IProjectService projectService;
+        IOrganizationVMService _organizationService;
 
         public ProjectController(IProjectRepository projectRepository,
             IOrganizationRepository organizationRepository,
             IRequestRepository requestRepository,
             IWebHostEnvironment hostEnvironment,
             IMapper mapper,
-             IProjectService projectService )
+            IProjectService projectService,
+            IOrganizationVMService organizationService
+           )
         {
             this.projectRepository = projectRepository;
             this.organizationRepository = organizationRepository;
@@ -46,9 +50,10 @@ namespace Dynamics.Controllers
             this.hostEnvironment = hostEnvironment;
             this.mapper = mapper;
             this.projectService = projectService;
+            this._organizationService = organizationService;
         }
 
-        [Route("Project/Index/{userID}")]
+        [Route("Project/Index/{userID:guid}")]
         public async Task<IActionResult> Index(Guid userID)
         {
             //get all project
@@ -1228,12 +1233,19 @@ namespace Dynamics.Controllers
 
 
 
-        //Repo of tuan
-        [HttpGet]
-        public async Task<IActionResult> CreateProject()
+        public async Task<IActionResult> CreateProjectByImportData(Guid requestId)
         {
-            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            Request request = await requestRepository.GetAsync(r => r.RequestID.Equals(requestId));
 
+            //get current user
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
+            {
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
+            }
+
+            var currentOrganization = await _organizationService.GetOrganizationVMByUserIDAsync(currentUser.UserID);
 
             var projectVM = new ProjectVM()
             {
@@ -1242,65 +1254,156 @@ namespace Dynamics.Controllers
                 ProjectStatus = 0,
                 StartTime = DateOnly.FromDateTime(DateTime.UtcNow),
                 OrganizationVM = currentOrganization,
+                RequestID = requestId,
+                Attachment = request.Attachment,
+                ProjectName = request.RequestTitle,
+                ProjectDescription = request.Content,
+                ProjectEmail = request.RequestEmail,
+                ProjectPhoneNumber = request.RequestPhoneNumber,
+                ProjectAddress = request.Location
             };
+
+            ViewBag.ExpectedQuantity = 0;
+            ViewBag.RequestId = requestId;
+            return View(projectVM);
+        }
+
+
+        //Repo of tuan
+        [HttpGet]
+        public async Task<IActionResult> CreateProject(Guid? requestId)
+        {
+            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
+            {
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
+            }
+
+            if (requestId != null)
+            {
+                currentOrganization = await _organizationService.GetOrganizationVMByUserIDAsync(currentUser.UserID);
+            }
+
+            var projectVM = new ProjectVM()
+            {
+                ProjectID = Guid.NewGuid(),
+                OrganizationID = currentOrganization.OrganizationID,
+                ProjectStatus = 0,
+                StartTime = DateOnly.FromDateTime(DateTime.UtcNow),
+                OrganizationVM = currentOrganization,
+                RequestID = requestId != Guid.Empty ? requestId : null,
+            };
+
+            ViewBag.ExpectedQuantity = 0;
             return View(projectVM);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject(ProjectVM projectVM, IFormFile image)
+        public async Task<IActionResult> CreateProject(ProjectVM projectVM, IFormFile image, int expectedQuantity, string Unit)
         {
             var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
+            {
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
+            }
+
+            if (currentOrganization == null)
+            {
+                currentOrganization = await _organizationService.GetOrganizationVMByUserIDAsync(currentUser.UserID);
+            }
+
             projectVM.OrganizationVM = currentOrganization;
 
-            var Leader = new User();
-            foreach(var item in currentOrganization.OrganizationMember)
+            if(projectVM.LeaderID != Guid.Empty)
             {
-                if (item.UserID.Equals(projectVM.LeaderID))
+                var Leader = new User();
+                foreach (var item in currentOrganization.OrganizationMember)
                 {
-                    Leader = item.User;
+                    if (item.UserID.Equals(projectVM.LeaderID))
+                    {
+                        Leader = item.User;
+                    }
                 }
-            }
-            if (projectVM != null)
-            {
-                if (image != null)
+                if (projectVM != null)
                 {
-                    projectVM.Attachment = Util.UploadImage(image, @"images\Project");
-                }
+                    if (image != null)
+                    {
+                        projectVM.Attachment = Util.UploadImage(image, @"images\Project");
+                    }
 
-                if (projectVM.ProjectEmail == null)
-                {
-                    projectVM.ProjectEmail = Leader.UserEmail;
+                    if (projectVM.ProjectEmail == null)
+                    {
+                        projectVM.ProjectEmail = Leader.UserEmail;
+                    }
+                    if (projectVM.ProjectPhoneNumber == null)
+                    {
+                        projectVM.ProjectPhoneNumber = Leader.UserPhoneNumber;
+                    }
+                    if (projectVM.ProjectAddress == null)
+                    {
+                        projectVM.ProjectAddress = Leader.UserAddress;
+                    }
+
+                    // user not update profile.
+                    if (expectedQuantity > 0)
+                    {
+                        var project = new Models.Models.Project()
+                        {
+                            ProjectID = projectVM.ProjectID,
+                            OrganizationID = projectVM.OrganizationID,
+                            RequestID = projectVM.RequestID,
+                            ProjectName = projectVM.ProjectName,
+                            ProjectEmail = projectVM.ProjectEmail,
+                            ProjectPhoneNumber = projectVM.ProjectPhoneNumber,
+                            ProjectAddress = projectVM.ProjectAddress,
+                            ProjectStatus = projectVM.ProjectStatus,
+                            Attachment = projectVM.Attachment,
+                            ProjectDescription = projectVM.ProjectDescription,
+                            StartTime = projectVM.StartTime,
+                            EndTime = projectVM.EndTime,
+                        };
+
+
+
+                        if (await projectRepository.AddProjectAsync(project))
+                        {
+                            var projectResource = new ProjectResource()
+                            {
+                                ProjectID = project.ProjectID,
+                                ResourceName = "Money",
+                                Quantity = 0,
+                                ExpectedQuantity = expectedQuantity,
+                                Unit = Unit,
+                            };
+                            await projectRepository.AddProjectResourceAsync(projectResource);
+
+                            if(project.RequestID != null)
+                            {
+                                Request request = await requestRepository.GetAsync(r => r.RequestID.Equals(project.RequestID));
+                                request.Status = 2;
+                                await requestRepository.UpdateAsync(request);
+                            }
+                           
+
+                            return RedirectToAction(nameof(AutoJoinProject), new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
+                        }
+                    }
+
                 }
-                if (projectVM.ProjectPhoneNumber == null) 
-                {
-                    projectVM.ProjectPhoneNumber = Leader.UserPhoneNumber;
-                }
-                if (projectVM.ProjectAddress == null)
-                {
-                    projectVM.ProjectAddress = Leader.UserAddress;
-                }
-                var project = new Models.Models.Project()
-                {
-                    ProjectID = projectVM.ProjectID,
-                    OrganizationID = projectVM.OrganizationID,
-                    RequestID = projectVM.RequestID,
-                    ProjectName = projectVM.ProjectName,
-                    ProjectEmail = projectVM.ProjectEmail,
-                    ProjectPhoneNumber = projectVM.ProjectPhoneNumber,
-                    ProjectAddress = projectVM.ProjectAddress,
-                    ProjectStatus = projectVM.ProjectStatus,
-                    Attachment = projectVM.Attachment,
-                    ProjectDescription = projectVM.ProjectDescription,
-                    StartTime = projectVM.StartTime,
-                    EndTime = projectVM.EndTime,
-                };
-                if(await projectRepository.AddProjectAsync(project))
-                {
-                    return RedirectToAction(nameof(AutoJoinProject), new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
-                }       
             }
             
+
+            if(expectedQuantity <= 0) 
+                ViewBag.MessageExpectedQuantity = "*ExpectedQuantity more than > 0";
+
+            ViewBag.ExpectedQuantity = expectedQuantity;
+
             return View(projectVM);
 
            
@@ -1317,6 +1420,17 @@ namespace Dynamics.Controllers
             }
 
             //join Project
+            
+            if (!currentUser.UserID.Equals(leaderId))
+            {
+                var projectMember1 = new ProjectMember()
+                {
+                    UserID = leaderId,
+                    ProjectID = projectId,
+                    Status = 3,
+                };
+                await projectRepository.AddProjectMemberAsync(projectMember1);
+            }
             var projectMember = new ProjectMember()
             {
                 UserID = currentUser.UserID,
@@ -1324,26 +1438,7 @@ namespace Dynamics.Controllers
                 Status = 2,
             };
             await projectRepository.AddProjectMemberAsync(projectMember);
-            if (!currentUser.UserID.Equals(leaderId))
-            {
-                var projectMember1 = new ProjectMember()
-                {
-                    UserID = leaderId,
-                    ProjectID = projectId,
-                    Status = 2,
-                };
-                await projectRepository.AddProjectMemberAsync(projectMember1);
-            }
-            var projectResource = new ProjectResource()
-            {
-                ProjectID = projectId,
-                ResourceName = "Money",
-                Quantity = 0,
-                ExpectedQuantity = 200000,
-                Unit = "VND",
-            };
-            await projectRepository.AddProjectResourceAsync(projectResource);
-
+           
             var currentProject = await projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
             HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
             return RedirectToAction(nameof(AddProjectResource));

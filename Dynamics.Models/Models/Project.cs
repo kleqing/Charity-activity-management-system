@@ -22,7 +22,9 @@ namespace Dynamics.Models.Models
         public string? ProjectEmail { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string? ProjectPhoneNumber { get; set; }
-        public string? ProjectAddress { get; set; }
+
+        [Required(ErrorMessage = "The Project Address field is required *")]
+        public string ProjectAddress { get; set; }
         [Required]
         public int ProjectStatus { get; set; }
         [ValidateNever]
@@ -36,7 +38,8 @@ namespace Dynamics.Models.Models
         [DataType(DataType.Date)]
         public DateOnly? EndTime { get; set; }
         public string? ShutdownReason { get; set; }
-		public virtual Organization Organization { get; set; }
+        public bool isBanned { get; set; }
+        public virtual Organization Organization { get; set; }
 		public virtual Request Request { get; set; }
 		public virtual ICollection<ProjectMember> ProjectMember { get; set; }
 		public virtual ICollection<ProjectResource> ProjectResource { get; set; }

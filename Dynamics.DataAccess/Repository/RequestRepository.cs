@@ -55,7 +55,7 @@ namespace Dynamics.DataAccess.Repository
 	        {
 		        return await _db.Requests.Where(filter).Include(r => r.User).ToListAsync();
 	        }
-	        return await _db.Requests.ToListAsync();
+	        return await _db.Requests.Include(u => u.User).ToListAsync();
         }
 
 		public async Task<List<Request>> SearchIndexFilterAsync(string searchQuery)

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.DTO;
 
 namespace Dynamics.Services;
@@ -21,7 +22,7 @@ public class RequestService : IRequestService
         requestDto.FirstImageAttachment = firstImg;
         return requestDto;
     }
-
+    
     public List<RequestOverviewDto> MapToListRequestOverviewDto(List<Request> requests)
     {
         var resultDtos = new List<RequestOverviewDto>();
@@ -34,6 +35,14 @@ public class RequestService : IRequestService
                 var firstImg = request.Attachment.Split(",")[0];
                 requestDto.FirstImageAttachment = firstImg;
             }
+            // Get only the first address (the city)
+            var location = request.Location.Split(",");
+            var city = location[0];
+            if (location.Length == 4)
+            {
+                city = location[3];
+            }
+            requestDto.Location = city;
             resultDtos.Add(requestDto);
         }
 

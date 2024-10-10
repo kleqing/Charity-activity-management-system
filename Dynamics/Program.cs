@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
+
 
 namespace Dynamics
 {
@@ -19,6 +18,10 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
+
+            // Add cache to the container, allow admin dashboard get the latest data
+            // working with other services as well
+            builder.Services.AddMemoryCache();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -37,6 +40,7 @@ namespace Dynamics
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                // options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
             });
             builder.Services.AddDbContext<AuthDbContext>(options =>
             {
@@ -66,7 +70,16 @@ namespace Dynamics
                     options.SlidingExpiration = true; // Auto re-new authentication cookie when almost ended
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Cookie expires after 60 minutes
                 });
+
+            // Add authorization policy
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole(RoleConstants.Admin));
+            });
+
+
             // Repos here
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
@@ -142,7 +155,7 @@ namespace Dynamics
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-          
+
             app.MapControllers();
             app.UseRouting();
             app.UseSession();
@@ -154,14 +167,14 @@ namespace Dynamics
             app.UseAuthorization();
 
             app.MapRazorPages();
+            
+            app.MapControllerRoute(
+                 name: "areas",
+                 pattern: "{area:exists}/{controller=Home}/{action=Homepage}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Homepage}/{id?}");
-
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

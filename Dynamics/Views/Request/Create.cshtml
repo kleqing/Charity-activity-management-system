@@ -126,7 +126,7 @@
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
-let citis = document.getElementById("city");
+let cities = document.getElementById("city");
 let districts = document.getElementById("district");
 let wards = document.getElementById("ward");
 let Parameter = {
@@ -141,9 +141,9 @@ promise.then(function (result) {
 
 function renderCity(data) {
   for (const x of data) {
-    citis.options[citis.options.length] = new Option(x.Name, x.Id);
+    cities.options[cities.options.length] = new Option(x.Name, x.Id);
   }
-  citis.onchange = function () {
+  cities.onchange = function () {
     district.length = 1;
     ward.length = 1;
     if(this.value != ""){
@@ -156,7 +156,7 @@ function renderCity(data) {
   };
   district.onchange = function () {
     ward.length = 1;
-    const dataCity = data.filter((n) => n.Id === citis.value);
+    const dataCity = data.filter((n) => n.Id === cities.value);
     if (this.value != "") {
       const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
 
@@ -229,7 +229,7 @@ myBtn.addEventListener('click', (e) => {
     let myForm = document.querySelector('#dmForm');
     console.log(myForm)
     // Get the selected text for city, district, and ward
-    const cityName = citis.options[citis.selectedIndex].text;
+    const cityName = cities.options[cities.selectedIndex].text;
     const districtName = districts.options[districts.selectedIndex].text;
     const wardName = wards.options[wards.selectedIndex].text;
 

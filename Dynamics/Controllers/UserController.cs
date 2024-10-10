@@ -84,6 +84,11 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+            // Convert user DOB to correct date for display purpose
+            if (user.UserDOB != null)
+            {
+                ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
+            }
             return View(user);
         }
 
@@ -117,6 +122,7 @@ namespace Dynamics.Controllers
                 }
 
                 await _userRepository.UpdateAsync(user);
+
                 // Update the session as well
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
                 TempData[MyConstants.Success] = "User updated!";

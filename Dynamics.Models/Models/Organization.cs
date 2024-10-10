@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dynamics.Models.Models
 {
@@ -27,7 +28,10 @@ namespace Dynamics.Models.Models
         public DateOnly StartTime { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? ShutdownDay { get; set; }
-		public virtual ICollection<Project> Project { get; set; }
+        public bool isBanned { get; set; }
+        [NotMapped]
+        public int ProjectCount { get; set; }
+        public virtual ICollection<Project> Project { get; set; }
 		public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
 		public virtual ICollection<OrganizationResource> OrganizationResource { get; set; }
 	}

@@ -89,13 +89,13 @@
                                     @item.RequestTitle
                                 </h2>
                             </a>
-                            @{
-                            var address = item.Location ?? "";
-                            var provinceOnly = address.Split(',')[3];
-                            }
+                            @* @{ *@
+                            @* var address = item.Location ?? ""; *@
+                            @* var provinceOnly = address.Split(',')[3]; *@
+                            @* } *@
                             <div class="flex justify-between">
                                 <span class="text-gray-400">@item.CreationDate</span>
-                                <span>@provinceOnly</span>
+                                <span>@item.Location</span>
                             </div>
                         </div>
                         <p

@@ -2,13 +2,9 @@
 @{
     ViewData["Title"] = "MyOrganization";
 }
-
-
 @using Dynamics.Utility
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
-
-
 
 @{
     var userString = Accessor.HttpContext.Session.GetString("user");
@@ -18,21 +14,20 @@
         currentUser = JsonConvert.DeserializeObject<User>(userString);
     }
 }
+<main class="flex flex-col items-center">
+    <div class="container my-5 p-5 pt-12">
+        <div class="my-5 flex justify-center">
+            <h1 class="text-center text-3xl">Your organization: </h1>
+        </div>
 
-<div class="container my-5 p-5 pt-12">
+        @foreach(var item in Model)
+        {
 
-    <div class="my-5 flex justify-center">
-        <h1 class="text-center text-3xl">Organization that You are being the CEO: </h1>
-    </div>
 
-    @foreach(var item in Model)
-    {
-        
-
-         if (!currentUser.UserID.Equals(item.CEO.UserID))
-         {
-             continue;
-         }
+        if (!currentUser.UserID.Equals(item.CEO.UserID))
+        {
+        continue;
+        }
         <div class="flex justify-center">
             <div class="card bg-base-100 w-96 shadow-xl ">
                 <figure>
@@ -46,7 +41,7 @@
 
                         </div>
                     </div>
-                    
+
                 </figure>
                 <div class="card-body">
                     <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
@@ -62,37 +57,74 @@
                 </div>
             </div>
         </div>
-    }
-</div>
-
-<div class="container my-5 p-5 pt-12">
-
-    <div class="my-5 flex justify-center">
-        <h1 class="text-center text-3xl">Organization that You are being the Member of that:</h1>
+        }
     </div>
 
+    <div class="container my-5 p-5 pt-12">
 
-    <div class="grid grid-cols-3 gap-4 ml-5 flex justify-center">
-        @foreach (var item in Model)
-        {
+        <div class="my-5 flex justify-center">
+            <h1 class="text-center text-3xl">Organization that you are a member of:</h1>
+        </div>
 
-            var organizationMemberTemp = new OrganizationMember();
-            foreach (var organizationMember in item.OrganizationMember)
+
+        <div class="grid grid-cols-3 gap-4 ml-5 flex justify-center">
+            @foreach (var item in Model)
             {
-                if (organizationMember.UserID.Equals(currentUser.UserID))
+
+                var organizationMemberTemp = new OrganizationMember();
+                //xet member of a org
+                foreach (var organizationMember in item.OrganizationMember)
                 {
-                    organizationMemberTemp = organizationMember;
+                    if (organizationMember.UserID.Equals(currentUser.UserID))
+                    {
+                        organizationMemberTemp = organizationMember;
+                        break;
+                    }
                 }
-            }
-            if (organizationMemberTemp.Status == 0)
-            {
-                <div class="flex justify-center">
+                if (organizationMemberTemp.Status == 0)
+                {
+                    <div class="flex justify-center">
+                        <div class="card bg-base-100 w-96 shadow-xl ">
+                            <figure>
+                                <div class="relative">
+                                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                        <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
+                                             alt="@item.OrganizationName" />
+                                    </a>
+                                    <div class="absolute top-2 left-8">
+                                        <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Organization</p>
+
+                                    </div>
+                                </div>
+
+                            </figure>
+                            <div class="card-body">
+                                <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                    <h2 class="card-title">@item.OrganizationName</h2>
+                                </a>
+                                <h4>Start date: @item.StartTime</h4>
+                                <p>@item.OrganizationDescription</p>
+                                <div class="card-actions justify-center my-5">
+                                    <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
+                                        <button class="btn btn-primary">Processing Accpect request join Organization</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (currentUser.UserID.Equals(item.CEO.UserID))
+                {
+                    continue;
+                }
+                else
+                {
                     <div class="card bg-base-100 w-96 shadow-xl ">
                         <figure>
                             <div class="relative">
                                 <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
                                     <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
-                                            alt="@item.OrganizationName" />
+                                         alt="@item.OrganizationName" />
                                 </a>
                                 <div class="absolute top-2 left-8">
                                     <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Organization</p>
@@ -109,49 +141,15 @@
                             <p>@item.OrganizationDescription</p>
                             <div class="card-actions justify-center my-5">
                                 <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                                    <button class="btn btn-primary">Processing Accpect request join Organization</button>
+                                    <button class="btn btn-primary">View Detail organization</button>
                                 </a>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-            else if (currentUser.UserID.Equals(item.CEO.UserID))
-            {
-                continue;
-            }
-            else
-            {
-                <div class="card bg-base-100 w-96 shadow-xl ">
-                    <figure>
-                        <div class="relative">
-                            <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                                <img src="@(item.OrganizationPictures ?? "https://via.placeholder.com/300x200")"
-                                        alt="@item.OrganizationName" />
-                            </a>
-                            <div class="absolute top-2 left-8">
-                                <p class="bg-green-500 text-white text-lg font-semibold px-2 py-0.5 rounded-full">Organization</p>
+                }
 
-                            </div>
-                        </div>
-
-                    </figure>
-                    <div class="card-body">
-                        <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                            <h2 class="card-title">@item.OrganizationName</h2>
-                        </a>
-                        <h4>Start date: @item.StartTime</h4>
-                        <p>@item.OrganizationDescription</p>
-                        <div class="card-actions justify-center my-5">
-                            <a asp-action="Detail" asp-controller="Organization" asp-route-organizationId="@item.OrganizationID">
-                                <button class="btn btn-primary">View Detail organization</button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             }
+        </div>
 
-        }
     </div>
-
-</div>
+</main>
