@@ -18,6 +18,7 @@ namespace Dynamics.Services
         {
             var result = await _db.OrganizationToProjectTransactionHistory.Where(otp => otp.Status == 0)
                                   .Where(otp => otp.OrganizationResource.OrganizationID.Equals(organizationId))
+                                  .OrderByDescending(otp => otp.Time)
                                   .Include(otp => otp.OrganizationResource)
                                   .Include(otp => otp.ProjectResource)
                                            .ThenInclude(pr => pr.Project)
@@ -37,6 +38,29 @@ namespace Dynamics.Services
             return result;
         }
 
+        public async Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByAcceptingAsync(Guid organizationId)
+        {
+            var result = await _db.OrganizationToProjectTransactionHistory.Where(otp => otp.Status == 1)
+                                  .Where(otp => otp.OrganizationResource.OrganizationID.Equals(organizationId))
+                                  .OrderByDescending(otp => otp.Time)
+                                  .Include(otp => otp.OrganizationResource)
+                                  .Include(otp => otp.ProjectResource)
+                                           .ThenInclude(pr => pr.Project)
+                                   .Select(otp => new OrganizationToProjectHistory
+                                   {
+                                       TransactionID = otp.TransactionID,
+                                       OrganizationResourceID = otp.OrganizationResourceID,
+                                       ProjectResourceID = otp.ProjectResourceID,
+                                       Status = otp.Status,
+                                       Time = otp.Time,
+                                       Amount = otp.Amount,
+                                       OrganizationResource = otp.OrganizationResource,
+                                       ProjectResource = otp.ProjectResource,
+
+                                   })
+                                   .ToListAsync();
+            return result;
+        }
 
     }
 }

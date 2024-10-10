@@ -16,7 +16,10 @@ namespace Dynamics.Utility
 
         public const string SESSION_Current_Organization_Resource_KEY = "CurrentOrganizationResource";//current Organization Resource
 
-        public const string SESSION_OrganizzationToProjectHistory_For_Organization_Key = "OTPHistory In project"; // get OTPHistory In project
+        public const string SESSION_OrganizzationToProjectHistory_For_Organization_Pending_Key = "OTPHistory In project pending"; // get OTPHistory In project pending
+
+        public const string SESSION_OrganizzationToProjectHistory_For_Organization_Accepting_Key = "OTPHistory In project accepting"; // get OTPHistory In project accepting
+
 
 
 

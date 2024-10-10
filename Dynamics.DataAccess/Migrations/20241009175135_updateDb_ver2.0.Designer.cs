@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241009131614_MergeWithNhanAndAddedAttachmentColumn")]
-    partial class MergeWithNhanAndAddedAttachmentColumn
+    [Migration("20241009175135_updateDb_ver2.0")]
+    partial class updateDb_ver20
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

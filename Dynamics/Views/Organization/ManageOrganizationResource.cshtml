@@ -18,7 +18,7 @@
         currentUser = JsonConvert.DeserializeObject<User>(userString);
     }
 
-    var OrganizationToProjectHistorys = Accessor.HttpContext.Session.Get<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key);
+    var OrganizationToProjectHistorysPending = Accessor.HttpContext.Session.Get<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Pending_Key);
 }
 
 <div class="py-5 pt-12 px-5 flex justify-center">
@@ -129,6 +129,43 @@
                 <div>
 
                     <div class=" px-5 py-3 w-auto">
+
+                        <div class="my-5 ">
+                            <div class="flex gap-x-6">
+                                <div>
+                                    <a asp-action="ExportExcel" asp-controller="ExcelExport">
+                                        <button type="submit" class="btn btn-primary">Export Excel</button>
+                                    </a>
+                                </div>
+
+                                <div>
+                                    <form asp-action="Upload" asp-controller="ExcelReader" enctype="multipart/form-data">
+                                        <div class="flex gap-x-6">
+                                            <label class="form-control">
+                                                <input id="file-upload" type="file" name="file" class="file-input file-input-bordered w-full max-w-xs">
+                                            </label>
+
+                                            <button type="submit"
+                                                    class=" text-md text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg w-full sm:w-auto px-6 py-2.5 text-center">
+                                                Confirm
+                                            </button>
+                                        </div>
+                                        
+                                    </form>
+                                    
+                                </div>
+
+                                
+
+                            </div>
+                            <span class="label label-text text-">If you donate multiple resources at once, download the execl and enter it into the web.</span>
+                            @if (ViewBag.Error != null)
+                            {
+                                <div class="text-danger">@ViewBag.Error</div>
+                            }
+                               
+                        </div>
+
                         <ul class="space-y-2">
                             @{int i = 1;}
                             @foreach (var item in Model.OrganizationResource)
@@ -186,7 +223,7 @@
                                 @{
                                     int i = 0;
                                 }
-                                @foreach (var item in OrganizationToProjectHistorys)
+                                @foreach (var item in OrganizationToProjectHistorysPending)
                                 {
                                     <div class="w-full border rounded-lg  p-4 bg-white shadow-xl rounded-box ">
                                         <div class="flex items-center justify-between mb-4">
