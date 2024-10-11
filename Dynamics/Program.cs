@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Cloudinary = CloudinaryDotNet.Cloudinary;
 
 
@@ -150,6 +151,15 @@ namespace Dynamics
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
             });
+
+            // Add serilog for debugging
+            var logger = new LoggerConfiguration()
+               .WriteTo.Console()
+               // .WriteTo.File("Logs/Logs.txt", rollingInterval: RollingInterval.Minute)
+               .MinimumLevel.Information() // You can change this one so that it filters out stuff
+               .CreateLogger();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger); // This one make it so that ASP will use it
 
             var app = builder.Build();
             // Redirect user to 404 page if not found

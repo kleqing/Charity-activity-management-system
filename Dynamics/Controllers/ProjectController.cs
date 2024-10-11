@@ -11,6 +11,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Newtonsoft.Json;
+using Serilog;
 using System.Composition;
 using Util = Dynamics.Utility.Util;
 
@@ -31,6 +32,7 @@ namespace Dynamics.Controllers
         private readonly IMapper _mapper;
         private readonly IProjectService _projectService;
         private readonly CloudinaryUploader _cloudinaryUploader;
+        private readonly ILogger<ProjectController> _logger;
 
         public ProjectController(IProjectRepository _projectRepo,
             IOrganizationRepository _organizationRepo,
@@ -44,7 +46,8 @@ namespace Dynamics.Controllers
             IWebHostEnvironment hostEnvironment,
             IMapper mapper,
             IProjectService projectService,
-            CloudinaryUploader cloudinaryUploader)
+            CloudinaryUploader cloudinaryUploader,
+            ILogger<ProjectController> logger)
         {
             this._projectRepo = _projectRepo;
             this._organizationRepo = _organizationRepo;
@@ -59,6 +62,7 @@ namespace Dynamics.Controllers
             this._projectService = projectService;
             _reportRepo = reportRepository;
             _cloudinaryUploader = cloudinaryUploader;
+            _logger = logger;
         }
 
         [Route("Project/Index/{userID:guid}")]
@@ -252,6 +256,7 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> SendReportProjectRequest(Report report)
         {
+            _logger.LogWarning("Send report project request");  
             report.ReporterID = new Guid(HttpContext.Session.GetString("currentUserID"));
             report.Type = ReportObjectConstant.Project;
             var res = await _reportRepo.SendReportProjectRequestAsync(report);
