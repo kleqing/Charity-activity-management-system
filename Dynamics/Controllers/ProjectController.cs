@@ -168,6 +168,9 @@ namespace Dynamics.Controllers
                         case ".txt":
                             return File(System.IO.File.ReadAllBytes(filepath), "text/plain",
                                 System.IO.Path.GetFileName(filepath));
+                        case ".csv":
+                            return File(System.IO.File.ReadAllBytes(filepath), "text/csv",
+                                System.IO.Path.GetFileName(filepath));
                     }
                     TempData[MyConstants.Success] = "Download file successful!";
                     return RedirectToAction(nameof(UpdateProjectProfile), new { id = new Guid(currentProjectID) });
@@ -454,7 +457,7 @@ namespace Dynamics.Controllers
             }
 
             var allResource = await _projectResourceRepo.FilterProjectResourceAsync(p =>
-                p.ProjectID.Equals(projectID) && !p.ResourceName.Equals("Money"));
+                p.ProjectID.Equals(projectID) && !p.ResourceName.Equals("Money") && p.Quantity < p.ExpectedQuantity);
             if (allResource == null)
             {
                 return NotFound();
@@ -479,14 +482,20 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> SendDonateRequest(SendDonateRequestVM sendDonateRequestVM)
         {
            var res = await _projectService.SendDonateRequestAsync(sendDonateRequestVM);
-            if (!res)
+            if (!string.IsNullOrEmpty(res))
             {
-                // Return JSON response with failure message
-                return Json(new { success = false, message = "Fail to send your donation request!" });
-            }
-            // Return success response
-            return Json(new { success = true, message = "Your donation request was sent successfully!" });
-            
+                if (res.Equals("Exceed"))
+                {
+                    // Return JSON response with failure message
+                    return Json(new { success = false, message = "The quantity of resource you want to donate is more than expected quantity!" });
+                }
+                else if (res.Equals(MyConstants.Success))
+                {
+                    return Json(new { success = true, message = "Your donation request was sent successfully!" });
+
+                }
+            }      
+            return Json(new { success = false, message = "Fail to send your donation request!" });
         }
 
         [Route("Project/ManageProjectDonor/{projectID}")]

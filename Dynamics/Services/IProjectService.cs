@@ -36,7 +36,7 @@ public interface IProjectService
     //manage transaction history of project--------
     public Task<List<UserToProjectTransactionHistory>> GetRandom5DonorsAsync(Guid projectID);
     public Task<SendDonateRequestVM> ReturnSendDonateRequestVMAsync(Guid projectID, string donor);
-    Task<bool> SendDonateRequestAsync(SendDonateRequestVM sendDonateRequestVM);
+    Task<string> SendDonateRequestAsync(SendDonateRequestVM sendDonateRequestVM);
     public Task<ProjectTransactionHistoryVM> ReturnProjectTransactionHistoryVMAsync(Guid projectID);
     Task<bool> AcceptDonateProjectRequestAllAsync(Guid projectID,string donor);
     Task<bool>DenyDonateProjectRequestAllAsync(Guid projectID,string donor);

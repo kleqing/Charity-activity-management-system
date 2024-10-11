@@ -440,7 +440,7 @@ namespace Dynamics.Controllers
                         ProjectID = Project.ProjectID,
                         ResourceName = ResourceSend.ResourceName,
                         Quantity = 0,
-                        ExpectedQuantity = 0,
+                        ExpectedQuantity = organizationToProjectHistory.Amount,
                         Unit = ResourceSend.Unit,
                     };
 

@@ -112,13 +112,22 @@ public class ProjectService : IProjectService
                 tempProjectOverviewDto.ProjectRaisedMoney = moneyRaised.Quantity ?? 0;
             }
             // Get project province address
-            var location = p.ProjectAddress.Split(",");
-            var city = location[0];
-            if (location.Length == 4)
+            if (!string.IsNullOrEmpty(p.ProjectAddress))
             {
-                city = location[3];
+                var location = p.ProjectAddress.Split(",");
+                var city = location[0];
+                if (location.Length == 4)
+                {
+                    city = location[3];
+                }
+                tempProjectOverviewDto.ProjectAddress = city;
+
             }
-            tempProjectOverviewDto.ProjectAddress = city;
+            else
+            {
+                tempProjectOverviewDto.ProjectAddress = p.ProjectAddress;
+
+            }
             // Get project first attachment
             if (p.Attachment != null) tempProjectOverviewDto.Attachment = p.Attachment.Split(",").FirstOrDefault();
             resultDtos.Add(tempProjectOverviewDto);
@@ -324,8 +333,9 @@ public class ProjectService : IProjectService
                 newProjectLeader.Status = 3;
             }
             await _projectMemberRepo.UpdateAsync(newProjectLeader);
+            return true;
         }
-        return true;
+        return false;
     }
     //get images
     public async Task<string> GetAllImagesAsync(Guid id, string owner)
@@ -588,10 +598,16 @@ public class ProjectService : IProjectService
         }
         return null;
     }
-    public async Task<bool> SendDonateRequestAsync(SendDonateRequestVM sendDonateRequestVM)
+    public async Task<string> SendDonateRequestAsync(SendDonateRequestVM sendDonateRequestVM)
     {
         if (sendDonateRequestVM != null)
         {
+            var projectResourceObj = await _projectResourceRepo.GetAsync(x => x.ResourceID.Equals(sendDonateRequestVM.UserDonate.ProjectResourceID));
+            var quantityAfterDonate = sendDonateRequestVM.UserDonate.Amount + projectResourceObj.Quantity;
+            if( quantityAfterDonate > projectResourceObj.ExpectedQuantity)
+            {
+                return "Exceed";
+            }
             if (!string.IsNullOrEmpty(sendDonateRequestVM.TypeDonor) &&
                 sendDonateRequestVM.TypeDonor.Equals("User"))
             {
@@ -601,8 +617,10 @@ public class ProjectService : IProjectService
                     var res = await _userToProjectTransactionHistoryRepo.AddUserDonateRequestAsync(sendDonateRequestVM.UserDonate);
                     if (!res)
                     {
-                        return false;
+                        return MyConstants.Error;
                     }
+                    return MyConstants.Success;
+
                 }
             }
             else if (!string.IsNullOrEmpty(sendDonateRequestVM.TypeDonor) &&
@@ -619,18 +637,17 @@ public class ProjectService : IProjectService
                     var res = await _organizationToProjectTransactionHistoryRepo.AddOrgDonateRequestAsync(sendDonateRequestVM.OrgDonate);
                     if (!res)
                     {
-                        return false;
+                        return MyConstants.Error;
+
                     }
+                    return MyConstants.Success;
                 }
-                else
-                {
-                    // Return JSON response with failure message for organization donation
-                    return false;
-                }
+               
             }
-            return true;
+            return MyConstants.Error;
         }
-        return false;
+        return MyConstants.Error;
+
     }
     public async Task<ProjectTransactionHistoryVM> ReturnProjectTransactionHistoryVMAsync(Guid projectID)
     {
