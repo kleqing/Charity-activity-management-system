@@ -6,5 +6,7 @@ namespace Dynamics.Services
     {
 
         Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByPendingAsync(Guid organizationId);
+        Task<List<OrganizationToProjectHistory>> GetAllOrganizationToProjectHistoryByAcceptingAsync(Guid organizationId);
+
     }
 }

@@ -22,7 +22,9 @@ namespace Dynamics.Models.Models
         public string? ProjectEmail { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string? ProjectPhoneNumber { get; set; }
-        public string? ProjectAddress { get; set; }
+
+        [Required(ErrorMessage = "The Project Address field is required *")]
+        public string ProjectAddress { get; set; }
         [Required]
         public int ProjectStatus { get; set; }
         [ValidateNever]

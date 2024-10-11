@@ -18,7 +18,9 @@ namespace Dynamics.Models.Models.ViewModel
         public string ProjectEmail { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string ProjectPhoneNumber { get; set; }
-        public string? ProjectAddress { get; set; }
+
+        [Required(ErrorMessage = "The Project Address field is required *")]
+        public string ProjectAddress { get; set; }
         public int ProjectStatus { get; set; }
         public string? Attachment { get; set; }
         public string ProjectDescription { get; set; }

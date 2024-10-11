@@ -5,6 +5,8 @@ using Dynamics.Services;
 using Dynamics.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Evaluation;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Linq;
@@ -179,7 +181,11 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ManageOrganizationMember()
         {
             var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
-            return View(currentOrganization);
+            //Creat current organization
+            var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(currentOrganization.OrganizationID));
+            HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
+
+            return View(organizationVM);
         }
 
         public async Task<IActionResult> sendRequestJoinOrganization(Guid organizationId, Guid userId)
@@ -315,7 +321,11 @@ namespace Dynamics.Controllers
         {
 
             var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
-            return View(currentOrganization);
+            //Creat current organization
+            var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(currentOrganization.OrganizationID));
+            HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
+
+            return View(organizationVM);
         }
 
 
@@ -327,8 +337,12 @@ namespace Dynamics.Controllers
             //requets donate is accpected
             var UserToOrganizationTransactionHistoryInAOrganizations = await _userToOragnizationTransactionHistoryVMService.GetTransactionHistoryIsAccept(currentOrganization.OrganizationID);
 
-            var OrganizationToProjectHistorys = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByPendingAsync(currentOrganization.OrganizationID);
-            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, OrganizationToProjectHistorys);
+            var OrganizationToProjectHistorysPending = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByPendingAsync(currentOrganization.OrganizationID);
+            var OrganizationToProjectHistorysAccepting = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByAcceptingAsync(currentOrganization.OrganizationID);
+
+            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Pending_Key, OrganizationToProjectHistorysPending);
+            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Accepting_Key, OrganizationToProjectHistorysAccepting);
+
 
             return View(UserToOrganizationTransactionHistoryInAOrganizations);
         }
@@ -340,8 +354,8 @@ namespace Dynamics.Controllers
             var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(currentOrganization.OrganizationID));
             HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
             
-            var OrganizationToProjectHistorys = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByPendingAsync(currentOrganization.OrganizationID);
-            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Key, OrganizationToProjectHistorys);
+            var OrganizationToProjectHistorysPending = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByPendingAsync(currentOrganization.OrganizationID);
+            HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Pending_Key, OrganizationToProjectHistorysPending);
             return View(organizationVM);
         }
 
@@ -407,11 +421,12 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> SendResoueceOrganizationToProject(OrganizationToProjectHistory organizationToProjectHistory, Guid projectId)
         {
-            if(organizationToProjectHistory != null && projectId != null && organizationToProjectHistory.Amount > 0)
+            var ResourceSend = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(organizationToProjectHistory.OrganizationResourceID));
+
+            if (organizationToProjectHistory != null && projectId != Guid.Empty && organizationToProjectHistory.Amount > 0 && organizationToProjectHistory.Amount <= ResourceSend.Quantity)
             {
                 var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
-                var ResourceSend = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(organizationToProjectHistory.OrganizationResourceID));
 
                 var Project = await _projectVMService.GetProjectAsync(p => p.ProjectID.Equals(projectId));
 
@@ -473,7 +488,14 @@ namespace Dynamics.Controllers
                 }
                    
             }
+            if(organizationToProjectHistory.Amount <= 0 || organizationToProjectHistory.Amount > ResourceSend.Quantity)
 
+                ViewBag.MessageExcessQuantity = $"*Quantity more than 0 and less than equal {ResourceSend.Quantity}";
+
+            if(projectId == Guid.Empty)
+            {
+                ViewBag.MessageProject = "*Choose project to send";
+            }
             return View(organizationToProjectHistory);
         }
 

@@ -90,5 +90,31 @@ namespace Dynamics.Services
                                     }).ToListAsync();
             return result;
         }
+
+
+        //for Organization of Ceo
+        public async Task<OrganizationVM> GetOrganizationVMByUserIDAsync(Guid userId)
+        {
+            var result = await _db.Organizations
+                                    .Where(o => o.OrganizationMember.Any(om => om.UserID.Equals(userId) && om.Status == 2))
+                                    .Include(o => o.OrganizationMember)
+                                    .ThenInclude(om => om.User)
+                                    .Select(o => new OrganizationVM
+                                    {
+                                        OrganizationID = o.OrganizationID,
+                                        OrganizationName = o.OrganizationName,
+                                        OrganizationEmail = o.OrganizationEmail,
+                                        OrganizationPhoneNumber = o.OrganizationPhoneNumber,
+                                        OrganizationAddress = o.OrganizationAddress,
+                                        OrganizationDescription = o.OrganizationDescription,
+                                        OrganizationPictures = o.OrganizationPictures,
+                                        StartTime = o.StartTime,
+                                        ShutdownDay = o.ShutdownDay,
+                                        OrganizationMember = o.OrganizationMember.ToList(),
+                                        CEO = o.OrganizationMember.Where(om => om.Status == 2).FirstOrDefault().User,
+                                        Members = o.OrganizationMember.Where(om => om.Status > 0).Count(),
+                                    }).FirstOrDefaultAsync();
+            return result;
+        }
     }
 }
