@@ -57,6 +57,7 @@ namespace Dynamics.DataAccess
     modelBuilder.Entity<OrganizationMember>().HasKey(om => new { om.OrganizationID, om.UserID });
     modelBuilder.Entity<Request>().HasKey(r => r.RequestID);
     modelBuilder.Entity<User>().HasKey(u => u.UserID);
+    modelBuilder.Entity<History>().HasKey(r => r.HistoryID);
 
     // Relationships (Foreign Keys)
 
@@ -179,11 +180,6 @@ namespace Dynamics.DataAccess
                 .HasForeignKey(k => k.ProjectResourceID)
                 .OnDelete(DeleteBehavior.NoAction);
 
-    // History to Project
-    modelBuilder.Entity<History>()
-        .HasOne(h => h.Project)
-        .WithMany(p => p.History)
-        .HasForeignKey(h => h.ProjectID);
            
         }
     }

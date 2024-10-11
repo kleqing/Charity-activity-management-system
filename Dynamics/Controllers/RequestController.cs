@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
 using Dynamics.Utility;
 using Microsoft.EntityFrameworkCore;
+using ILogger = Serilog.ILogger;
 
 namespace Dynamics.Controllers
 {
@@ -13,11 +14,13 @@ namespace Dynamics.Controllers
 	{
 		private readonly IRequestRepository _requestRepo;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly ILogger<RequestController> _logger;
 
-		public RequestController(IRequestRepository requestRepository, UserManager<IdentityUser> userManager)
+		public RequestController(IRequestRepository requestRepository, UserManager<IdentityUser> userManager, ILogger<RequestController> logger)
 		{
 			_requestRepo = requestRepository;
 			_userManager = userManager;
+			_logger = logger;
 		}
 		public async Task<IActionResult> Index(string searchQuery, string filterQuery, int pageNumber = 1, int pageSize = 12)
 		{
@@ -119,6 +122,7 @@ namespace Dynamics.Controllers
 			{
 				obj.Attachment = "/images/Requests/Placeholder/xddFaker.png";
 			}
+			_logger.LogInformation("Request created");
 			await _requestRepo.AddAsync(obj);
 			return RedirectToAction("MyRequest", "Request");
 		}
@@ -129,25 +133,19 @@ namespace Dynamics.Controllers
 				return NotFound();
 			}
 			// Get the currently logged-in user
+			_logger.LogInformation("Get logged-in user");
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
 			{
 				return Unauthorized();
 			}
-			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
-			Guid userId = Guid.Empty;
-			var userJson = HttpContext.Session.GetString("user");
-			if (!string.IsNullOrEmpty(userJson))
-			{
-				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
-				userId = userJsonC.UserID;
-			}
-			var request = await _requestRepo.GetByIdAsync(r => r.RequestID.Equals(id), role, userId);
+			var userId = Guid.Parse(user.Id);
+			var request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null)
 			{
 				return NotFound();
 			}
-			if (role == "User" && request.UserID != userId)
+			if (request.UserID != userId)
 			{
 				return Forbid(); // If the user is not the owner of the request
 			}
@@ -170,38 +168,31 @@ namespace Dynamics.Controllers
 				return Unauthorized();
 			}
 			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
-			var userId = Guid.Empty;
-			var userJson = HttpContext.Session.GetString("user");
-			if (!string.IsNullOrEmpty(userJson))
-			{
-				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
-				userId = userJsonC.UserID;
-			}
+			var userId = Guid.Parse(user.Id);
 			// Get existing request
-			var existingRequest = await _requestRepo.GetByIdAsync(r => r.RequestID.Equals(obj.RequestID), role, userId);
+			_logger.LogInformation("Get existing request");
+			var existingRequest = await _requestRepo.GetAsync(r => r.RequestID.Equals(obj.RequestID));
 			if (existingRequest == null)
 			{
 				return NotFound();
 			}
-			if (role == "User")
+			existingRequest.RequestTitle = obj.RequestTitle;
+			existingRequest.Content = obj.Content;
+			existingRequest.RequestEmail = obj.RequestEmail;
+			existingRequest.RequestPhoneNumber = obj.RequestPhoneNumber;
+			existingRequest.Location = obj.Location;
+			existingRequest.isEmergency = obj.isEmergency;
+			if (images != null && images.Count > 0)
 			{
-				existingRequest.RequestTitle = obj.RequestTitle;
-				existingRequest.Content = obj.Content;
-				existingRequest.RequestEmail = obj.RequestEmail;
-				existingRequest.RequestPhoneNumber = obj.RequestPhoneNumber;
-				existingRequest.Location = obj.Location;
-				existingRequest.isEmergency = obj.isEmergency;
-				if (images != null && images.Count > 0)
+				string imagePath = Util.UploadMultiImage(images, $@"images\Requests\" + existingRequest.RequestID.ToString(), userId);
+				// append new images if there are existing images
+				if (!string.IsNullOrEmpty(imagePath))
 				{
-					string imagePath = Util.UploadMultiImage(images, $@"images\Requests\" + existingRequest.RequestID.ToString(), userId);
-					// append new images if there are existing images
-					if (!string.IsNullOrEmpty(imagePath))
-					{
-						existingRequest.Attachment = string.IsNullOrEmpty(existingRequest.Attachment) ? imagePath 
-							: existingRequest.Attachment + "," + imagePath;
-					}
+					existingRequest.Attachment = string.IsNullOrEmpty(existingRequest.Attachment) ? imagePath 
+						: existingRequest.Attachment + "," + imagePath;
 				}
 			}
+			_logger.LogInformation("Edit request");
 			await _requestRepo.UpdateAsync(existingRequest);
 			return RedirectToAction("MyRequest", "Request");
 		}
@@ -218,8 +209,10 @@ namespace Dynamics.Controllers
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeletePost(Guid? id)
 		{
+			_logger.LogInformation("Get deleted request");
 			Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
 			if (request == null) { return NotFound(); };
+			_logger.LogInformation("Delete request");
 			await _requestRepo.DeleteAsync(request);
 			return RedirectToAction("MyRequest", "Request");
 		}

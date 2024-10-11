@@ -3,12 +3,14 @@ using Dynamics.DataAccess.Repository;
 using Dynamics.Services;
 using Dynamics.Utility;
 using Dynamics.Utility.Mapper;
+using Google.Apis.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Dynamics
 {
@@ -18,7 +20,12 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
-
+            var logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .MinimumLevel.Information()
+                .CreateLogger();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger);
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             // Add service and scope for Google auth
@@ -100,8 +107,7 @@ namespace Dynamics
             .AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
-
-
+            
             // Configure default routes (This should be after configured the Identity)
             builder.Services.ConfigureApplicationCookie(options =>
             {

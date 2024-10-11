@@ -424,7 +424,7 @@ namespace Dynamics.Controllers
 
         //----------------------manage project member -------------
         [Route("Project/ManageProjectMember/{projectID}")]
-        public async Task<IActionResult> ManageProjectMember([FromRoute] Guid projectID)
+        public async Task<IActionResult> ManageProjectMember([FromRoute] Guid projectID, int pageNumberPM = 1, int pageSize = 10)
         {
             var allProjectMember =
                 projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status >= 1, "User");
@@ -433,13 +433,20 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+            
+            var queryPM = _pagination.ToQueryable(allProjectMember);
+            var totalPM = allProjectMember.Count();
+            var totalPagePM = (int)Math.Ceiling((double)totalPM / pageSize);
+            var paginatedPM = _pagination.PaginationMethod(queryPM, pageNumberPM, pageSize);
+            ViewBag.currentPagePM = pageNumberPM;
+            ViewBag.totalPagesPM = totalPagePM;
 
             var joinRequests =
                 projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0, "User") ??
                 Enumerable.Empty<ProjectMember>();
             var nums = joinRequests.Count();
             ViewData["hasJoinRequest"] = nums > 0;
-            return View(allProjectMember);
+            return View(paginatedPM);
         }
 
         [Route("Project/DeleteProjectMember/{memberID}")]
@@ -518,7 +525,7 @@ namespace Dynamics.Controllers
 
         //review request
         [Route("Project/ReviewJoinRequest/{projectID}")]
-        public async Task<IActionResult> ReviewJoinRequest([FromRoute] Guid projectID)
+        public async Task<IActionResult> ReviewJoinRequest([FromRoute] Guid projectID, int pageNumberJR = 1, int pageSizeJR = 10)
         {
             var allJoinRequest =
                 projectRepository.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0, "User");
@@ -527,8 +534,15 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
-
-            return View(allJoinRequest);
+            //pagination
+            var queryJR = _pagination.ToQueryable(allJoinRequest);
+            var totalJR = allJoinRequest.Count();
+            var totalPageJR = (int)Math.Ceiling((double)totalJR / pageSizeJR);
+            var paginatedJR = _pagination.PaginationMethod(queryJR, pageNumberJR, pageSizeJR);
+            ViewBag.currentPagejR = pageNumberJR;
+            ViewBag.totalPagesJR = totalPageJR;
+            
+            return View(paginatedJR);
         }
 
         [Route("Project/AcceptedJoinRequest/{memberID}")]
@@ -747,7 +761,7 @@ namespace Dynamics.Controllers
         }
 
         [Route("Project/ManageProjectDonor/{projectID}")]
-        public async Task<IActionResult> ManageProjectDonor(Guid projectID)
+        public async Task<IActionResult> ManageProjectDonor(Guid projectID, int pageNumberUD = 1, int pageNumberOD = 1, int pageSize = 10)
         {
             var allUserDonate =
                 await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 1);
@@ -762,11 +776,27 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+            
+            //pagination
+            var queryUD = _pagination.ToQueryable(allUserDonate);
+            var totalUD = allUserDonate.Count();
+            var totalPageUD = (int)Math.Ceiling((double)totalUD / pageSize);
+            var paginatedUD = _pagination.PaginationMethod(queryUD, pageNumberUD, pageSize);
+            ViewBag.currentPageUD = pageNumberUD;
+            ViewBag.totalPagesUD = totalPageUD;
+            
+            var queryOD = _pagination.ToQueryable(allOrganizationDonate);
+            var totalOD = allOrganizationDonate.Count();
+            var totalPageOD = (int)Math.Ceiling((double)totalOD / pageSize);
+            var paginatedOD = _pagination.PaginationMethod(queryOD, pageNumberOD, pageSize);
+            ViewBag.currentPageOD = pageNumberOD;
+            ViewBag.totalPagesOD = totalPageOD;
+            
 
             ProjectTransactionHistoryVM projectTransactionHistoryVM = new ProjectTransactionHistoryVM()
             {
-                UserDonate = allUserDonate,
-                OrganizationDonate = allOrganizationDonate
+                UserDonate = paginatedUD,
+                OrganizationDonate = paginatedOD
             };
             int nums =
                 (await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0) ?? new List<UserToProjectTransactionHistory>()).Count();
@@ -785,7 +815,7 @@ namespace Dynamics.Controllers
 
         [HttpGet]
         [Route("Project/ReviewUserDonateRequest/{projectID}")]
-        public async Task<IActionResult> ReviewUserDonateRequest(Guid projectID)
+        public async Task<IActionResult> ReviewUserDonateRequest(Guid projectID, int pageNumberUD = 1, int pageSizeUD = 10)
         {
             var allUserDonate =
                 await projectRepository.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0);
@@ -793,13 +823,21 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+            
+            //pagination
+            var queryUD = _pagination.ToQueryable(allUserDonate);
+            var totalUD = allUserDonate.Count();
+            var totalPageUD = (int)Math.Ceiling((double)totalUD / pageSizeUD);
+            var paginatedUD = _pagination.PaginationMethod(queryUD, pageNumberUD, pageSizeUD);
+            ViewBag.currentPageUD = pageNumberUD;
+            ViewBag.totalPagesUD = totalPageUD;
 
             return View(allUserDonate);
         }
 
         [HttpGet]
         [Route("Project/ReviewOrgDonateRequest/{projectID}")]
-        public async Task<IActionResult> ReviewOrgDonateRequest(Guid projectID)
+        public async Task<IActionResult> ReviewOrgDonateRequest(Guid projectID, int pageNumberOD = 1, int pageSizeOD = 10)
         {
             var allOrgDonate =
                 await projectRepository.GetAllOrganizationDonateAsync(
@@ -809,6 +847,14 @@ namespace Dynamics.Controllers
                 return NotFound();
             }
 
+            //pagination
+            var queryOD = _pagination.ToQueryable(allOrgDonate);
+            var totalOD = allOrgDonate.Count();
+            var totalPageOD = (int)Math.Ceiling((double)totalOD / pageSizeOD);
+            var paginatedOD = _pagination.PaginationMethod(queryOD, pageNumberOD, pageSizeOD);
+            ViewBag.currentPageOD = pageNumberOD;
+            ViewBag.totalPagesOD = totalPageOD;
+            
             return View(allOrgDonate);
         }
 
