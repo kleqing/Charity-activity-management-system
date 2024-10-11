@@ -74,7 +74,8 @@ namespace Dynamics.DataAccess.Repository
             }
             // Use split query if you are including a collection. tbh it is better to use a projection
             // Use split query if you are including a collection. tbh it is better to use a projection
-            return await _db.Projects.Include(pr => pr.ProjectResource)
+            return await _db.Projects
+                .Include(pr => pr.ProjectResource)
                 .Include(pr => pr.ProjectMember).ThenInclude(u => u.User)
                 .AsSplitQuery()
                 .AsSplitQuery()

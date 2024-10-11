@@ -855,7 +855,7 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> CreateProjectByImportData(Guid requestId)
         {
-            Request request = await requestRepository.GetAsync(r => r.RequestID.Equals(requestId));
+            Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(requestId));
 
             //get current user
             var userString = HttpContext.Session.GetString("user");
@@ -992,7 +992,7 @@ namespace Dynamics.Controllers
 
 
 
-                        if (await projectRepository.AddProjectAsync(project))
+                        if (await _projectRepo.AddProjectAsync(project))
                         {
                             var projectResource = new ProjectResource()
                             {
@@ -1002,13 +1002,13 @@ namespace Dynamics.Controllers
                                 ExpectedQuantity = expectedQuantity,
                                 Unit = Unit,
                             };
-                            await projectRepository.AddProjectResourceAsync(projectResource);
+                            await _projectRepo.AddProjectResourceAsync(projectResource);
 
                             if(project.RequestID != null)
                             {
-                                Request request = await requestRepository.GetAsync(r => r.RequestID.Equals(project.RequestID));
+                                Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(project.RequestID));
                                 request.Status = 2;
-                                await requestRepository.UpdateAsync(request);
+                                await _requestRepo.UpdateAsync(request);
                             }
                            
 
@@ -1056,9 +1056,9 @@ namespace Dynamics.Controllers
                 ProjectID = projectId,
                 Status = 2,
             };
-            await projectRepository.AddProjectMemberAsync(projectMember);
+            await _projectRepo.AddProjectMemberAsync(projectMember);
            
-            var currentProject = await projectRepository.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
+            var currentProject = await _projectRepo.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
             HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }

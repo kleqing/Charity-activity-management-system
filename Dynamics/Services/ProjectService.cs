@@ -549,7 +549,7 @@ public class ProjectService : IProjectService
     public async Task<List<UserToProjectTransactionHistory>> GetRandom5DonorsAsync(Guid projectID)
     {
         var userDonate = _context.UserToProjectTransactionHistories
-            .Include(x => x.User).Include(x => x.ProjectResource).ThenInclude(x => x.Project)
+            .Include(x => x.User).Include(x => x.ProjectResource)
             .Where(x => x.ProjectResource.ProjectID.Equals(projectID) && x.Status == 1)
             .OrderBy(x => Guid.NewGuid())
             .Take(5)
