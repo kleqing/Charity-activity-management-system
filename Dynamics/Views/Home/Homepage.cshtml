@@ -15,6 +15,13 @@
     {
         Layout = "CustomLayout/_LayoutWithNavbarAndImage";
     }
+    var userString = Accessor.HttpContext.Session.GetString("user");
+    User currentUser = null;
+    if (userString != null)
+    {
+        currentUser = JsonConvert.DeserializeObject<User>(userString);
+        ViewBag.UserID = currentUser.UserID; // Uses to pass to the cards
+    }
 }
 
 <!-- The body of the home page -->
@@ -43,7 +50,7 @@
                     {
                         foreach (var request in Model.Requests)
                         {
-                            if(request.Status != 1) continue; // Skip the one that has not been reviewed(0) accepted(2) banned(-1)
+                            if(request.Status != 1) continue; // Skip the one that has not been pending(0) accepted by organization(2) banned(-1)
                             <partial name="CustomComponent/OverviewCard/RequestOverview" model="request"/>
                         }
                     }

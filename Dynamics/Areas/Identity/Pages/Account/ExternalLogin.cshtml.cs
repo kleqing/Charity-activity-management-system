@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using JsonConverter = Newtonsoft.Json.JsonConverter;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
+using ILogger = Serilog.ILogger;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {
@@ -38,7 +38,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
             _userRepo = userRepo;
@@ -60,7 +59,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
         // Prevent unauthorized access to the page
         public IActionResult OnGet() => RedirectToPage("./Login");
 
-
+        // When user click on the button
         public IActionResult OnPost(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
@@ -72,6 +71,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
         // Login
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme); // Clear cookies for clean process
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
@@ -95,8 +95,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.",
-                    info.Principal.Identity.Name, info.LoginProvider);
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 await _signInManager.SignInAsync(existingUser, isPersistent: false, authenticationMethod: null);
                 if (User.IsInRole(RoleConstants.Admin))
                 {
@@ -129,21 +128,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("./Lockout");
             }
-            else
-            {
-                // If the user does not have an account, then ask the user to create an account.
-                // Do we need this though ?
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
-                {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
-                }
-            }
-
             return Page();
         }
 
@@ -159,17 +143,20 @@ namespace Dynamics.Areas.Identity.Pages.Account
             }
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                // Create a new identity user base on Google information
+                var user = new IdentityUser();
+                user.UserName = Input.Email;
+                user.Email = Input.Email;
 
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user); // Create user with no password bc of Google login
+                
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
-
-                    var existed = await _userManager.FindByEmailAsync(user.Email);
-                    if (result.Succeeded && existed != null)
+                    // add external login to user so that he will be able to sign in using external login
+                    result = await _userManager.AddLoginAsync(user, info); 
+                    // No need for this anymore because if user exist, it will use the exist account to log in instead (Look at the login section)
+                    // var existed = await _userManager.FindByEmailAsync(user.Email);
+                    if (result.Succeeded)
                     {
                         // Add user to the database after creating the user with external login
                         await _userRepo.AddAsync(new User
@@ -180,14 +167,12 @@ namespace Dynamics.Areas.Identity.Pages.Account
                             UserAvatar = info.Principal.FindFirstValue("picture"),
                             UserRole = RoleConstants.User,
                         });
-
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
-                        existed.EmailConfirmed = true;
-                        await _userManager.UpdateAsync(existed);
+                        // existed.EmailConfirmed = true;
+                        // await _userManager.UpdateAsync(existed);
 
                         // We don't need to confirm the email if the user use Google auth
-
                         await _emailSender.SendEmailAsync(Input.Email, "Register Confirmation", $"You have register successfully to Dynamics");
 
                         // Set the session for the app:
@@ -213,30 +198,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
             ProviderDisplayName = info.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();
-        }
-
-
-        private IdentityUser CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<IdentityUser>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                                                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                                                    $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
-            }
-        }
-        private IUserEmailStore<IdentityUser> GetEmailStore()
-        {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-
-            return (IUserEmailStore<IdentityUser>)_userStore;
         }
     }
 }

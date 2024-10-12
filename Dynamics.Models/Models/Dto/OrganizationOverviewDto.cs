@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.SqlServer.Server;
 
 namespace Dynamics.Models.Models.Dto;
 
@@ -11,4 +12,8 @@ public class OrganizationOverviewDto
     public string? OrganizationDescription { get; set; }
     public string? OrganizationPictures { get; set; }
     public int OrganizationMemberCount { get; set; }
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+    public DateOnly StartTime { get; set; }
+    public virtual ICollection<OrganizationMember> OrganizationMember { get; set; }
+
 }

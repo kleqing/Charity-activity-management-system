@@ -26,6 +26,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+		<PackageReference Include="Serilog" Version="4.0.2" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -45,7 +48,6 @@
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\styles.css" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Helps\" />
 	  <Folder Include="wwwroot\images\Organization\" />
 	  <Folder Include="wwwroot\files\Project\" />
 	  <Folder Include="wwwroot\images\Project\Phase\" />

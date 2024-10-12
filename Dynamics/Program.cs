@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Cloudinary = CloudinaryDotNet.Cloudinary;
 
 
@@ -19,6 +20,15 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
+
+            // Add serilog for debugging
+            var logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                // .WriteTo.File("Logs/Logs.txt", rollingInterval: RollingInterval.Minute)
+                .MinimumLevel.Information() // You can change this one so that it filters out stuff
+                .CreateLogger();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger); // This one make it so that ASP will use it
 
             // Add cache to the container, allow admin dashboard get the latest data
             // working with other services as well
@@ -54,7 +64,7 @@ namespace Dynamics
                 {
                     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = false; // No confirm account required
+                    options.SignIn.RequireConfirmedAccount = true; // No confirm account required
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;

@@ -115,13 +115,14 @@ namespace Dynamics.Controllers
                 // Update the session as well
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
                 TempData[MyConstants.Success] = "User updated!";
+                ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 ModelState.AddModelError("", "Something went wrong, please try again later.");
                 return View(user);
             }
-
+            
             return View(user);
         }
 
@@ -143,7 +144,6 @@ namespace Dynamics.Controllers
             {
                 TempData["Google"] = "Your account is bounded with google account.";
             }
-
             return View();
         }
 
@@ -184,6 +184,7 @@ namespace Dynamics.Controllers
 
             // Add a message and refresh the page
             TempData[MyConstants.Success] = "Password changed!";
+            // Sign in the user again
             await _signInManager.RefreshSignInAsync(currentUser);
             // return RedirectToAction("Logout", "Auth");
             return RedirectToAction("Account", "User");
@@ -281,7 +282,6 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> CancelJoinRequest(Guid userID, Guid targetID, string type)
         {
             var msg = "Something went wrong, please try again later.";
-            // TODO: Wait for Tuan and Huyen's delete from project table
             try
             {
                 switch (type.ToLower())

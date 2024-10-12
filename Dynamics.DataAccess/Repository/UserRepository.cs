@@ -108,9 +108,16 @@ namespace Dynamics.DataAccess.Repository
             {
                 return false;
             }
-
+            // Things that identity might need to update: Name, Email
+            var identityUser = await _userManager.FindByIdAsync(user.UserID.ToString());
+            if (identityUser != null)
+            {
+                identityUser.UserName = user.UserFullName;
+                identityUser.Email = user.UserEmail;
+            }
             // Only update the property that has the same name between 2 models
             _db.Entry(existingItem).CurrentValues.SetValues(user);
+            await _userManager.UpdateAsync(identityUser);
             await _db.SaveChangesAsync();
             return true;
         }

@@ -58,7 +58,7 @@ namespace Dynamics.DataAccess
             modelBuilder.Entity<OrganizationMember>().HasKey(om => new { om.OrganizationID, om.UserID });
             modelBuilder.Entity<Request>().HasKey(r => r.RequestID);
             modelBuilder.Entity<User>().HasKey(u => u.UserID);
-
+            modelBuilder.Entity<History>().HasKey(h => h.HistoryID);
             // Relationships (Foreign Keys)
 
             // Report to User: one user can have many reports
