@@ -217,6 +217,7 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProjectAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProjectDescription")

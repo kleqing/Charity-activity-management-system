@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dynamics.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241009131614_MergeWithNhanAndAddedAttachmentColumn")]
-    partial class MergeWithNhanAndAddedAttachmentColumn
+    [Migration("20241012035506_Merge with Huyen")]
+    partial class MergewithHuyen
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -220,6 +220,7 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProjectAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProjectDescription")

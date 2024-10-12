@@ -9,11 +9,14 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="EPPlus" Version="4.5.3.3" />
+		<PackageReference Include="EPPlus" Version="4.5.3.3" />
 		<PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
 		<PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
 		<PackageReference Include="Google.Apis.Oauth2.v2" Version="1.68.0.1869" />
 		<PackageReference Include="Google.Apis.Sheets.v4" Version="1.68.0.3547" />
 		<PackageReference Include="Json.Net" Version="1.0.33" />
+		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
@@ -25,9 +28,9 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
 		<PackageReference Include="Serilog" Version="4.0.2" />
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
 	</ItemGroup>
 
@@ -48,6 +51,15 @@
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\styles.css" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Helps\" />
+	  <Folder Include="wwwroot\files\Organization\" />
+		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+		<PackageReference Include="Serilog" Version="4.0.2" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+	  <Folder Include="Helps\" />
+	  <Folder Include="wwwroot\files\Organization\" />
 	  <Folder Include="wwwroot\images\Organization\" />
 	  <Folder Include="wwwroot\files\Project\" />
 	  <Folder Include="wwwroot\images\Project\Phase\" />

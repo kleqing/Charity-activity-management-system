@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Dynamics.Utility;
 using Serilog;
 using ILogger = Serilog.ILogger;
+using Dynamics.Models.Models;
 
 namespace Dynamics.Areas.Identity.Pages.Account
 {

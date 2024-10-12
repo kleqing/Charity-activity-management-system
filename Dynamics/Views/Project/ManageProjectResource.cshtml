@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Http
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
-@inject IProjectRepository ProjectRepository
+@inject IProjectMemberRepository ProjectMemberRepository
 
 <link rel="stylesheet" href="~/css/output.css">
 <!-- Navbar -->
@@ -11,7 +11,7 @@
     Layout = "~/Views/Shared/_LayoutProject.cshtml";
     var currentUserID = Accessor.HttpContext.Session.GetString("currentUserID");
     var currentProjectID = Accessor.HttpContext.Session.GetString("currentProjectID");
-    var ProjectMemberOfUser = ProjectRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(new Guid(currentUserID)));
+    var ProjectMemberOfUser = ProjectMemberRepository.FilterProjectMember(p => p.ProjectID.Equals(new Guid(currentProjectID)) && p.UserID.Equals(new Guid(currentUserID)));
     var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
     ProjectResource projectResource = new ProjectResource();
     projectResource.ProjectID = new Guid(currentProjectID);
@@ -108,9 +108,19 @@
                             <label asp-for="@item.Unit" class="block mb-2 text-md font-medium text-gray-900">
                                 Enter resource unit
                             </label>
-                            <input name="Unit" type="text" asp-for="@item.Unit" 
-                                   class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                   required />
+                            @if(item.Unit.ToLower().Trim().Equals("vnd")&& item.ResourceName.ToLower().Trim().Equals("money"))
+                            {
+                                <input readonly name="Unit" type="text" asp-for="@item.Unit"
+                                       class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required />
+                            }
+                            else
+                            {
+                                <input name="Unit" type="text" asp-for="@item.Unit"
+                                       class="bg-white border border-gray-300 text-navy-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                       required />
+                            }
+                             
                             <span asp-validation-for="@item.Unit" class="text-error"></span>
                         </div>
                     </div>
