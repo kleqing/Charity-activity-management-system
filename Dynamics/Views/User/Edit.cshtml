@@ -1,7 +1,4 @@
-﻿@using Azure.Core
-@using Dynamics.Models.AuthModels
-@using Microsoft.CodeAnalysis.Operations
-@model Dynamics.Models.Models.User
+﻿@model Dynamics.Models.Models.User
 
 @{
     ViewData["Title"] = "Edit";
@@ -22,17 +19,16 @@
     <!-- Main content -->
     <div class="divider divider-horizontal"></div>
     <form asp-action="Edit" asp-controller="User" enctype="multipart/form-data" method="post"
-          id="user-information" class="flex flex-col gap-4 justify-center items-center flex-1">
+          id="user-information" class="flex flex-col gap-4 justify-center items-center flex-1 bg-white rounded-md shadow-md p-12 ">
         <h1 class="font-bold text-center text-3xl">Change user profile</h1>
-        <div class="flex justify-around p-12 w-full h-full bg-white rounded shadow-md">
+        <div class="flex justify-around w-full h-full">
             <div class="flex flex-col w-1/2">
                 <div asp-validation-summary="ModelOnly" class="text-error"></div>
                 <input type="hidden" asp-for="UserID"/>
                 <label class="form-control w-full">
                     <div class="label">
-                        <span class="label-text">Username</span>
+                        <span class="label-text font-bold text-lg">Username</span>
                     </div>
-                    <!-- TODO: Subtitute the input here and all the input below with correct user values -->
                     <input type="text" placeholder="Enter new name" asp-for="UserFullName"
                            class="input input-bordered w-full bg-white input-info"
                            name="UserFullName"/>
@@ -41,7 +37,7 @@
                 </label>
                 <label class="form-control w-full">
                     <div class="label">
-                        <span class="label-text">Email</span>
+                        <span class="label-text font-bold text-lg">Email</span>
                     </div>
                     <input type="email" placeholder="Enter new email" asp-for="UserEmail"
                            class="input input-bordered w-full bg-white input-info"
@@ -51,7 +47,7 @@
                 </label>
                 <label class="form-control w-full">
                     <div class="label">
-                        <span class="label-text">Phone number</span>
+                        <span class="label-text font-bold text-lg">Phone number</span>
                     </div>
                     <input type="tel" placeholder="Enter new phone" asp-for="UserPhoneNumber"
                            class="input input-bordered w-full bg-white input-info"
@@ -91,7 +87,7 @@
                     }
                 }
                 <label class="form-control w-full">
-                    <span class="label label-text font-bold text-lg">Request address</span>
+                    <span class="label label-text font-bold text-lg">User address</span>
                     <div>
                         <select class="select select-bordered w-full mb-4 bg-white select-primary" id="city" aria-label=".form-select-sm">
                             <option id="pOption" value="@province" selected>@(province == "" ? "Choose province" : province)</option>
@@ -108,25 +104,27 @@
                     <input
                         type="text"
                         placeholder="Enter street and house number"
-                        class="input input-bordered w-full bg-white"
+                        class="input input-bordered w-full bg-white input-primary"
                         value="@homeAddr"
                         id="HomeAddress"/>
                     @* the original one should be located here: *@
                     <input type="hidden" asp-for="UserAddress" name="UserAddress" id="UserAddressStr" value="@Model.UserAddress"/>
                 </label>
+                <br />
                 <!-- Be careful as this one must strictly follow format YYYY-MM-DD -->
                 <label asp-for="UserDOB" class="form-control w-full">
                     <div class="label">
-                        <span class="label-text">Date of birth (Month/Day/Year)</span>
+                        <span class="label-text font-bold text-lg">Date of birth (Month/Day/Year)</span>
                     </div>
                     <input type="date" asp-for="UserDOB"
                            class="input input-bordered w-full bg-white input-info" value="@ViewBag.UserDOB"
                            name="UserDOB"/>
                 </label>
+                <br />
                 <input type="hidden" asp-for="UserRole" name="UserRole"/>
                 <label asp-for="UserDescription" class="form-control w-full">
                     <div class="label">
-                        <span class="label-text">User description</span>
+                        <span class="label-text font-bold text-lg">User description</span>
                     </div>
                     <textarea
                             placeholder="Tell people more about you"
@@ -139,9 +137,8 @@
                     <span asp-validation-for="@Model.UserDescription" class="text-error"></span>
                 </label>
                 @* <textarea placeholder="Tell people more about you" class="textarea textarea-bordered textarea-md textarea-info w-full bg-white"></textarea> *@
-
             </div>
-            <div class="flex flex-col gap-2 font-bold">
+            <div class="flex flex-col gap-2 font-bold text-lg">
                 <h3>Profile picture</h3>
                 <label for="changeProfile" class="relative hover:scale-105 duration-150 transition-all hover:cursor-pointer">
                     <input type="hidden" name="UserAvatar" asp-for="UserAvatar" value="@Model.UserAvatar"/>
@@ -156,7 +153,7 @@
                 </label>
             </div>
         </div>
-        <div id="buttons" class="flex gap-2">
+        <div id="buttons" class="flex gap-2 w-fu">
             <input type="button" value="Save" id="update__btn" class="btn btn-info rounded-btn min-w-40"/>
         </div>
     </form>

@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Newtonsoft.Json
 @inject IHttpContextAccessor Accessor
-@inject IProjectRepository ProjectRepository
+@inject IProjectMemberRepository ProjectMemberRepository
 @model IEnumerable<Dynamics.Models.Models.ProjectMember>
 
 @{
@@ -12,7 +12,7 @@
     // take current project
     var currentProjectID = new Guid(Accessor.HttpContext.Session.GetString("currentProjectID"));
     //take leader id
-    var ProjectMemberOfUser = ProjectRepository.FilterProjectMember(p => p.ProjectID.Equals(currentProjectID) && p.UserID.Equals(new Guid(currentUserIDString)));
+    var ProjectMemberOfUser = ProjectMemberRepository.FilterProjectMember(p => p.ProjectID.Equals(currentProjectID) && p.UserID.Equals(new Guid(currentUserIDString)));
     var statusProjectMemberOfUser = ProjectMemberOfUser?.FirstOrDefault()?.Status;
 
 }

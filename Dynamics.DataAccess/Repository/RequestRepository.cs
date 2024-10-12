@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamics.Utility;
 using Request = Dynamics.Models.Models.Request;
 
 namespace Dynamics.DataAccess.Repository
@@ -104,7 +105,7 @@ namespace Dynamics.DataAccess.Repository
 		public async Task<List<Request>> GetAllByIdPaginatedAsync(string role, Guid id, int pageNumber, int pageSize)
 		{
 			var query = _db.Requests.AsQueryable();
-			if (role == "User")
+			if (role == RoleConstants.User)
 			{ 
 				 query = query.Where(r => r.UserID == id);
 			}
@@ -119,7 +120,7 @@ namespace Dynamics.DataAccess.Repository
 		{
 			var query = _db.Requests.Include(r => r.User).Where(filter).AsQueryable();
 			var request = await query.Where(filter).FirstOrDefaultAsync();
-			if (role == "User" && request.UserID == id)
+			if (role == RoleConstants.User && request.UserID == id)
 			{
 				return request;
 			}
