@@ -88,11 +88,17 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
             // Checking if the user already have an account with the same email, we will use that account to log in instead
             var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
+            if (businessUser.UserRole.Equals(RoleConstants.Banned))
+            {
+                ModelState.AddModelError("", "User account is banned!");
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            }
+            
             var existingUser = await _userManager.FindByEmailAsync(userEmail ?? "No email");
             if (existingUser != null)
             {
                 // Sign in using that user instead of Google
-                var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
@@ -113,7 +119,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
                     return Redirect("~/Admin/");
                 }
                 // Set the session
-                var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                 HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
