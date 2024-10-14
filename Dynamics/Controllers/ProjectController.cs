@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Newtonsoft.Json;
 using Serilog;
 using System.Composition;
+using Dynamics.Models.Models.Dto;
 using Util = Dynamics.Utility.Util;
 
 namespace Dynamics.Controllers
@@ -484,6 +485,18 @@ namespace Dynamics.Controllers
                 TempData[MyConstants.Error] = "Fail to get history donate of user/organization!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
             }
+            // Setup for payment by money
+            var moneyResource = await _projectResourceRepo.GetAsync(pr => pr.ResourceName.ToLower().Equals("money") && pr.ProjectID.Equals(projectID));
+            if (moneyResource == null) throw new Exception("warning: PROJECT DOES NOT HAVE MONEY RESOURCE");
+            sendDonateRequestVM.VnPayRequestDto = new VnPayRequestDto
+            {
+                TargetId = projectID,
+                TargetType = MyConstants.Project,
+                ResourceID = moneyResource.ResourceID,
+            };
+            // Last but not least, setup a return url:
+            var url = Url.Action("ManageProject", "Project", new { id = projectID }, Request.Scheme);
+            ViewBag.returnUrl = url ?? "~/";
             return View(sendDonateRequestVM);
         }
 
@@ -955,7 +968,7 @@ namespace Dynamics.Controllers
                 {
                     if (image != null)
                     {
-                        projectVM.Attachment = Util.UploadImage(image, @"images\Project");
+                        projectVM.Attachment = await _cloudinaryUploader.UploadImageAsync(image);
                     }
 
                     if (projectVM.ProjectEmail == null)

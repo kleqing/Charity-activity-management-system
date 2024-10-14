@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Resources;
+using Dynamics.Models.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dynamics.Controllers
 {
@@ -26,6 +28,7 @@ namespace Dynamics.Controllers
         private readonly CloudinaryUploader _cloudinaryUploader;
         private readonly IOrganizationService _orgDisplayService;
         private readonly IOrganizationMemberRepository _organizationMemberRepository;
+        private readonly IOrganizationResourceRepository _organizationResourceRepository;
 
         public OrganizationController(IOrganizationRepository organizationRepository,
             IUserRepository userRepository,
@@ -34,7 +37,8 @@ namespace Dynamics.Controllers
             IUserToOragnizationTransactionHistoryVMService userToOragnizationTransactionHistoryVMService,
             IProjectVMService projectVMService,
             IOrganizationToProjectHistoryVMService organizationToProjectHistoryVMService,
-            CloudinaryUploader cloudinaryUploader, IOrganizationService orgDisplayService, IOrganizationMemberRepository organizationMemberRepository)
+            CloudinaryUploader cloudinaryUploader, IOrganizationService orgDisplayService, IOrganizationMemberRepository organizationMemberRepository
+            ,IOrganizationResourceRepository organizationResourceRepository)
         {
 
             _organizationRepository = organizationRepository;
@@ -47,6 +51,7 @@ namespace Dynamics.Controllers
             _cloudinaryUploader = cloudinaryUploader;
             _orgDisplayService = orgDisplayService;
             _organizationMemberRepository = organizationMemberRepository;
+            _organizationResourceRepository = organizationResourceRepository;
         }
 
         //The index use the cards at homepage to display instead - Kiet
@@ -417,7 +422,7 @@ namespace Dynamics.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SendResoueceOrganizationToProject(Guid resourceId)
+        public async Task<IActionResult> SendResourceOrganizationToProject(Guid resourceId)
         {
             // get current resource
             var currentResource = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(resourceId));
@@ -434,54 +439,49 @@ namespace Dynamics.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendResoueceOrganizationToProject(OrganizationToProjectHistory organizationToProjectHistory, Guid projectId)
+        public async Task<IActionResult> SendResourceOrganizationToProject(OrganizationToProjectHistory transaction, Guid projectId)
         {
-            var ResourceSend = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(organizationToProjectHistory.OrganizationResourceID));
+            var resourceSent = await _organizationRepository.GetOrganizationResourceAsync(or => or.ResourceID.Equals(transaction.OrganizationResourceID));
 
-            if (organizationToProjectHistory != null && projectId != Guid.Empty && organizationToProjectHistory.Amount > 0 && organizationToProjectHistory.Amount <= ResourceSend.Quantity)
+            if (transaction != null && projectId != Guid.Empty && transaction.Amount > 0 && transaction.Amount <= resourceSent.Quantity)
             {
-                var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
-
-
-                var Project = await _projectVMService.GetProjectAsync(p => p.ProjectID.Equals(projectId));
-
+                var project = await _projectVMService.GetProjectAsync(p => p.ProjectID.Equals(projectId));
                 bool duplicate = false;
-
                 var projectResource = new ProjectResource();
-
-                foreach (var item in Project.ProjectResource)
+                // Check if the resource sent already has on project side
+                foreach (var item in project.ProjectResource)
                 {
-                    if (item.ResourceName.ToUpper().Contains(ResourceSend.ResourceName.ToUpper()) && item.Unit.ToUpper().Contains(ResourceSend.Unit.ToUpper()))
+                    if (item.ResourceName.ToUpper().Contains(resourceSent.ResourceName.ToUpper()) && item.Unit.ToUpper().Contains(resourceSent.Unit.ToUpper()))
                     {
                         duplicate = true;
                         projectResource = item;
                         break;
                     }
                 }
-
+                // If there are already resource on project, just assign the transaction with the resource Id
                 if (duplicate)
                 {
-                    organizationToProjectHistory.ProjectResourceID = projectResource.ResourceID;
+                    transaction.ProjectResourceID = projectResource.ResourceID;
                 }
                 else
                 {
                     var newProjectResource = new ProjectResource()
                     {
-                        ProjectID = Project.ProjectID,
-                        ResourceName = ResourceSend.ResourceName,
+                        ProjectID = project.ProjectID,
+                        ResourceName = resourceSent.ResourceName,
                         Quantity = 0,
-                        ExpectedQuantity = organizationToProjectHistory.Amount,
-                        Unit = ResourceSend.Unit,
+                        ExpectedQuantity = transaction.Amount,
+                        Unit = resourceSent.Unit,
                     };
 
                     await _projectRepository.AddProjectResourceAsync(newProjectResource);
 
-                    Project = await _projectVMService.GetProjectAsync(p => p.ProjectID.Equals(projectId));
+                    project = await _projectVMService.GetProjectAsync(p => p.ProjectID.Equals(projectId));
                     var projectResource1 = new ProjectResource();
 
-                    foreach (var item in Project.ProjectResource)
+                    foreach (var item in project.ProjectResource)
                     {
-                        if (item.ResourceName.ToUpper().Contains(ResourceSend.ResourceName.ToUpper()) && item.Unit.ToUpper().Contains(ResourceSend.Unit.ToUpper()))
+                        if (item.ResourceName.ToUpper().Contains(resourceSent.ResourceName.ToUpper()) && item.Unit.ToUpper().Contains(resourceSent.Unit.ToUpper()))
                         {
                             duplicate = true;
                             projectResource1 = item;
@@ -491,27 +491,28 @@ namespace Dynamics.Controllers
 
                     if (duplicate)
                     {
-                        organizationToProjectHistory.ProjectResourceID = projectResource1.ResourceID;
+                        transaction.ProjectResourceID = projectResource1.ResourceID;
                     }
                 }
-                if (await _organizationRepository.AddOrganizationToProjectHistoryAsync(organizationToProjectHistory))
+                
+                if (await _organizationRepository.AddOrganizationToProjectHistoryAsync(transaction))
                 {
-                    ResourceSend.Quantity -= organizationToProjectHistory.Amount;
+                    resourceSent.Quantity -= transaction.Amount;
 
-                    if (await _organizationRepository.UpdateOrganizationResourceAsync(ResourceSend))
+                    if (await _organizationRepository.UpdateOrganizationResourceAsync(resourceSent))
                         return RedirectToAction(nameof(ManageOrganizationResource));
                 }
 
             }
-            if(organizationToProjectHistory.Amount <= 0 || organizationToProjectHistory.Amount > ResourceSend.Quantity)
+            if(transaction.Amount <= 0 || transaction.Amount > resourceSent.Quantity)
 
-                ViewBag.MessageExcessQuantity = $"*Quantity more than 0 and less than equal {ResourceSend.Quantity}";
+                ViewBag.MessageExcessQuantity = $"*Quantity more than 0 and less than equal {resourceSent.Quantity}";
 
             if(projectId == Guid.Empty)
             {
                 ViewBag.MessageProject = "*Choose project to send";
             }
-            return View(organizationToProjectHistory);
+            return View(transaction);
         }
 
         public async Task<IActionResult> CancelSendResource(Guid transactionId)
@@ -529,9 +530,52 @@ namespace Dynamics.Controllers
             return RedirectToAction(nameof(ManageOrganizationResource));
         }
 
-        public async Task<IActionResult> DonateByMoney()
+        // This method is shared between user donate to org and org allocate to project
+        public async Task<IActionResult> DonateByMoney(string organizationId, string resourceId)
         {
-            return View();
+            var userString = HttpContext.Session.GetString("user");
+            User currentUser = null;
+            if (userString != null)
+            {
+                currentUser = JsonConvert.DeserializeObject<User>(userString);
+            }
+            // Setup for display
+            ViewBag.donatorName = currentUser.UserFullName;
+            ViewBag.returnUrl = Url.Action("Detail", "Organization", new { organizationId }, Request.Scheme) ?? "~/";
+            var vnPayRequestModel = new VnPayRequestDto
+            {
+                FromID = currentUser.UserID,
+                ResourceID = new Guid(resourceId),
+                TargetId = new Guid(organizationId),
+                TargetType = MyConstants.Organization, 
+            };
+            return View(vnPayRequestModel);
+        }
+
+        // TODO: Handle roles
+        // This action is only accessible by CEO
+        [Authorize]
+        public async Task<IActionResult> AllocateMoney(string organizationId, string resourceId)
+        {
+            // Skip the project that is banned or completed
+            var projects = await _projectRepository
+                .GetAllProjectsByOrganizationIDAsync(p => p.OrganizationID.Equals(new Guid(organizationId)));
+            ViewData["projects"] = projects; // Cast to list of projects obj later
+            // Get the current money resource first
+            var organizationMoneyResource =
+                await _organizationResourceRepository.GetAsync(or => or.ResourceID == new Guid(resourceId));
+            if (organizationMoneyResource == null) throw new Exception("WARNING: Organization MONEY resource not found");
+            ViewData["limitAmount"] = organizationMoneyResource.Quantity;
+            ViewBag.returnUrl = Url.Action("Detail", "Organization", new { organizationId }, Request.Scheme) ?? "~/";
+            var vnPayRequestModel = new VnPayRequestDto
+            {
+                // Target project id will be rendered in a form of options
+                FromID = new Guid(organizationId),
+                ResourceID = new Guid(resourceId),
+                TargetType = MyConstants.Allocation, 
+            };
+            // same view as user donate to organization but with more options
+            return View(nameof(DonateByMoney),vnPayRequestModel);
         }
         [HttpGet]
         public async Task<IActionResult> DonateByResource(Guid resourceId)
@@ -569,7 +613,6 @@ namespace Dynamics.Controllers
                     return RedirectToAction(nameof(ManageOrganizationResource));
                 }
             }
-
             return View(transactionHistory);
         }
 

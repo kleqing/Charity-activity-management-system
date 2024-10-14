@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Resources;
 using Serilog;
 using Cloudinary = CloudinaryDotNet.Cloudinary;
 
@@ -103,11 +104,10 @@ namespace Dynamics
             builder.Services.AddScoped<IUserToOragnizationTransactionHistoryVMService, UserToOragnizationTransactionHistoryVMService>();
             builder.Services.AddScoped<IProjectVMService, ProjectVMService>();
             builder.Services.AddScoped<IOrganizationToProjectHistoryVMService, OrganizationToProjectHistoryVMService>();
-
+            
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
             builder.Services.AddScoped<IReportRepository, ReportRepository>();
             // Project repos
-            
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
             builder.Services.AddScoped<IProjectHistoryRepository, ProjectHistoryRepository>();
             builder.Services.AddScoped<IOrganizationToProjectTransactionHistoryRepository, OrganizationToProjectTransactionHistoryRepository>();
@@ -126,9 +126,10 @@ namespace Dynamics
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IRequestService, RequestService>();
             builder.Services.AddScoped<IOrganizationService, OrganizationService>();
+            // VNPAY Service
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
-
             // Cloudinary
             builder.Services.AddSingleton<CloudinaryUploader>();
             
@@ -203,7 +204,7 @@ namespace Dynamics
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Homepage}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

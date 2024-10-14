@@ -13,7 +13,6 @@
 @{
     var currentResource = Accessor.HttpContext.Session.Get<OrganizationResource>(MySettingSession.SESSION_Current_Organization_Resource_KEY);
     var currentOrganization = Accessor.HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
-
 }
 
 <div class="py-5 pt-12 px-5 flex justify-center">
@@ -21,7 +20,7 @@
         <h1 class="text-3xl font-semibold mb-10 text-center ">
             Send Resource
         </h1>
-        <form asp-action="SendResoueceOrganizationToProject" asp-controller="Organization" class="bg-white p-8 rounded-lg shadow-md w-80">
+        <form asp-action="SendResourceOrganizationToProject" asp-controller="Organization" class="bg-white p-8 rounded-lg shadow-md w-80">
             <div>
                 <input asp-for="Status" name="0" class="hidden">
                 <input type="date" asp-for="Time" name="Time" class="hidden">
@@ -31,7 +30,7 @@
             <div class="mb-4">
                 <label asp-for="OrganizationResourceID" class="block text-sm font-medium text-gray-700 mb-1">Resource Name</label>
                 <input asp-for="OrganizationResourceID" name="OrganizationResourceID" class="hidden">
-                <input id="resource-type" class="w-full p-2 border border-gray-300 rounded-md appearance-none bg-white" value="@currentResource.ResourceName" readonly>
+                <input class="w-full input input-primary input-disabled bg-white" value="@currentResource.ResourceName" readonly>
             </div>
 
             <div class="mb-4">
@@ -48,7 +47,7 @@
 
             <div class="mb-4">
                 <label asp-for="OrganizationResourceID" class="block text-sm font-medium text-gray-700 mb-1">Resource Unit</label>
-                <input id="resource-type" class="w-full p-2 border border-gray-300 rounded-md appearance-none bg-white" value="@currentResource.Unit" readonly>
+                <input class="w-full p-2 border border-gray-300 rounded-md appearance-none bg-white" value="@currentResource.Unit" readonly>
             </div>
 
             <div class="mb-6">

@@ -227,10 +227,9 @@ namespace Dynamics.Controllers
             else return RedirectToAction("Logout", "Auth");
             // Get join requests except for the one with status of 2 (User is already the leader of)
             var userRequestProjects =
-                await _projectMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID));
-            userRequestProjects = userRequestProjects.Where(urp => urp.Status < 2).ToList();
+                await _projectMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID) && pm.Status < 2);
             var userRequestOrganizations =
-                await _organizationMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID));
+                await _organizationMemberRepository.GetAllAsync(om => om.UserID.Equals(currentUser.UserID) && om.Status < 2);
 
             // Donation requests only get the pending ones (Money is automatically accepted so it should not be here.)
             var userToOrgTransaction = await _transactionViewService

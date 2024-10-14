@@ -25,7 +25,6 @@ public interface IProjectService
     public Task<string> UploadImagesAsync(List<IFormFile> images,string folder);
     public Task<DetailProjectVM> ReturnDetailProjectVMAsync(Guid projectID);
     public Task<string> UpdateProjectProfileAsync(UpdateProjectProfileRequestDto updateProject, List<IFormFile> images);
-
     //manage member of project------------
     //using this to get leader type User
     Task<User> GetProjectLeaderAsync(Guid projectID);
@@ -49,7 +48,4 @@ public interface IProjectService
     //add and edit project phase report
     Task<string> AddProjectPhaseReportAsync(History history, List<IFormFile> images);
     Task<string> EditProjectPhaseReportAsync(History history, List<IFormFile> images);
-    
-
-
 }

@@ -2,13 +2,16 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "CustomLayout/_LayoutWithNavbarOnly";
 }
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Edit page</title>
+    <title>Edit user</title>
+    <link rel="stylesheet" href="~/css/original.css"/>
+    <link rel="stylesheet" href="~/css/output.css">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
@@ -160,7 +163,6 @@
     <!-- End content -->
 </div>
 <!-- End edit profile -->
-<partial name="CustomComponent/_Footer"/>
 <partial name="_ValidationScriptsPartial"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 @* Get all the address information before submit *@

@@ -30,7 +30,7 @@ namespace Dynamics.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             await _signInManager.SignOutAsync();
-            return RedirectToAction("HomePage", "Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

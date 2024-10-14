@@ -38,13 +38,13 @@ namespace Dynamics.Controllers
             _organizationService = organizationService;
         }
 
-        // Landing page
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // // Landing page
+        // public IActionResult Index()
+        // {
+        //     return View();
+        // }
 
-        public async Task<IActionResult> Homepage()
+        public async Task<IActionResult> Index()
         {
             // Check if there is an authenticated user, set the session of that user
             if (User.Identity.IsAuthenticated)
@@ -77,7 +77,7 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> Search(string? query)
         {
-            if (query == null) return RedirectToAction(nameof(Homepage));
+            if (query == null) return RedirectToAction(nameof(Index));
             string[] args = query.Split("-");
             TempData["query"] = query;
             // Args < 2 search all
@@ -151,7 +151,7 @@ namespace Dynamics.Controllers
             }
 
             // if we get here invalid search so just back to home
-            return RedirectToAction(nameof(Homepage));
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Announce()
