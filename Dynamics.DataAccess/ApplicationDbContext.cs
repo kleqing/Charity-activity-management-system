@@ -179,11 +179,11 @@ namespace Dynamics.DataAccess
                 .HasForeignKey(k => k.ProjectResourceID)
                 .OnDelete(DeleteBehavior.NoAction);
 
-    // History to Project
-    modelBuilder.Entity<History>()
-        .HasOne(h => h.Project)
-        .WithMany(p => p.History)
-        .HasForeignKey(h => h.ProjectID);
+            // History to Project
+            modelBuilder.Entity<History>()
+                .HasOne(h => h.Project)
+                .WithMany(p => p.History)
+                .HasForeignKey(h => h.ProjectID);
            
         }
     }
