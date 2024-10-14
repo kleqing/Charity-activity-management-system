@@ -174,6 +174,9 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Attachments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
@@ -214,6 +217,7 @@ namespace Dynamics.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProjectAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProjectDescription")
@@ -243,7 +247,7 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<string>("ShutdownReason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("StartTime")
+                    b.Property<DateOnly?>("StartTime")
                         .HasColumnType("date");
 
                     b.Property<bool>("isBanned")
@@ -443,6 +447,9 @@ namespace Dynamics.DataAccess.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Attachments")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
@@ -454,10 +461,6 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<DateOnly>("Time")
                         .HasColumnType("date");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
@@ -479,6 +482,9 @@ namespace Dynamics.DataAccess.Migrations
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Attachments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");

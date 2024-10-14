@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamics.Utility;
 using Request = Dynamics.Models.Models.Request;
 
 namespace Dynamics.DataAccess.Repository
@@ -43,18 +44,10 @@ namespace Dynamics.DataAccess.Repository
 			return requests;
 		}
 
-		public async Task<List<Request>> GetAllRequestsAsync(string? includeObjects = null)
+		public async Task<List<Request>> GetAllRequestsAsync()
 		{
-			IQueryable<Request> organizations = _db.Requests;
-			if (!string.IsNullOrEmpty(includeObjects))
-			{
-				foreach (var includeObj in includeObjects.Split(
-					         new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					organizations = organizations.Include(includeObj);
-				}
-			}
-			return await organizations.ToListAsync();
+			IQueryable<Request> requestHelps = _db.Requests.Include(x => x.User).Include(x=>x.Project);
+			return await requestHelps.ToListAsync();
 		}
 
 		public async Task<List<Request>> GetAllAsync(Expression<Func<Request, bool>>? filter = null)
@@ -63,7 +56,7 @@ namespace Dynamics.DataAccess.Repository
 	        {
 		        return await _db.Requests.Where(filter).Include(r => r.User).ToListAsync();
 	        }
-	        return await _db.Requests.ToListAsync();
+	        return await _db.Requests.Include(u => u.User).ToListAsync();
         }
 
 		public async Task<List<Request>> SearchIndexFilterAsync(string searchQuery)
@@ -76,7 +69,7 @@ namespace Dynamics.DataAccess.Repository
 
 		public async Task<Request> GetAsync(Expression<Func<Request, bool>> filter)
 		{
-			var query = await _db.Requests.Include(r => r.User).Where(filter).FirstOrDefaultAsync();
+			var query = await _db.Requests.Include(x => x.User).Include(x => x.Project).Where(filter).FirstOrDefaultAsync();
 			return query;
 		}
 
@@ -112,7 +105,7 @@ namespace Dynamics.DataAccess.Repository
 		public async Task<List<Request>> GetAllByIdPaginatedAsync(string role, Guid id, int pageNumber, int pageSize)
 		{
 			var query = _db.Requests.AsQueryable();
-			if (role == "User")
+			if (role == RoleConstants.User)
 			{ 
 				 query = query.Where(r => r.UserID == id);
 			}
@@ -127,7 +120,7 @@ namespace Dynamics.DataAccess.Repository
 		{
 			var query = _db.Requests.Include(r => r.User).Where(filter).AsQueryable();
 			var request = await query.Where(filter).FirstOrDefaultAsync();
-			if (role == "User" && request.UserID == id)
+			if (role == RoleConstants.User && request.UserID == id)
 			{
 				return request;
 			}
@@ -138,18 +131,5 @@ namespace Dynamics.DataAccess.Repository
 			return null;
 		}
 		
-        public Task<Request?> GetRequestAsync(Expression<Func<Request,bool>> filter, string? includeObjects = null)
-        {
-            var request = _db.Requests.Where(filter);
-            if (!string.IsNullOrEmpty(includeObjects))
-            {
-                foreach (var includeObj in includeObjects.Split(
-                    new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    request = request.Include(includeObj);
-                }
-            }
-            return request.FirstOrDefaultAsync();
-        }
     }
 }

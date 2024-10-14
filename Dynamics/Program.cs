@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Serilog;
+using Cloudinary = CloudinaryDotNet.Cloudinary;
+
 
 namespace Dynamics
 {
@@ -18,6 +20,10 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
+            
+            // Add cache to the container, allow admin dashboard get the latest data
+            // working with other services as well
+            builder.Services.AddMemoryCache();
 
             // Add cache to the container, allow admin dashboard get the latest data
             // working with other services as well
@@ -40,6 +46,8 @@ namespace Dynamics
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                // options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+                // options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
             });
             builder.Services.AddDbContext<AuthDbContext>(options =>
             {
@@ -52,7 +60,7 @@ namespace Dynamics
                 {
                     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
                     options.User.RequireUniqueEmail = true;
-                    options.SignIn.RequireConfirmedAccount = false;
+                    options.SignIn.RequireConfirmedAccount = true; // No confirm account required
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -77,7 +85,16 @@ namespace Dynamics
             });
 
 
+
+            // Add authorization policy
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole(RoleConstants.Admin));
+            });
+
+
             // Repos here
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
@@ -88,13 +105,14 @@ namespace Dynamics
             builder.Services.AddScoped<IOrganizationToProjectHistoryVMService, OrganizationToProjectHistoryVMService>();
 
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+            builder.Services.AddScoped<IReportRepository, ReportRepository>();
             // Project repos
             
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
+            builder.Services.AddScoped<IProjectHistoryRepository, ProjectHistoryRepository>();
+            builder.Services.AddScoped<IOrganizationToProjectTransactionHistoryRepository, OrganizationToProjectTransactionHistoryRepository>();
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
-            builder.Services
-                .AddScoped<IUserToProjectTransactionHistoryRepository,
-                    UserToProjectTransactionHistoryRepository>();
+            builder.Services.AddScoped<IUserToProjectTransactionHistoryRepository,UserToProjectTransactionHistoryRepository>();
             // Organization repos
             builder.Services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             builder.Services.AddScoped<IOrganizationResourceRepository, OrganizationResourceRepository>();
@@ -111,6 +129,9 @@ namespace Dynamics
             // Add email sender
             builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+            // Cloudinary
+            builder.Services.AddSingleton<CloudinaryUploader>();
+            
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -130,6 +151,15 @@ namespace Dynamics
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
             });
+
+            // Add serilog for debugging
+            var logger = new LoggerConfiguration()
+               .WriteTo.Console()
+               // .WriteTo.File("Logs/Logs.txt", rollingInterval: RollingInterval.Minute)
+               .MinimumLevel.Information() // You can change this one so that it filters out stuff
+               .CreateLogger();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger); // This one make it so that ASP will use it
 
             var app = builder.Build();
             // Redirect user to 404 page if not found
@@ -166,7 +196,7 @@ namespace Dynamics
             app.UseAuthorization();
 
             app.MapRazorPages();
-
+            
             app.MapControllerRoute(
                  name: "areas",
                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

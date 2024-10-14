@@ -1,15 +1,16 @@
-﻿using System;
+using Dynamics.Models.Models.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamics.Models.Models.Dto;
 
 namespace Dynamics.Models.Models.ViewModel
 {
     public class MyProjectVM
     {
-        public List<Project> ProjectsILead { get; set; }
-        public List<Project> ProjectsIAmMember { get; set; }
-        public List<Project> OtherProjects { get; set; }
+        public List<ProjectOverviewDto> ProjectsILead { get; set; }
+        public List<ProjectOverviewDto> ProjectsIAmMember { get; set; }
     }
 }

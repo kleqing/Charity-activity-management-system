@@ -14,7 +14,6 @@ namespace Dynamics.Models.Models
 		public string Content { get; set; }
         public DateTime? CreationDate { get; set; } = DateTime.Now;
         public string RequestTitle {  get; set; }
-
         [DataType(DataType.EmailAddress)]
         public string? RequestEmail { get; set; }
         [DataType(DataType.PhoneNumber)]

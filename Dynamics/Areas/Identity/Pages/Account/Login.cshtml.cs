@@ -10,8 +10,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Dynamics.DataAccess.Repository;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
 using Dynamics.Utility;
+using Serilog;
+using ILogger = Serilog.ILogger;
 using Dynamics.Models.Models;
 
 namespace Dynamics.Areas.Identity.Pages.Account
@@ -67,13 +68,16 @@ namespace Dynamics.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+        // Login
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
+            _logger.LogWarning("LOGIN: GetExternalAuthenticationSchemesAsync");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
+                _logger.LogWarning("LOGIN: FindByEmail");
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null)
                 {
@@ -81,7 +85,13 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 }
                 else
                 {
+                    if (_userManager.IsInRoleAsync(user, RoleConstants.Banned).Result)
+                    {
+                        ModelState.AddModelError(string.Empty, "User account is banned!");
+                        return Page();
+                    }
                     //Check if verified first before sign in
+                    _logger.LogWarning("LOGIN: Check if user is confirmed");
                     var isEmailConfirmedAsync = await _userManager.IsEmailConfirmedAsync(user);
                     if (!isEmailConfirmedAsync)
                     {
@@ -89,30 +99,29 @@ namespace Dynamics.Areas.Identity.Pages.Account
                         return Page();
                     }
 
+                    _logger.LogWarning("LOGIN: PasswordSignInAsync");
                     var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,
                         lockoutOnFailure: false);
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty, "Wrong email or password");
+                        return Page();
+                    }
                     // SerializeObject for session
+                    
+                    _logger.LogWarning("LOGIN: GET BUSINESS USER");
                     var businessUser = await _userRepository.GetAsync(u => u.UserEmail == user.Email);
                     HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
                     HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
-
-                    //var isBan = _userRepository.GetBanAsync(businessUser.UserID);
-
-                    //if (isBan.Result)
-                    //{
-                    //    ModelState.AddModelError(string.Empty, "User account is banned!");
-                    //    return Page();
-                    //}
                     // Login as administrator
                     if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
                     {
-                        return Redirect("~/Admin/");
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
                     }
                     else if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
                         return Redirect(returnUrl);
-                        // return RedirectToAction("Homepage", "Home", returnUrl);
                     }
                     
                     // TODO: Ban user in da future

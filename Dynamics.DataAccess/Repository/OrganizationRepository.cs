@@ -54,9 +54,17 @@ namespace Dynamics.DataAccess.Repository
             {
                 return false;
             }
-            _db.Entry(organizationItem).CurrentValues.SetValues(organization);
-            await _db.SaveChangesAsync();
-            return true;
+            try
+            {
+                _db.Entry(organizationItem).CurrentValues.SetValues(organization);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
 
         }
 
@@ -260,24 +268,11 @@ namespace Dynamics.DataAccess.Repository
                 return false;
             }
         }
-
-
-
-
-        
         //Repo of huyen
         
-        public async Task<List<Organization>> GetAllOrganizationsAsync(string? includeObjects = null)
+        public async Task<List<Organization>> GetAllOrganizationsAsync()
         {
-            IQueryable<Organization> organizations = _db.Organizations;
-            if (!string.IsNullOrEmpty(includeObjects))
-            {
-                foreach (var includeObj in includeObjects.Split(
-                    new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    organizations = organizations.Include(includeObj);
-                }
-            }
+            IQueryable<Organization> organizations = _db.Organizations.Include(x => x.OrganizationMember).ThenInclude(x => x.User).Include(x => x.OrganizationResource);
             return await organizations.ToListAsync();
         }
         public IQueryable<Organization> GetAll()

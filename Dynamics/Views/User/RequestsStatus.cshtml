@@ -14,7 +14,10 @@
 @Html.Partial("CustomComponent/_UserSidebar", "History")
 <div class="divider divider-horizontal"></div>
 @* Right *@
-<div class="w-full h-full flex flex-col gap-6 items-center px-16">
+<div>
+
+</div>
+<div class="w-full h-full flex flex-col gap-6 items-center p-16 bg-white rounded-sm">
 <div class="w-full flex justify-center gap-4">
     <div role="tablist" class="tabs tabs-bordered">
         <a asp-action="History" asp-controller="User" class="tab">Transaction history</a>
@@ -68,8 +71,9 @@
             @{
                 foreach (var modelOrganizationJoinRequest in Model.OrganizationJoinRequests)
                 {
+                    if (modelOrganizationJoinRequest.Status == 2) continue;
                     orgCount += 1;
-                    <li class="p-4 shadow-lg flex justify-between items-center rounded-md">
+                    <li class="p-4 shadow-md flex justify-between items-center rounded-sm">
                         <!-- Left side -->
                         <div class="flex flex-col gap-2">
                             <div class="flex gap-2">
@@ -95,7 +99,7 @@
                                                 <form asp-action="CancelJoinRequest" asp-controller="User" method="post" class="btn btn-error btn-sm">
                                                     <input type="hidden" name="userID" value="@modelOrganizationJoinRequest.UserID"/>
                                                     <input type="hidden" name="targetID" value="@modelOrganizationJoinRequest.OrganizationID"/>
-                                                    <input type="hidden" name="type" value="project"/>
+                                                    <input type="hidden" name="type" value="organization"/>
                                                     <button type="submit">Confirm</button>
                                                 </form>
                                                 <form method="dialog" class="btn btn-primary btn-sm">
@@ -117,7 +121,7 @@
                                     <p class="badge badge-success min-w-24">Accepted</p>
                                     break;
                                 default:
-                                    <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p>
+                                    @* <p class="badge badge-warning min-w-24">Status besides 0 and 1 are not implemented</p> *@
                                     break;
                             }
                         </div>
@@ -172,7 +176,7 @@
                 foreach (var modelProjectJoinRequest in Model.ProjectJoinRequests)
                 {
                     prjCount += 1;
-                    <li class="p-4 shadow-lg flex justify-between rounded-md">
+                    <li class="p-4 shadow-md flex justify-between rounded-sm">
                         <!-- Left side -->
                         <div class="flex flex-col gap-2">
                             <div class="flex gap-2">
@@ -213,7 +217,7 @@
                                     <!-- Open the modal using ID.showModal() method -->
                                     <button type="submit" class="btn btn-error btn-xs tooltip min-h-0" data-tip="Cancel request?"
                                             onclick="document.getElementById('@("pModal" + prjCount)').showModal()">
-                                    <i class="fa-solid fa-xmark"></i>
+                                        <i class="fa-solid fa-xmark"></i>
                                     </button>
                                     break;
                                 case 1:
@@ -381,7 +385,5 @@
         <div class="divider divider-neutral py-8">End</div>
     }
 </section>
-
-
 </div>
 </main>

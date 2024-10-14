@@ -73,6 +73,11 @@ ViewData["Title"] = "My Request";
                                     {
                                         <p>@item.RequestTitle - <span class="text-warning font-bold">Pending approve</span></p>
                                     }
+                                    else if (@item.Status == -1)
+                                    {
+                                        <p>@item.RequestTitle - <span class="text-error font-bold">Canceled</span></p>
+
+                                    }
                                     else
                                     {
                                         <p>@item.RequestTitle - <span class="text-success font-bold">Approved</span></p>

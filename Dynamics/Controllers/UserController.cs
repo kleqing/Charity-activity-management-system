@@ -1,5 +1,6 @@
 using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.DTO;
 using Dynamics.Models.Models.ViewModel;
 using Dynamics.Services;
 using Dynamics.Utility;
@@ -23,13 +24,14 @@ namespace Dynamics.Controllers
         private readonly IOrganizationMemberRepository _organizationMemberRepository;
         private readonly IUserToOrganizationTransactionHistoryRepository _userToOrgRepo;
         private readonly IUserToProjectTransactionHistoryRepository _userToPrjRepo;
+        private readonly CloudinaryUploader _cloudinaryUploader;
 
         public UserController(IUserRepository userRepo, UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager, ITransactionViewService transactionViewService,
             IProjectMemberRepository projectMemberRepository,
             IOrganizationMemberRepository organizationMemberRepository,
             IUserToOrganizationTransactionHistoryRepository userToOrgRepo,
-            IUserToProjectTransactionHistoryRepository userToPrjRepo)
+            IUserToProjectTransactionHistoryRepository userToPrjRepo, CloudinaryUploader cloudinaryUploader)
         {
             _userRepository = userRepo;
             _userManager = userManager;
@@ -39,6 +41,7 @@ namespace Dynamics.Controllers
             _organizationMemberRepository = organizationMemberRepository;
             _userToOrgRepo = userToOrgRepo;
             _userToPrjRepo = userToPrjRepo;
+            _cloudinaryUploader = cloudinaryUploader;
         }
 
         // User/username
@@ -48,21 +51,6 @@ namespace Dynamics.Controllers
             if (currentUser == null) return RedirectToAction("Index", "Home");
             return View(currentUser);
         }
-
-        // Delete me later, only serves to debug
-        // [HttpPost]
-        // public async Task<IActionResult> TestRoles(string roleName, Guid userId, string action)
-        // {
-        //     if (action == "add")
-        //     {
-        //         await _userRepository.AddToRoleAsync(userId, roleName);
-        //     } else if (action == "delete")
-        //     {
-        //         await _userRepository.DeleteRoleFromUserAsync(userId, roleName);
-        //     }
-        //
-        //     return RedirectToAction("Homepage", "Home");
-        // }
 
         [HttpGet]
         public async Task<IActionResult> Edit()
@@ -82,6 +70,11 @@ namespace Dynamics.Controllers
             if (user == null)
             {
                 return NotFound();
+            }
+            // Convert user DOB to correct date for display purpose
+            if (user.UserDOB != null)
+            {
+                ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
             }
             return View(user);
         }
@@ -112,20 +105,24 @@ namespace Dynamics.Controllers
 
                 if (image != null)
                 {
-                    user.UserAvatar = Util.UploadImage(image, @"images\User");
+                    // user.UserAvatar = Util.UploadImage(image, @"images\User");
+                    var imgUrl = await _cloudinaryUploader.UploadImageAsync(image);
+                    if (imgUrl != null) user.UserAvatar = imgUrl;
                 }
 
                 await _userRepository.UpdateAsync(user);
+
                 // Update the session as well
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
                 TempData[MyConstants.Success] = "User updated!";
+                ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 ModelState.AddModelError("", "Something went wrong, please try again later.");
                 return View(user);
             }
-
+            
             return View(user);
         }
 
@@ -147,7 +144,6 @@ namespace Dynamics.Controllers
             {
                 TempData["Google"] = "Your account is bounded with google account.";
             }
-
             return View();
         }
 
@@ -188,6 +184,7 @@ namespace Dynamics.Controllers
 
             // Add a message and refresh the page
             TempData[MyConstants.Success] = "Password changed!";
+            // Sign in the user again
             await _signInManager.RefreshSignInAsync(currentUser);
             // return RedirectToAction("Logout", "Auth");
             return RedirectToAction("Account", "User");
@@ -285,7 +282,6 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> CancelJoinRequest(Guid userID, Guid targetID, string type)
         {
             var msg = "Something went wrong, please try again later.";
-            // TODO: Wait for Tuan and Huyen's delete from project table
             try
             {
                 switch (type.ToLower())

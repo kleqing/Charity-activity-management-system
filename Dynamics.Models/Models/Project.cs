@@ -1,11 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamics.Models.Models
 {
@@ -22,7 +16,9 @@ namespace Dynamics.Models.Models
         public string? ProjectEmail { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string? ProjectPhoneNumber { get; set; }
-        public string? ProjectAddress { get; set; }
+
+        [Required(ErrorMessage = "The Project Address field is required *")]
+        public string ProjectAddress { get; set; }
         [Required]
         public int ProjectStatus { get; set; }
         [ValidateNever]
@@ -32,7 +28,7 @@ namespace Dynamics.Models.Models
         [Required(ErrorMessage = "The Project Description field is required *")]
         public string ProjectDescription { get; set; }
         [DataType(DataType.Date)]
-        public DateOnly StartTime { get; set; }
+        public DateOnly? StartTime { get; set; }
         [DataType(DataType.Date)]
         public DateOnly? EndTime { get; set; }
         public string? ShutdownReason { get; set; }

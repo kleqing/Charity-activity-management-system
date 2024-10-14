@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Security.Claims;
 using Dynamics.Services;
+using Dynamics.Models.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dynamics.Controllers
@@ -62,70 +63,95 @@ namespace Dynamics.Controllers
             var orgsOverview = _organizationService.MapToOrganizationOverviewDtoList(orgs);
 
             List<Project> projects = await _projectRepo.GetAllAsync();
-            var onGoingProjects = new List<ProjectOverviewDto>();
-            var successfulProjects = new List<ProjectOverviewDto>();
-            // Map to project overview dto
-            foreach (var p in projects)
-            {
-                var dto = _projectService.MapToProjectOverviewDto(p);
-                if (dto.ProjectStatus <= 1)
-                {
-                    onGoingProjects.Add(dto);
-                }
-                else
-                {
-                    successfulProjects.Add(dto);
-                }
-            }
+            var projectDtos = _projectService.MapToListProjectOverviewDto(projects);
 
             var result = new HomepageViewModel
             {
                 Requests = requestOverview,
-                OnGoingProjects = onGoingProjects,
-                SuccessfulProjects = successfulProjects,
+                Projects = projectDtos,
                 Organizations = orgsOverview,
             };
             return View(result);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Search(string query)
+        [HttpPost]
+        public async Task<IActionResult> Search(string? query)
         {
+            if (query == null) return RedirectToAction(nameof(Homepage));
             string[] args = query.Split("-");
+            TempData["query"] = query;
             // Args < 2 search all
             if (args.Length < 2)
             {
-                var requests = await _requestRepo.GetAllAsync(request =>
-                    request.RequestTitle.Contains(query, StringComparison.OrdinalIgnoreCase));
-                var projects = await _projectRepo.GetAllAsync(prj =>
-                    prj.ProjectName.Contains(query, StringComparison.OrdinalIgnoreCase));
+                var requests = await _requestRepo.GetAllAsync();
+                dynamic targets = requests
+                    .Where(r => r.RequestTitle.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+                var requestOverviewDtos = _requestService.MapToListRequestOverviewDto(targets);
+
+                var projects = await _projectRepo.GetAllAsync();
+                targets = projects.Where(r => r.ProjectName.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                var projectOverviewDtos = _projectService.MapToListProjectOverviewDto(targets);
+
                 var organizations =
-                    await _organizationRepo.GetAllOrganizationsWithExpressionAsync(organization =>
-                        organization.OrganizationName.Contains(query, StringComparison.OrdinalIgnoreCase));
-
-                var requestOverviewDtos = _requestService.MapToListRequestOverviewDto(requests);
-                var projectOverviewDtos = _projectService.MapToListProjectOverviewDto(projects);
-                var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(organizations);
-
+                    await _organizationRepo.GetAllOrganizationsWithExpressionAsync();
+                targets = organizations
+                    .Where(r => r.OrganizationName.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+                var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(targets);
+                
                 return View(new HomepageViewModel
                 {
                     Requests = requestOverviewDtos,
-                    OnGoingProjects = projectOverviewDtos,
+                    Projects = projectOverviewDtos,
                     Organizations = organizationOverviewDtos
                 });
             }
+            else
+            {
+                // Only search by a specific type
+                var type = args[0];
+                var target = args[1];
 
-            // Only search by a specific type
-            var type = args[0];
-            var target = args[1];
-            return View();
-        }
+                if (type.Contains("req"))
+                {
+                    var requests = await _requestRepo.GetAllAsync();
+                    var targets = requests
+                        .Where(r => r.RequestTitle.Contains(target, StringComparison.OrdinalIgnoreCase)).ToList();
+                    var requestOverviewDtos = _requestService.MapToListRequestOverviewDto(targets);
+                    return View(new HomepageViewModel
+                    {
+                        Requests = requestOverviewDtos,
+                    });
+                }
 
+                if (type.Contains("prj"))
+                {
+                    var projects = await _projectRepo.GetAllAsync();
+                    var targets = projects.Where(r => r.ProjectName.Contains(target, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                    var projectOverviewDtos = _projectService.MapToListProjectOverviewDto(targets);
+                    return View(new HomepageViewModel
+                    {
+                        Projects = projectOverviewDtos,
+                    });
+                }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                if (type.Contains("org"))
+                {
+                    var organizations =
+                        await _organizationRepo.GetAllOrganizationsWithExpressionAsync();
+                    var targets = organizations
+                        .Where(r => r.OrganizationName.Contains(target, StringComparison.OrdinalIgnoreCase)).ToList();
+                    var organizationOverviewDtos = _organizationService.MapToOrganizationOverviewDtoList(targets);
+                    return View(new HomepageViewModel
+                    {
+                        Organizations = organizationOverviewDtos,
+                    });
+                }
+            }
+
+            // if we get here invalid search so just back to home
+            return RedirectToAction(nameof(Homepage));
         }
 
         public IActionResult Announce()

@@ -1,4 +1,6 @@
-﻿namespace Dynamics.Models.Models.ViewModel;
+using Dynamics.Models.Models.DTO;
+
+namespace Dynamics.Models.Models.ViewModel;
 
 public class UserRequestsStatusViewModel
 {

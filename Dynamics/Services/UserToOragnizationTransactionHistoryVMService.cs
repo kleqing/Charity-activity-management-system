@@ -19,6 +19,7 @@ namespace Dynamics.Services
         {
             var result = await _db.UserToOrganizationTransactionHistories.Where(uto => uto.Status == 0)
                                  .Where(uto => uto.OrganizationResource.OrganizationID.Equals(organizationId))
+                                 .OrderByDescending(uto => uto.Time)
                                  .Include(uto => uto.User) 
                                  .Include(uto => uto.OrganizationResource)
                                         .ThenInclude(uto => uto.Organization)
@@ -29,7 +30,6 @@ namespace Dynamics.Services
                                       ResourceID = uto.ResourceID,
                                       UserID = uto.UserID,
                                       Status = uto.Status,
-                                      Unit = uto.Unit,
                                       Amount = uto.Amount,
                                       Message = uto.Message,
                                       Time = uto.Time,
@@ -46,6 +46,7 @@ namespace Dynamics.Services
         {
             var result = await _db.UserToOrganizationTransactionHistories.Where(uto => uto.Status == 1)
                                  .Where(uto => uto.OrganizationResource.OrganizationID.Equals(organizationId))
+                                 .OrderByDescending(uto => uto.Time)
                                  .Include(uto => uto.User)
                                  .Include(uto => uto.OrganizationResource)
                                         .ThenInclude(uto => uto.Organization)
@@ -56,7 +57,6 @@ namespace Dynamics.Services
                                       ResourceID = uto.ResourceID,
                                       UserID = uto.UserID,
                                       Status = uto.Status,
-                                      Unit = uto.Unit,
                                       Amount = uto.Amount,
                                       Message = uto.Message,
                                       Time = uto.Time,

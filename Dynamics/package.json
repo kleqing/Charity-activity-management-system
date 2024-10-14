@@ -17,6 +17,6 @@
   "dependencies": {
     "@tailwindcss/line-clamp": "^0.4.4",
     "datatables.net-dt": "^2.1.7",
-    "sweetalert2": "^11.6.13"
+    "sweetalert2": "^11.14.1"
   }
 }

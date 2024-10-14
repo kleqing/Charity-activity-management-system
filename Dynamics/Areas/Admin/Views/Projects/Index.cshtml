@@ -595,7 +595,7 @@
                             <div class="page-title-box">
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item active">Admin</a></li>
+                                        <li class="breadcrumb-item active">Admin</li>
                                         <li class="breadcrumb-item"><a href="#">Projects</a></li>
                                     </ol>
                                 </div>
@@ -683,7 +683,7 @@
                                             <span class="pe-2 text-nowrap mb-2 d-inline-block">
                                                 <i class="mdi mdi-calendar-clock text-muted"></i>
                                                 Create Date:
-                                                <b>@project.StartTime.ToString("yyyy-MM-dd")</b>
+                                                <b>@project.StartTime?.ToString("yyyy-MM-dd")</b>
                                             </span>
 
                                             @if (project.ProjectStatus == 2 && project.isBanned == false)
@@ -1480,5 +1480,6 @@
 
         <!-- App js -->
         <script src="assets/js/app.min.js"></script>
+        </div>
 </body>
 

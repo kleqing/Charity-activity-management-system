@@ -58,7 +58,7 @@
                 <div class=" card bg-base-100 w-96 shadow-xl mx-5 my-2">
                     <div class="relative">
                         <figure>
-                            <a asp-action="DetailProject" asp-controller="Project" asp-route-projectId="@item.ProjectID">
+                            <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
                                 <img src="@(item.Attachment ?? "https://localhost:7276/images/Organization/0.jpg")" alt="Ảnh dự án" class="w-96 h-64 object-cover">
 
                             </a>
@@ -88,7 +88,7 @@
                         
                     </div>
                     <div class="p-3 card-body">
-                        <a asp-action="DetailProject" asp-controller="Project" asp-route-projectId="@item.ProjectID">
+                        <a asp-action="ManageProject" asp-controller="Project" asp-route-id="@item.ProjectID">
                             <h1 class="card-title">@item.ProjectName</h1>
                         </a>
                         <div class="flex justify-between items-center text-xs  mb-2">
