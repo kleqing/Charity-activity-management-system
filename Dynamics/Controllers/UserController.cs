@@ -71,11 +71,13 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+
             // Convert user DOB to correct date for display purpose
             if (user.UserDOB != null)
             {
                 ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
             }
+
             return View(user);
         }
 
@@ -88,8 +90,10 @@ namespace Dynamics.Controllers
             {
                 var currentUser = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("user"));
                 // Try to get existing user (If we might have) that is in the system
-                var existingUserFullName = await _userRepository.GetAsync(u => u.UserFullName.Equals(user.UserFullName) && u.UserFullName != currentUser.UserFullName);
-                var existingUserEmail = await _userRepository.GetAsync(u => u.UserEmail.Equals(user.UserEmail) && u.UserEmail != currentUser.UserEmail);
+                var existingUserFullName = await _userRepository.GetAsync(u =>
+                    u.UserFullName.Equals(user.UserFullName) && u.UserFullName != currentUser.UserFullName);
+                var existingUserEmail = await _userRepository.GetAsync(u =>
+                    u.UserEmail.Equals(user.UserEmail) && u.UserEmail != currentUser.UserEmail);
                 // If one of these 2 exists, it means that another user is already has the same name or email
                 if (existingUserEmail != null || existingUserFullName != null)
                 {
@@ -115,14 +119,15 @@ namespace Dynamics.Controllers
                 // Update the session as well
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
                 TempData[MyConstants.Success] = "User updated!";
-                ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
+                if (user.UserDOB != null)
+                    ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
             }
             catch (Exception e)
             {
                 ModelState.AddModelError("", "Something went wrong, please try again later.");
                 return View(user);
             }
-            
+
             return View(user);
         }
 
@@ -144,6 +149,7 @@ namespace Dynamics.Controllers
             {
                 TempData["Google"] = "Your account is bounded with google account.";
             }
+
             return View();
         }
 
@@ -229,11 +235,13 @@ namespace Dynamics.Controllers
             var userRequestProjects =
                 await _projectMemberRepository.GetAllAsync(pm => pm.UserID.Equals(currentUser.UserID) && pm.Status < 2);
             var userRequestOrganizations =
-                await _organizationMemberRepository.GetAllAsync(om => om.UserID.Equals(currentUser.UserID) && om.Status < 2);
+                await _organizationMemberRepository.GetAllAsync(om =>
+                    om.UserID.Equals(currentUser.UserID) && om.Status < 2);
 
             // Donation requests only get the pending ones (Money is automatically accepted so it should not be here.)
             var userToOrgTransaction = await _transactionViewService
-                .GetUserToOrganizationTransactionDTOsAsync(ut => ut.UserID.Equals(currentUser.UserID) && ut.Status == 0);
+                .GetUserToOrganizationTransactionDTOsAsync(ut =>
+                    ut.UserID.Equals(currentUser.UserID) && ut.Status == 0);
             var userToPrjTransaction = await _transactionViewService
                 .GetUserToProjectTransactionDTOsAsync(ut => ut.UserID.Equals(currentUser.UserID) && ut.Status == 0);
             userToPrjTransaction.AddRange(userToOrgTransaction);
@@ -268,6 +276,7 @@ namespace Dynamics.Controllers
                     default:
                         throw new ArgumentException("Invalid type");
                 }
+
                 TempData[MyConstants.Success] = "Donation cancelled successful!";
             }
             catch (Exception e)
@@ -287,22 +296,27 @@ namespace Dynamics.Controllers
                 {
                     case "project":
                     {
-                        var result = await _projectMemberRepository.DeleteAsync(pm => pm.UserID == userID && pm.ProjectID == targetID);
+                        var result =
+                            await _projectMemberRepository.DeleteAsync(pm =>
+                                pm.UserID == userID && pm.ProjectID == targetID);
                         if (result == null)
                         {
                             msg = "No request found for this transaction.";
                             throw new Exception("Cancel failed.");
                         }
+
                         break;
                     }
                     case "organization":
                     {
-                        var result = await _organizationMemberRepository.DeleteAsync(om => om.UserID == userID && om.OrganizationID == targetID);
+                        var result = await _organizationMemberRepository.DeleteAsync(om =>
+                            om.UserID == userID && om.OrganizationID == targetID);
                         if (result == null)
                         {
                             msg = "No request found for this transaction.";
                             throw new Exception("Cancel failed.");
                         }
+
                         break;
                     }
                     default:
@@ -315,6 +329,7 @@ namespace Dynamics.Controllers
             {
                 TempData[MyConstants.Error] = msg;
             }
+
             return RedirectToAction("RequestsStatus", "User");
         }
     }
