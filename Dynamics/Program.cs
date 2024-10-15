@@ -45,13 +45,13 @@ namespace Dynamics
             // Add database
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
                 // options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
                 // options.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
             });
             builder.Services.AddDbContext<AuthDbContext>(options =>
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("AuthDbContextConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("AuthDbContextConnection"));
             });
 
             // Identity and roles
