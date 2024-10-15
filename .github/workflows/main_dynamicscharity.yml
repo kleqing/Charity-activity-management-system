@@ -20,7 +20,14 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
+          
+      - name: Install npm packages in Dynamics folder
+        working-directory: ./Dynamics
+        run: npm install
 
+      - name: Restore .NET dependencies
+        run: dotnet restore
+        
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
