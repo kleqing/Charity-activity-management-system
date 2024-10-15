@@ -134,21 +134,6 @@ public class ProjectService : IProjectService
         }
         return resultDtos;
     }
-
-    // Use for display purpose (Multiple database trips) please exclude it instead
-    public int? GetProjectProgressId(Guid projectId)
-    {
-        var resourceNumbers = _context.ProjectResources
-            .Where(p => p.ProjectID == projectId && p.ResourceName.ToLower().Equals("money"))
-            .Select(resource => new
-            {
-                quantity = resource.Quantity,
-                expectedQuantity = resource.ExpectedQuantity
-            }).FirstOrDefault();
-        if (resourceNumbers == null) return -1;
-        if (resourceNumbers.expectedQuantity == 0) return 0;
-        return resourceNumbers.quantity * 100 / resourceNumbers.expectedQuantity;
-    }
     
     /**
      * Make sure the param p already included the project resource

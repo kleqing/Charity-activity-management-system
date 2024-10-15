@@ -61,7 +61,6 @@ namespace Dynamics.Areas.Identity.Pages.Account
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
-
             return Page();
         }
     }

@@ -2,16 +2,24 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+ViewData["Title"] = "Log in";
 }
 <link rel="stylesheet" href="~/css/output.css">
 <link rel="stylesheet" href="~/css/original.css"/>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
 
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0 0 8px 0;
+        padding: 0
+    }
+</style>
 <section class="vh-100">
     <div class="container py-4 h-100">
         <div class="row d-flex align-items-center justify-content-center h-100 mx-4">
-            <div class="col-md-8 col-lg-7 col-xl-6 hidden md:flex justify-content-center align-content-center gap-2 flex-col text-xl font-bold">
+            <div
+                class="col-md-8 col-lg-7 col-xl-6 hidden md:flex justify-content-center align-content-center gap-2 flex-col text-xl font-bold">
                 <h3 class="text-center">“Happiness doesn’t result from what we get, but from what we give."</h3>
                 <h4 class="text-center">
                     <i>Ben Carson</i>
@@ -26,7 +34,8 @@
                 <form id="account" method="post" class="">
                     <!-- Email input -->
                     <div data-mdb-input-init class="form-outline mb-4">
-                        <input asp-for="Input.Email" type="email" id="form1Example13" class="form-control form-control-lg"/>
+                        <input asp-for="Input.Email" type="email" id="form1Example13"
+                               class="form-control form-control-lg"/>
                         <label asp-for="Input.Email" class="form-label" for="form1Example13">Email address</label>
                         <br>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
@@ -34,7 +43,8 @@
 
                     <!-- Password input -->
                     <div data-mdb-input-init class="form-outline mb-4">
-                        <input asp-for="Input.Password" type="password" id="form1Example23" class="form-control form-control-lg"/>
+                        <input asp-for="Input.Password" type="password" id="form1Example23"
+                               class="form-control form-control-lg"/>
                         <label asp-for="Input.Password" class="form-label" for="form1Example23">Password</label>
                         <br>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
@@ -46,9 +56,13 @@
                             <input class="form-check-input" asp-for="Input.RememberMe"/>
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
-                        <a id="forgot-password" asp-page="./ForgotPassword"class="link-primary">Forgot password?</a>
+                        <a id="forgot-password" asp-page="./ForgotPassword" class="link-primary">Forgot password?</a>
                     </div>
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    @if (TempData["ConfirmationEmail"] != null)
+                    {
+                        <p style="margin-bottom: 16px">Not received confirmation email? <a href="@TempData["ConfirmationEmail"]" class="link-primary">Click here to resend</a></p>
+                    }
                     <!-- Submit button -->
                     <button type="submit" data-mdb-button-init data-mdb-ripple-init
                             class="btn btn-primary w-full loading-btn"
@@ -57,19 +71,23 @@
                         Sign in
                     </button>
                     @* <span class="loading loading-spinner loading-md"></span> *@
-                    Don't have an account ? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="link-primary">Register here</a>
+                    Don't have an account ? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                                               class="link-primary">Register here</a>
                 </form>
 
                 <div class="divider d-flex align-items-center justify-content-center my-2">
                     <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
                 </div>
 
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl"
+                      method="post" class="form-horizontal">
                     <div class="w-full">
                         <p style="width: 100%; display:flex; justify-content: center;">
                             @foreach (var provider in Model.ExternalLogins!)
                             {
-                                <button type="submit" class="login-with-google-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">Login with @provider.DisplayName</button>
+                            <button type="submit" class="login-with-google-btn" name="provider" value="@provider.Name"
+                                    title="Log in using your @provider.DisplayName account">Login
+                                with @provider.DisplayName</button>
                             }
                         </p>
                     </div>
@@ -80,5 +98,6 @@
 </section>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial"/>
+<partial name="CustomComponent/_SweetAlert"/>
+<partial name="_ValidationScriptsPartial"/>
 }

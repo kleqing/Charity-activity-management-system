@@ -315,7 +315,6 @@ namespace Dynamics.Controllers
             {
                 TempData[MyConstants.Error] = msg;
             }
-
             return RedirectToAction("RequestsStatus", "User");
         }
     }

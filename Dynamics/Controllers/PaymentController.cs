@@ -42,7 +42,6 @@ public class PaymentController : Controller
         {
             HttpContext.Session.SetString("paymentRedirect", returnUrl);
         }
-
         payRequestDto = _vnPayService.InitVnPayRequestDto(HttpContext, payRequestDto);
         // Set pay request dto to the session so that we will use it later
         HttpContext.Session.Set("payment", payRequestDto);

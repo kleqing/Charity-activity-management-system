@@ -52,6 +52,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
                 // Session
                 var businessUser = await _userRepo.GetAsync(u => u.UserID.ToString() == user.Id);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(businessUser));
+                HttpContext.Session.SetString("currentUserID", businessUser.UserID.ToString());
                 if (User.IsInRole(RoleConstants.Admin) && result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
