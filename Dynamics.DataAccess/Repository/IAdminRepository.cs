@@ -28,9 +28,14 @@ namespace Dynamics.DataAccess.Repository
 
         // Organization
         Task<List<Organization>> ViewOrganization();
-        Task<bool> BanOrganizationById(Guid id);
+        Task<int> ChnageOrganizationStatus(Guid id);
         Task<List<Organization>> GetTop5Organization();
         Task<Organization?> GetOrganization(Expression<Func<Organization, bool>> filter);
+
+        // 2024-10-16
+        Task<Organization?> GetOrganizationInfomation(Expression<Func<Organization, bool>> filter);
+        public Task<int> MemberJoinedOrganization(Guid id);
+
 
         // 2024-9-30
         // Recent item

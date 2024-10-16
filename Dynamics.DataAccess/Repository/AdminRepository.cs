@@ -41,16 +41,28 @@ namespace Dynamics.DataAccess.Repository
             return org;
         }
 
-        public async Task<bool> BanOrganizationById(Guid id)
+        public async Task<int> ChnageOrganizationStatus(Guid id)
         {
             var org = await GetOrganization(c => c.OrganizationID == id);
             if (org != null)
             {
-                org.isBanned = !org.isBanned;
+                switch (org.OrganizationStatus)
+                {
+                    case -1:
+                        org.OrganizationStatus = 1;
+                        break;
+                    case 0:
+                        org.OrganizationStatus = 1;
+                        break;
+                    case 1:
+                        org.OrganizationStatus = -1;
+                        break;
+                }
+                _db.Organizations.Update(org);
                 await _db.SaveChangesAsync();
-                return org.isBanned;
+                return org.OrganizationStatus;
             }
-            return org.isBanned;
+            return org.OrganizationStatus;
         }
 
         public async Task<List<Organization>> GetTop5Organization()
@@ -83,6 +95,28 @@ namespace Dynamics.DataAccess.Repository
         {
             var organizations = await _db.Organizations.ToListAsync();
             return organizations;
+        }
+
+        public async Task<Organization?> GetOrganizationInfomation(Expression<Func<Organization, bool>> filter)
+        {
+            return await _db.Organizations.Where(filter)
+                .Select(
+                org => new Organization
+                {
+                    OrganizationID = org.OrganizationID,
+                    OrganizationName = org.OrganizationName,
+                    OrganizationDescription = org.OrganizationDescription,
+                    OrganizationEmail = org.OrganizationEmail,
+                    OrganizationPhoneNumber = org.OrganizationPhoneNumber,
+                    OrganizationAddress = org.OrganizationAddress,
+                    StartTime = org.StartTime
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> MemberJoinedOrganization(Guid id)
+        {
+            return await _db.OrganizationMember.Where(o => o.OrganizationID == id).CountAsync();
         }
 
         // ---------------------------------------
