@@ -650,10 +650,7 @@
                                                                 <a href="apps-ecommerce-products-details.html" class="text-body">@Html.DisplayFor(modelItem => item.OrganizationName)</a>
                                                             </p>
                                                         </td>
-                                                        <td style="max-width: 10px;
-                                                                    white-space: nowrap;
-                                                                    overflow: hidden;
-                                                                    text-overflow: ellipsis;">
+                                                        <td>
                                                             @Html.DisplayFor(modelItem => item.OrganizationDescription)
                                                         </td>
 
@@ -669,15 +666,18 @@
                                                         </td>
                                                         
                                                         <td class="table-action">
-                                                            <a href="#" class="btn @(item.isBanned ? "badge badge-danger-lighten":"badge badge-success-lighten") btn-active" data-id="@item.OrganizationID">@(item.isBanned ? "Banned" : "Active")</a>
+                                                            <a href="#" class="btn @(item.OrganizationStatus == 0 ? "badge badge-warning-lighten" : item.OrganizationStatus == -1 ? "badge badge-danger-lighten" : "badge badge-success-lighten") btn-status" data-id="@item.OrganizationID" data-status="@item.OrganizationStatus">
+                                                                @(item.OrganizationStatus == 0 ? "Pending" : item.OrganizationStatus == -1 ? "Banned" : "Active")
+                                                            </a>
                                                         </td>
 
                                                         <td class="table-action text-center">
-                                                            <a href="" class="badge badge-primary-lighten">Action</a>
+                                                            <a href="#" class="badge badge-primary-lighten action-btn" data-id="@item.OrganizationID">View more</a>
                                                         </td>
+
+
                                                     </tr>
                                                 }
-                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -690,6 +690,39 @@
                 </div> <!-- container -->
 
             </div> <!-- content -->
+
+            <!-- Off Canvas-->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDelete" aria-labelledby="offcanvasDeleteLabel">
+                <div class="offcanvas-header">
+                    <h5 id="offcanvasDeleteLabel">Organization Information</h5>
+                </div>
+                <div class="offcanvas-body d-flex flex-column">
+                    <!-- Content section -->
+                    <div class="mb-auto">
+                        <div class="row">
+                            <div class="col-12">
+                                <p><strong>Organization Name:</strong> <span id="organization-name"></span></p>
+                                <p><strong>Description:</strong> <span id="organization-description"></span></p>
+                                <p><strong>Email:</strong> <span id="organization-email"></span></p>
+                                <p><strong>Phone:</strong> <span id="organization-phone"></span></p>
+                                <p><strong>Address:</strong> <span id="organization-address"></span></p>
+                                <p><strong>Member in this Organization:</strong> <span id="organization-member"></span></p>
+                                <p><strong>Started Day:</strong> <span id="organization-startday"></span></p>
+                                <p><strong>Shutdown Day:</strong> <span id="organization-shutdownday"></span></p>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Close button section -->
+                    <div class="mt-auto">
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Footer Start -->
             <footer class="footer">
                 <div class="container-fluid">
@@ -1368,4 +1401,37 @@
     <!-- App js -->
     <script src="assets/js/app.min.js"></script>
     <script src="~/Admin/assets/controller/OrganizationController.js"></script>
+
+    <script>
+        $(document).on('click', '.action-btn', function () {
+            var orgId = $(this).data('id');  // Get ID
+
+            if (orgId) {
+                $.ajax({
+                    url: '/Admin/Organizations/GetOrganizationInfo',
+                    type: 'GET',
+                    data: { id: orgId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#organization-name').text(response.data.organizationName);
+                            $('#organization-description').text(response.data.organizationDescription);
+                            $('#organization-email').text(response.data.organizationEmail);
+                            $('#organization-phone').text(response.data.organizationPhoneNumber);
+                            $('#organization-address').text(response.data.organizationAddress);
+                            $('#organization-startday').text(response.data.startTime);
+                            $('#organization-member').text(response.data.memberCount);
+                            $('#organization-shutdownday').text(response.data.shutdownDay || 'Not yet');
+
+                            // Show the offcanvas element
+                            var offcanvasElement = document.getElementById('offcanvasDelete');
+                            var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+                            offcanvas.show();
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>

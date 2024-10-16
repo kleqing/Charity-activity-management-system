@@ -636,54 +636,47 @@
                                             <th>Address</th>
                                             <th>Date of birth</th>
                                             <th>Status</th>
-                                            <th style="width: 1px;">Role</th>
+                                            <th class="text-md-center" style="width: 80px;">Role</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach (var item in Model)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="customCheck2">
-                                                        <label class="form-check-label" for="customCheck2">&nbsp;</label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.UserFullName)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.UserPhoneNumber)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.UserEmail)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.UserAddress)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.UserDOB)
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btn @(item.isBanned ? "badge badge-danger-lighten" : "badge badge-success-lighten") btn-ban" data-id="@item.UserID">
-                                                        @(item.isBanned ? "Banned" : "Active")
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    @if (item.isBanned == true)
-                                                    {
-                                                        <span class="badge badge-danger-lighten">Banned</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <a href="#" class="btn @(item.UserRole == Dynamics.Utility.RoleConstants.Admin ? "badge badge-warning-lighten" : "badge badge-primary-lighten") btn-admin" data-id="@item.UserID">
-                                                            @(item.UserRole == Dynamics.Utility.RoleConstants.Admin ? "Admin" : "User")
-                                                        </a>
-                                                    }
-                                                </td>
+                                            @foreach (var item in Model)
 
-                                            </tr>
-                                        }
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" id="customCheck2">
+                                                            <label class="form-check-label" for="customCheck2">&nbsp;</label>
+                                                        </div>
+                                                    </td>
+                                                    <td>@Html.DisplayFor(modelItem => item.UserFullName)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.UserPhoneNumber)</td>
+                                                    <td class="email">@Html.DisplayFor(modelItem => item.UserEmail)</td> <!-- Add class -->
+                                                    <td class="address">@Html.DisplayFor(modelItem => item.UserAddress)</td> <!-- Add class -->
+                                                    <td>@Html.DisplayFor(modelItem => item.UserDOB)</td>
+                                                    <td class="status">
+                                                        <a href="#" class="btn @(item.isBanned ? "badge badge-danger-lighten" : "badge badge-success-lighten") btn-ban" data-id="@item.UserID">
+                                                            @(item.isBanned ? "Banned" : "Active")
+                                                        </a>
+                                                    </td>
+                                                    <td class="role text-center">
+                                                        @if (item.isBanned == true)
+
+                                                        {
+                                                            <span class="badge badge-danger-lighten">Banned</span>
+                                                        }
+
+                                                        else
+
+                                                        {
+                                                            <a href="#" class="btn @(item.UserRole == Dynamics.Utility.RoleConstants.Admin ? "badge badge-warning-lighten" : "badge badge-primary-lighten") btn-admin" data-id="@item.UserID">
+                                                                @(item.UserRole == Dynamics.Utility.RoleConstants.Admin ? "Admin" : "User")
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
