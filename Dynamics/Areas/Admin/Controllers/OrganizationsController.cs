@@ -37,13 +37,44 @@ namespace Dynamics.Areas.Admin.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<JsonResult> BanOrganization(Guid id)
+        [HttpGet]
+        public async Task<JsonResult> GetOrganizationInfo(Guid id)
         {
-            var result = await _adminRepository.BanOrganizationById(id);
+            var organization = await _adminRepository.GetOrganizationInfomation(o => o.OrganizationID == id);
+            if (organization == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Organization not found"
+                });
+            }
+
+            var memberCount = await _adminRepository.MemberJoinedOrganization(id);
             return Json(new
             {
-                isBanned = result
+                success = true,
+                data = new
+                {
+                    organization.OrganizationName,
+                    organization.OrganizationDescription,
+                    organization.OrganizationEmail,
+                    organization.OrganizationPhoneNumber,
+                    organization.OrganizationAddress,
+                    organization.StartTime,
+                    organization.ShutdownDay,
+                    memberCount = memberCount
+                }
+            });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> ChangeStatus(Guid id)
+        {
+            var result = await _adminRepository.ChnageOrganizationStatus(id);
+            return Json(new
+            {
+                Status = result
             });
         }
     }
