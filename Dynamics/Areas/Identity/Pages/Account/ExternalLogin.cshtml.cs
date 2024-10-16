@@ -89,6 +89,7 @@ namespace Dynamics.Areas.Identity.Pages.Account
             // Checking if the user already have an account with the same email, we will use that account to log in instead
             var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
             var businessUser = await _userRepo.GetAsync(u => u.UserEmail == userEmail);
+
             if (businessUser.UserRole.Equals(RoleConstants.Banned))
             {
                 ModelState.AddModelError("", "User account is banned!");
