@@ -26,10 +26,10 @@ jobs:
         run: npm install
 
       - name: Restore .NET dependencies
-        run: dotnet restore
+        run: dotnet restore ./Dynamics/Dynamics.csproj
         
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release ./Dynamics/Dynamics.csproj
 
       - name: dotnet publish
         run: dotnet publish ./Dynamics/Dynamics.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
