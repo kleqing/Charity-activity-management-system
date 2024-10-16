@@ -8,6 +8,13 @@
   </PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Helps\**" />
+	  <Content Remove="Helps\**" />
+	  <EmbeddedResource Remove="Helps\**" />
+	  <None Remove="Helps\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="EPPlus" Version="4.5.3.3" />
 		<PackageReference Include="EPPlus" Version="4.5.3.3" />
@@ -51,14 +58,12 @@
 	  <_ContentIncludedByDefault Remove="wwwroot\identity\css\styles.css" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Helps\" />
 	  <Folder Include="wwwroot\files\Organization\" />
 		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
 		<PackageReference Include="Serilog" Version="4.0.2" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-	  <Folder Include="Helps\" />
 	  <Folder Include="wwwroot\files\Organization\" />
 	  <Folder Include="wwwroot\images\Organization\" />
 	  <Folder Include="wwwroot\files\Project\" />
