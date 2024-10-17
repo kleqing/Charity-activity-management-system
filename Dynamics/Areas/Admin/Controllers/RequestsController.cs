@@ -120,5 +120,34 @@ namespace Dynamics.Areas.Admin.Controllers
                 return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
             }
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetRequestInfomation(Guid id)
+        {
+            var request = await _adminRepository.GetRequestInfo(r => r.RequestID == id);
+            if (request == null)
+            {
+                return Json(new
+                    {
+                        success = false,
+                        message = "Request not found"
+                    }
+                );
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    request.RequestTitle,
+                    request.Content,
+                    request.Location,
+                    request.RequestEmail,
+                    request.RequestPhoneNumber,
+                    request.CreationDate
+                }
+            });
+        }
     }
 }
