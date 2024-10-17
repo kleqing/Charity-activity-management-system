@@ -598,7 +598,7 @@
 
                     <div class="row mb-2">
                         <div class="col-sm-4">
-                            <a href="#" class="btn btn-danger rounded-pill mb-3"><i class="mdi mdi-export-variant"></i> Export</a>
+                            <a href="@Url.Action("Export", "Projects")" class="btn btn-danger rounded-pill mb-3"><i class="mdi mdi-export-variant"></i> Export</a>
                         </div>
                         <div class="col-sm-8">
                             <div class="text-sm-end">
@@ -679,11 +679,22 @@
 
                                             @if (project.ProjectStatus == 2 && project.isBanned == false)
                                             {
-                                                <span class="text-nowrap mb-2 d-inline-block">
-                                                    <i class="mdi mdi-calendar-check-outline text-muted"></i>
-                                                    End Date:
-                                                    <b>@project.EndTime?.ToString("yyyy-MM-dd")</b>
-                                                </span>
+                                                if (project.EndTime != null)
+                                                {
+                                                    <span class="text-nowrap mb-2 d-inline-block">
+														<i class="mdi mdi-calendar-check-outline text-muted"></i>
+														End Date:
+														<b>@project.EndTime?.ToString("yyyy-MM-dd")</b>
+													</span>
+												}
+												else
+												{
+													<span class="text-nowrap mb-2 d-inline-block">
+														<i class="mdi mdi-calendar-check-outline text-muted"></i>
+														End Date:
+														<b class="text-danger">Not set</b>
+													</span>
+                                                }
                                             }
                                             else if (project.isBanned)
                                             {
@@ -719,33 +730,7 @@
                                                 </span>
                                             }
                                         </p>
-                                        @* <div id="tooltip-container">
-                                    <a href="javascript:void(0);" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Mat Helme" class="d-inline-block">
-                                    <img src="assets/images/users/avatar-6.jpg" class="rounded-circle avatar-xs" alt="friend">
-                                    </a>
-
-                                    <a href="javascript:void(0);" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Michael Zenaty" class="d-inline-block">
-                                    <img src="assets/images/users/avatar-7.jpg" class="rounded-circle avatar-xs" alt="friend">
-                                    </a>
-
-                                    <a href="javascript:void(0);" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="James Anderson" class="d-inline-block">
-                                    <img src="assets/images/users/avatar-8.jpg" class="rounded-circle avatar-xs" alt="friend">
-                                    </a>
-                                    <a href="javascript:void(0);" class="d-inline-block text-muted fw-bold ms-2">
-                                    +7 more
-                                    </a>
-                                    </div> *@
                                     </div> <!-- end card-body-->
-                                    @* <ul class="list-group list-group-flush">
-                                        <li class="list-group-item p-3">
-                                        <!-- project progress-->
-                                        <p class="mb-2 fw-bold">Progress <span class="float-end">100%</span></p>
-                                        <div class="progress progress-sm">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                                        </div><!-- /.progress-bar -->
-                                        </div><!-- /.progress -->
-                                        </li>
-                                        </ul> *@
                                 </div> <!-- end card-->
                             </div> <!-- end col -->
                         }
