@@ -618,13 +618,34 @@
                                     <p class="text-muted mb-2">
                                         @Html.DisplayFor(model => model.ProjectDescription)
                                     </p>
+
+                                    <br/>
+
                                     <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-4">
+                                                <h5>Address</h5>
+                                                <p>@Html.DisplayFor(model => model.ProjectAddress)</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="mb-4">
+                                                <h5>Email</h5>
+                                                <p>@Html.DisplayFor(model => model.ProjectEmail)</p>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-4">
                                             <div class="mb-4">
                                                 <h5>Start Date</h5>
                                                 <p>@Html.DisplayFor(model => model.StartTime)</p>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div class="row">
+                                       
 
                                         <div class="col-md-4">
                                             <div class="mb-4">
@@ -648,9 +669,30 @@
 													}
                                                     else
                                                     {
-                                                        @Html.DisplayFor(model => model.EndTime)
+                                                        if (Model.EndTime == null)
+														{
+															<span class="text-danger">Not set</span>
+														}
+														else
+														{
+															@Html.DisplayFor(model => model.EndTime)
+														}
                                                     }
                                                 </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="mb-4">
+                                                <h5>Shutdown Reason</h5>
+                                                @if (Model.ShutdownReason == null)
+												{
+													<p>None</p>
+												}
+												else
+												{
+													<p>@Html.DisplayFor(model => model.ShutdownReason)</p>
+												}
                                             </div>
                                         </div>
 
