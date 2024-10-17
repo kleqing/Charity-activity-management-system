@@ -98,5 +98,6 @@ namespace Dynamics.DataAccess.Repository
         Task<List<ProjectResource>> GetAllResourceByProjectIDAsync(Expression<Func<ProjectResource, bool>> filter);
 
         Task<bool> UpdateProjectResource(ProjectResource entity);
+        Task<List<Project>> SearchIndexFilterAsync(IQueryable<Project> projects, string searchQuery, string filterQuery);
     }
 }

@@ -169,5 +169,10 @@ namespace Dynamics.DataAccess.Repository
             }
             return request.FirstOrDefaultAsync();
         }
-    }
+
+        public Task<IQueryable<Request>> GetRequestDateFilterAsync(IQueryable<Request> requests, DateOnly dateFrom, DateOnly dateTo)
+        {
+	        return Task.FromResult(requests.Where(r => r.CreationDate >= dateFrom && r.CreationDate <= dateTo));
+        }
+	}
 }

@@ -22,7 +22,9 @@ namespace Dynamics.Controllers
 			_userManager = userManager;
 			_logger = logger;
 		}
-		public async Task<IActionResult> Index(string searchQuery, string filterQuery, int pageNumber = 1, int pageSize = 12)
+		public async Task<IActionResult> Index(string searchQuery, string filterQuery, 
+			DateOnly dateFrom, DateOnly dateTo,
+			int pageNumber = 1, int pageSize = 12)
 		{
 			var requests = await _requestRepo.GetAllAsync();
 			// search
@@ -30,6 +32,11 @@ namespace Dynamics.Controllers
 			{
 				requests = await _requestRepo.SearchIndexFilterAsync(searchQuery, filterQuery);
 			}
+
+			if (!dateFrom.ToString("yyyy-MM-dd").Equals("0001-01-01"))
+			{
+				requests = await _requestRepo.GetRequestDateFilterAsync(requests, dateFrom, dateTo);
+			} 
 			// pagination
 			var totalRequest = await requests.CountAsync();
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);
@@ -39,7 +46,9 @@ namespace Dynamics.Controllers
 			ViewBag.totalPages = totalPages;
 			return View(paginatedRequests);
 		}
-		public async Task<IActionResult> MyRequest(string searchQuery, string filterQuery, int pageNumber = 1, int pageSize = 12)
+		public async Task<IActionResult> MyRequest(string searchQuery, string filterQuery,
+			DateOnly dateFrom, DateOnly dateTo,
+			int pageNumber = 1, int pageSize = 12)
 		{
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)
@@ -61,6 +70,11 @@ namespace Dynamics.Controllers
 			{
 				requests = await _requestRepo.SearchIdFilterAsync(searchQuery, filterQuery, userId);
 			}
+			//date filter
+			if (!dateFrom.ToString("yyyy-MM-dd").Equals("0001-01-01"))
+			{
+				requests = await _requestRepo.GetRequestDateFilterAsync(requests, dateFrom, dateTo);
+			} 
 			//pagination
 			var totalRequest = await requests.CountAsync();
 			var totalPages = (int)Math.Ceiling((double)totalRequest / pageSize);

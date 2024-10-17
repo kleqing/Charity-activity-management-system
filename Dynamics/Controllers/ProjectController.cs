@@ -19,6 +19,7 @@ using Dynamics.Helps;
 using Dynamics.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using static System.Net.Mime.MediaTypeNames;
 using Util = Dynamics.Utility.Util;
 
@@ -49,6 +50,8 @@ namespace Dynamics.Controllers
 
         [Route("Project/Index/{userID}")]
         public async Task<IActionResult> Index(Guid userID, 
+            string searchQuery, string filterQuery,
+            DateOnly? dateFrom, DateOnly? dateTo,
             int pageNumberPIL = 1, int pageNumberPIM = 1, int pageNumberPOT = 1, int pageSize = 6)
         {
             //get all project
@@ -87,6 +90,11 @@ namespace Dynamics.Controllers
                     //get other project
                     otherProjects.Add(project);
                 }
+            }
+            //search
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                projectsIAmMember = await projectRepository.SearchIndexFilterAsync(_pagination.ToQueryable(projectsIAmMember), searchQuery, filterQuery);
             }
             
             //pagination
