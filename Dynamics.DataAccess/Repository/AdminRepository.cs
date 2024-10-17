@@ -173,6 +173,22 @@ namespace Dynamics.DataAccess.Repository
             return request;
         }
 
+        public async Task<Request> GetRequestInfo(Expression<Func<Request, bool>> expression)
+        {
+            return await _db.Requests.Where(expression)
+                .Select(
+                r => new Request
+                {
+                    RequestID = r.RequestID,
+                    RequestTitle = r.RequestTitle,
+                    Content = r.Content,
+                    Location = r.Location,
+                    RequestEmail = r.RequestEmail,
+                    RequestPhoneNumber = r.RequestPhoneNumber,
+                    CreationDate = r.CreationDate
+                })
+                .FirstOrDefaultAsync();
+        }
         // ---------------------------------------
         // User (View, Ban, Top 5, allow access as admin)
 
