@@ -451,7 +451,9 @@ public class ProjectService : IProjectService
     //filter users of ProjectMember table
     public List<User> FilterMemberOfProject(Expression<Func<ProjectMember, bool>> filter)
     {
-        IQueryable<ProjectMember> projectMemberList = _context.ProjectMembers.Include(x => x.User).Include(x => x.Project).Where(filter);
+        IQueryable<ProjectMember> projectMemberList = _context.ProjectMembers
+            .Include(x => x.User)
+            .Include(x => x.Project).Where(filter);
         List<User> members = new List<User>();
         if (members != null)
         {
@@ -459,10 +461,8 @@ public class ProjectService : IProjectService
             {
                 members.Add(u.User);
             }
-
             return members;
         }
-
         return null;
     }
     public async Task<string> SendJoinProjectRequestAsync(Guid projectID,Guid memberID)

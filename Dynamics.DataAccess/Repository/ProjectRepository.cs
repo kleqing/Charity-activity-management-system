@@ -98,7 +98,8 @@ namespace Dynamics.DataAccess.Repository
                 .Include(x => x.ProjectResource)
                 .Include(x => x.Organization)
                 .Include(x => x.Request).ThenInclude(x => x.User)
-                .Include(x => x.History).Where(filter);
+                .Include(x => x.History).Where(filter)
+                .AsSplitQuery();
             return project.FirstOrDefaultAsync();
         }
         public async Task<bool> UpdateAsync(Project entity)
@@ -203,6 +204,5 @@ namespace Dynamics.DataAccess.Repository
             await _db.SaveChangesAsync();
             return true;
         }
-
     }
 }

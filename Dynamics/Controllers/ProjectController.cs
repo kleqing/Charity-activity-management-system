@@ -16,6 +16,14 @@ using System.Composition;
 using Dynamics.Models.Models.Dto;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using ILogger = Serilog.ILogger;
+using System;
+using System.Drawing;
+using System.Linq.Expressions;
+using System.Net.WebSockets;
+using Dynamics.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static System.Net.Mime.MediaTypeNames;
 using Util = Dynamics.Utility.Util;
 
 namespace Dynamics.Controllers
@@ -28,7 +36,10 @@ namespace Dynamics.Controllers
         private readonly IProjectMemberRepository _projectMemberRepo;
         private readonly IProjectResourceRepository _projectResourceRepo;
         private readonly IUserToProjectTransactionHistoryRepository _userToProjectTransactionHistoryRepo;
-        private readonly IOrganizationToProjectTransactionHistoryRepository _organizationToProjectTransactionHistoryRepo;
+
+        private readonly IOrganizationToProjectTransactionHistoryRepository
+            _organizationToProjectTransactionHistoryRepo;
+
         private readonly IProjectHistoryRepository _projectHistoryRepo;
         private readonly IReportRepository _reportRepo;
         private readonly IWebHostEnvironment hostEnvironment;
@@ -37,6 +48,7 @@ namespace Dynamics.Controllers
         private readonly CloudinaryUploader _cloudinaryUploader;
         private readonly ILogger<ProjectController> _logger;
         IOrganizationVMService _organizationService;
+        private readonly IPagination _pagination;
 
         public ProjectController(IProjectRepository _projectRepo,
             IOrganizationRepository _organizationRepo,
@@ -49,11 +61,12 @@ namespace Dynamics.Controllers
             IReportRepository reportRepository,
             IWebHostEnvironment hostEnvironment,
             IMapper mapper,
+            IPagination pagination,
             IProjectService projectService,
             CloudinaryUploader cloudinaryUploader,
             ILogger<ProjectController> logger,
             IOrganizationVMService organizationService
-           )
+        )
         {
             this._projectRepo = _projectRepo;
             this._organizationRepo = _organizationRepo;
@@ -64,6 +77,7 @@ namespace Dynamics.Controllers
             this._organizationToProjectTransactionHistoryRepo = _organizationToProjectTransactionHistoryRepo;
             this._projectHistoryRepo = projectHistoryRepository;
             this.hostEnvironment = hostEnvironment;
+            _pagination = pagination;
             this._mapper = mapper;
             this._projectService = projectService;
             _reportRepo = reportRepository;
@@ -73,14 +87,62 @@ namespace Dynamics.Controllers
         }
 
         [Route("Project/Index/{userID:guid}")]
-        public async Task<IActionResult> Index(Guid userID)
+        public async Task<IActionResult> Index(Guid userID, int pageNumberPIL = 1, int pageNumberPIM = 1,
+            int pageNumberPOT = 1, int pageSize = 3)
         {
-            return View(await _projectService.ReturnMyProjectVMAsync(userID));
-        }
+            //get project that user has joined
+            var projectMemberList = _projectMemberRepo.FilterProjectMember(x => x.UserID.Equals(userID) && x.Status >= 0 && x.Project.ProjectStatus >= 0);
+            List<Models.Models.Project> projectsIAmMember = new List<Models.Models.Project>();
+            List<Models.Models.Project> projectsILead = new List<Models.Models.Project>();
+            foreach (var projectMember in projectMemberList)
+            {
+                var project = await _projectRepo.GetProjectAsync(x => x.ProjectID.Equals(projectMember.ProjectID));
+                if (project != null)
+                {
+                    var leaderOfProject = await _projectService.GetProjectLeaderAsync(project.ProjectID);
+                    if (leaderOfProject.UserID.Equals(userID))
+                    {
+                        //get project that user join as a leader
+                        projectsILead.Add(project);
+                    }
+                    else
+                    {
+                        //get project that user join as a member
+                        projectsIAmMember.Add(project);
+                    }
+                }
+            }
 
+            //pagination
+            var queryPIL = _pagination.ToQueryable(projectsILead);
+            var totalProjectsILead = projectsILead.Count();
+            var totalPagesProjectsILead = (int)Math.Ceiling((double)totalProjectsILead / pageSize);
+            var paginatedProjectsILead = _pagination.PaginationMethod(queryPIL, pageNumberPIL, pageSize);
+            ViewBag.currentPagePIL = pageNumberPIL;
+            ViewBag.totalPagesPIL = totalPagesProjectsILead;
+
+            var queryIAM = _pagination.ToQueryable(projectsIAmMember);
+            var totalProjectsIAmMember = projectsIAmMember.Count();
+            var totalPagesProjectsIAmMember = (int)Math.Ceiling((double)totalProjectsIAmMember / pageSize);
+            var paginatedProjectsIAmMember = _pagination.PaginationMethod(queryIAM, pageNumberPIM, pageSize);
+            ViewBag.currentPagePIM = pageNumberPIM;
+            ViewBag.totalPagesPIM = totalPagesProjectsIAmMember;
+            
+            // Set page size
+            ViewBag.pageSize = pageSize;
+            // Convert to dtos
+            var paginatedProjectsILeadDtos = _projectService.MapToListProjectOverviewDto(paginatedProjectsILead);
+            var paginatedProjectsIAmMemberDtos = _projectService.MapToListProjectOverviewDto(paginatedProjectsIAmMember);
+            return View(new MyProjectVM()
+            {
+                ProjectsILead = paginatedProjectsILeadDtos,
+                ProjectsIAmMember = paginatedProjectsIAmMemberDtos,
+                // OtherProjects = paginatedOtherProjects
+            });
+        }
+        
         public async Task<IActionResult> ViewAllProjects()
         {
-          
             return View(await _projectService.ReturnAllProjectsVMsAsync());
         }
 
@@ -104,15 +166,15 @@ namespace Dynamics.Controllers
             }
             else
             {
-                    var res = await _projectService.DeleteImageAsync(imgPath, phaseID);
-                    if (!res)
-                    {
-                        TempData[MyConstants.Error] = $"Fail to delete image {imgPath}!";
-                        return RedirectToAction(nameof(UpdateProjectProfile), new { id = currentProjectID });
-                    }
+                var res = await _projectService.DeleteImageAsync(imgPath, phaseID);
+                if (!res)
+                {
+                    TempData[MyConstants.Error] = $"Fail to delete image {imgPath}!";
+                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = currentProjectID });
+                }
 
-                    TempData[MyConstants.Success] = $"Delete image {imgPath} successful!";
-                    return RedirectToAction(nameof(UpdateProjectProfile), new { id = currentProjectID });             
+                TempData[MyConstants.Success] = $"Delete image {imgPath} successful!";
+                return RedirectToAction(nameof(UpdateProjectProfile), new { id = currentProjectID });
             }
         }
 
@@ -120,29 +182,30 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> ImportFileProject(FinishProjectVM finishProjectVM, IFormFile reportFile)
         {
             var projectID = finishProjectVM.ProjectID;
-                if (reportFile != null)
+            if (reportFile != null)
+            {
+                var resReportFile = await Util.UploadFiles(new List<IFormFile> { reportFile }, @"files\Project");
+                if (resReportFile.Equals("No file"))
                 {
-                    var resReportFile = await Util.UploadFiles(new List<IFormFile> { reportFile }, @"files\Project");
-                    if (resReportFile.Equals("No file"))
-                    {
-                        TempData[MyConstants.Error] = "No file to upload!";
-                        return RedirectToAction(nameof(ManageProject), new { id = projectID });
-                    }
-
-                    if (resReportFile.Equals("Wrong extension"))
-                    {
-                        TempData[MyConstants.Error] = "Extension of some files is wrong!";
-                        return RedirectToAction(nameof(ManageProject), new { id = projectID });
-                    }
-
-                    finishProjectVM.ReportFile = resReportFile;
-                    var res = await _projectRepo.FinishProjectAsync(finishProjectVM);
-                    if (res)
-                    {
-                        TempData[MyConstants.Success] = "Finish project successfully!";
-                        return RedirectToAction(nameof(ManageProject), new { id = projectID });
-                    }
+                    TempData[MyConstants.Error] = "No file to upload!";
+                    return RedirectToAction(nameof(ManageProject), new { id = projectID });
                 }
+
+                if (resReportFile.Equals("Wrong extension"))
+                {
+                    TempData[MyConstants.Error] = "Extension of some files is wrong!";
+                    return RedirectToAction(nameof(ManageProject), new { id = projectID });
+                }
+
+                finishProjectVM.ReportFile = resReportFile;
+                var res = await _projectRepo.FinishProjectAsync(finishProjectVM);
+                if (res)
+                {
+                    TempData[MyConstants.Success] = "Finish project successfully!";
+                    return RedirectToAction(nameof(ManageProject), new { id = projectID });
+                }
+            }
+
             TempData[MyConstants.Error] = "Fail to finish project!";
             return RedirectToAction(nameof(ManageProject), new { id = projectID });
         }
@@ -183,6 +246,7 @@ namespace Dynamics.Controllers
                             return File(System.IO.File.ReadAllBytes(filepath), "text/csv",
                                 System.IO.Path.GetFileName(filepath));
                     }
+
                     TempData[MyConstants.Success] = "Download file successful!";
                     return RedirectToAction(nameof(UpdateProjectProfile), new { id = new Guid(currentProjectID) });
                 }
@@ -200,6 +264,7 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+
             var projectDto = _mapper.Map<UpdateProjectProfileRequestDto>(projectObj);
             IEnumerable<SelectListItem> StatusList = new List<SelectListItem>()
             {
@@ -214,6 +279,7 @@ namespace Dynamics.Controllers
             {
                 MemberList.Add(new SelectListItem { Text = member.UserFullName, Value = member.UserID.ToString() });
             }
+
             ViewData["MemberList"] = MemberList;
 
             //get leader id from project member to updateProjectDto
@@ -226,21 +292,25 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> UpdateProjectProfile(UpdateProjectProfileRequestDto updateProject,
             List<IFormFile> images)
         {
-           var resUpdate = await _projectService.UpdateProjectProfileAsync(updateProject, images);
-            if (resUpdate.Equals("No file")|| resUpdate.Equals("Wrong extension"))
-                {
-                    TempData[MyConstants.Error] = resUpdate.Equals("No file")?"No file to upload!": "Extension of some files is wrong!";
-                }
+            var resUpdate = await _projectService.UpdateProjectProfileAsync(updateProject, images);
+            if (resUpdate.Equals("No file") || resUpdate.Equals("Wrong extension"))
+            {
+                TempData[MyConstants.Error] =
+                    resUpdate.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
+            }
             else if (resUpdate.Equals(MyConstants.Success))
             {
                 TempData[MyConstants.Success] = "Update project successfully!";
-                return RedirectToAction(nameof(ManageProject), new { id = HttpContext.Session.GetString("currentProjectID") });
+                return RedirectToAction(nameof(ManageProject),
+                    new { id = HttpContext.Session.GetString("currentProjectID") });
             }
             else
             {
                 TempData[MyConstants.Error] = "Fail to update project!";
             }
-            return RedirectToAction(nameof(UpdateProjectProfile), new { id = HttpContext.Session.GetString("currentProjectID") });
+
+            return RedirectToAction(nameof(UpdateProjectProfile),
+                new { id = HttpContext.Session.GetString("currentProjectID") });
         }
 
         [HttpPost]
@@ -248,7 +318,7 @@ namespace Dynamics.Controllers
         {
             var userIDString = HttpContext.Session.GetString("currentUserID");
             var res = await _projectRepo.ShutdownProjectAsync(shutdownProjectVM);
-            if (res&&!string.IsNullOrEmpty(userIDString))
+            if (res && !string.IsNullOrEmpty(userIDString))
             {
                 return Json(new
                 {
@@ -263,7 +333,7 @@ namespace Dynamics.Controllers
 
         public async Task<IActionResult> SendReportProjectRequest(Report report)
         {
-            _logger.LogWarning("Send report project request");  
+            _logger.LogWarning("Send report project request");
             report.ReporterID = new Guid(HttpContext.Session.GetString("currentUserID"));
             report.Type = ReportObjectConstant.Project;
             var res = await _reportRepo.SendReportProjectRequestAsync(report);
@@ -284,38 +354,51 @@ namespace Dynamics.Controllers
             {
                 return NotFound("id is empty!");
             }
-           var detailProject = await _projectService.ReturnDetailProjectVMAsync(new Guid(id));
-            if(detailProject != null)
+
+            var detailProject = await _projectService.ReturnDetailProjectVMAsync(new Guid(id));
+            if (detailProject != null)
             {
                 return View(detailProject);
             }
+
             TempData[MyConstants.Error] = "Fail to get project!";
             return RedirectToAction(nameof(Index), new { id = HttpContext.Session.GetString("currentUserID") });
         }
 
         //----------------------manage project member -------------
         [Route("Project/ManageProjectMember/{projectID}")]
-        public IActionResult ManageProjectMember([FromRoute] Guid projectID)
+        public async Task<IActionResult> ManageProjectMember([FromRoute] Guid projectID, int pageNumberPM = 1,
+            int pageSize = 10)
         {
-            var allProjectMember = _projectMemberRepo.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status >= 1);
+            var allProjectMember =
+                _projectMemberRepo.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status >= 1);
             if (allProjectMember == null)
             {
                 throw new Exception("No member in this project!");
             }
+
+            var queryPM = _pagination.ToQueryable(allProjectMember);
+            var totalPM = allProjectMember.Count();
+            var totalPagePM = (int)Math.Ceiling((double)totalPM / pageSize);
+            var paginatedPM = _pagination.PaginationMethod(queryPM, pageNumberPM, pageSize);
+            ViewBag.currentPagePM = pageNumberPM;
+            ViewBag.totalPagesPM = totalPagePM;
+
             var joinRequests =
                 _projectMemberRepo.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0) ??
                 Enumerable.Empty<ProjectMember>();
             var nums = joinRequests.Count();
             ViewData["hasJoinRequest"] = nums > 0;
-            return View(allProjectMember);
+            return View(paginatedPM);
         }
 
         [Route("Project/DeleteProjectMember/{memberID}")]
         public async Task<IActionResult> DeleteProjectMember([FromRoute] Guid memberID)
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
-            var res = await _projectMemberRepo.DeleteAsync(x=>x.UserID.Equals(memberID)&&x.ProjectID.Equals(new Guid(currentProjectID)));
-            if (res!=null)
+            var res = await _projectMemberRepo.DeleteAsync(x =>
+                x.UserID.Equals(memberID) && x.ProjectID.Equals(new Guid(currentProjectID)));
+            if (res != null)
             {
                 TempData[MyConstants.Success] = "Delete project member successfully!";
                 return RedirectToAction(nameof(ManageProjectMember), new { id = currentProjectID });
@@ -336,23 +419,26 @@ namespace Dynamics.Controllers
                 TempData[MyConstants.Warning] = "This project is not in progress!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
             }
+
             var res = await _projectService.SendJoinProjectRequestAsync(projectID, memberID);
             _logger.LogWarning(res);
-            if(res != null)
+            if (res != null)
             {
                 if (res.Equals(MyConstants.Success))
                 {
                     TempData[MyConstants.Success] = "Join request sent successfully!";
-
-                }else if (res.Equals(MyConstants.Warning))
+                }
+                else if (res.Equals(MyConstants.Warning))
                 {
                     TempData[MyConstants.Warning] = "Already sent another join request!";
                     TempData[MyConstants.Subtitle] = "Please wait for the project leader response!";
-                }else if (res.Equals(MyConstants.Error))
+                }
+                else if (res.Equals(MyConstants.Error))
                 {
                     TempData[MyConstants.Error] = "Fail to send join request!";
                 }
             }
+
             return RedirectToAction(nameof(ManageProject), new { id = projectID });
         }
 
@@ -369,6 +455,7 @@ namespace Dynamics.Controllers
                     TempData[MyConstants.Info] = "Transfer team leader rights if you still want to leave the project.";
                     return RedirectToAction(nameof(ManageProject), new { id = projectID });
                 }
+
                 var res = await _projectMemberRepo.DenyJoinRequestAsync(new Guid(currentUserID), projectID);
                 if (res)
                 {
@@ -376,22 +463,33 @@ namespace Dynamics.Controllers
                     return RedirectToAction(nameof(ManageProject), new { id = projectID });
                 }
             }
+
             TempData[MyConstants.Error] = "Fail to move out project!";
             return RedirectToAction(nameof(ManageProject), new { id = projectID });
         }
 
         //review request
         [Route("Project/ReviewJoinRequest/{projectID}")]
-        public IActionResult ReviewJoinRequest([FromRoute] Guid projectID)
+        public async Task<IActionResult> ReviewJoinRequest([FromRoute] Guid projectID, int pageNumberJR = 1,
+            int pageSizeJR = 10)
         {
-            var allJoinRequest = _projectMemberRepo.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0);
+            var allJoinRequest =
+                _projectMemberRepo.FilterProjectMember(p => p.ProjectID.Equals(projectID) && p.Status == 0);
 
             if (allJoinRequest == null)
             {
-               throw new Exception("List join request is null!");
+                throw new Exception("List join request is null!");
             }
 
-            return View(allJoinRequest);
+            //pagination
+            var queryJR = _pagination.ToQueryable(allJoinRequest);
+            var totalJR = allJoinRequest.Count();
+            var totalPageJR = (int)Math.Ceiling((double)totalJR / pageSizeJR);
+            var paginatedJR = _pagination.PaginationMethod(queryJR, pageNumberJR, pageSizeJR);
+            ViewBag.currentPagejR = pageNumberJR;
+            ViewBag.totalPagesJR = totalPageJR;
+
+            return View(paginatedJR);
         }
 
         [Route("Project/AcceptedJoinRequest/{memberID}")]
@@ -427,13 +525,14 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> AcceptedJoinRequestAll()
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
-           
+
             var res = await _projectService.AcceptJoinProjectRequestAllAsync(new Guid(currentProjectID));
             if (!res)
-                {
-                    TempData[MyConstants.Error] = "Failed to accept the join request!";
-                    return RedirectToAction(nameof(ReviewJoinRequest), new { id = new Guid(currentProjectID) });
-                }
+            {
+                TempData[MyConstants.Error] = "Failed to accept the join request!";
+                return RedirectToAction(nameof(ReviewJoinRequest), new { id = new Guid(currentProjectID) });
+            }
+
             TempData[MyConstants.Success] = "All join request accepted successfully!";
             return RedirectToAction(nameof(ReviewJoinRequest), new { id = new Guid(currentProjectID) });
         }
@@ -441,13 +540,14 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> DenyJoinRequestAll()
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
-           
-                var res = await _projectService.DenyJoinProjectRequestAllAsync(new Guid(currentProjectID));
+
+            var res = await _projectService.DenyJoinProjectRequestAllAsync(new Guid(currentProjectID));
             if (!res)
-                {
-                    TempData[MyConstants.Error] = "Failed to deny the join request!";
-                    return RedirectToAction(nameof(ReviewJoinRequest), new { id = new Guid(currentProjectID) });
-                }
+            {
+                TempData[MyConstants.Error] = "Failed to deny the join request!";
+                return RedirectToAction(nameof(ReviewJoinRequest), new { id = new Guid(currentProjectID) });
+            }
+
             TempData[MyConstants.Success] = "All join request denied successfully!";
             return RedirectToAction(nameof(ReviewJoinRequest), new { id = new Guid(currentProjectID) });
         }
@@ -476,6 +576,7 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+
             IEnumerable<SelectListItem> ResourceTypeList = allResource.Select(x => new SelectListItem
             {
                 Text = x.ResourceName + " - " + x.Unit,
@@ -483,14 +584,17 @@ namespace Dynamics.Controllers
             }).ToList();
             ViewData["ResourceTypeList"] = ResourceTypeList;
             //set value for View Model
-            SendDonateRequestVM sendDonateRequestVM = await _projectService.ReturnSendDonateRequestVMAsync(projectID,donor);          
-            if(sendDonateRequestVM == null)
+            SendDonateRequestVM sendDonateRequestVM =
+                await _projectService.ReturnSendDonateRequestVMAsync(projectID, donor);
+            if (sendDonateRequestVM == null)
             {
                 TempData[MyConstants.Error] = "Fail to get history donate of user/organization!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
             }
+
             // Setup for payment by money
-            var moneyResource = await _projectResourceRepo.GetAsync(pr => pr.ResourceName.ToLower().Equals("money") && pr.ProjectID.Equals(projectID));
+            var moneyResource = await _projectResourceRepo.GetAsync(pr =>
+                pr.ResourceName.ToLower().Equals("money") && pr.ProjectID.Equals(projectID));
             if (moneyResource == null) throw new Exception("warning: PROJECT DOES NOT HAVE MONEY RESOURCE");
             sendDonateRequestVM.VnPayRequestDto = new VnPayRequestDto
             {
@@ -507,34 +611,62 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> SendDonateRequest(SendDonateRequestVM sendDonateRequestVM)
         {
-           var res = await _projectService.SendDonateRequestAsync(sendDonateRequestVM);
+            var res = await _projectService.SendDonateRequestAsync(sendDonateRequestVM);
             if (!string.IsNullOrEmpty(res))
             {
                 if (res.Equals("Exceed"))
                 {
                     // Return JSON response with failure message
-                    return Json(new { success = false, message = "The quantity of resource you want to donate is more than expected quantity!" });
+                    return Json(new
+                    {
+                        success = false,
+                        message = "The quantity of resource you want to donate is more than expected quantity!"
+                    });
                 }
                 else if (res.Equals(MyConstants.Success))
                 {
                     return Json(new { success = true, message = "Your donation request was sent successfully!" });
-
                 }
-            }      
+            }
+
             return Json(new { success = false, message = "Fail to send your donation request!" });
         }
 
         [Route("Project/ManageProjectDonor/{projectID}")]
-        public async Task<IActionResult> ManageProjectDonor(Guid projectID)
+        public async Task<IActionResult> ManageProjectDonor(Guid projectID, int pageNumberUD = 1, int pageNumberOD = 1, int pageSize = 10)
         {
             ProjectTransactionHistoryVM projectTransactionHistoryVM = await _projectService.ReturnProjectTransactionHistoryVMAsync(projectID);
-           if(projectTransactionHistoryVM == null)
+            if (projectTransactionHistoryVM == null)
             {
                 TempData[MyConstants.Error] = "Fail to get history donate of user/organization!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
             }
+
+            //pagination
+            var queryUD = _pagination.ToQueryable(projectTransactionHistoryVM.UserDonate);
+            var totalUD = projectTransactionHistoryVM.UserDonate.Count();
+            var totalPageUD = (int)Math.Ceiling((double)totalUD / pageSize);
+            var paginatedUD = _pagination.PaginationMethod(queryUD, pageNumberUD, pageSize);
+            ViewBag.currentPageUD = pageNumberUD;
+            ViewBag.totalPagesUD = totalPageUD;
+
+            var queryOD = _pagination.ToQueryable(projectTransactionHistoryVM.OrganizationDonate);
+            var totalOD = projectTransactionHistoryVM.OrganizationDonate.Count();
+            var totalPageOD = (int)Math.Ceiling((double)totalOD / pageSize);
+            var paginatedOD = _pagination.PaginationMethod(queryOD, pageNumberOD, pageSize);
+            ViewBag.currentPageOD = pageNumberOD;
+            ViewBag.totalPagesOD = totalPageOD;
+
+
+            ProjectTransactionHistoryVM projectTransactionHistoryPaginatedVM = new ProjectTransactionHistoryVM()
+            {
+                UserDonate = paginatedUD,
+                OrganizationDonate = paginatedOD
+            };
             int nums =
-                (await _userToProjectTransactionHistoryRepo.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0) ?? new List<UserToProjectTransactionHistory>()).Count();
+                (await _userToProjectTransactionHistoryRepo.GetAllUserDonateAsync(u =>
+                     u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0) ??
+                 new List<UserToProjectTransactionHistory>()).Count();
             var hasUserDonateRequest = nums > 0;
 
             int nums2 =
@@ -550,21 +682,32 @@ namespace Dynamics.Controllers
 
         [HttpGet]
         [Route("Project/ReviewUserDonateRequest/{projectID}")]
-        public async Task<IActionResult> ReviewUserDonateRequest(Guid projectID)
+        public async Task<IActionResult> ReviewUserDonateRequest(Guid projectID, int pageNumberUD = 1,
+            int pageSizeUD = 10)
         {
             var allUserDonate =
-                await _userToProjectTransactionHistoryRepo.GetAllUserDonateAsync(u => u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0);
+                await _userToProjectTransactionHistoryRepo.GetAllUserDonateAsync(u =>
+                    u.ProjectResource.ProjectID.Equals(projectID) && u.Status == 0);
             if (allUserDonate == null)
             {
                 return NotFound();
             }
+
+            //pagination
+            var queryUD = _pagination.ToQueryable(allUserDonate);
+            var totalUD = allUserDonate.Count();
+            var totalPageUD = (int)Math.Ceiling((double)totalUD / pageSizeUD);
+            var paginatedUD = _pagination.PaginationMethod(queryUD, pageNumberUD, pageSizeUD);
+            ViewBag.currentPageUD = pageNumberUD;
+            ViewBag.totalPagesUD = totalPageUD;
 
             return View(allUserDonate);
         }
 
         [HttpGet]
         [Route("Project/ReviewOrgDonateRequest/{projectID}")]
-        public async Task<IActionResult> ReviewOrgDonateRequest(Guid projectID)
+        public async Task<IActionResult> ReviewOrgDonateRequest(Guid projectID, int pageNumberOD = 1,
+            int pageSizeOD = 10)
         {
             var allOrgDonate =
                 await _organizationToProjectTransactionHistoryRepo.GetAllOrganizationDonateAsync(
@@ -573,6 +716,14 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+
+            //pagination
+            var queryOD = _pagination.ToQueryable(allOrgDonate);
+            var totalOD = allOrgDonate.Count();
+            var totalPageOD = (int)Math.Ceiling((double)totalOD / pageSizeOD);
+            var paginatedOD = _pagination.PaginationMethod(queryOD, pageNumberOD, pageSizeOD);
+            ViewBag.currentPageOD = pageNumberOD;
+            ViewBag.totalPagesOD = totalPageOD;
 
             return View(allOrgDonate);
         }
@@ -587,7 +738,8 @@ namespace Dynamics.Controllers
                     res = await _userToProjectTransactionHistoryRepo.AcceptedUserDonateRequestAsync(transactionID);
                     break;
                 case "Organization":
-                    res = await _organizationToProjectTransactionHistoryRepo.AcceptedOrgDonateRequestAsync(transactionID);
+                    res = await _organizationToProjectTransactionHistoryRepo.AcceptedOrgDonateRequestAsync(
+                        transactionID);
                     break;
                 default:
                     return NotFound();
@@ -614,7 +766,7 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> AcceptedDonateRequestAll(string donor)
         {
             var currentProjectID = HttpContext.Session.GetString("currentProjectID");
-            var res = await _projectService.AcceptDonateProjectRequestAllAsync(new Guid(currentProjectID),donor);
+            var res = await _projectService.AcceptDonateProjectRequestAllAsync(new Guid(currentProjectID), donor);
             if (!res)
             {
                 TempData[MyConstants.Error] = "Failed to accept all the donation request!";
@@ -623,6 +775,7 @@ namespace Dynamics.Controllers
             {
                 TempData[MyConstants.Success] = "Donation all request accepted successfully!";
             }
+
             return (donor.Equals("User"))
                 ? RedirectToAction(nameof(ReviewUserDonateRequest),
                     new { id = HttpContext.Session.GetString("currentProjectID") })
@@ -685,7 +838,7 @@ namespace Dynamics.Controllers
         //---------------------------manage ProjectResource--------------------------
         public IActionResult CreateProjectDonateRequestAsync(Guid projectID)
         {
-            IEnumerable<SelectListItem> ResourceTypeList =  _projectResourceRepo.GetAllProjectResourceQuery().Select(x =>
+            IEnumerable<SelectListItem> ResourceTypeList = _projectResourceRepo.GetAllProjectResourceQuery().Select(x =>
                 new SelectListItem
                 {
                     Text = x.ResourceName,
@@ -736,24 +889,23 @@ namespace Dynamics.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateResourceType(ProjectResource projectResource)
         {
-         var res = await _projectService.UpdateProjectResourceTypeAsync(projectResource);
+            var res = await _projectService.UpdateProjectResourceTypeAsync(projectResource);
             if (!string.IsNullOrEmpty(res))
             {
                 if ("Existed".Equals(res))
                 {
                     TempData[MyConstants.Error] = "Resource type has the same unit is existed!";
-
                 }
-                else if(MyConstants.Success.Equals(res))
+                else if (MyConstants.Success.Equals(res))
                 {
                     TempData[MyConstants.Success] = "Update resource type successfully!";
                 }
                 else
                 {
                     TempData[MyConstants.Error] = "Fail to update resource type!";
-
                 }
             }
+
             return RedirectToAction(nameof(ManageProjectResource), new { id = projectResource.ProjectID });
         }
 
@@ -782,6 +934,7 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+
             allUpdate = allUpdate.OrderByDescending(x => x.Date).ToList();
             return View(allUpdate);
         }
@@ -802,8 +955,9 @@ namespace Dynamics.Controllers
             var resAdd = await _projectService.AddProjectPhaseReportAsync(history, images);
             if (resAdd.Equals("No file") || resAdd.Equals("Wrong extension"))
             {
-                TempData[MyConstants.Error] = resAdd.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
-            }          
+                TempData[MyConstants.Error] =
+                    resAdd.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
+            }
             else if (resAdd.Equals(MyConstants.Success))
             {
                 TempData[MyConstants.Success] = "Add project update successfully!";
@@ -812,7 +966,8 @@ namespace Dynamics.Controllers
             {
                 TempData[MyConstants.Error] = "Fail to add project update!";
             }
-                return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
+
+            return RedirectToAction(nameof(ManageProjectPhaseReport), new { id = history.ProjectID });
         }
 
         public async Task<IActionResult> EditProjectPhaseReport(Guid historyID, Guid projectID)
@@ -823,6 +978,7 @@ namespace Dynamics.Controllers
             {
                 return NotFound();
             }
+
             var projectUpdate = projectUpdates.FirstOrDefault();
             var existingDates = await _projectService.GetExistingReportDatesAsync(projectID);
             // Convert to a list of string dates in "YYYY-MM-DD" format
@@ -838,7 +994,8 @@ namespace Dynamics.Controllers
             var resEdit = await _projectService.EditProjectPhaseReportAsync(history, images);
             if (resEdit.Equals("No file") || resEdit.Equals("Wrong extension"))
             {
-                TempData[MyConstants.Error] = resEdit.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
+                TempData[MyConstants.Error] =
+                    resEdit.Equals("No file") ? "No file to upload!" : "Extension of some files is wrong!";
             }
             else if (resEdit.Equals(MyConstants.Success))
             {
@@ -849,7 +1006,9 @@ namespace Dynamics.Controllers
             {
                 TempData[MyConstants.Error] = "Fail to update project update!";
             }
-            return RedirectToAction(nameof(EditProjectPhaseReport), new { projectID = history.ProjectID, historyID = history.HistoryID });
+
+            return RedirectToAction(nameof(EditProjectPhaseReport),
+                new { projectID = history.ProjectID, historyID = history.HistoryID });
         }
 
         [HttpGet]
@@ -867,7 +1026,6 @@ namespace Dynamics.Controllers
             return RedirectToAction(nameof(ManageProjectPhaseReport),
                 new { id = new Guid(HttpContext.Session.GetString("currentProjectID")) });
         }
-
 
 
         public async Task<IActionResult> CreateProjectByImportData(Guid requestId)
@@ -940,9 +1098,11 @@ namespace Dynamics.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject(ProjectVM projectVM, IFormFile image, int expectedQuantity, string Unit)
+        public async Task<IActionResult> CreateProject(ProjectVM projectVM, IFormFile image, int expectedQuantity,
+            string Unit)
         {
-            var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
+            var currentOrganization =
+                HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
             var userString = HttpContext.Session.GetString("user");
             User currentUser = null;
@@ -958,7 +1118,7 @@ namespace Dynamics.Controllers
 
             projectVM.OrganizationVM = currentOrganization;
 
-            if(projectVM.LeaderID != Guid.Empty)
+            if (projectVM.LeaderID != Guid.Empty)
             {
                 var Leader = new User();
                 foreach (var item in currentOrganization.OrganizationMember)
@@ -968,6 +1128,7 @@ namespace Dynamics.Controllers
                         Leader = item.User;
                     }
                 }
+
                 if (projectVM != null)
                 {
                     if (image != null)
@@ -979,10 +1140,12 @@ namespace Dynamics.Controllers
                     {
                         projectVM.ProjectEmail = Leader.UserEmail;
                     }
+
                     if (projectVM.ProjectPhoneNumber == null)
                     {
                         projectVM.ProjectPhoneNumber = Leader.UserPhoneNumber;
                     }
+
                     if (projectVM.ProjectAddress == null)
                     {
                         projectVM.ProjectAddress = Leader.UserAddress;
@@ -1008,7 +1171,6 @@ namespace Dynamics.Controllers
                         };
 
 
-
                         if (await _projectRepo.AddProjectAsync(project))
                         {
                             var projectResource = new ProjectResource()
@@ -1021,23 +1183,24 @@ namespace Dynamics.Controllers
                             };
                             await _projectRepo.AddProjectResourceAsync(projectResource);
 
-                            if(project.RequestID != null)
+                            if (project.RequestID != null)
                             {
-                                Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(project.RequestID));
+                                Request request =
+                                    await _requestRepo.GetAsync(r => r.RequestID.Equals(project.RequestID));
                                 request.Status = 2;
                                 await _requestRepo.UpdateAsync(request);
                             }
-                           
 
-                            return RedirectToAction(nameof(AutoJoinProject), new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
+
+                            return RedirectToAction(nameof(AutoJoinProject),
+                                new { projectId = project.ProjectID, leaderId = projectVM.LeaderID });
                         }
                     }
-
                 }
             }
-            
 
-            if(expectedQuantity <= 0) 
+
+            if (expectedQuantity <= 0)
                 ViewBag.MessageExpectedQuantity = "*ExpectedQuantity more than > 0";
 
             ViewBag.ExpectedQuantity = expectedQuantity;
@@ -1056,7 +1219,7 @@ namespace Dynamics.Controllers
             }
 
             //join Project
-            
+
             if (!currentUser.UserID.Equals(leaderId))
             {
                 var projectMember1 = new ProjectMember()
@@ -1067,6 +1230,7 @@ namespace Dynamics.Controllers
                 };
                 await _projectRepo.AddProjectMemberAsync(projectMember1);
             }
+
             var projectMember = new ProjectMember()
             {
                 UserID = currentUser.UserID,
@@ -1074,9 +1238,10 @@ namespace Dynamics.Controllers
                 Status = 2,
             };
             await _projectRepo.AddProjectMemberAsync(projectMember);
-           
+
             var currentProject = await _projectRepo.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
-            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
+            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY,
+                currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }
 
@@ -1084,7 +1249,8 @@ namespace Dynamics.Controllers
         public async Task<IActionResult> DetailProject(Guid projectId)
         {
             var currentProject = await _projectRepo.GetProjectByProjectIDAsync(p => p.ProjectID.Equals(projectId));
-            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY, currentProject);
+            HttpContext.Session.Set<Models.Models.Project>(MySettingSession.SESSION_Current_Project_KEY,
+                currentProject);
             return RedirectToAction(nameof(AddProjectResource));
         }
 
@@ -1099,8 +1265,10 @@ namespace Dynamics.Controllers
                 Quantity = 0,
             };
 
-            var projectResources =await _projectRepo.GetAllResourceByProjectIDAsync(pr => pr.ProjectID .Equals(currentProject.ProjectID));
-            HttpContext.Session.Set<List<ProjectResource>>(MySettingSession.SESSION_Resources_In_A_PRoject_KEY, projectResources);
+            var projectResources =
+                await _projectRepo.GetAllResourceByProjectIDAsync(pr => pr.ProjectID.Equals(currentProject.ProjectID));
+            HttpContext.Session.Set<List<ProjectResource>>(MySettingSession.SESSION_Resources_In_A_PRoject_KEY,
+                projectResources);
 
             return View(projectResource);
         }

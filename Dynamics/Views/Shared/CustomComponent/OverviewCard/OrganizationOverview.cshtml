@@ -52,7 +52,8 @@
                 var organizationMemberTemp = new OrganizationMember();
                 foreach (var organizationMember in Model.OrganizationMember)
                 {
-                    if (organizationMember.UserID.Equals(ViewBag.userID ?? "YouForgotToSetupAViewBagForThis"))
+                    if (ViewBag.UserID == null) throw new Exception("WARNING: IF YOU ARE USING ORGANIZATION CARD, PLEASE INSERT THE ViewBag.UserID");
+                    if (organizationMember.UserID.Equals(ViewBag.UserID))
                     {
                         isJoined = true;
                         organizationMemberTemp = organizationMember;
@@ -81,9 +82,6 @@
                         break;
                 }
             }
-            @* <form asp-action="sendRequestJoinOrganization" asp-controller="Organization" asp-route-organizationId="@Model.OrganizationID"> *@
-            @*     <button class="btn btn-primary h-8 min-h-0 outline-none border-none" type="submit">Join into organization now</button> *@
-            @* </form> *@
         </div>
     </div>
 </li>

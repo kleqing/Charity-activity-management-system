@@ -12,7 +12,6 @@ using Request = Dynamics.Models.Models.Request;
 
 namespace Dynamics.DataAccess.Repository
 {
-	//TODO: filter by status (currently no filter for testing purpose)
 	public class RequestRepository : IRequestRepository
 	{
 		private readonly ApplicationDbContext _db;
@@ -36,35 +35,64 @@ namespace Dynamics.DataAccess.Repository
 			}
 		}
 		
-		public async Task<List<Request>> SearchIdFilterAsync(string searchQuery, Guid userId)
+		public IQueryable<Request> SearchIdFilter(string searchQuery, string filterQuery, Guid userId)
 		{
-			var requests = await _db.Requests
-				.Where(r => r.RequestTitle.Contains(searchQuery) || r.Content.Contains(searchQuery) || r.Location.Contains(searchQuery)
-					&& r.UserID == userId).ToListAsync();
+			var requests = _db.Requests.Where(r => r.RequestID == userId);
+			switch (filterQuery)
+			{
+				case "All":
+					requests = _db.Requests
+						.Where(r => r.RequestTitle.Contains(searchQuery) || r.Content.Contains(searchQuery) || r.Location.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+				case "Title":
+					requests = _db.Requests
+						.Where(r => r.RequestTitle.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+				case "Location":
+					requests = _db.Requests
+						.Where(r => r.Location.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+				case "Content":
+					requests = _db.Requests
+						.Where(r => r.Content.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+			}
 			return requests;
 		}
 
-		public async Task<List<Request>> GetAllRequestsAsync()
+		public IQueryable<Request> SearchIndexFilterAsync(string searchQuery, string filterQuery)
 		{
-			IQueryable<Request> requestHelps = _db.Requests.Include(x => x.User).Include(x=>x.Project);
-			return await requestHelps.ToListAsync();
-		}
+			var requests = _db.Requests.AsQueryable();
+			switch (filterQuery)
+			{
+				case "All":
+					requests = _db.Requests
+						.Where(r => r.RequestTitle.Contains(searchQuery) || r.Content.Contains(searchQuery) ||
+						            r.Location.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+				case "Title":
+					requests = _db.Requests
+						.Where(r => r.RequestTitle.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+				case "Location":
+					requests = _db.Requests
+						.Where(r => r.Location.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+				case "Content":
+					requests = _db.Requests
+						.Where(r => r.Content.Contains(searchQuery))
+						.OrderBy(r => r.CreationDate);
+					break;
+			}
 
-		public async Task<List<Request>> GetAllAsync(Expression<Func<Request, bool>>? filter = null)
-        {
-	        if (filter != null)
-	        {
-		        return await _db.Requests.Where(filter).Include(r => r.User).ToListAsync();
-	        }
-	        return await _db.Requests.Include(u => u.User).ToListAsync();
-        }
-
-		public async Task<List<Request>> SearchIndexFilterAsync(string searchQuery)
-		{
-			var requests = await _db.Requests.Where(r => r.RequestTitle.Contains(searchQuery) 
-			                                             || r.Content.Contains(searchQuery)
-			                                             || r.Location.Contains(searchQuery)).ToListAsync();
-			return requests;
+			return (requests);
 		}
 
 		public async Task<Request> GetAsync(Expression<Func<Request, bool>> filter)
@@ -75,21 +103,28 @@ namespace Dynamics.DataAccess.Repository
 
 		public async Task<List<Request>> GetRequestsAsync()
 		{
-			var test = _db.Requests.ToList();
+			// var test = _db.Requests.ToList();
 			return await _db.Requests.Include(r => r.User).ToListAsync(); 
 		}
 
-		public async Task<List<Request>> GetAllPaginatedAsync(int pageNumber, int pageSize)
+		public async Task<List<Request>> GetAllAsync(int pageNumber, int pageSize)
 		{
-			var req = _db.Requests.ToList();
-			var requests = _db.Requests
-													.Include(r => r.User)
-													.AsQueryable();
-			return await requests
-				.OrderBy(r => r.CreationDate)
-				.Skip((pageNumber - 1) * pageSize)
+			var skip = (pageNumber - 1) * pageSize;
+			// Because our app is simple, we will not use keyset pagination here
+			return await _db.Requests
+				.Skip(skip)
 				.Take(pageSize)
+				.OrderBy(r => r.CreationDate)
 				.ToListAsync();
+		}
+
+		public int CountRequests(Expression<Func<Request, bool>>? predicate)
+		{
+			if (predicate != null)
+			{
+				return _db.Requests.Where(predicate).Count();
+			}
+			return _db.Requests.Count();
 		}
 
 		public async Task UpdateAsync(Request entity)
@@ -102,15 +137,19 @@ namespace Dynamics.DataAccess.Repository
 			}
 		}
 
-		public async Task<List<Request>> GetAllByIdPaginatedAsync(string role, Guid id, int pageNumber, int pageSize)
+		public Task<IQueryable<Request>> GetAllByIdAsync(string role, Guid id)
 		{
 			var query = _db.Requests.AsQueryable();
 			if (role == RoleConstants.User)
 			{ 
 				 query = query.Where(r => r.UserID == id);
 			}
-			return await query
-				.OrderBy(r => r.CreationDate)
+			return Task.FromResult(query);
+		}
+
+		public async Task<List<Request>> PaginateAsync(IQueryable<Request> requestQuery, int pageNumber, int pageSize)
+		{
+			return await requestQuery
 				.Skip((pageNumber - 1) * pageSize)
 				.Take(pageSize)
 				.ToListAsync();

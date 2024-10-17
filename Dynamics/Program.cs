@@ -3,6 +3,7 @@ using Dynamics.DataAccess.Repository;
 using Dynamics.Services;
 using Dynamics.Utility;
 using Dynamics.Utility.Mapper;
+using Google.Apis.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -138,6 +139,7 @@ namespace Dynamics
             builder.Services.AddScoped<IOrganizationService, OrganizationService>();
             // VNPAY Service
             builder.Services.AddTransient<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IPagination, Pagination>();
             // Add email sender
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             // Cloudinary

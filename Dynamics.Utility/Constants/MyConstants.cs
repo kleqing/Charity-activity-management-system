@@ -11,5 +11,7 @@
         public static string Project = "project";
         public static string Allocation = "allocation";
         public static string Subtitle = "subtitle";
+        public static int DefaultPage = 1;
+        public static int DefaultPageSize = 9;
     }
 }
