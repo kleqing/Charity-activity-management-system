@@ -678,7 +678,7 @@
 
                                                     <td>
                                                         &nbsp;&nbsp;
-                                                        <button type="button" class="btn btn-link p-0 action-icon" onclick="openDeleteOffcanvas('@item.RequestID')">
+                                                            <button type="button" class="btn btn-link p-0 action-icon action-btn" data-id="@item.RequestID" onclick="openDeleteOffcanvas('@item.RequestID')">
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
                                                     </td>
@@ -704,6 +704,21 @@
                 </div>
                 <div class="offcanvas-body d-flex flex-column">
                     <p>Are you sure you want to delete this request?</p>
+                    <div class="mb-auto">
+                        <div class="row">
+                            <div class="col-12">
+								<div class="mb-3">
+									<h4 class="text-center">Request information</h4>
+                                    <p><strong>Request title:</strong> <span id="request-name"></span></p>
+                                    <p><strong>Content:</strong> <span id="request-content"></span></p>
+                                    <p><strong>Location:</strong> <span id="request-location"></span></p>
+                                    <p><strong>Email:</strong ><span id="request-email"></span></p>
+                                    <p><strong>Phone number:</strong> <span id="request-phonenumber"></span></p>
+                                    <p><strong>Creation Date:</strong> <span id="request-createdate"></span></p>
+								</div>
+							</div>
+                        </div>
+                    </div>
                     <div class="mt-auto">
                         <div class="d-grid gap-2">
                             <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
@@ -1399,8 +1414,6 @@
 
         function openDeleteOffcanvas(requestId) {
             deleteRequestId = requestId; // Save requestID
-            var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasDelete'));
-            offcanvas.show();
         }
 
         document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
@@ -1414,6 +1427,35 @@
                     }
                 }
             });
+        });
+    </script>
+
+    <script>
+        $(document).on('click', '.action-btn', function () {
+            var orgId = $(this).data('id');  // Get ID
+
+            if (orgId) {
+                $.ajax({
+                    url: '/Admin/Requests/GetRequestInfomation',
+                    type: 'GET',
+                    data: { id: orgId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#request-name').text(response.data.requestTitle);
+                            $('#request-content').text(response.data.content);
+                            $('#request-location').text(response.data.location);
+                            $('#request-email').text(response.data.requestPhoneNumber);
+                            $('#request-phonenumber').text(response.data.requestPhoneNumber);
+                            $('#request-createdate').text(response.data.creationDate);
+
+                            // Show the offcanvas element
+                            var offcanvasElement = document.getElementById('offcanvasDelete');
+                            var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+                            offcanvas.show();
+                        }
+                    }
+                });
+            }
         });
     </script>
 
