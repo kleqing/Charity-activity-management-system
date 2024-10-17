@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - dynamicscharity
 
 on:
@@ -14,31 +11,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the code from your repository
       - uses: actions/checkout@v4
 
+      # Set up .NET Core SDK
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
+      # Install npm packages in the Dynamics project
       - name: Install npm packages in Dynamics folder
         working-directory: ./Dynamics
         run: npm install
 
+      # Restore .NET dependencies for all projects
       - name: Restore .NET dependencies
         run: dotnet restore ./Dynamics/Dynamics.csproj
         
+      # Build the Dynamics project
       - name: Build with dotnet
         run: dotnet build --configuration Release ./Dynamics/Dynamics.csproj
 
+      # Publish the Dynamics project
       - name: dotnet publish
-        run: dotnet publish ./Dynamics/Dynamics.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ./Dynamics/Dynamics.csproj -c Release -o ${{runner.temp}}/myapp
 
+      # Upload the artifact for deployment
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{runner.temp}}/myapp
         
   deploy:
     runs-on: ubuntu-latest
@@ -47,14 +51,16 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
+      # Download the published artifact from the build job
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+
+      # Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -62,10 +68,11 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5ADC78627C2D4654A528ED8393BEC722 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_10DDA53DC045495E90CDDECF10A87B98 }}
 
+      # Deploy to Azure Web App from the published folder
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'dynamicscharity'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/myapp
+          package: ${{runner.temp}}/myapp
