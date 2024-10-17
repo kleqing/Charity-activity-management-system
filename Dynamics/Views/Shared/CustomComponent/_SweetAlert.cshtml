@@ -1,21 +1,22 @@
 ﻿@using Dynamics.Utility
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+@* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
+<link rel="stylesheet" href="~/css/sweetalert2.css" />
+<script src="~/js/sweetalert2.js"></script>
 @{
     if (TempData[MyConstants.Success] != null)
     {
         <script>
             const swalWithTailwind = Swal.mixin({
                 customClass: {
-                    confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
-                    cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-4"
+                    confirmButton: "btn btn-md btn-success min-w-xs"
                 },
                 buttonsStyling: false // Disable default styling to use custom classes
             });
             swalWithTailwind.fire({
                 title: "@TempData[MyConstants.Success]",
                 icon: "success",
-            });        
+                text: '@(TempData[MyConstants.Subtitle] ?? "")'
+                });        
         
         </script>
     }
@@ -24,17 +25,14 @@
         <script>
             const swalWithTailwind = Swal.mixin({
                 customClass: {
-                    confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
-                    cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-4"
+                    confirmButton: "btn btn-md btn-error min-w-xs"
                 },
                 buttonsStyling: false // Disable default styling to use custom classes
             });
             swalWithTailwind.fire({
                 title: "@TempData[MyConstants.Error]",
                 icon: "error",
-                customClass: {
-                    confirmButton: '#1E429F',
-                }
+                text: '@(TempData[MyConstants.Subtitle] ?? "")'
             });
         
         </script>
@@ -44,17 +42,14 @@
         <script>
             const swalWithTailwind = Swal.mixin({
                 customClass: {
-                    confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
-                    cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-4"
+                    confirmButton: "btn btn-md btn-primary min-w-xs"
                 },
                 buttonsStyling: false // Disable default styling to use custom classes
             });
             swalWithTailwind.fire({
                 title: "@TempData[MyConstants.Info]",
                 icon: "info",
-                customClass: {
-                    confirmButton: '#1E429F',
-                }
+                text: '@(TempData[MyConstants.Subtitle] ?? "")'
             });
         
         </script>
@@ -64,17 +59,14 @@
         <script>
             const swalWithTailwind = Swal.mixin({
                 customClass: {
-                    confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
-                    cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-4"
+                    confirmButton: "btn btn-md btn-warning min-w-xs"
                 },
                 buttonsStyling: false // Disable default styling to use custom classes
             });
             swalWithTailwind.fire({
                 title: "@TempData[MyConstants.Warning]",
                 icon: "warning",
-                customClass: {
-                    confirmButton: '#1E429F',
-                }
+                text: '@(TempData[MyConstants.Subtitle] ?? "")'
             });
         
         </script>

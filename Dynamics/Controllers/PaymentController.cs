@@ -66,7 +66,7 @@ public class PaymentController : Controller
         // A Transaction with transaction id, project resource id, user id, status = 1, amount, message, time
         try
         {
-            await _vnPayService.UpdateTransactionInDatabaseAsync(requestDto);
+            await _vnPayService.AddTransactionToDatabaseAsync(requestDto);
         }
         catch (Exception e)
         {

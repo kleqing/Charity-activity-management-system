@@ -11,13 +11,11 @@
 
 <main class="flex md:p-6 pb-0 flex-1 min-h-screen">
 @* Left *@
-@Html.Partial("CustomComponent/_UserSidebar", "History")
+<partial name="CustomComponent/_UserSidebar" value="History" />
+ @* @Html.Partial("CustomComponent/_UserSidebar", "History") *@
 <div class="divider divider-horizontal"></div>
 @* Right *@
-<div>
-
-</div>
-<div class="w-full h-full flex flex-col gap-6 items-center p-16 bg-white rounded-sm">
+<div class="w-full h-full flex flex-col gap-12 items-center p-16 bg-white rounded-sm">
 <div class="w-full flex justify-center gap-4">
     <div role="tablist" class="tabs tabs-bordered">
         <a asp-action="History" asp-controller="User" class="tab">Transaction history</a>
@@ -34,7 +32,7 @@
     <!-- This will list the user requests to join organizations -->
     @if (!Model.OrganizationJoinRequests.IsNullOrEmpty())
     {
-        <h1 class="text-3xl font-bold text-center mb-4">Your requests to join organizations:</h1>
+        <h1 class="text-3xl font-bold text-center mb-4 underline">Your requests to join organizations:</h1>
         <!-- Right search bar -->
         <div class="flex w-full justify-end items-center gap-2 mb-4">
             @* Search bar *@
@@ -128,8 +126,8 @@
                 }
             }
         </ul>
-        // End list
-        <div class="divider divider-neutral py-8"></div>
+        @* // End list *@
+        @* <div class="divider divider-neutral py-8"></div> *@
     }
 </section>
 @* End list of organization request *@
@@ -139,7 +137,7 @@
     <!-- This will list the user requests to join organizations -->
     @if (!Model.ProjectJoinRequests.IsNullOrEmpty())
     {
-        <h1 class="text-3xl font-bold text-center mb-4">Your requests to join projects:</h1>
+        <h1 class="text-3xl font-bold text-center mb-4 underline">Your requests to join projects:</h1>
         <!-- right search bar -->
         <div class="flex w-full justify-end items-center gap-2 mb-4">
             <div class="join">
@@ -231,7 +229,7 @@
                 }
             }
         </ul>
-        <div class="divider divider-neutral py-8"></div>
+        @* <div class="divider divider-neutral py-8"></div> *@
     }
 </section>
 @* End list of project request *@
@@ -241,7 +239,7 @@
 <section class="w-full">
     @if (!Model.ResourcesDonationRequests.IsNullOrEmpty())
     {
-        <h1 class="text-3xl font-bold text-center mb-4">Pending resources donation requests</h1>
+        <h1 class="text-3xl font-bold text-center mb-4 underline">Pending resources donation requests</h1>
         <h3 class="text-neutral text-center mb-8">
             <i>Please wait while the receivers confirm your donation.</i>
         </h3>
@@ -354,7 +352,7 @@
                 @* </tfoot > *@
             </table >
         </div>
-        <div class="divider divider-neutral py-8">End</div>
+        @* <div class="divider divider-neutral py-8">End</div> *@
     }
 </section>
 <script>

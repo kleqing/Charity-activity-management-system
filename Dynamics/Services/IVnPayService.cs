@@ -13,5 +13,5 @@ public interface IVnPayService
      * Amount, message?
      */
     VnPayRequestDto InitVnPayRequestDto(HttpContext context, VnPayRequestDto payRequestDto);
-    Task UpdateTransactionInDatabaseAsync(VnPayRequestDto payRequestDto);
+    Task AddTransactionToDatabaseAsync(VnPayRequestDto payRequestDto);
 }

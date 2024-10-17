@@ -14,6 +14,8 @@ using Newtonsoft.Json;
 using Serilog;
 using System.Composition;
 using Dynamics.Models.Models.Dto;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using ILogger = Serilog.ILogger;
 using Util = Dynamics.Utility.Util;
 
 namespace Dynamics.Controllers
@@ -334,7 +336,8 @@ namespace Dynamics.Controllers
                 TempData[MyConstants.Warning] = "This project is not in progress!";
                 return RedirectToAction(nameof(ManageProject), new { id = projectID });
             }
-            var res = _projectService.SendJoinProjectRequestAsync(projectID, memberID);
+            var res = await _projectService.SendJoinProjectRequestAsync(projectID, memberID);
+            _logger.LogWarning(res);
             if(res != null)
             {
                 if (res.Equals(MyConstants.Success))
@@ -343,7 +346,8 @@ namespace Dynamics.Controllers
 
                 }else if (res.Equals(MyConstants.Warning))
                 {
-                    TempData[MyConstants.Warning] = "Already send join request.Please wait for response!";
+                    TempData[MyConstants.Warning] = "Already sent another join request!";
+                    TempData[MyConstants.Subtitle] = "Please wait for the project leader response!";
                 }else if (res.Equals(MyConstants.Error))
                 {
                     TempData[MyConstants.Error] = "Fail to send join request!";

@@ -1,12 +1,6 @@
 using Dynamics.Models.Models;
-using Dynamics.Models.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamics.DataAccess.Repository
 {
@@ -64,7 +58,7 @@ namespace Dynamics.DataAccess.Repository
             {
                 return false;
             }
-            
+
 
         }
 
@@ -85,7 +79,7 @@ namespace Dynamics.DataAccess.Repository
             }
         }
 
-        public async Task<OrganizationMember> GetOrganizationMemberAsync(Expression<Func<OrganizationMember, bool>> filter)
+        public async Task<OrganizationMember?> GetOrganizationMemberAsync(Expression<Func<OrganizationMember, bool>> filter)
         {
             var organizationMember = await _db.OrganizationMember.Where(filter).FirstOrDefaultAsync();
             return organizationMember;
@@ -118,7 +112,7 @@ namespace Dynamics.DataAccess.Repository
             {
                 return false;
             }
-           
+
         }
 
 
@@ -269,7 +263,7 @@ namespace Dynamics.DataAccess.Repository
             }
         }
         //Repo of huyen
-        
+
         public async Task<List<Organization>> GetAllOrganizationsAsync()
         {
             IQueryable<Organization> organizations = _db.Organizations.Include(x => x.OrganizationMember).ThenInclude(x => x.User).Include(x => x.OrganizationResource);
@@ -293,7 +287,7 @@ namespace Dynamics.DataAccess.Repository
 
         public async Task<Organization> GetOrganizationOfAUser(Guid userId)
         {
-            var OrganizationObj = _db.OrganizationMember.Where(x=>x.UserID.Equals(userId)&&x.Status==2).Include("Organization").FirstOrDefaultAsync().Result;
+            var OrganizationObj = _db.OrganizationMember.Where(x => x.UserID.Equals(userId) && x.Status == 2).Include("Organization").FirstOrDefaultAsync().Result;
             if (OrganizationObj != null)
             {
                 return OrganizationObj.Organization;
@@ -302,7 +296,7 @@ namespace Dynamics.DataAccess.Repository
         }
         public async Task<Organization> GetOrganizationUserLead(Guid userId)
         {
-            var organizationMemberOfUser = _db.OrganizationMember.Where(x=>x.UserID.Equals(userId)&&x.Status==2);
+            var organizationMemberOfUser = _db.OrganizationMember.Where(x => x.UserID.Equals(userId) && x.Status == 2);
             if (organizationMemberOfUser == null)
             {
                 return null;
@@ -316,14 +310,14 @@ namespace Dynamics.DataAccess.Repository
         }
         public async Task<Guid> GetOrgResourceIDCorresponding(Guid projectResourceID, Guid organizationUserLeadID)
         {
-            var projectResourceObj = await _db.ProjectResources.FirstOrDefaultAsync(x=>x.ResourceID.Equals(projectResourceID));
+            var projectResourceObj = await _db.ProjectResources.FirstOrDefaultAsync(x => x.ResourceID.Equals(projectResourceID));
             if (projectResourceObj == null)
             {
                 return Guid.Empty;
             }
             var orgResourceObjCorresponding = await _db.OrganizationResources.FirstOrDefaultAsync(
-                x => x.OrganizationID.Equals(organizationUserLeadID) 
-                && x.ResourceName.ToLower().Trim().Equals(projectResourceObj.ResourceName.ToLower().Trim()) 
+                x => x.OrganizationID.Equals(organizationUserLeadID)
+                && x.ResourceName.ToLower().Trim().Equals(projectResourceObj.ResourceName.ToLower().Trim())
                 && x.Unit.ToLower().Trim().Equals(projectResourceObj.Unit.ToLower().Trim()));
             if (orgResourceObjCorresponding == null)
             {

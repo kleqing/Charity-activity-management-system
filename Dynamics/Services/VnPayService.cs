@@ -171,7 +171,7 @@ public class VnPayService : IVnPayService
      * User to project
      * Organization to project
      */
-    public async Task UpdateTransactionInDatabaseAsync(VnPayRequestDto payRequestDto)
+    public async Task AddTransactionToDatabaseAsync(VnPayRequestDto payRequestDto)
     {
         // payRequestDto.Amount /= 100; // Because of VNPay
         if (payRequestDto.TargetType.Equals(MyConstants.Project))

@@ -1,17 +1,12 @@
 ﻿using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
+using Dynamics.Models.Models.Dto;
 using Dynamics.Models.Models.ViewModel;
 using Dynamics.Services;
 using Dynamics.Utility;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Evaluation;
-using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Linq;
-using System.Resources;
-using Dynamics.Models.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
@@ -38,7 +33,7 @@ namespace Dynamics.Controllers
             IProjectVMService projectVMService,
             IOrganizationToProjectHistoryVMService organizationToProjectHistoryVMService,
             CloudinaryUploader cloudinaryUploader, IOrganizationService orgDisplayService, IOrganizationMemberRepository organizationMemberRepository
-            ,IOrganizationResourceRepository organizationResourceRepository)
+            , IOrganizationResourceRepository organizationResourceRepository)
         {
 
             _organizationRepository = organizationRepository;
@@ -64,7 +59,7 @@ namespace Dynamics.Controllers
 
         //GET: /Organization/Create
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             //get current user
             var userString = HttpContext.Session.GetString("user");
@@ -208,7 +203,7 @@ namespace Dynamics.Controllers
             return View(organizationVM);
         }
 
-        public async Task<IActionResult> sendRequestJoinOrganization(Guid organizationId, Guid userId)
+        public IActionResult sendRequestJoinOrganization(Guid organizationId, Guid userId)
         {
             // Get the id from session here, no need to pass it from the view - Kiet
             var userString = HttpContext.Session.GetString("user");
@@ -220,14 +215,14 @@ namespace Dynamics.Controllers
             return RedirectToAction(nameof(JoinOrganization), new { organizationId = organizationId, status = 0, userId = currentUser.UserID });
         }
 
-        public async Task<IActionResult> ManageRequestJoinOrganization(Guid organizationId)
+        public IActionResult ManageRequestJoinOrganization(Guid organizationId)
         {
             var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
             return View(currentOrganization);
         }
 
 
-        public async Task<IActionResult> AcceptRquestJoin(Guid organizationId, Guid userId)
+        public IActionResult AcceptRquestJoin(Guid organizationId, Guid userId)
         {
             return RedirectToAction(nameof(JoinOrganization), new { organizationId = organizationId, status = 1, userId = userId });
         }
@@ -300,7 +295,7 @@ namespace Dynamics.Controllers
 
         }
 
-        public async Task<IActionResult> TransferCeoOrganization()
+        public IActionResult TransferCeoOrganization()
         {
             // send to form to save vallue not change
             // can be use Session current organization
@@ -373,14 +368,14 @@ namespace Dynamics.Controllers
             var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
             var organizationVM = await _organizationService.GetOrganizationVMAsync(o => o.OrganizationID.Equals(currentOrganization.OrganizationID));
             HttpContext.Session.Set<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY, organizationVM);
-            
+
             var OrganizationToProjectHistorysPending = await _organizationToProjectHistoryVMService.GetAllOrganizationToProjectHistoryByPendingAsync(currentOrganization.OrganizationID);
             HttpContext.Session.Set<List<OrganizationToProjectHistory>>(MySettingSession.SESSION_OrganizzationToProjectHistory_For_Organization_Pending_Key, OrganizationToProjectHistorysPending);
             return View(organizationVM);
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddNewOrganizationResource()
+        public IActionResult AddNewOrganizationResource()
         {
             var currentOrganization = HttpContext.Session.Get<OrganizationVM>(MySettingSession.SESSION_Current_Organization_KEY);
 
@@ -494,7 +489,7 @@ namespace Dynamics.Controllers
                         transaction.ProjectResourceID = projectResource1.ResourceID;
                     }
                 }
-                
+
                 if (await _organizationRepository.AddOrganizationToProjectHistoryAsync(transaction))
                 {
                     resourceSent.Quantity -= transaction.Amount;
@@ -504,11 +499,11 @@ namespace Dynamics.Controllers
                 }
 
             }
-            if(transaction.Amount <= 0 || transaction.Amount > resourceSent.Quantity)
+            if (transaction.Amount <= 0 || transaction.Amount > resourceSent.Quantity)
 
                 ViewBag.MessageExcessQuantity = $"*Quantity more than 0 and less than equal {resourceSent.Quantity}";
 
-            if(projectId == Guid.Empty)
+            if (projectId == Guid.Empty)
             {
                 ViewBag.MessageProject = "*Choose project to send";
             }
@@ -531,7 +526,7 @@ namespace Dynamics.Controllers
         }
 
         // This method is shared between user donate to org and org allocate to project
-        public async Task<IActionResult> DonateByMoney(string organizationId, string resourceId)
+        public IActionResult DonateByMoney(string organizationId, string resourceId)
         {
             var userString = HttpContext.Session.GetString("user");
             User currentUser = null;
@@ -547,7 +542,7 @@ namespace Dynamics.Controllers
                 FromID = currentUser.UserID,
                 ResourceID = new Guid(resourceId),
                 TargetId = new Guid(organizationId),
-                TargetType = MyConstants.Organization, 
+                TargetType = MyConstants.Organization,
             };
             return View(vnPayRequestModel);
         }
@@ -572,10 +567,10 @@ namespace Dynamics.Controllers
                 // Target project id will be rendered in a form of options
                 FromID = new Guid(organizationId),
                 ResourceID = new Guid(resourceId),
-                TargetType = MyConstants.Allocation, 
+                TargetType = MyConstants.Allocation,
             };
             // same view as user donate to organization but with more options
-            return View(nameof(DonateByMoney),vnPayRequestModel);
+            return View(nameof(DonateByMoney), vnPayRequestModel);
         }
         [HttpGet]
         public async Task<IActionResult> DonateByResource(Guid resourceId)

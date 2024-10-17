@@ -137,9 +137,9 @@ namespace Dynamics
             builder.Services.AddScoped<IRequestService, RequestService>();
             builder.Services.AddScoped<IOrganizationService, OrganizationService>();
             // VNPAY Service
-            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddTransient<IVnPayService, VnPayService>();
             // Add email sender
-            builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
             // Cloudinary
             builder.Services.AddSingleton<CloudinaryUploader>();
 

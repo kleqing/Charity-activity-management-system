@@ -44,11 +44,11 @@ namespace Dynamics.Controllers
             _cloudinaryUploader = cloudinaryUploader;
         }
 
-        // User/username
+        // View a user profile (including user's own profile)
         public async Task<IActionResult> Index(string username)
         {
             var currentUser = await _userRepository.GetAsync(u => u.UserFullName.Equals(username));
-            if (currentUser == null) return RedirectToAction("Index", "Home");
+            if (currentUser == null) return NotFound();
             return View(currentUser);
         }
 
@@ -97,7 +97,7 @@ namespace Dynamics.Controllers
                 // If one of these 2 exists, it means that another user is already has the same name or email
                 if (existingUserEmail != null || existingUserFullName != null)
                 {
-                    ModelState.AddModelError("", "Username or email is already taken.");
+                    TempData[MyConstants.Error] = "Username or email is already taken.";
                     return View(user);
                 }
 
@@ -109,8 +109,13 @@ namespace Dynamics.Controllers
 
                 if (image != null)
                 {
-                    // user.UserAvatar = Util.UploadImage(image, @"images\User");
                     var imgUrl = await _cloudinaryUploader.UploadImageAsync(image);
+                    if (imgUrl.Equals("Wrong file extension", StringComparison.OrdinalIgnoreCase))
+                    {
+                        TempData[MyConstants.Error] = "Wrong file extension";
+                        TempData[MyConstants.Subtitle] = "Support formats are: jpg, jpeg, png, gif, webp.";
+                        return View(user);
+                    }
                     if (imgUrl != null) user.UserAvatar = imgUrl;
                 }
 
@@ -119,8 +124,8 @@ namespace Dynamics.Controllers
                 // Update the session as well
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(user));
                 TempData[MyConstants.Success] = "User updated!";
-                if (user.UserDOB != null)
-                    ViewBag.UserDOB = user.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
+                if (currentUser.UserDOB != null)
+                    ViewBag.UserDOB = currentUser.UserDOB.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd");
             }
             catch (Exception e)
             {

@@ -10,5 +10,6 @@
         public static string Organization = "organization";
         public static string Project = "project";
         public static string Allocation = "allocation";
+        public static string Subtitle = "subtitle";
     }
 }

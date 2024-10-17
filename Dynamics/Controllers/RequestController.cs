@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Dynamics.DataAccess.Repository;
+﻿using Dynamics.DataAccess.Repository;
 using Dynamics.Models.Models;
 using Dynamics.Models.Models.ViewModel;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Identity;
 using Dynamics.Utility;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Dynamics.Controllers
 {
@@ -16,7 +16,7 @@ namespace Dynamics.Controllers
         private readonly CloudinaryUploader _cloudinaryUploader;
 
         public RequestController(IRequestRepository requestRepository, IUserRepository userRepo,
-            UserManager<IdentityUser> userManager ,CloudinaryUploader cloudinaryUploader)
+            UserManager<IdentityUser> userManager, CloudinaryUploader cloudinaryUploader)
         {
             _requestRepo = requestRepository;
             _userRepo = userRepo;
@@ -55,6 +55,7 @@ namespace Dynamics.Controllers
             }
 
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            if (role == null) throw new Exception("WARNING: User has no role");
             Guid userId = Guid.Empty;
             var userJson = HttpContext.Session.GetString("user");
             if (!string.IsNullOrEmpty(userJson))
@@ -179,78 +180,78 @@ namespace Dynamics.Controllers
             }
 
             return View(request);
-		}
-		[HttpPost]
-		public async Task<IActionResult> Edit(Request obj, List<IFormFile> images, 
-			string? cityNameInput, string? districtNameInput, string? wardNameInput)
-		{
-			/*if (!ModelState.IsValid)
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(Request obj, List<IFormFile> images,
+            string? cityNameInput, string? districtNameInput, string? wardNameInput)
+        {
+            /*if (!ModelState.IsValid)
 			{
 				return View(obj);
 			}*/
-			// Get the currently logged-in user (role and id)
-			obj.Location += ", " + wardNameInput + ", " + districtNameInput + ", " + cityNameInput;
-			var user = await _userManager.GetUserAsync(User);
-			if (user == null)
-			{
-				return Unauthorized();
-			}
-			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
-			var userId = Guid.Empty;
-			var userJson = HttpContext.Session.GetString("user");
-			if (!string.IsNullOrEmpty(userJson))
-			{
-				var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
-				userId = userJsonC.UserID;
-			}
-			// Get existing request
-			var existingRequest = await _requestRepo.GetByIdAsync(r => r.RequestID.Equals(obj.RequestID), role, userId);
-			if (existingRequest == null)
-			{
-				return NotFound();
-			}
-			if (role == "User")
-			{
-				// If the user is "user", allow them to update only certain fields
-				existingRequest.Content = obj.Content;
-				existingRequest.Location = obj.Location;
-				existingRequest.isEmergency = obj.isEmergency;
-				if (images != null && images.Count > 0)
-				{
-					string imagePath = await _cloudinaryUploader.UploadMultiImagesAsync(images);
-					// append new images if there are existing images
-					if (!string.IsNullOrEmpty(imagePath))
-					{
-						existingRequest.Attachment = string.IsNullOrEmpty(existingRequest.Attachment) ? imagePath 
-							: existingRequest.Attachment + "," + imagePath;
-					}
-				}
-			}
-			await _requestRepo.UpdateAsync(existingRequest);
-			return RedirectToAction("MyRequest", "Request");
-		}
-		public async Task<IActionResult> Delete(Guid? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-			Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
-			if (request == null) { return NotFound(); }
-			return View(request);
-		}
-		[HttpPost, ActionName("Delete")]
-		public async Task<IActionResult> DeletePost(Guid? id)
-		{
-			Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
-			if (request == null) { return NotFound(); };
-			await _requestRepo.DeleteAsync(request);
-			return RedirectToAction("MyRequest", "Request");
-		}
+            // Get the currently logged-in user (role and id)
+            obj.Location += ", " + wardNameInput + ", " + districtNameInput + ", " + cityNameInput;
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User";
+            var userId = Guid.Empty;
+            var userJson = HttpContext.Session.GetString("user");
+            if (!string.IsNullOrEmpty(userJson))
+            {
+                var userJsonC = JsonConvert.DeserializeObject<User>(userJson);
+                userId = userJsonC.UserID;
+            }
+            // Get existing request
+            var existingRequest = await _requestRepo.GetByIdAsync(r => r.RequestID.Equals(obj.RequestID), role, userId);
+            if (existingRequest == null)
+            {
+                return NotFound();
+            }
+            if (role == "User")
+            {
+                // If the user is "user", allow them to update only certain fields
+                existingRequest.Content = obj.Content;
+                existingRequest.Location = obj.Location;
+                existingRequest.isEmergency = obj.isEmergency;
+                if (images != null && images.Count > 0)
+                {
+                    string imagePath = await _cloudinaryUploader.UploadMultiImagesAsync(images);
+                    // append new images if there are existing images
+                    if (!string.IsNullOrEmpty(imagePath))
+                    {
+                        existingRequest.Attachment = string.IsNullOrEmpty(existingRequest.Attachment) ? imagePath
+                            : existingRequest.Attachment + "," + imagePath;
+                    }
+                }
+            }
+            await _requestRepo.UpdateAsync(existingRequest);
+            return RedirectToAction("MyRequest", "Request");
+        }
+        public async Task<IActionResult> Delete(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
+            if (request == null) { return NotFound(); }
+            return View(request);
+        }
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeletePost(Guid? id)
+        {
+            Request request = await _requestRepo.GetAsync(r => r.RequestID.Equals(id));
+            if (request == null) { return NotFound(); };
+            await _requestRepo.DeleteAsync(request);
+            return RedirectToAction("MyRequest", "Request");
+        }
 
-		public async Task<IActionResult> AcceptRequest(Guid requestId)
-		{
-			return RedirectToAction("CreateProject", "Project", new { requestId = requestId });
-		}
-	}
+        public IActionResult AcceptRequest(Guid requestId)
+        {
+            return RedirectToAction("CreateProject", "Project", new { requestId = requestId });
+        }
+    }
 }
