@@ -32,7 +32,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ./publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -68,4 +68,4 @@ jobs:
         with:
           app-name: 'dynamicscharity'
           slot-name: 'Production'
-          package: .
+          package: ./publish
