@@ -659,7 +659,7 @@
                             <div class="card">
                                 <div class="d-flex card-header justify-content-between align-items-center">
                                     <h4 class="header-title">Top 5 User</h4>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-light">Export <i class="mdi mdi-download ms-1"></i></a>
+                                    <a href="@Url.Action("ExportTop5User", "Home")" class="btn btn-sm btn-light">Export <i class="mdi mdi-download ms-1"></i></a>
                                 </div>
 
                                 <div class="card-body pt-0">
@@ -705,7 +705,7 @@
                             <div class="card">
                                 <div class="d-flex card-header justify-content-between align-items-center">
                                     <h4 class="header-title">Top 5 Organization</h4>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-light">Export <i class="mdi mdi-download ms-1"></i></a>
+                                    <a href="@Url.Action("ExportTop5Organization", "Home")" class="btn btn-sm btn-light">Export <i class="mdi mdi-download ms-1"></i></a>
                                 </div>
 
                                 <div class="card-body pt-0">
@@ -749,7 +749,7 @@
                                             <!-- item-->
                                             @* <a href="javascript:void(0);" class="dropdown-item">Sales Report</a> *@
                                             <!-- item-->
-                                            <a href="javascript:void(0);" class="dropdown-item">Export activities</a>
+                                            <a href="@Url.Action("ExportRecentActivity", "Home")" class="dropdown-item">Export activities</a>
                                             @* <!-- item-->
                                             <a href="javascript:void(0);" class="dropdown-item">Profit</a>
                                             <!-- item-->
@@ -765,7 +765,7 @@
                                             <div class="timeline-item">
                                                 <i class="mdi mdi-upload bg-info-lighten text-info timeline-icon"></i>
                                                 <div class="timeline-item-info">
-                                                    <a href="javascript:void(0);" class="text-info fw-bold mb-1 d-block">@request.RequestTitle</a>
+                                                    <a href="/Admin/Requests" class="text-info fw-bold mb-1 d-block">@request.RequestTitle</a>
                                                     <small>@request.Content</small>
                                                     <p class="mb-0 pb-2">
                                                         <small class="text-muted">
