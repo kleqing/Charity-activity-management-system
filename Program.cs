@@ -1,4 +1,4 @@
-﻿using Dynamics.DataAccess;
+using Dynamics.DataAccess;
 using Dynamics.DataAccess.Repository;
 using Dynamics.Services;
 using Dynamics.Utility;
@@ -20,7 +20,7 @@ namespace Dynamics
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
-            
+
             // Add cache to the container, allow admin dashboard get the latest data
             // working with other services as well
             builder.Services.AddMemoryCache();
@@ -107,12 +107,12 @@ namespace Dynamics
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
             builder.Services.AddScoped<IReportRepository, ReportRepository>();
             // Project repos
-            
+
             builder.Services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
             builder.Services.AddScoped<IProjectHistoryRepository, ProjectHistoryRepository>();
             builder.Services.AddScoped<IOrganizationToProjectTransactionHistoryRepository, OrganizationToProjectTransactionHistoryRepository>();
             builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
-            builder.Services.AddScoped<IUserToProjectTransactionHistoryRepository,UserToProjectTransactionHistoryRepository>();
+            builder.Services.AddScoped<IUserToProjectTransactionHistoryRepository, UserToProjectTransactionHistoryRepository>();
             // Organization repos
             builder.Services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             builder.Services.AddScoped<IOrganizationResourceRepository, OrganizationResourceRepository>();
@@ -131,7 +131,7 @@ namespace Dynamics
 
             // Cloudinary
             builder.Services.AddSingleton<CloudinaryUploader>();
-            
+
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -196,7 +196,7 @@ namespace Dynamics
             app.UseAuthorization();
 
             app.MapRazorPages();
-            
+
             app.MapControllerRoute(
                  name: "areas",
                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
