@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - dynamicscharity
 
 on:
@@ -27,43 +24,41 @@ jobs:
 
       - name: Restore .NET dependencies
         run: dotnet restore ./Dynamics/Dynamics.csproj
-        
+
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release --no-restore ./Dynamics/Dynamics.csproj
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ./Dynamics/bin/Release/net8.0/publish
+      - name: Publish the app
+        run: dotnet publish -c Release -o ${{ github.workspace }}/Dynamics/publish ./Dynamics/Dynamics.csproj
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ./Dynamics/bin/Release/net8.0/publish
+          name: dynamics-published-app
+          path: ${{ github.workspace }}/Dynamics/publish
 
       - name: List published files
-        run: ls -R ./Dynamics/bin/Release/net8.0/publish
-        
+        run: ls -R ${{ github.workspace }}/Dynamics/publish
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-      
+          name: dynamics-published-app
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_30FBD1C6908544C494534CD7A298703C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5ADC78627C2D4654A528ED8393BEC722 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_10DDA53DC045495E90CDDECF10A87B98 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -71,4 +66,4 @@ jobs:
         with:
           app-name: 'dynamicscharity'
           slot-name: 'Production'
-          package: ./Dynamics/bin/Release/net8.0/publish
+          package: dynamics-published-app
