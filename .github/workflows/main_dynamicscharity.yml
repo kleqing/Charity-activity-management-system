@@ -29,16 +29,16 @@ jobs:
         run: dotnet restore ./Dynamics/Dynamics.csproj
         
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release --no-restore ./Dynamics/Dynamics.csproj
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./Dynamics/bin/Release/net8.0/publish
+        run: dotnet publish -c Release -o ${{ github.workspace }}/Dynamics/publish ./Dynamics/Dynamics.csproj
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./Dynamics/bin/Release/net8.0/publish
+          path: ${{ github.workspace }}/Dynamics/publish
 
   deploy:
     runs-on: ubuntu-latest
@@ -69,4 +69,4 @@ jobs:
         with:
           app-name: 'dynamicscharity'
           slot-name: 'Production'
-          package: ./Dynamics/bin/Release/net8.0/publish
+          package: dynamics-published-app
