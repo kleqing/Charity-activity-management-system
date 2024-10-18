@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - dynamicscharity
 
 on:
@@ -24,21 +27,18 @@ jobs:
 
       - name: Restore .NET dependencies
         run: dotnet restore ./Dynamics/Dynamics.csproj
-
+        
       - name: Build with dotnet
-        run: dotnet build --configuration Release --no-restore ./Dynamics/Dynamics.csproj
+        run: dotnet build --configuration Release
 
-      - name: Publish the app
-        run: dotnet publish -c Release -o ${{ github.workspace }}/Dynamics/publish ./Dynamics/Dynamics.csproj
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ./Dynamics/bin/Release/net8.0/publish
 
-      - name: Upload artifact for deployment
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: dynamics-published-app
-          path: ${{ github.workspace }}/Dynamics/publish
-
-      - name: List published files
-        run: ls -R ${{ github.workspace }}/Dynamics/publish
+          name: .net-app
+          path: ./Dynamics/bin/Release/net8.0/publish
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,13 +46,16 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write  # Add this line to ensure id-token write permissions
+      contents: read
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -66,4 +69,4 @@ jobs:
         with:
           app-name: 'dynamicscharity'
           slot-name: 'Production'
-          package: dynamics-published-app
+          package: ./Dynamics/bin/Release/net8.0/publish
